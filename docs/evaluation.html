@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>A Installation de la SciViews Box | Science des données biologiques 2</title>
+  <title>Evaluation | Science des données biologiques 2</title>
   <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
   <meta name="generator" content="bookdown 0.10 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="A Installation de la SciViews Box | Science des données biologiques 2" />
+  <meta property="og:title" content="Evaluation | Science des données biologiques 2" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
   <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="A Installation de la SciViews Box | Science des données biologiques 2" />
+  <meta name="twitter:title" content="Evaluation | Science des données biologiques 2" />
   
   <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
   <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="graphiques-dans-r-markdown.html">
-<link rel="next" href="references.html">
+<link rel="prev" href="comment-apprendre.html">
+<link rel="next" href="intro.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -205,12 +205,63 @@ code span.wa { color: #bf0303; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="svbox" class="section level1">
-<h1><span class="header-section-number">A</span> Installation de la SciViews Box</h1>
-<p><img src="images/sdd1_01/svBox-256.png" width="256px" style="display: block; margin: auto 0 auto auto;" /></p>
-<p>…</p>
+<div id="evaluation" class="section level2 unnumbered">
+<h2>Evaluation</h2>
+<p>L’évaluation sera basée sur une somme de petites contributions qui matérialiseront votre progression sur le long terme. Avec cette évaluation, nous souhaitons vous gratifier chaque fois que vous franchirez des étapes, plutôt que de vous sanctionner lorsque vous bloquez. Donc, pour une note finale sur 20:</p>
+<!-- - 2 points pour la progression sur base des exercices que vous réaliserez en classe inversée (donc, chez vous). -->
+<ul>
+<li><p>3 points pour la restitution des capsules et votre participation en présentiel. Au début de chaque séance, nous discuterons des notions que vous aurez à préparer par avance, et votre participation sera évaluée.</p></li>
+<li><p>6 points pour un quizz final.</p></li>
+</ul>
+<!-- : vous aurez à répondre à cinq questions au hasard (set différent pour chaque étudiant sur base de 20 questions au total). -->
+<ul>
+<li><p>11 points pour l’évaluation d’un des rapports d’analyse de données (choisi au hasard en fin de cours).</p></li>
+<li><p>Enfin, vous pourrez éventuellement encore gagner un point bonus pour une participation remarquable, ou tout autre élément à valoriser (rapport particulièrement bien réalisé, aide des autres étudiants, etc.). Ceci étant à l’appréciation des enseignants.</p></li>
+</ul>
+<div id="system-information" class="section level5 unnumbered">
+<h5>System information</h5>
+<pre class="sourceCode r"><code class="sourceCode r">sessioninfo<span class="op">::</span><span class="kw">session_info</span>()</code></pre>
+<pre><code># ─ Session info ──────────────────────────────────────────────────────────
+#  setting  value                       
+#  version  R version 3.4.4 (2018-03-15)
+#  os       macOS  10.14.6              
+#  system   x86_64, darwin15.6.0        
+#  ui       X11                         
+#  language (EN)                        
+#  collate  en_US.UTF-8                 
+#  ctype    en_US.UTF-8                 
+#  tz       Europe/Brussels             
+#  date     2019-08-28                  
+# 
+# ─ Packages ──────────────────────────────────────────────────────────────
+#  package     * version date       lib source        
+#  assertthat    0.2.1   2019-03-21 [1] CRAN (R 3.4.4)
+#  bookdown      0.10    2019-05-10 [1] CRAN (R 3.4.4)
+#  cli           1.1.0   2019-03-19 [1] CRAN (R 3.4.4)
+#  crayon        1.3.4   2017-09-16 [1] CRAN (R 3.4.1)
+#  digest        0.6.20  2019-07-04 [1] CRAN (R 3.4.4)
+#  evaluate      0.13    2019-02-12 [1] CRAN (R 3.4.4)
+#  fortunes      1.5-4   2016-12-29 [1] CRAN (R 3.4.0)
+#  htmltools     0.3.6   2017-04-28 [1] CRAN (R 3.4.0)
+#  knitr         1.22    2019-03-08 [1] CRAN (R 3.4.4)
+#  magrittr      1.5     2014-11-22 [1] CRAN (R 3.4.0)
+#  Rcpp          1.0.1   2019-03-17 [1] CRAN (R 3.4.4)
+#  rmarkdown     1.12    2019-03-14 [1] CRAN (R 3.4.4)
+#  sessioninfo   1.1.1   2018-11-05 [1] CRAN (R 3.4.4)
+#  stringi       1.4.3   2019-03-12 [1] CRAN (R 3.4.4)
+#  stringr       1.4.0   2019-02-10 [1] CRAN (R 3.4.4)
+#  withr         2.1.2   2018-03-15 [1] CRAN (R 3.4.4)
+#  xfun          0.7     2019-05-14 [1] CRAN (R 3.4.4)
+#  yaml          2.2.0   2018-07-25 [1] CRAN (R 3.4.4)
+# 
+# [1] /Library/Frameworks/R.framework/Versions/3.4/Resources/library</code></pre>
 
 </div>
+</div>
+<!-- </div> -->
+
+
+
 <div id="disqus_thread"></div>
 <script>
 
@@ -236,8 +287,8 @@ s.setAttribute('data-timestamp', +new Date());
           </div>
         </div>
       </div>
-<a href="graphiques-dans-r-markdown.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="comment-apprendre.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="intro.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -267,7 +318,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/BioDataScience-Course/sdd-umons2/edit/master/A1-Installation-svbox.Rmd",
+"link": "https://github.com/BioDataScience-Course/sdd-umons2/edit/master/index.Rmd",
 "text": "Editer"
 },
 "history": {

@@ -1,4 +1,4 @@
-# (PART) Course I: test {-}
+# (PART) Cours II: analyse et modélisation {-}
 
 # Introduction {#intro}
 
