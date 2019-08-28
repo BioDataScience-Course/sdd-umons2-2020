@@ -1,0 +1,174 @@
+# (PART) Course I: test {-}
+
+# Introduction {#intro}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(comment = "#", fig.align = "center")
+```
+
+This is a bookdown chapter mostly for demonstration and testing ... I started from [here](http://seankross.com/2016/11/17/How-to-Start-a-Bookdown-Book.html), then got some pieces from [here](https://github.com/rstudio/bookdown-demo), and finally skimmed the [bookdown book](https://bookdown.org/yihui/bookdown/) and took some notes hereunder. I had also a look at this [blog](http://seankross.com/2016/11/17/How-to-Start-a-Bookdown-Book.html).
+
+[SciViews](http://www.sciviews.org)
+
+~~To convince *someone* to switch to Markdown, show him [this](http://nerdplusart.com/markdown-is-the-future/). A short discussion of html/active documents _versus_ pdf/static printable pages should be nice here.~~
+
+*Now, let's look at special formattings provided by bookdown.*
+
+
+## Book-wide references
+
+With R Markdown, it is only possible to reference items inside the same document, and there is no numbered figures, tables or equations (at least if LaTeX code is not used, but then, you can olny generate a PDF). Bookdown fills the gap with new formatting instructions that work across all documents of the book. It also provides updated versions of R MArkdown output formats that support numbered figures, tables and equations, e.g., `html_document2` to replace `html_document`, for instance.
+
+
+### Reference to chapter and titles
+
+You can reference **chapters** and **titles** using \@ref(intro). The book is organized in chapters and all numbers are by chapters. However, there are special level 1 title you can use:
+
+- **Parts**: use `# (PART) Part I {-}` just before the first title of that part. 
+
+- **Appendix**: use `# (APPENDIX) Appendix {-}` just before appendices titles. They will be numbered separately.
+
+
+### Numbered figures and tables
+
+**Figures** and **tables** are in their own environments:
+
+```{r nice-fig, fig.cap='Here is a nice figure!', out.width='80%', fig.asp=.75, fig.align='center'}
+par(mar = c(4, 4, .1, .1))
+plot(pressure, type = 'b', pch = 19)
+```
+
+Reference a figure by its code chunk label with the `fig:` prefix, e.g., see Figure \@ref(fig:nice-fig). Similarly, you can reference tables generated from `knitr::kable()`, e.g., see Table \@ref(tab:nice-tab).
+
+```{r nice-tab, tidy=FALSE}
+knitr::kable(
+  head(iris, 20), caption = 'Here is a nice table!',
+  booktabs = TRUE
+)
+```
+
+
+### Numbered equations
+
+To number equations and allow to refer to them, use an `equation` environment and label them with the syntax `(\#eq:label)`:
+
+\begin{equation} 
+  f\left(k\right) = \binom{n}{k} p^k\left(1-p\right)^{n-k}
+  (\#eq:binom)
+\end{equation} 
+
+... and here, I refer to eq. \@ref(eq:binom). In the vase equations are not labelled, use the `equation*` environment instead.
+
+
+## Citations
+
+You can reference citations, too. For example, we are using the **bookdown** package [@R-bookdown] in this sample book, which was built on top of R Markdown and **knitr** [@xie2015].
+
+
+## Cache long computations
+
+If some computation is time-consuming, we could consider to cache it:
+
+```{r important-computing, cache=TRUE}
+# A verrry long computation!
+1 + 1
+```
+
+
+## Shiny app
+
+A shiny application directly inside the book using an iframe. This application demonstrates how an histogram changes when the number of classes is modified.
+
+<iframe src="https://phgrosjean.shinyapps.io/histogram/" width="780" height="450" frameborder="0"></iframe>
+
+
+## Learnr with one exercise and one quizz
+
+A simple learnr document from shinyapps.io:
+
+<iframe src="https://phgrosjean.shinyapps.io/learnr/" width="780" height="500" frameborder="0"></iframe>
+
+
+## H5P content
+
+H5P content can be displayed in iframes. Here is an example of a multiple choice widget:
+
+<iframe src="https://h5p.org/h5p/embed/307685" width="780" height="270" frameborder="0" allowfullscreen="allowfullscreen"></iframe><script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>
+
+Here is a "drag words" widget:
+
+<iframe src="https://h5p.org/h5p/embed/308179" width="780" height="270" frameborder="0" allowfullscreen="allowfullscreen"></iframe><script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>
+
+Here is a video widget:
+
+<iframe src="https://h5p.org/h5p/embed/369438" width="780" height="270" frameborder="0" allowfullscreen="allowfullscreen"></iframe><script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>
+
+
+## Try to add Moodle content
+
+<iframe src="https://moodle.umons.ac.be/mod/quiz/attempt.php?attempt=212622&cmid=116372" width="780" height="270" frameborder="0"></iframe>
+
+
+## Add a Gist
+
+<script src="https://gist.github.com/GuyliannEngels/e349f835d11ec3f585bd27c0daa47012.js"></script>
+
+and for an R markdown document:
+
+<script src="https://gist.github.com/GuyliannEngels/dea087d0bd2321a2ae896211bdc6b4b8.js"></script>
+
+
+## Embed a youtube video
+
+<iframe width="770" height="433" src="http://www.youtube.com/embed/yIVXjl4SwVo?rel=0" frameborder="0" allowfullscreen></iframe>
+
+
+## Special blocks
+
+```{block, type='note'}
+This is a **note**.
+```
+
+```{block, type='info'}
+This is an **information**.
+```
+
+```{block, type='warning'}
+This is a **warning**.
+```
+
+```{block, type='error'}
+This block can be used in case of **error**.
+```
+
+```{block, type='win'}
+This is related to **Windows**.
+```
+
+```{block, type='mac'}
+This is related to **MacOS**.
+```
+
+```{block, type='linux'}
+This is related to **Linux**.
+```
+
+```{block, type='bdd'}
+This is related to the `BioDataScience` package.
+```
+
+```{block2, type='sv'}
+This is a `block2` construct related to `SciViews` or `SciViews::R`:
+
+- item 1
+- item 2
+- item 3
+
+```
+
+```{block, type='svbox'}
+This is a section related to the **SciViews Box**...
+```
+
+
+**TODO:** browse the bookdown book from 2.4 Figures on....
