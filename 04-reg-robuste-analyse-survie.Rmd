@@ -1,0 +1,15 @@
+# Régression robuste/quantile & analyse de survie {#robuste-survie}
+
+```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
+knitr::opts_chunk$set(comment = '#', fig.align = "center")
+SciViews::R
+```
+
+
+##### Objectifs {-}
+
+- TODO
+
+##### Prérequis {-}
+
+TODO

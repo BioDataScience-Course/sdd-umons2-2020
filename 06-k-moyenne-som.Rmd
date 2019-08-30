@@ -1,0 +1,21 @@
+# K-moyenne & SOM {#k-moyenne-som}
+
+```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
+knitr::opts_chunk$set(comment = '#', fig.align = "center")
+SciViews::R
+```
+
+
+##### Objectifs {-}
+
+- TODO
+
+##### Prérequis {-}
+
+TODO
+
+## K-moyennes
+
+## Cartes auto adaptatives
+
+La méthode des cartes auto-adaptatives se nomme self-organizing map (SOM) en anglais. 
