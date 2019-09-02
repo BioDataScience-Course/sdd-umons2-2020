@@ -92,7 +92,9 @@
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="A" data-path="svbox.html"><a href="svbox.html"><i class="fa fa-check"></i><b>A</b> Installation de la SciViews Box</a><ul>
 <li class="chapter" data-level="A.1" data-path="migration-des-projets.html"><a href="migration-des-projets.html"><i class="fa fa-check"></i><b>A.1</b> Migration des projets</a></li>
-<li class="chapter" data-level="A.2" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html"><i class="fa fa-check"></i><b>A.2</b> Configuration Git et Github</a></li>
+<li class="chapter" data-level="A.2" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html"><i class="fa fa-check"></i><b>A.2</b> Configuration Git et Github</a><ul>
+<li class="chapter" data-level="A.2.1" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html#compte-github-dans-rstudio"><i class="fa fa-check"></i><b>A.2.1</b> Compte Github dans RStudio</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>Références</a></li>
 <li class="divider"></li>
@@ -132,11 +134,56 @@
 <li><p>Rendez votre login invariable dans le temps. Par exemple, n’utilisez pas un login lié à votre université (numéro de matricule, ou nom de l’université inclue dans le login). Si tout va bien votre login vous suivra dans votre carrière, … donc, potentiellement loin de l’université où vous avez fait vos études.</p></li>
 <li><p>N’utilisez pas de logins qui sont aussi des mots ayant une signification particulière en programmation, par exemple, n’utilisez pas <code>NA</code>, même si c’est vos initiales !</p></li>
 </ul>
-<p>…</p>
+<p>Une fois votre compte Github créé, et votre login/email pour votre identification Git correctement enregistrés dans la SciViews Box, vous devez pouvoir travailler, faire des “pushs”, des “pulls” et des “commits”<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. Cependant, RStudio vous demandera constamment vos logins et mots de passe… à la longue, c’est lassant ! La procédure ci-dessous vous enregistre une fois pour toutes sur votre compte Github dans RStudio.</p>
+<div id="compte-github-dans-rstudio" class="section level3">
+<h3><span class="header-section-number">A.2.1</span> Compte Github dans RStudio</h3>
+<p>RStudio offre la possibilité d’enregistrer une clé publique/privée dans votre SciViews Box afin de vous enregistrer sur Github de manière permanente. L’avantage, c’est que vous ne devrez plus constamment entrer votre login et mot de passe à chaque opération sur Github ! Nous vous le conseillons donc vivement.</p>
+<ul>
+<li>Entrez dans Rstudio Server, et allez dans le menu <code>Tools -&gt; Global Options...</code>. Ensuite, cliquez dans la rubrique <code>Git/SVN</code> dans la boite de dialogue.</li>
+</ul>
+<p><img src="images/sdd2_A1/github_config_rstudio1.png" /></p>
+<ul>
+<li>Ensuite, cliquez sur le bouton <code>Create RSA key...</code>. La phrase de passe n’est pas nécessaire (il est même préférable de la laisser vide si vous voulez utiliser Github sans rien devoir taper à chaque fois). Cliquez sur le bouton <code>Create</code>.</li>
+</ul>
+<p><img src="images/sdd2_A1/github_config_rstudio2.png" /></p>
+<ul>
+<li>Vous obtenez alors une fenêtre similaire à celle ci-dessous (bien sûr avec des données différentes). Ceci confirme que votre clé cryptographique a été créée localement. Fermez cette fenêtre pour revenir à la boite de dialogue de configuration de RStudio Server.</li>
+</ul>
+<p><img src="images/sdd2_A1/github_config_rstudio3.png" /></p>
+<ul>
+<li>Dans la boite de dialogue de configuration de RStudio Server, section <code>Git/SVN</code> cliquez sur le lien <code>View public key</code> qui apparait une fois la clé créée :</li>
+</ul>
+<p><img src="images/sdd2_A1/github_config_rstudio4.png" /></p>
+<ul>
+<li>La clé apparait dans une fenêtre, déjà présélectionnée. Copiez-là dans le presse-papier (<code>Ctrl-C</code> ou clic bouton droit et sélection de <code>Copy</code> dans le menu contextuel), puis fermez cette fenêtre.</li>
+</ul>
+<p><img src="images/sdd2_A1/github_config_rstudio5.png" /></p>
+<ul>
+<li>Dans votre navigateur web favori, naviguez vers <a href="https://github.com" class="uri">https://github.com</a>, loggez-vous, et accédez aux paramètres de votre compte Github (menu déroulant en haut à droite, entrée <code>Settings</code>) :</li>
+</ul>
+<p><img src="images/sdd2_A1/github_config_rstudio6.png" /></p>
+<ul>
+<li>Dans les paramètres de votre compte, cliquez sur la rubrique <code>SSH and GPG keys</code>, ensuite sur le bouton vert <code>New SSH key</code></li>
+</ul>
+<p><img src="images/sdd2_A1/github_config_rstudio7.png" /></p>
+<ul>
+<li>Collez-y votre clé à partir du presse-papier dans la zone <code>Key</code>. Vous pouvez lui donner un nom évocateur dans le champ <code>Title</code>. Ensuite, cliquez sur <code>Add SSH key</code>.</li>
+</ul>
+<p><img src="images/sdd2_A1/github_config_rstudio8.png" /></p>
+<ul>
+<li>Déloggez, puis reloggez-vous dans RStudio Server pour que les changements soient pris en compte. La prochaine action sur Github depuis RStudio pourrait encore déclencher la demande de votre login et mot de passe, mais ensuite, les opérations devraient se faire directement.</li>
+</ul>
 <p>Si vous éprouvez toujours des difficultés à faire collaborer R et RStudio avec Git et Github, voyez <a href="Happy%20Git%20and%20Github%20for%20the%20UseR">https://happygitwithr.com</a> (en anglais) qui explique les différentes procédures bien plus en détails.</p>
 
 </div>
+</div>
 <!-- </div> -->
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>Vérifiez <strong>toujours</strong> lors de votre premier commit que Github vous reconnait bien. Pour cela, naviguez vers le dépôt où vous avez commité avec votre explorateur web, et vérifiez l’identité prise en compte lors de votre commit.<a href="configuration-git-et-github.html#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
 <div id="disqus_thread"></div>
 <script>
 

@@ -45,7 +45,44 @@ Assurez-vous (si ce n'est déjà fait) que vous possédez un compte Github valid
 
 - N'utilisez pas de logins qui sont aussi des mots ayant une signification particulière en programmation, par exemple, n'utilisez pas `NA`, même si c'est vos initiales\ !
 
-...
+Une fois votre compte Github créé, et votre login/email pour votre identification Git correctement enregistrés dans la SciViews Box, vous devez pouvoir travailler, faire des "pushs", des "pulls" et des "commits"^[Vérifiez **toujours** lors de votre premier commit que Github vous reconnait bien. Pour cela, naviguez vers le dépôt où vous avez commité avec votre explorateur web, et vérifiez l'identité prise en compte lors de votre commit.]. Cependant, RStudio vous demandera constamment vos logins et mots de passe... à la longue, c'est lassant\ ! La procédure ci-dessous vous enregistre une fois pour toutes sur votre compte Github dans RStudio.
+
+### Compte Github dans RStudio
+
+RStudio offre la possibilité d'enregistrer une clé publique/privée dans votre SciViews Box afin de vous enregistrer sur Github de manière permanente. L'avantage, c'est que vous ne devrez plus constamment entrer votre login et mot de passe à chaque opération sur Github\ ! Nous vous le conseillons donc vivement.
+
+- Entrez dans Rstudio Server, et allez dans le menu `Tools -> Global Options...`. Ensuite, cliquez dans la rubrique `Git/SVN` dans la boite de dialogue.
+
+![](images/sdd2_A1/github_config_rstudio1.png)
+
+- Ensuite, cliquez sur le bouton `Create RSA key...`. La phrase de passe n'est pas nécessaire (il est même préférable de la laisser vide si vous voulez utiliser Github sans rien devoir taper à chaque fois). Cliquez sur le bouton `Create`.
+
+![](images/sdd2_A1/github_config_rstudio2.png)
+
+- Vous obtenez alors une fenêtre similaire à celle ci-dessous (bien sûr avec des données différentes). Ceci confirme que votre clé cryptographique a été créée localement. Fermez cette fenêtre pour revenir à la boite de dialogue de configuration de RStudio Server.
+
+![](images/sdd2_A1/github_config_rstudio3.png)
+
+- Dans la boite de dialogue de configuration de RStudio Server, section `Git/SVN` cliquez sur le lien `View public key` qui apparait une fois la clé créée\ :
+
+![](images/sdd2_A1/github_config_rstudio4.png)
+
+- La clé apparait dans une fenêtre, déjà présélectionnée. Copiez-là dans le presse-papier (`Ctrl-C` ou clic bouton droit et sélection de `Copy` dans le menu contextuel), puis fermez cette fenêtre.
+
+![](images/sdd2_A1/github_config_rstudio5.png)
+
+- Dans votre navigateur web favori, naviguez vers https://github.com, loggez-vous, et accédez aux paramètres de votre compte Github (menu déroulant en haut à droite, entrée `Settings`)\ :
+
+![](images/sdd2_A1/github_config_rstudio6.png)
+
+- Dans les paramètres de votre compte, cliquez sur la rubrique `SSH and GPG keys`, ensuite sur le bouton vert `New SSH key`
+
+![](images/sdd2_A1/github_config_rstudio7.png)
+
+- Collez-y votre clé à partir du presse-papier dans la zone `Key`. Vous pouvez lui donner un nom évocateur dans le champ `Title`. Ensuite, cliquez sur `Add SSH key`.
+
+![](images/sdd2_A1/github_config_rstudio8.png)
+
+- Déloggez, puis reloggez-vous dans RStudio Server pour que les changements soient pris en compte. La prochaine action sur Github depuis RStudio pourrait encore déclencher la demande de votre login et mot de passe, mais ensuite, les opérations devraient se faire directement.
 
 Si vous éprouvez toujours des difficultés à faire collaborer R et RStudio avec Git et Github, voyez [https://happygitwithr.com](Happy Git and Github for the UseR) (en anglais) qui explique les différentes procédures bien plus en détails.
-
