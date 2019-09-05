@@ -5,6 +5,7 @@
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
 knitr::opts_chunk$set(comment = '#', fig.align = "center")
 SciViews::R
+library(modelr)
 ```
 
 ##### Objectifs {-}
@@ -21,5 +22,146 @@ Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, e
     BioDataScience2::run("01a_rappel")
 
 N’oubliez pas d’appuyer sur la touche ESC pour reprendre la main dans R à la fin d’un tutoriel dans la console R
+```
+
+
+## La régression linéaire
+
+Nous allons découvrir les base du modèle linéaire de façon intuitive. Nous utilisons le jeu de données `trees` qui rassemble la mesure du diamètre, de la hauteur et du volume de bois de cerisiers noirs. 
+
+```{r}
+# importation des données
+trees <- read("trees", package = "datasets", lang = "fr")
+```
+
+Rapellons nous que dans le [chapitre 12 du livre science des données 1](http://biodatascience-course.sciviews.org/sdd-umons/association-de-deux-variables.html), nous avons étudié l'association de deux variables numériques. Nous utilisons donc une matrice de corrélation afin de mettre en évidence la corrélation entre nos 3 variables qui composent le jeu de donnée `trees`.
+
+La fonction `correlation()` nous renvoie un tableau de la matrice de correlation avec l'indice de Pearson.
+
+```{r}
+(trees_corr <- correlation(trees))
+```
+
+Nous pouvons également observer cette matrice sous la forme d'un graphique plus convivial.
+
+```{r}
+plot(trees_corr, type = "lower")
+```
+
+Cependant, n'oubliez pas qu'il est indispensable de visualiser les nuages de points pour ne pas tobmer dans le piège mis en avant par le [jeu de données artificiel appelé “quartet d’Anscombe”](http://biodatascience-course.sciviews.org/sdd-umons/association-de-deux-variables.html#importance-des-graphiques) qui montre très bien comment des données très différentes peuvent avoir même moyenne, même variance et même coefficient de corrélation.
+
+```{r}
+GGally::ggscatmat(as.data.frame(trees), 1:3)
+```
+
+Nous observons une forte corrélation linéaire entre le volume et la hauteur des cerisiers noirs.  Interessons nous à cette association.
+
+```{r}
+chart(trees, volume ~ diameter) +
+  geom_point()
+```
+
+Si vous deviez ajouter une droite permettant de représenter au mieux les données, où est ce que vous la placeriez ? 
+
+Une droite respecte l'équation mathématique suivante: $$ y = ax + b$$ 
+
+dont  `a` est la pente (*slope* en anglais) et `b` est l'ordonnée à l'origine (*intercept* en anglais).
+
+```{r}
+# Sélection de pente et d'ordonnée à l'origine
+models <- tibble(
+  model = paste("mod", 1:4, sep = "-"),
+  slope = c(5, 5.6, 6, 0),
+  intercept = c(-0.5, -1, -1.5, 1)
+)
+
+chart(trees, volume ~ diameter) +
+  geom_point() +
+  geom_abline(data = models, aes(slope = slope, intercept = intercept, color = model)) + 
+  labs( color = "Modèle")
+```
+
+Nous avons 4 droites qui veulent représenter au mieux les observations. Quel est le meilleur modèle selon vous ? 
+
+Nous voulons identifier le meilleur modèle, c'est à dire le modèle le plus proche de nos données. Nous avons besoin d'une règle qui va nous permettre de quantifier la distance de nos observations à notre modèle afin d'obtenir le modèle avec la plus faible distance possible de l'ensemble de nos observations. 
+
+Décomposons le problème étape par étape et intéressons nous au `mod-1`
+
+- Connaitre les valeurs de y prédite par le modèle 
+
+
+```{r}
+# Calculer la valeur de y pour chaque valeur de x suivant le model souhaité
+## Création de notre fonction 
+model <- function(slope, intercept, x) {
+  prediction <- intercept + slope * x
+  attributes(prediction) <- NULL
+  prediction
+}
+## Application de notre fonction 
+mod1 <- model(slope = 5, intercept = -0.5, x = trees$diameter)
+## Affichage des résultats
+mod1
+```
+
+- Connaitre la distance entre les observations mesurées en y et les observations prédites en y par le modèle
+
+Nous pouvons premièrement visualiser cette distance graphiquement :
+
+```{r}
+chart(trees, volume ~ diameter) +
+  geom_point() +
+  geom_abline(slope = 5, intercept = -0.5) +
+  geom_segment(
+    aes(x = diameter, y = volume, 
+      xend = diameter, yend = mod1))
+```
+
+
+Nous pouvons ensuite facilement calculer cette distance comme ci-dessous : 
+
+```{r}
+# Calculer la distance entre y observé et y prédit
+## création de notre fonction
+distance <- function(observation, prediction) {
+  diff <- observation - prediction
+  attributes(diff) <- NULL
+  diff
+}
+## Application de la fonction
+dist1 <- distance(observation = trees$volume, prediction = mod1)
+## affichage des résultats
+dist1
+```
+
+- Defenir une règle pour obtenir une valeur unique de la distance de nos observations mesurées en y par rapport aux observations prédites en y par le modèle
+
+Une première idée serait de sommer l'ensemble de nos distances comme ci-dessous :
+
+```{r}
+sum(dist1)
+```
+
+Appliquons la suite d'étapes ci-dessus pour nos 4 modèles afin de les comparer
+
+```{r}
+
+```
+
+
+
+
+```{block2, type='bdd'}
+Essayez par vous même de trouver le meilleur modèle dans l'application shiny suivante :
+
+Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R :
+
+    BioDataScience2::app("01a_modele_lineaire") TODO
+
+N’oubliez pas d’appuyer sur la touche ESC pour reprendre la main dans R à la fin d’un tutoriel dans la console R
+```
+
+```{r}
+summary(lm(data = trees, formula = volume ~ diameter))
 ```
 

@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Science des données biologiques 2</title>
+  <title>1.1 La régression linéaire | Science des données biologiques 2</title>
   <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Science des données biologiques 2" />
+  <meta property="og:title" content="1.1 La régression linéaire | Science des données biologiques 2" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
   <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Science des données biologiques 2" />
+  <meta name="twitter:title" content="1.1 La régression linéaire | Science des données biologiques 2" />
   
   <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
   <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-
-<link rel="next" href="vue-generale-des-cours.html">
+<link rel="prev" href="lm.html">
+<link rel="next" href="glm.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -189,24 +189,129 @@ code span.wa { color: #bf0303; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Science des données biologiques 2</h1>
-<p class="author"><em>Philippe Grosjean &amp; Guyliann Engels</em></p>
-<p class="date"><em>2019-09-05</em></p>
-</div>
-<div id="preambule" class="section level1 unnumbered">
-<h1>Préambule</h1>
-<p>Cet ouvrage interactif est le second d’une série de trois ouvrages traitant de la science des données biologiques. L’écriture de cette suite de livres a débuté au cours de l’année académique 2018-2019.</p>
-<p>Pour l’année académique 2019-2020, cet ouvrage interactif sera le support du cours suivant :</p>
+<div id="la-regression-lineaire" class="section level2">
+<h2><span class="header-section-number">1.1</span> La régression linéaire</h2>
+<p>Nous allons découvrir les base du modèle linéaire de façon intuitive. Nous utilisons le jeu de données <code>trees</code> qui rassemble la mesure du diamètre, de la hauteur et du volume de bois de cerisiers noirs.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># importation des données</span>
+trees &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="st">&quot;trees&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;datasets&quot;</span>, <span class="dt">lang =</span> <span class="st">&quot;fr&quot;</span>)</code></pre>
+<p>Rapellons nous que dans le <a href="http://biodatascience-course.sciviews.org/sdd-umons/association-de-deux-variables.html">chapitre 12 du livre science des données 1</a>, nous avons étudié l’association de deux variables numériques. Nous utilisons donc une matrice de corrélation afin de mettre en évidence la corrélation entre nos 3 variables qui composent le jeu de donnée <code>trees</code>.</p>
+<p>La fonction <code>correlation()</code> nous renvoie un tableau de la matrice de correlation avec l’indice de Pearson.</p>
+<pre class="sourceCode r"><code class="sourceCode r">(trees_corr &lt;-<span class="st"> </span><span class="kw">correlation</span>(trees))</code></pre>
+<pre><code># Matrix of Pearson&#39;s product-moment correlation:
+# (calculation uses everything)
+#          diameter height volume
+# diameter 1.000    0.519  0.967 
+# height   0.519    1.000  0.597 
+# volume   0.967    0.597  1.000</code></pre>
+<p>Nous pouvons également observer cette matrice sous la forme d’un graphique plus convivial.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(trees_corr, <span class="dt">type =</span> <span class="st">&quot;lower&quot;</span>)</code></pre>
+<p><img src="01-mod-lineaire_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Cependant, n’oubliez pas qu’il est indispensable de visualiser les nuages de points pour ne pas tobmer dans le piège mis en avant par le <a href="http://biodatascience-course.sciviews.org/sdd-umons/association-de-deux-variables.html#importance-des-graphiques">jeu de données artificiel appelé “quartet d’Anscombe”</a> qui montre très bien comment des données très différentes peuvent avoir même moyenne, même variance et même coefficient de corrélation.</p>
+<pre class="sourceCode r"><code class="sourceCode r">GGally<span class="op">::</span><span class="kw">ggscatmat</span>(<span class="kw">as.data.frame</span>(trees), <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</code></pre>
+<p><img src="01-mod-lineaire_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Nous observons une forte corrélation linéaire entre le volume et la hauteur des cerisiers noirs. Interessons nous à cette association.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(trees, volume <span class="op">~</span><span class="st"> </span>diameter) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>()</code></pre>
+<p><img src="01-mod-lineaire_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Si vous deviez ajouter une droite permettant de représenter au mieux les données, où est ce que vous la placeriez ?</p>
+<p>Une droite respecte l’équation mathématique suivante: <span class="math display">\[ y = ax + b\]</span></p>
+<p>dont <code>a</code> est la pente (<em>slope</em> en anglais) et <code>b</code> est l’ordonnée à l’origine (<em>intercept</em> en anglais).</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Sélection de pente et d&#39;ordonnée à l&#39;origine</span>
+models &lt;-<span class="st"> </span><span class="kw">tibble</span>(
+  <span class="dt">model =</span> <span class="kw">paste</span>(<span class="st">&quot;mod&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>),
+  <span class="dt">slope =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="fl">5.6</span>, <span class="dv">6</span>, <span class="dv">0</span>),
+  <span class="dt">intercept =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.5</span>, <span class="dv">-1</span>, <span class="fl">-1.5</span>, <span class="dv">1</span>)
+)
+
+<span class="kw">chart</span>(trees, volume <span class="op">~</span><span class="st"> </span>diameter) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_abline</span>(<span class="dt">data =</span> models, <span class="kw">aes</span>(<span class="dt">slope =</span> slope, <span class="dt">intercept =</span> intercept, <span class="dt">color =</span> model)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>( <span class="dt">color =</span> <span class="st">&quot;Modèle&quot;</span>)</code></pre>
+<p><img src="01-mod-lineaire_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Nous avons 4 droites qui veulent représenter au mieux les observations. Quel est le meilleur modèle selon vous ?</p>
+<p>Nous voulons identifier le meilleur modèle, c’est à dire le modèle le plus proche de nos données. Nous avons besoin d’une règle qui va nous permettre de quantifier la distance de nos observations à notre modèle afin d’obtenir le modèle avec la plus faible distance possible de l’ensemble de nos observations.</p>
+<p>Décomposons le problème étape par étape et intéressons nous au <code>mod-1</code></p>
 <ul>
-<li><a href="http://applications.umons.ac.be/web/fr/pde/2019-2020/ue/US-B3-SCBIOL-006-M.htm">Science des données II : Analyse et modélisation, UMONS</a> dont le responsable est Grosjean Philippe</li>
+<li>Connaitre les valeurs de y prédite par le modèle</li>
 </ul>
-<p>Cet ouvrage est conçu pour être utilisé de manière interactive en ligne. En effet, nous y ajoutons des vidéos, des démonstrations interactives, et des exercices sous forme de questionnaires interactifs également. <strong>Ces différents éléments ne sont, bien évidemment, utilisables qu’en ligne.</strong></p>
-<p><img src="images/front-cover.png" /></p>
-<hr />
-<p><em>Le matériel dans cet ouvrage est distribué sous licence <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr">CC BY-NC-SA 4.0</a>.</em></p>
-<hr /> 
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Calculer la valeur de y pour chaque valeur de x suivant le model souhaité</span>
+<span class="co">## Création de notre fonction </span>
+model &lt;-<span class="st"> </span><span class="cf">function</span>(slope, intercept, x) {
+  prediction &lt;-<span class="st"> </span>intercept <span class="op">+</span><span class="st"> </span>slope <span class="op">*</span><span class="st"> </span>x
+  <span class="kw">attributes</span>(prediction) &lt;-<span class="st"> </span><span class="ot">NULL</span>
+  prediction
+}
+<span class="co">## Application de notre fonction </span>
+mod1 &lt;-<span class="st"> </span><span class="kw">model</span>(<span class="dt">slope =</span> <span class="dv">5</span>, <span class="dt">intercept =</span> <span class="fl">-0.5</span>, <span class="dt">x =</span> trees<span class="op">$</span>diameter)
+<span class="co">## Affichage des résultats</span>
+mod1</code></pre>
+<pre><code>#  [1] 0.555 0.590 0.620 0.835 0.860 0.870 0.895 0.895 0.910 0.920 0.935
+# [12] 0.950 0.950 0.985 1.025 1.140 1.140 1.190 1.240 1.255 1.280 1.305
+# [23] 1.340 1.530 1.570 1.695 1.720 1.775 1.785 1.785 2.115</code></pre>
+<ul>
+<li>Connaitre la distance entre les observations mesurées en y et les observations prédites en y par le modèle</li>
+</ul>
+<p>Nous pouvons premièrement visualiser cette distance graphiquement :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(trees, volume <span class="op">~</span><span class="st"> </span>diameter) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_abline</span>(<span class="dt">slope =</span> <span class="dv">5</span>, <span class="dt">intercept =</span> <span class="fl">-0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_segment</span>(
+    <span class="kw">aes</span>(<span class="dt">x =</span> diameter, <span class="dt">y =</span> volume, 
+      <span class="dt">xend =</span> diameter, <span class="dt">yend =</span> mod1))</code></pre>
+<p><img src="01-mod-lineaire_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Nous pouvons ensuite facilement calculer cette distance comme ci-dessous :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Calculer la distance entre y observé et y prédit</span>
+<span class="co">## création de notre fonction</span>
+distance &lt;-<span class="st"> </span><span class="cf">function</span>(observation, prediction) {
+  diff &lt;-<span class="st"> </span>observation <span class="op">-</span><span class="st"> </span>prediction
+  <span class="kw">attributes</span>(diff) &lt;-<span class="st"> </span><span class="ot">NULL</span>
+  diff
+}
+<span class="co">## Application de la fonction</span>
+dist1 &lt;-<span class="st"> </span><span class="kw">distance</span>(<span class="dt">observation =</span> trees<span class="op">$</span>volume, <span class="dt">prediction =</span> mod1)
+<span class="co">## affichage des résultats</span>
+dist1</code></pre>
+<pre><code>#  [1] -0.263 -0.298 -0.331 -0.371 -0.328 -0.312 -0.453 -0.380 -0.270 -0.357
+# [11] -0.250 -0.355 -0.344 -0.382 -0.484 -0.511 -0.183 -0.414 -0.512 -0.550
+# [21] -0.303 -0.407 -0.312 -0.445 -0.364 -0.126 -0.143 -0.124 -0.327 -0.341
+# [31]  0.065</code></pre>
+<ul>
+<li>Defenir une règle pour obtenir une valeur unique de la distance de nos observations mesurées en y par rapport aux observations prédites en y par le modèle</li>
+</ul>
+<p>Une première idée serait de sommer l’ensemble de nos distances comme ci-dessous :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(dist1)</code></pre>
+<pre><code># [1] -10.175</code></pre>
+<p>Appliquons la suite d’étapes ci-dessus pour nos 4 modèles afin de les comparer</p>
+
+<div class="bdd">
+<p>Essayez par vous même de trouver le meilleur modèle dans l’application shiny suivante :</p>
+<p>Démarrez la SciViews Box et RStudio. Dans la fenêtre <strong>Console</strong> de RStudio, entrez l’instruction suivante suivie de la touche <code>Entrée</code> pour ouvrir le tutoriel concernant les bases de R :</p>
+<pre><code>BioDataScience2::app(&quot;01a_modele_lineaire&quot;) TODO</code></pre>
+N’oubliez pas d’appuyer sur la touche ESC pour reprendre la main dans R à la fin d’un tutoriel dans la console R
 </div>
+
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">lm</span>(<span class="dt">data =</span> trees, <span class="dt">formula =</span> volume <span class="op">~</span><span class="st"> </span>diameter))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = volume ~ diameter, data = trees)
+# 
+# Residuals:
+#       Min        1Q    Median        3Q       Max 
+# -0.231211 -0.087021  0.003533  0.100594  0.271725 
+# 
+# Coefficients:
+#             Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept) -1.04748    0.09553  -10.96 7.85e-12 ***
+# diameter     5.65154    0.27649   20.44  &lt; 2e-16 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.1206 on 29 degrees of freedom
+# Multiple R-squared:  0.9351,  Adjusted R-squared:  0.9329 
+# F-statistic: 417.8 on 1 and 29 DF,  p-value: &lt; 2.2e-16</code></pre>
+
+</div>
+<!-- </div> -->
 <div id="disqus_thread"></div>
 <script>
 
@@ -232,8 +337,8 @@ s.setAttribute('data-timestamp', +new Date());
           </div>
         </div>
       </div>
-
-<a href="vue-generale-des-cours.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="lm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="glm.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -263,7 +368,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/BioDataScience-Course/sdd-umons2/edit/master/index.Rmd",
+"link": "https://github.com/BioDataScience-Course/sdd-umons2/edit/master/01-mod-lineaire.Rmd",
 "text": "Editer"
 },
 "history": {
