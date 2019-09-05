@@ -71,8 +71,8 @@ dont  `a` est la pente (*slope* en anglais) et `b` est l'ordonnée à l'origine 
 # Sélection de pente et d'ordonnée à l'origine
 models <- tibble(
   model = paste("mod", 1:4, sep = "-"),
-  slope = c(5, 5.6, 6, 0),
-  intercept = c(-0.5, -1, -1.5, 1)
+  slope = c(5, 5.5, 6, 0),
+  intercept = c(-0.5, -0.95, -1.5, 0.85)
 )
 
 chart(trees, volume ~ diameter) +
@@ -82,6 +82,8 @@ chart(trees, volume ~ diameter) +
 ```
 
 Nous avons 4 droites qui veulent représenter au mieux les observations. Quel est le meilleur modèle selon vous ? 
+
+### Quantifier la qualité d'un modèle
 
 Nous voulons identifier le meilleur modèle, c'est à dire le modèle le plus proche de nos données. Nous avons besoin d'une règle qui va nous permettre de quantifier la distance de nos observations à notre modèle afin d'obtenir le modèle avec la plus faible distance possible de l'ensemble de nos observations. 
 
@@ -106,7 +108,7 @@ mod1
 
 - Connaitre la distance entre les observations mesurées en y et les observations prédites en y par le modèle
 
-Nous pouvons premièrement visualiser cette distance graphiquement :
+La distance que nous souhaitons calculé, il s'agit des `résidus`. Nous pouvons premièrement visualiser ces résidus graphiquement :
 
 ```{r}
 chart(trees, volume ~ diameter) +
@@ -116,7 +118,6 @@ chart(trees, volume ~ diameter) +
     aes(x = diameter, y = volume, 
       xend = diameter, yend = mod1))
 ```
-
 
 Nous pouvons ensuite facilement calculer cette distance comme ci-dessous : 
 
@@ -134,7 +135,7 @@ dist1 <- distance(observation = trees$volume, prediction = mod1)
 dist1
 ```
 
-- Defenir une règle pour obtenir une valeur unique de la distance de nos observations mesurées en y par rapport aux observations prédites en y par le modèle
+- Définir une règle pour obtenir une valeur unique de la distance de nos observations mesurées en y par rapport aux observations prédites en y par le modèle
 
 Une première idée serait de sommer l'ensemble de nos distances comme ci-dessous :
 
@@ -144,11 +145,200 @@ sum(dist1)
 
 Appliquons la suite d'étapes ci-dessus pour nos 4 modèles afin de les comparer
 
+```{r, echo = FALSE}
+dist_calc <- list()
+for(i in 1:nrow(models)) {
+  dist_calc[i] <- sum(
+  distance(
+    observation = trees$volume, 
+    prediction =  model(slope = models$slope[i], intercept = models$intercept[i], x = trees$diameter)))
+}
+names(dist_calc) <- models$model
+knitr::kable(as_tibble(dist_calc))
+```
+
+Selon notre méthode, il en ressort que le modèle 4 est le modèle le plus approprié pour représenter au mieux nos données. Qu'en pensez vous ? 
+
+```{r}
+chart(trees, volume ~ diameter) +
+  geom_point() +
+  geom_abline(data = models, aes(slope = slope, intercept = intercept, color = model)) + 
+  labs( color = "Modèle")
+```
+
+Intuitivement, nous nous apperçevons que le modèle 4 n'est pas le meilleur modèle. Nous pouvons en déduire que la somme des résidus n'est pas la meilleur fonction pour ajuster un modèle linéaire à nos observations. 
+
+Le problème lorsque nous sommons des résidus, est la présence de résidus positifs et de résidus négatifs.
+
+```{r}
+mod2 <- model(slope = models$slope[4], intercept = models$intercept[4], x = trees$diameter)
+
+chart(trees, volume ~ diameter) +
+  geom_point() +
+  geom_abline(data = models, 
+    aes(slope = slope[4], intercept = intercept[4])) +
+  geom_segment(
+    aes(x = diameter, y = volume, 
+      xend = diameter, yend = mod2)) +
+  geom_label(aes(x = 0.3, y = 1.5),
+    label = "Résidus postifis", color = "red") +
+  geom_label(aes(x = 0.45, y = 0.5), 
+    label = "Résidus postifis", color = "blue")
+```
+
+Avez vous une autre idée  que de sommer les résidus ?
+
+- Sommer le carré des résidus 
+
+Nous obtenons les résultats suivants :
+
+```{r, echo = FALSE}
+dist_calc <- list()
+for(i in 1:nrow(models)) {
+  dist_calc[i] <- sum(
+  distance(
+    observation = trees$volume, 
+    prediction =  model(slope = models$slope[i], intercept = models$intercept[i], x = trees$diameter))^2)
+}
+names(dist_calc) <- models$model
+knitr::kable(as_tibble(dist_calc))
+```
+
+- Sommer les valeurs absolues des résidus 
+
+Nous obtenons les résultats suivants :
+
+```{r, echo = FALSE}
+dist_calc <- list()
+for(i in 1:nrow(models)) {
+  dist_calc[i] <- sum(abs(
+  distance(
+    observation = trees$volume, 
+    prediction =  model(slope = models$slope[i], intercept = models$intercept[i], x = trees$diameter))))
+}
+names(dist_calc) <- models$model
+knitr::kable(as_tibble(dist_calc))
+```
+
+Nous avons trouvé deux solutions intéressantes pour quantifier la distance de notre modèle par rapport à nos observation.
+
+### Trouver le meilleur modèle linéaire 
+
+Nous pouvons maintenant nous demander si notre modèle 2 qui est le meilleur modèle de nos 4 modèles est le meilleur modèle possible pour se faire nous allons devoir optimiser notre modèle afin d'avoir le meilleur modèle possible.
+
+Nous allons prendre la somme du carré des résidus comme fonction à minimiser.
+
+Imaginons que nous avons pas 4 mais 500 modèle linéaire avec une pente et une ordonnée à l'origine différente, quelle est la meilleure droite ? 
+
+```{r}
+
+models1 <- tibble(
+  intercept = runif(500, -5, 5),
+  slope = runif(500, 3, 8))
+
+chart(trees, volume ~ diameter) +
+  geom_point() +
+  geom_abline(aes(intercept = intercept, slope = slope), data = models1, alpha = 1/6) 
+
+```
+
+Sur ces 500 modèles nous pouvons calculer la somme des carré des résidus et observer quelle est le meilleur modèle.
+
 ```{r}
 
 ```
 
 
+**En résumé, nous avons besoin d'une fonction qui calcule la distance d'un modèle par rapport à nos observations et d'un algorihtme pour la minimiser.** 
+
+Il n'est cependant pas nécessaire de chercher pendant des heures la meilleure fonction et le meilleur algorithme. Il existe dans R, un outil spécifiquement conçu pour adapter des modèles linéaires sur des observations, la fonction `lm()`. 
+
+Un snippet est mis à votre disposition pour ne pas devoir retenir `... -> ...m -> -> .ml`
+
+```{r}
+summary(lm. <- lm(data = trees, volume ~ diameter))
+```
+
+```{r}
+summary(lm. <- lm(data = trees, volume ~ diameter))
+lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
+  chart(model, aes_string(x = vars[2], y = vars[1])) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x))(.)
+```
+
+```{r}
+chart(trees, volume ~ diameter) +
+  geom_point() +
+  geom_abline(data = models, aes(slope = slope, intercept = intercept, color = model)) + 
+  labs( color = "Modèle")
+```
+
+
+Il existe une multitude de méthode pour obtenir une valeur unique exprimant cette distance
+
+
+## test 
+
+optimisation par essai erreur. 
+
+```{r}
+library(modelr)
+
+models <- tibble(
+  a1= runif(500, -20, 40),
+  a2 = runif(500, -5, 5))
+
+ggplot(sim1, aes(x,y)) +
+  geom_abline(aes(intercept = a1, slope = a2), data = models, alpha = 1/6) +
+  geom_point()
+
+(lm. <- lm(data = sim1, formula = y ~ x))
+
+model1 <- function(a,data) {
+  a[1] +data$x * a[2]
+}
+
+model1(c(7, 1.5), sim1)
+
+measure_distance <- function(mod, data) {
+  diff <- data$y - model1(mod, data)
+  sqrt(mean(diff ^ 2))
+}
+
+measure_distance(c(7, 1.5), sim1)
+
+sim1_dist <- function(a1,a2) {
+  measure_distance(c(a1, a2), sim1)
+}
+
+models <- models %>%
+  mutate(dist = purrr::map2_dbl(a1, a2, sim1_dist))
+
+plotly::plot_ly(x=models$a1, y=models$a2, z=models$dist, type="scatter3d",  color = models$dist) 
+```
+
+
+```{r}
+for(i in 1:nrow(models)) {
+  dist_measure <- sum(abs(
+  distance(
+    observation = trees$volume, 
+    prediction =  model(slope = models$slope[i], intercept = models$intercept[i], x = trees$diameter))))
+  print(dist_measure)
+}
+```
+
+
+```{r}
+for(i in 1:nrow(models)) {
+  dist_measure <- sqrt(mean(
+  distance(
+    observation = trees$volume, 
+    prediction =  model(slope = models$slope[i], intercept = models$intercept[i], x = trees$diameter))^2))
+  print(dist_measure)
+}
+```
 
 
 ```{block2, type='bdd'}
