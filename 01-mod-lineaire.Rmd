@@ -108,7 +108,7 @@ mod1
 
 - Connaitre la distance entre les observations mesurées en y et les observations prédites en y par le modèle
 
-La distance que nous souhaitons calculé, il s'agit des `résidus`. Nous pouvons premièrement visualiser ces résidus graphiquement :
+Les distances que nous souhaitons calculer, sont les `résidus`. Nous pouvons premièrement visualiser ces résidus graphiquement :
 
 ```{r}
 chart(trees, volume ~ diameter) +
@@ -231,127 +231,93 @@ Nous allons prendre la somme du carré des résidus comme fonction à minimiser.
 Imaginons que nous avons pas 4 mais 500 modèle linéaire avec une pente et une ordonnée à l'origine différente, quelle est la meilleure droite ? 
 
 ```{r}
-
 models1 <- tibble(
-  intercept = runif(500, -5, 5),
-  slope = runif(500, 3, 8))
+  intercept = runif(5000, -10, 10),
+  slope = runif(5000, 2, 8))
 
 chart(trees, volume ~ diameter) +
   geom_point() +
   geom_abline(aes(intercept = intercept, slope = slope), data = models1, alpha = 1/6) 
-
 ```
 
-Sur ces 500 modèles nous pouvons calculer la somme des carré des résidus et observer quelle est le meilleur modèle.
+Sur ces  `r nrow(models)`  modèles, nous pouvons calculer la somme des carrés des résidus et observer quel est le meilleur modèle.
+
 
 ```{r}
+# fonction de calcule de la somme des carrés des résidus
+measure_distance <- function(slope, intercept, x, y){
+   predict <- x * slope + intercept
+   dist <- y - predict
+   sum(dist ^ 2)
+}
+# test de la fonction
+#measure_distance(slope = 0, intercept = 0.85, x = trees$diameter, y = trees$volume)
 
+# fonction adaptée pour être employé avec purrr:map
+trees_dist <- function(intercept, slope){
+  measure_distance(slope = slope, intercept = intercept, x = trees$diameter, y = trees$volume)
+}
+
+models1 <- models1 %>%
+  mutate(dist = purrr::map2_dbl(intercept, slope, trees_dist))
 ```
 
+si nous réalisons un graphique de valeurs de pentes, d'ordonnée à l'origine et des distances calculée nous obtenons le graphique ci-dessous.
+
+```{r}
+plot <- chart(models1, slope ~ intercept %col=%  dist) +
+    geom_point() +
+  geom_point(data = filter(models1, rank(dist) <= 10), shape = 1, color = 'red', size = 3) +
+  labs( y = "Pente", x = "Ordonnée à l'origine", color = "Distance") +
+  scale_color_viridis_c(direction = -1)
+#plot
+plotly::ggplotly(plot)
+```
+
+rem  : Les 10 valeurs les plus faibles sont mis en évidence par un cercle rouge
+
+```{r}
+best_models <- models1 %>.%
+  filter(., rank(dist) <= 5)
+```
+
+
+Nous pouvons afficher les `r nrow(best_models)` meilleurs modèles sur notre graphique 
+
+```{r}
+chart(trees, volume ~ diameter) +
+  geom_abline(data = best_models, 
+    aes(slope = slope, intercept = intercept, color = dist), alpha = 3/4) +
+  geom_point() +
+  labs( color = "Modèle")  +
+  scale_color_viridis_c(direction = -1)
+
+```
 
 **En résumé, nous avons besoin d'une fonction qui calcule la distance d'un modèle par rapport à nos observations et d'un algorihtme pour la minimiser.** 
 
+### La fonction lm()
+
 Il n'est cependant pas nécessaire de chercher pendant des heures la meilleure fonction et le meilleur algorithme. Il existe dans R, un outil spécifiquement conçu pour adapter des modèles linéaires sur des observations, la fonction `lm()`. 
 
-Un snippet est mis à votre disposition pour ne pas devoir retenir `... -> ...m -> -> .ml`
+Vous avez à votre disposition des snippets dédiés au focntions liés modèles linéaires. pour ne pas devoir retenir `... -> ...m -> -> .ml`
 
 ```{r}
-summary(lm. <- lm(data = trees, volume ~ diameter))
-```
-
-```{r}
-summary(lm. <- lm(data = trees, volume ~ diameter))
-lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
-  chart(model, aes_string(x = vars[2], y = vars[1])) +
-  geom_point() +
-  stat_smooth(method = "lm", formula = y ~ x))(.)
+(lm. <- lm(data = trees, volume ~ diameter))
 ```
 
 ```{r}
 chart(trees, volume ~ diameter) +
-  geom_point() +
-  geom_abline(data = models, aes(slope = slope, intercept = intercept, color = model)) + 
-  labs( color = "Modèle")
+  geom_abline(data = best_models, 
+    aes(slope = slope, intercept = intercept, color = dist), alpha = 3/4) +
+  geom_point() + 
+  geom_abline(
+    aes(intercept = lm.$coefficients[1], slope = lm.$coefficients[2]), 
+    color = "red", size = 1.5) +
+  labs( color = "Modèle")  +
+  scale_color_viridis_c(direction = -1)
 ```
 
 
-Il existe une multitude de méthode pour obtenir une valeur unique exprimant cette distance
 
-
-## test 
-
-optimisation par essai erreur. 
-
-```{r}
-library(modelr)
-
-models <- tibble(
-  a1= runif(500, -20, 40),
-  a2 = runif(500, -5, 5))
-
-ggplot(sim1, aes(x,y)) +
-  geom_abline(aes(intercept = a1, slope = a2), data = models, alpha = 1/6) +
-  geom_point()
-
-(lm. <- lm(data = sim1, formula = y ~ x))
-
-model1 <- function(a,data) {
-  a[1] +data$x * a[2]
-}
-
-model1(c(7, 1.5), sim1)
-
-measure_distance <- function(mod, data) {
-  diff <- data$y - model1(mod, data)
-  sqrt(mean(diff ^ 2))
-}
-
-measure_distance(c(7, 1.5), sim1)
-
-sim1_dist <- function(a1,a2) {
-  measure_distance(c(a1, a2), sim1)
-}
-
-models <- models %>%
-  mutate(dist = purrr::map2_dbl(a1, a2, sim1_dist))
-
-plotly::plot_ly(x=models$a1, y=models$a2, z=models$dist, type="scatter3d",  color = models$dist) 
-```
-
-
-```{r}
-for(i in 1:nrow(models)) {
-  dist_measure <- sum(abs(
-  distance(
-    observation = trees$volume, 
-    prediction =  model(slope = models$slope[i], intercept = models$intercept[i], x = trees$diameter))))
-  print(dist_measure)
-}
-```
-
-
-```{r}
-for(i in 1:nrow(models)) {
-  dist_measure <- sqrt(mean(
-  distance(
-    observation = trees$volume, 
-    prediction =  model(slope = models$slope[i], intercept = models$intercept[i], x = trees$diameter))^2))
-  print(dist_measure)
-}
-```
-
-
-```{block2, type='bdd'}
-Essayez par vous même de trouver le meilleur modèle dans l'application shiny suivante :
-
-Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R :
-
-    BioDataScience2::app("01a_modele_lineaire") TODO
-
-N’oubliez pas d’appuyer sur la touche ESC pour reprendre la main dans R à la fin d’un tutoriel dans la console R
-```
-
-```{r}
-summary(lm(data = trees, formula = volume ~ diameter))
-```
 
