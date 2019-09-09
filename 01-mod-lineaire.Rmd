@@ -10,7 +10,9 @@ library(modelr)
 
 ##### Objectifs {-}
 
-- TODO
+- Découvrir le modèle linaire de manière intuitive
+
+
 
 ##### Prérequis {-}
 
@@ -25,7 +27,27 @@ N’oubliez pas d’appuyer sur la touche ESC pour reprendre la main dans R à l
 ```
 
 
-## La régression linéaire
+## Modèle 
+
+TODO 
+
+Un modèle a pour objectif de fournir une description des données. 
+On retrouve deux grandes catégories au sein des modèles, les modèles prédictifs et les modèles exploratoires. 
+
+une observation peut être employé pour explorer et pour confirmer un modèle mais pas les deux. Pour réaliser une analyse confirmatoire, il est proposé de divisé les observations en 2 groupes
+
+- jeu d'entrainement 
+
+- jeu de confirmation
+
+
+
+Qu'est ce qu'un modèle 
+
+TODO
+
+
+## Le modèle linéaire simple par intuition
 
 Nous allons découvrir les base du modèle linéaire de façon intuitive. Nous utilisons le jeu de données `trees` qui rassemble la mesure du diamètre, de la hauteur et du volume de bois de cerisiers noirs. 
 
@@ -63,7 +85,7 @@ chart(trees, volume ~ diameter) +
 
 Si vous deviez ajouter une droite permettant de représenter au mieux les données, où est ce que vous la placeriez ? 
 
-Une droite respecte l'équation mathématique suivante: $$ y = ax + b$$ 
+Une droite respecte l'équation mathématique suivante: $$y = ax + b$$ 
 
 dont  `a` est la pente (*slope* en anglais) et `b` est l'ordonnée à l'origine (*intercept* en anglais).
 
@@ -183,10 +205,10 @@ chart(trees, volume ~ diameter) +
   geom_label(aes(x = 0.3, y = 1.5),
     label = "Résidus postifis", color = "red") +
   geom_label(aes(x = 0.45, y = 0.5), 
-    label = "Résidus postifis", color = "blue")
+    label = "Résidus négatifs", color = "blue")
 ```
 
-Avez vous une autre idée  que de sommer les résidus ?
+Avez vous une autre idée que de sommer les résidus ?
 
 - Sommer le carré des résidus 
 
@@ -220,7 +242,22 @@ names(dist_calc) <- models$model
 knitr::kable(as_tibble(dist_calc))
 ```
 
-Nous avons trouvé deux solutions intéressantes pour quantifier la distance de notre modèle par rapport à nos observation.
+Nous avons trouvé deux solutions intéressantes pour quantifier la distance de notre modèle par rapport à nos observations.
+
+```{block2, type='bdd'}
+Essayez de trouver le meilleur modèle par vous même dans l'application shiny 
+
+Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R :
+
+    BioDataScience2::app("01a_lin_mod") # TODO
+
+    méthode alternative
+    shiny::runApp(system.file("shiny/01a_lin_mod", package = "BioDataScience2"))
+
+N’oubliez pas d’appuyer sur la touche ESC pour reprendre la main dans R à la fin d’un tutoriel dans la console R
+```
+
+
 
 ### Trouver le meilleur modèle linéaire 
 
@@ -262,7 +299,7 @@ models1 <- models1 %>%
   mutate(dist = purrr::map2_dbl(intercept, slope, trees_dist))
 ```
 
-si nous réalisons un graphique de valeurs de pentes, d'ordonnée à l'origine et des distances calculée nous obtenons le graphique ci-dessous.
+si nous réalisons un graphique de valeurs de pentes, d'ordonnée à l'origine et des distances calculées, nous obtenons le graphique ci-dessous.
 
 ```{r}
 plot <- chart(models1, slope ~ intercept %col=%  dist) +
@@ -289,14 +326,12 @@ chart(trees, volume ~ diameter) +
   geom_abline(data = best_models, 
     aes(slope = slope, intercept = intercept, color = dist), alpha = 3/4) +
   geom_point() +
-  labs( color = "Modèle")  +
+  labs(color = "Modèle")  +
   scale_color_viridis_c(direction = -1)
 
 ```
 
 **En résumé, nous avons besoin d'une fonction qui calcule la distance d'un modèle par rapport à nos observations et d'un algorihtme pour la minimiser.** 
-
-### La fonction lm()
 
 Il n'est cependant pas nécessaire de chercher pendant des heures la meilleure fonction et le meilleur algorithme. Il existe dans R, un outil spécifiquement conçu pour adapter des modèles linéaires sur des observations, la fonction `lm()`. 
 
@@ -305,6 +340,8 @@ Vous avez à votre disposition des snippets dédiés au focntions liés modèles
 ```{r}
 (lm. <- lm(data = trees, volume ~ diameter))
 ```
+
+Nous pouvons reporter ces valeurs sur notre graphique afin d'observer ce résultat par rapport à nos modèles aléatoires. nous avons en rouge la droite calculée par la fonction `lm()`. 
 
 ```{r}
 chart(trees, volume ~ diameter) +
@@ -318,6 +355,175 @@ chart(trees, volume ~ diameter) +
   scale_color_viridis_c(direction = -1)
 ```
 
+### La fonction lm()
+
+Suite à notre découverte de manière intuitive de modèle linéaire simple, nous pouvons ressortir quelques points clés. 
+
+- Une droite suit l'équation mathématique suivante :
+
+$$y = ax + b$$
+dont `a` est la pente (*slope* en anglais) et `b` est l'ordonnée à l'origine (*intercept* en anglais).
+
+- La distance entre une valeur observée et une valeur prédite se nomme le résidu ($\epsilon$)
+
+$$y_i = ax_i + b + \epsilon_i$$
+
+dont $y_i$ est la valeur mesurée pour le point i sur l'axe y, $a$ est la pente (*slope* en anglais), $x_i$  est la valeur mesurée pour le point i sur l'axe x, `b` est l'ordonnée à l'origine (*intercept* en anglais) et $\epsilon_i$ est la distance entre la valeur prédite par la droite  et la valeur de $y_i$.
+
+- La meilleure droite s'obtient par la minimisation de la somme des carrés des résidus (régression par les moindres carrés).
+
+- La fonction `lm()` permet de calculer la meilleure droite possible 
 
 
+La distribution normale des résidus TODO 
+calculer l'ecart type des résiuds , calculer l'intervalle de confiance, significativté de la pente, coefficient de determination, coefficient de R^2 
 
+```{r}
+# Modèle linéaire
+lm. <- lm(data = trees, volume ~ diameter)
+
+# graphique de nos observations et de la droite obtenue avec la fonction lm()
+chart(trees, volume ~ diameter) +
+  geom_point() + 
+  geom_abline(
+    aes(intercept = lm.$coefficients[1], slope = lm.$coefficients[2]), 
+    color = "red", size = 1.5) +
+  labs( color = "Modèle")  +
+  scale_color_viridis_c(direction = -1)
+```
+
+La fonction `lm()` crée un objet avec de nombreuses informations calculées et mis à notre disposition pour analyser notre modèle linéaire. La fonction `class()` permet de mettre en avant la classe de notre objet.
+
+```{r}
+class(lm.)
+```
+
+Avec la fonction `summary()` nous obtenons le tableau d'analyse du modèle linéaire. 
+
+```{r}
+summary(lm.)
+```
+
+
+- Call: 
+
+La formule employée dasn la fonction `lm()`
+
+- Residuals:
+
+Les 5 nombres de l'ensemble des résidus
+
+- Coefficients:
+
+- Residual standard error:
+
+- Multiple R-squared:
+
+La valuer du coefficient $R^2$
+
+- Adjusted R-squared:
+
+La valuer du coefficient $R^2$ ajustée
+
+- F-statistic
+
+- p-value: 
+
+
+Nous avons en plus à notre disposition 6 graphiques pour étudier la qualité de notre modèle linéaire.
+
+```{r}
+#plot(lm., which = 1)
+lm. %>.%
+  chart(broom::augment(.), .resid ~ .fitted) +
+  geom_point() +
+  geom_hline(yintercept = 0) +
+  geom_smooth(se = FALSE, method = "loess", formula = y ~ x) +
+  labs(x = "Fitted values", y = "Residuals") +
+  ggtitle("Residuals vs Fitted")
+```
+
+```{r}
+#plot(lm., which = 2)
+lm. %>.%
+  chart(broom::augment(.), aes(sample = .std.resid)) +
+  geom_qq() +
+  geom_qq_line(colour = "darkgray") +
+  labs(x = "Theoretical quantiles", y = "Standardized residuals") +
+  ggtitle("Normal Q-Q")
+```
+
+```{r}
+#plot(lm., which = 3)
+lm. %>.%
+  chart(broom::augment(.), sqrt(abs(.std.resid)) ~ .fitted) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = "loess", formula = y ~ x) +
+  labs(x = "Fitted values",
+    y = expression(bold(sqrt(abs("Standardized residuals"))))) +
+  ggtitle("Scale-Location")
+```
+
+```{r}
+#plot(lm., which = 4)
+lm. %>.%
+  chart(broom::augment(.), .cooksd ~ seq_along(.cooksd)) +
+  geom_bar(stat = "identity") +
+  geom_hline(yintercept = seq(0, 0.1, by = 0.05), colour = "darkgray") +
+  labs(x = "Obs. number", y = "Cook's distance") +
+  ggtitle("Cook's distance")
+```
+
+
+```{r}
+#plot(lm., which = 5)
+lm. %>.%
+  chart(broom::augment(.), .std.resid ~ .hat %size=% .cooksd) +
+  geom_point() +
+  geom_smooth(se = FALSE, size = 0.5, method = "loess", formula = y ~ x) +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) +
+  labs(x = "Leverage", y = "Standardized residuals") +
+  ggtitle("Residuals vs Leverage")
+```
+
+
+```{r}
+#plot(lm., which = 6)
+lm. %>.%
+  chart(broom::augment(.), .cooksd ~ .hat %size=% .cooksd) +
+  geom_point() +
+  geom_vline(xintercept = 0, colour = NA) +
+  geom_abline(slope = seq(0, 3, by = 0.5), colour = "darkgray") +
+  geom_smooth(se = FALSE, size = 0.5, method = "loess", formula = y ~ x) +
+  labs(x = expression("Leverage h"[ii]), y = "Cook's distance") +
+  ggtitle(expression("Cook's dist vs Leverage h"[ii]/(1-h[ii])))
+```
+
+
+### Piège et astuces
+
+- extrapolation 
+
+- regression peut être sifgnificatif de manière fortuite
+
+- tester n'importe quelle variable avec n'improte quelle autre variable (parcimonie)
+
+
+## Modèle linéaire multiple 
+
+## Modèle linéaire polynomiale
+
+## Les variables facteurs
+
+Le modèle linéaire permet d'analyser une relation linéaire entre deux variables. Jusqu'à présente, nous avons utilisé deux variables quantitative (si vous avez des doutes concernant les types de variables, relisez la section suivante : [Type de variables](http://biodatascience-course.sciviews.org/sdd-umons/types-de-variables.html) ) . Dans le premier ouvrage, vous avez découvert l'analyse de variance dans le [chapitre 10](http://biodatascience-course.sciviews.org/sdd-umons/variance.html), il est indispensable de relire avec attention cette section au minimum. 
+
+Avez vous remarqué une ressemblance particulière entre la regression linéaire que nous avons réalisé précédement et l'analyse de variance ? 
+
+Les plus observateurs auront mis en avant la que la fonction est la même pour réaliser une régression linéaire et une analyse de variance. La fonction `lm()` est capable de traiter aussi bien des variables réponses qualitatives que quantitatives. 
+
+### matrice de contraste 
+
+## Comparaison des modèles
+
+Critère d'Akaike
