@@ -397,6 +397,9 @@ La fonction `lm()` crée un objet avec de nombreuses informations calculées et 
 class(lm.)
 ```
 
+Attention, nous devons toujours garder un esprit critique. Que pensez vous du graphique suivant ? On peut mettre en avant que nous avons une seule valeur dont le diamètre est supérieur à 0.5m de diamètre.
+
+
 ### Tableau d'interprétation 
 
 Avec la fonction `summary()` nous obtenons le tableau d'analyse du modèle linéaire. 
@@ -473,9 +476,7 @@ Il s'agit de la valeur de p associé à la statistique de F.
 
 ### Graphiques d'interprétation
 
-Nous avons en plus à notre disposition 6 graphiques pour étudier la qualité de notre régression.
-
-L'analyse des résidus permet de vérifier la distribution normale des résidus. 
+Nous avons en plus à notre disposition 6 graphiques pour étudier la qualité de notre régression. Le premier graphique permet de vérifier la distribution homogène des résidus. Dans une bonne régression, nous aurons une distribution équilibrée de part et d'autre du 0. Que pensez vous de notre graphique d'anayse des résidus ? Nous avons une valeur plus éloignée du 0 qui est mis en avant par la courbe en bleue qui montre l'influence des résidus. 
 
 ```{r}
 #plot(lm., which = 1)
@@ -488,7 +489,7 @@ lm. %>.%
   ggtitle("Residuals vs Fitted")
 ```
 
-Ce graphique permet de vérifier la normalité des résidus. 
+Ce second graphique permet de vérifier la normalité des résidus par rapport à une distribution normale. 
 
 ```{r}
 #plot(lm., which = 2)
@@ -499,6 +500,8 @@ lm. %>.%
   labs(x = "Theoretical quantiles", y = "Standardized residuals") +
   ggtitle("Normal Q-Q")
 ```
+
+Ce troisième graphique va standardiser les résidus afin de pouvoir comparer les résidus positif et les résidus négatifs. A nouveau, nous pouvons observer qu'une valeur influence fortement la courbe bleue.
 
 ```{r}
 #plot(lm., which = 3)
@@ -511,7 +514,7 @@ lm. %>.%
   ggtitle("Scale-Location")
 ```
 
-La régression linéaire est sensible aux valeurs extrêmes. Nous avons 3 graphiques our étudier l'influences des individus. 
+Ce quatrième graphique met en évidence l'influence des individus sur la régression linéaire. Effectivement, la régression linéaire est sensible aux valeurs extrêmes. Nous pouvons observer que nous avons une valeur qui influence fortement notre régression. On utilise pour ce faire la distance de Cook que nous ne détailleront pas dans le cadre de ce cours. 
 
 ```{r}
 #plot(lm., which = 4)
@@ -523,6 +526,7 @@ lm. %>.%
   ggtitle("Cook's distance")
 ```
 
+Ce cinquième grapique utilise l'effet de levier (*Leverage*) qui met également en avant l'influence des individus sur notre régression. Nous avons à nouvea une valeur qui influence notre modèle.
 
 ```{r}
 #plot(lm., which = 5)
@@ -536,6 +540,7 @@ lm. %>.%
   ggtitle("Residuals vs Leverage")
 ```
 
+Ce sixième graphique met en relation la distance de Cooks et l'effet de levier. Notre unique point d'une valeur supérieur à 0.5 m de diamètre influence fortement notre modèle.  .... 
 
 ```{r}
 #plot(lm., which = 6)
@@ -548,6 +553,95 @@ lm. %>.%
   labs(x = expression("Leverage h"[ii]), y = "Cook's distance") +
   ggtitle(expression("Cook's dist vs Leverage h"[ii]/(1-h[ii])))
 ```
+
+### Comparaison de régressions
+
+Vous pouvez à présent comparer ces résultats avec un tableau et les 6 graphiques sans la valeur supérieur à 0.5m de diamètre. **Attention, On ne peut supprimer une valeur sans raison valable.** La points à supprimer doivent théoriquement être fait avant de débuter l'analyse. La raison de la suppression de ce point est lié au fait qu'il soit seul et unique point supérieur à 0.5m de diamètre.
+
+```{r}
+trees_red <- filter(trees, diameter < 0.5)
+
+lm1 <- lm(data = trees_red, volume ~ diameter)
+
+chart(trees, volume ~ diameter) +
+  geom_point() + 
+  geom_abline(
+    aes(intercept = lm.$coefficients[1], slope = lm.$coefficients[2]), 
+    color = "red", size = 1.5) +
+  labs( color = "Modèle")  +
+  scale_color_viridis_c(direction = -1) +
+  geom_abline(
+    aes(intercept = lm1$coefficients[1], slope = lm1$coefficients[2]), 
+    color = "blue", size = 1.5)
+
+```
+
+Tentez d'analyser le tableau de notre régression 
+
+
+```{r}
+summary(lm1)
+```
+
+Tentez d'analyser ces graphiques ci-dessous
+
+```{r}
+#plot(lm1, which = 1)
+lm1 %>.%
+  chart(broom::augment(.), .resid ~ .fitted) +
+  geom_point() +
+  geom_hline(yintercept = 0) +
+  geom_smooth(se = FALSE, method = "loess", formula = y ~ x) +
+  labs(x = "Fitted values", y = "Residuals") +
+  ggtitle("Residuals vs Fitted") 
+
+#plot(lm1, which = 2)
+lm1 %>.%
+  chart(broom::augment(.), aes(sample = .std.resid)) +
+  geom_qq() +
+  geom_qq_line(colour = "darkgray") +
+  labs(x = "Theoretical quantiles", y = "Standardized residuals") +
+  ggtitle("Normal Q-Q") 
+
+#plot(lm1, which = 3)
+lm1 %>.%
+  chart(broom::augment(.), sqrt(abs(.std.resid)) ~ .fitted) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = "loess", formula = y ~ x) +
+  labs(x = "Fitted values",
+    y = expression(bold(sqrt(abs("Standardized residuals"))))) +
+  ggtitle("Scale-Location") 
+
+#plot(lm1, which = 4)
+lm1 %>.%
+  chart(broom::augment(.), .cooksd ~ seq_along(.cooksd)) +
+  geom_bar(stat = "identity") +
+  geom_hline(yintercept = seq(0, 0.1, by = 0.05), colour = "darkgray") +
+  labs(x = "Obs. number", y = "Cook's distance") +
+  ggtitle("Cook's distance") 
+
+#plot(lm1, which = 5)
+lm1 %>.%
+  chart(broom::augment(.), .std.resid ~ .hat %size=% .cooksd) +
+  geom_point() +
+  geom_smooth(se = FALSE, size = 0.5, method = "loess", formula = y ~ x) +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) +
+  labs(x = "Leverage", y = "Standardized residuals") +
+  ggtitle("Residuals vs Leverage") -> a
+
+#plot(lm1, which = 6)
+lm1 %>.%
+  chart(broom::augment(.), .cooksd ~ .hat %size=% .cooksd) +
+  geom_point() +
+  geom_vline(xintercept = 0, colour = NA) +
+  geom_abline(slope = seq(0, 3, by = 0.5), colour = "darkgray") +
+  geom_smooth(se = FALSE, size = 0.5, method = "loess", formula = y ~ x) +
+  labs(x = expression("Leverage h"[ii]), y = "Cook's distance") +
+  ggtitle(expression("Cook's dist vs Leverage h"[ii]/(1-h[ii]))) -> b
+
+```
+
 
 ### Piège et astuces
 
