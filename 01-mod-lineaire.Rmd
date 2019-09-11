@@ -643,13 +643,72 @@ lm1 %>.%
 ```
 
 
-### Piège et astuces
+### Pièges et astuces
 
-- extrapolation 
+#### Extrapolation
+
+Notre régression linéaire a été réalisé sur des cerisiers noirs dont le diamètre est compris entre `r min(trees$diameter)`  et `r max(trees$diameter)` mètre. Pensez vous qu'il est acceptable de prédire des volumes de bois pour des arbres dont le diamètre est inférieur ou supérieur à nos valeurs minimales et maximales mesurées ? 
+
+Utilisons notre régression linéaire afin de prédire 10 volumes de bois à partir d'arbre dont le diamètre varie entre 0 et 1m.
+
+```{r}
+new <- data.frame(diameter = seq(0, 0.7, length.out = 8))
+```
+
+Ajoutons une variable `pred` qui contient les prédictions en volume de bois. Observez vous un problème particulier sur base du tableau ci-dessous:
+
+```{r}
+new %>.%
+  modelr::add_predictions(., lm.) -> new
+new
+```
+
+Il est peut être plus simple de voir la problématique sur un nuage de points. Pour un diamètre de `r new$diameter[2]` m de diamètre, le volume de bois est de `r round(new$pred[2], 2)` mis en avant par l'intersection des lignes pointillées blues.
+
+```{r}
+chart(trees, volume~diameter) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
+  geom_vline(xintercept = new$diameter[2], linetype = "twodash", color = "blue") +
+  geom_hline(yintercept = new$pred[2], linetype = "twodash", color = "blue") +
+  geom_point() +
+  geom_abline(
+    aes(intercept = lm.$coefficients[1], slope = lm.$coefficients[2]))+
+  geom_point(data = new, f_aes(pred~diameter), color = "red") 
+
+```
+
+**Retenons qu'il est fortement déconseillé d'extrapoler des données**
+
+Il est de ce fait plus exact de représenter notre régression linéaire dans l'intervalle des données que nous avons.
+
+
+```{r}
+trees %>.%
+  modelr::add_predictions(., lm.) -> trees
+
+chart(trees, volume~diameter) +
+  geom_point() +
+  geom_line(f_aes(pred ~ diameter))
+
+```
+
+#### Significativité fortuite
+
+TODO
+
 
 - regression peut être sifgnificatif de manière fortuite
 
 - tester n'importe quelle variable avec n'improte quelle autre variable (parcimonie)
+
+### Interval de confiance (IC)
+
+```{r}
+lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
+  chart(model, aes_string(x = vars[2], y = vars[1])) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x))(.)
+```
 
 
 calcule de l'écart type
@@ -660,6 +719,27 @@ $$s_{y|x}\ =\ \sqrt{ \frac{\sum_{ }^{ }\left(y_i-ŷ_i\right)^2}{n-2}}$$
 calcul de l IC
 
 $$CI_{1-\alpha}\ =\ ŷ_i\ \ \pm t_{\frac{\alpha}{2}}^{n-2}  \frac{s_{y\left|x\right|}\ }{\sqrt{n}}$$
+
+### Extraire les données d'un modèle
+
+Pour extraire facilement et rapidement sous la forme d'un tableau de données les coefficents de votre modèle avec la fonction `tidy()`. 
+
+```{r}
+(DF <- broom::tidy(lm.))
+```
+
+
+Pour extraire facilement et rapidement sous la forme d'un tableau de données les paramètres de votre modèle avec la fonction `glance()`. 
+
+```{r}
+(DF <- broom::glance(lm.))
+
+```
+
+
+vous avez un snippet à votre disposition  pour ces deux fonctions:
+
+`... -> models ..m -> .models tools .mt -> .mtmoddf` ou encore `... -> models ..m -> .models tools .mt -> .mtpardf`
 
 
 ## Régression linéaire multiple 
