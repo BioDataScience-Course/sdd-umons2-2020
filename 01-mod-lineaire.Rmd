@@ -47,9 +47,9 @@ Qu'est ce qu'un modèle
 TODO
 
 
-## Le modèle linéaire simple par intuition
+## Régression linéaire simple par intuition
 
-Nous allons découvrir les base du modèle linéaire de façon intuitive. Nous utilisons le jeu de données `trees` qui rassemble la mesure du diamètre, de la hauteur et du volume de bois de cerisiers noirs. 
+Nous allons découvrir les base de la régression linéaire de façon intuitive. Nous utilisons le jeu de données `trees` qui rassemble la mesure du diamètre, de la hauteur et du volume de bois de cerisiers noirs. 
 
 ```{r}
 # importation des données
@@ -85,7 +85,7 @@ chart(trees, volume ~ diameter) +
 
 Si vous deviez ajouter une droite permettant de représenter au mieux les données, où est ce que vous la placeriez ? 
 
-Une droite respecte l'équation mathématique suivante: $$y = ax + b$$ 
+Pour rappel, une droite respecte l'équation mathématique suivante: $$y = ax + b$$ 
 
 dont  `a` est la pente (*slope* en anglais) et `b` est l'ordonnée à l'origine (*intercept* en anglais).
 
@@ -103,11 +103,11 @@ chart(trees, volume ~ diameter) +
   labs( color = "Modèle")
 ```
 
-Nous avons 4 droites qui veulent représenter au mieux les observations. Quel est le meilleur modèle selon vous ? 
+Nous avons 4 droites qui veulent représenter au mieux les observations. Quel est la meilleure régression selon vous ? 
 
 ### Quantifier la qualité d'un modèle
 
-Nous voulons identifier le meilleur modèle, c'est à dire le modèle le plus proche de nos données. Nous avons besoin d'une règle qui va nous permettre de quantifier la distance de nos observations à notre modèle afin d'obtenir le modèle avec la plus faible distance possible de l'ensemble de nos observations. 
+Nous voulons identifier la meilleure régression, c'est à dire la régression le plus proche de nos données. Nous avons besoin d'une règle qui va nous permettre de quantifier la distance de nos observations à notre modèle afin d'obtenir la régression avec la plus faible distance possible de l'ensemble de nos observations. 
 
 Décomposons le problème étape par étape et intéressons nous au `mod-1`
 
@@ -128,7 +128,7 @@ mod1 <- model(slope = 5, intercept = -0.5, x = trees$diameter)
 mod1
 ```
 
-- Connaitre la distance entre les observations mesurées en y et les observations prédites en y par le modèle
+- Connaitre la distance entre les observations mesurées en y et les observations prédites en y par la régression
 
 Les distances que nous souhaitons calculer, sont les `résidus`. Nous pouvons premièrement visualiser ces résidus graphiquement :
 
@@ -157,7 +157,7 @@ dist1 <- distance(observation = trees$volume, prediction = mod1)
 dist1
 ```
 
-- Définir une règle pour obtenir une valeur unique de la distance de nos observations mesurées en y par rapport aux observations prédites en y par le modèle
+- Définir une règle pour obtenir une valeur unique de la distance de nos observations mesurées en y par rapport aux observations prédites en y par la régression
 
 Une première idée serait de sommer l'ensemble de nos distances comme ci-dessous :
 
@@ -188,7 +188,7 @@ chart(trees, volume ~ diameter) +
   labs( color = "Modèle")
 ```
 
-Intuitivement, nous nous apperçevons que le modèle 4 n'est pas le meilleur modèle. Nous pouvons en déduire que la somme des résidus n'est pas la meilleur fonction pour ajuster un modèle linéaire à nos observations. 
+Intuitivement, nous nous apperçevons que le modèle 4 n'est pas la meilleuire solution pour représenter nos observartions. Nous pouvons en déduire que la somme des résidus n'est pas la meilleur fonction pour ajuster une droite avec nos observations. 
 
 Le problème lorsque nous sommons des résidus, est la présence de résidus positifs et de résidus négatifs.
 
@@ -242,7 +242,7 @@ names(dist_calc) <- models$model
 knitr::kable(as_tibble(dist_calc))
 ```
 
-Nous avons trouvé deux solutions intéressantes pour quantifier la distance de notre modèle par rapport à nos observations.
+Nous avons trouvé deux solutions intéressantes pour quantifier la distance de notre droite par rapport à nos observations.
 
 ```{block2, type='bdd'}
 Essayez de trouver le meilleur modèle par vous même dans l'application shiny 
@@ -259,7 +259,7 @@ N’oubliez pas d’appuyer sur la touche ESC pour reprendre la main dans R à l
 
 
 
-### Trouver le meilleur modèle linéaire 
+### Trouver la meilleure droite 
 
 Nous pouvons maintenant nous demander si notre modèle 2 qui est le meilleur modèle de nos 4 modèles est le meilleur modèle possible pour se faire nous allons devoir optimiser notre modèle afin d'avoir le meilleur modèle possible.
 
@@ -278,7 +278,6 @@ chart(trees, volume ~ diameter) +
 ```
 
 Sur ces  `r nrow(models)`  modèles, nous pouvons calculer la somme des carrés des résidus et observer quel est le meilleur modèle.
-
 
 ```{r}
 # fonction de calcule de la somme des carrés des résidus
@@ -357,7 +356,7 @@ chart(trees, volume ~ diameter) +
 
 ### La fonction lm()
 
-Suite à notre découverte de manière intuitive de modèle linéaire simple, nous pouvons ressortir quelques points clés. 
+Suite à notre découverte de manière intuitive de la régression linéaire simple, nous pouvons ressortir quelques points clés : 
 
 - Une droite suit l'équation mathématique suivante :
 
@@ -375,10 +374,10 @@ dont $y_i$ est la valeur mesurée pour le point i sur l'axe y, $a$ est la pente 
 - La fonction `lm()` permet de calculer la meilleure droite possible 
 
 
-La distribution normale des résidus TODO 
-calculer l'ecart type des résiuds , calculer l'intervalle de confiance, significativté de la pente, coefficient de determination, coefficient de R^2 
-
 ```{r}
+#trees %>.%
+#  filter(., diameter < 0.5) -> trees
+
 # Modèle linéaire
 lm. <- lm(data = trees, volume ~ diameter)
 
@@ -398,6 +397,8 @@ La fonction `lm()` crée un objet avec de nombreuses informations calculées et 
 class(lm.)
 ```
 
+### Tableau d'interprétation 
+
 Avec la fonction `summary()` nous obtenons le tableau d'analyse du modèle linéaire. 
 
 ```{r}
@@ -407,30 +408,74 @@ summary(lm.)
 
 - Call: 
 
-La formule employée dasn la fonction `lm()`
+Il s'agit de la formule employée dans la fonction `lm()`. C'est à dire le volume en fonction du diamètre du cerisier noirs
 
 - Residuals:
 
-Les 5 nombres de l'ensemble des résidus
+La tableau nous fournit un résumé via les 5 nombres de l'ensemble des résidus (dont vous pouvez faire appel à l'ensemble des résidus avec `lm.$residuals`)
+
+```{r}
+fivenum(lm.$residuals)
+```
+
 
 - Coefficients:
 
+Il s'agit des résultats associés à la pente et à l'ordonnée à l'origine dont les  valeurs estimées des paramètres *(Estimate*)
+
+```{r}
+lm.$coefficients
+```
+
+On retrouve également les écart-types sur ces valeurs (*Std.Error*), les valeurs des distibutions de Student sur les valeurs estimées (*t value*) et enfin la valeur de valeurs de p (*PR(>|t|)*).
+
+Nous pouvons donc écrire l'équation de notre régression linéaire :
+
+$$y = ax + b$$
+
+$$volume \ de \ bois = 5.65 \times diamètre \ à \ 1.4 \ m  - 1.05 $$
+ 
 - Residual standard error:
+
+Il s'agit de l'écart-type résiduel 
+
+$$\sqrt{\frac{\sum(y_i - ŷ_i)^2}{n-2}}$$
 
 - Multiple R-squared:
 
-La valuer du coefficient $R^2$
+Il s'agit de la valuer du coefficient $R^2$ qui exprime la fraction de variance exprimé par le modèle. Souvenons nous que la variance totale respecte la propiété d'additivité. La variance conditionnelle $s^2_{y\left|x\right|}$ peut être décomposé comme étant
+
+$$SS(total) = SS(reg) + SS(résidus)$$
+
+
+$$SS(total) = \sum(y_i - \bar y_i)^2$$
+
+$$SS(reg) = \sum(ŷ_i - \bar y_i)^2$$
+
+$$SS(residus) = \sum(y_i - ŷ_i)^2$$
+
+$$R^2 = \frac{SS(reg)}{SS(total)}$$
+
+Dès lors la valeur du $R^2$ ne peut être compris que entre 0 et 1. 
+
 
 - Adjusted R-squared:
 
-La valuer du coefficient $R^2$ ajustée
+La valuer du coefficient $R^2$ ajustée. Le calcul de cette valeur sera abordé dans la suite de ce livre. 
 
 - F-statistic
 
+Tout comme pour l'ANOVA, le test de la significativité de la régression car  $MS(reg)/MS(résidus)$ suit une distribution F à respectivement 1 et $n-2$ degré de liberté. 
+
 - p-value: 
 
+Il s'agit de la valeur de p associé à la statistique de F.
 
-Nous avons en plus à notre disposition 6 graphiques pour étudier la qualité de notre modèle linéaire.
+### Graphiques d'interprétation
+
+Nous avons en plus à notre disposition 6 graphiques pour étudier la qualité de notre régression.
+
+L'analyse des résidus permet de vérifier la distribution normale des résidus. 
 
 ```{r}
 #plot(lm., which = 1)
@@ -442,6 +487,8 @@ lm. %>.%
   labs(x = "Fitted values", y = "Residuals") +
   ggtitle("Residuals vs Fitted")
 ```
+
+Ce graphique permet de vérifier la normalité des résidus. 
 
 ```{r}
 #plot(lm., which = 2)
@@ -463,6 +510,8 @@ lm. %>.%
     y = expression(bold(sqrt(abs("Standardized residuals"))))) +
   ggtitle("Scale-Location")
 ```
+
+La régression linéaire est sensible aux valeurs extrêmes. Nous avons 3 graphiques our étudier l'influences des individus. 
 
 ```{r}
 #plot(lm., which = 4)
@@ -500,7 +549,6 @@ lm. %>.%
   ggtitle(expression("Cook's dist vs Leverage h"[ii]/(1-h[ii])))
 ```
 
-
 ### Piège et astuces
 
 - extrapolation 
@@ -510,9 +558,23 @@ lm. %>.%
 - tester n'importe quelle variable avec n'improte quelle autre variable (parcimonie)
 
 
-## Modèle linéaire multiple 
+calcule de l'écart type
 
-## Modèle linéaire polynomiale
+$$s_{y|x}\ =\ \sqrt{ \frac{\sum_{ }^{ }\left(y_i-ŷ_i\right)^2}{n-2}}$$
+
+
+calcul de l IC
+
+$$CI_{1-\alpha}\ =\ ŷ_i\ \ \pm t_{\frac{\alpha}{2}}^{n-2}  \frac{s_{y\left|x\right|}\ }{\sqrt{n}}$$
+
+
+## Régression linéaire multiple 
+
+TODO 
+
+## Régression linéaire polynomiale
+
+TODO
 
 ## Les variables facteurs
 
@@ -522,7 +584,11 @@ Avez vous remarqué une ressemblance particulière entre la regression linéaire
 
 Les plus observateurs auront mis en avant la que la fonction est la même pour réaliser une régression linéaire et une analyse de variance. La fonction `lm()` est capable de traiter aussi bien des variables réponses qualitatives que quantitatives. 
 
-### matrice de contraste 
+### Matrice de contraste 
+
+## Modèle linéaire
+
+Le modèle linaire regroupe l'ensemble des régressions présentées précédement. Nous savons dorénavant la raison d'avoir une seule fonction  unique pour l'ensemble des procédures ci dessus , la fonction `lm()`
 
 ## Comparaison des modèles
 
