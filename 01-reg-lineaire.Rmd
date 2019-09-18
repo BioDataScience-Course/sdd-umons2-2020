@@ -1,6 +1,6 @@
 # (PART) Cours II: analyse et modélisation {-}
 
-# Modèle linéaire {#lm}
+# Régression linéaire {#lm}
 
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
 knitr::opts_chunk$set(comment = '#', fig.align = "center")
@@ -10,7 +10,7 @@ library(modelr)
 
 ##### Objectifs {-}
 
-- Découvrir le modèle linaire de manière intuitive
+- Découvrir la régression linaire de manière intuitive.
 
 
 
@@ -19,11 +19,11 @@ library(modelr)
 Avant de poursuivre, vous allez réaliser une séance d'exercice couvrant les points essentiels des notions abordées dans le livre [science des données biologiques partie 1](http://biodatascience-course.sciviews.org/sdd-umons/). 
 
 ```{block2, type='bdd'}
-Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R :
+Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
 
     BioDataScience2::run("01a_rappel")
 
-N’oubliez pas d’appuyer sur la touche ESC pour reprendre la main dans R à la fin d’un tutoriel dans la console R
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
 ```
 
 
@@ -47,7 +47,7 @@ Qu'est ce qu'un modèle
 TODO
 
 
-## Régression linéaire simple par intuition
+## Régression linéaire simple
 
 Nous allons découvrir les base de la régression linéaire de façon intuitive. Nous utilisons le jeu de données `trees` qui rassemble la mesure du diamètre, de la hauteur et du volume de bois de cerisiers noirs. 
 
@@ -216,7 +216,7 @@ Nous obtenons les résultats suivants :
 
 ```{r, echo = FALSE}
 dist_calc <- list()
-for(i in 1:nrow(models)) {
+for (i in 1:nrow(models)) {
   dist_calc[i] <- sum(
   distance(
     observation = trees$volume, 
@@ -232,7 +232,7 @@ Nous obtenons les résultats suivants :
 
 ```{r, echo = FALSE}
 dist_calc <- list()
-for(i in 1:nrow(models)) {
+for (i in 1:nrow(models)) {
   dist_calc[i] <- sum(abs(
   distance(
     observation = trees$volume, 
@@ -256,7 +256,6 @@ Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, e
 
 N’oubliez pas d’appuyer sur la touche ESC pour reprendre la main dans R à la fin d’un tutoriel dans la console R
 ```
-
 
 
 ### Trouver la meilleure droite 
@@ -354,7 +353,8 @@ chart(trees, volume ~ diameter) +
   scale_color_viridis_c(direction = -1)
 ```
 
-### La fonction lm()
+
+### La fonction `lm()`
 
 Suite à notre découverte de manière intuitive de la régression linéaire simple, nous pouvons ressortir quelques points clés : 
 
@@ -400,7 +400,7 @@ class(lm.)
 Attention, nous devons toujours garder un esprit critique. Que pensez vous du graphique suivant ? On peut mettre en avant que nous avons une seule valeur dont le diamètre est supérieur à 0.5m de diamètre.
 
 
-### Tableau d'interprétation 
+### Tableau condensé des résultats 
 
 Avec la fonction `summary()` nous obtenons le tableau d'analyse du modèle linéaire. 
 
@@ -474,7 +474,8 @@ Tout comme pour l'ANOVA, le test de la significativité de la régression car  $
 
 Il s'agit de la valeur de p associé à la statistique de F.
 
-### Graphiques d'interprétation
+
+### Analyse des résidus
 
 Nous avons en plus à notre disposition 6 graphiques pour étudier la qualité de notre régression. Le premier graphique permet de vérifier la distribution homogène des résidus. Dans une bonne régression, nous aurons une distribution équilibrée de part et d'autre du 0. Que pensez vous de notre graphique d'anayse des résidus ? Nous avons une valeur plus éloignée du 0 qui est mis en avant par la courbe en bleue qui montre l'influence des résidus. 
 
@@ -553,6 +554,7 @@ lm. %>.%
   labs(x = expression("Leverage h"[ii]), y = "Cook's distance") +
   ggtitle(expression("Cook's dist vs Leverage h"[ii]/(1-h[ii])))
 ```
+
 
 ### Comparaison de régressions
 
@@ -643,9 +645,7 @@ lm1 %>.%
 ```
 
 
-### Pièges et astuces
-
-#### Extrapolation
+##### Pièges et astuces : extrapolation {-}
 
 Notre régression linéaire a été réalisé sur des cerisiers noirs dont le diamètre est compris entre `r min(trees$diameter)`  et `r max(trees$diameter)` mètre. Pensez vous qu'il est acceptable de prédire des volumes de bois pour des arbres dont le diamètre est inférieur ou supérieur à nos valeurs minimales et maximales mesurées ? 
 
@@ -692,7 +692,7 @@ chart(trees, volume~diameter) +
 
 ```
 
-#### Significativité fortuite
+##### Pièges et astuces : significativité fortuite {-}
 
 TODO
 
@@ -701,10 +701,10 @@ TODO
 
 - tester n'importe quelle variable avec n'improte quelle autre variable (parcimonie)
 
-### Interval de confiance (IC)
+### Intervalle de confiance (I.C.)
 
 ```{r}
-lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
+lm. %>.% (function(lm, model = lm[["model"]], vars = names(model))
   chart(model, aes_string(x = vars[2], y = vars[1])) +
   geom_point() +
   stat_smooth(method = "lm", formula = y ~ x))(.)
