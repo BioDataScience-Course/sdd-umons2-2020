@@ -1,7 +1,11 @@
 --- 
 title: "Science des données biologiques 2"
 author: "Philippe Grosjean & Guyliann Engels"
+<<<<<<< HEAD
 date: "2019-09-18"
+=======
+date: "2019-09-11"
+>>>>>>> cb3c84cf4480ecd56c82c180c24f8a2601e03971
 site: bookdown::bookdown_site
 output:
   bookdown::gitbook:
@@ -134,14 +138,20 @@ sessioninfo::session_info()
 #  language (EN)                        
 #  collate  en_US.UTF-8                 
 #  ctype    en_US.UTF-8                 
+<<<<<<< HEAD
 #  tz       Europe/Brussels             
 #  date     2019-09-18                  
+=======
+#  tz       Europe/Madrid               
+#  date     2019-09-11                  
+>>>>>>> cb3c84cf4480ecd56c82c180c24f8a2601e03971
 # 
 # ─ Packages ──────────────────────────────────────────────────────────────
 #  package     * version date       lib source        
 #  assertthat    0.2.1   2019-03-21 [2] CRAN (R 3.5.3)
 #  bookdown      0.9     2018-12-21 [2] CRAN (R 3.5.3)
 #  cli           1.1.0   2019-03-19 [2] CRAN (R 3.5.3)
+<<<<<<< HEAD
 #  colorspace    1.4-1   2019-03-18 [2] CRAN (R 3.5.3)
 #  crayon        1.3.4   2017-09-16 [2] CRAN (R 3.5.3)
 #  digest        0.6.18  2018-10-10 [2] CRAN (R 3.5.3)
@@ -179,6 +189,21 @@ sessioninfo::session_info()
 #  tibble        2.1.1   2019-03-16 [2] CRAN (R 3.5.3)
 #  tidyselect    0.2.5   2018-10-11 [2] CRAN (R 3.5.3)
 #  tweenr        1.0.1   2018-12-14 [2] CRAN (R 3.5.3)
+=======
+#  crayon        1.3.4   2017-09-16 [2] CRAN (R 3.5.3)
+#  digest        0.6.18  2018-10-10 [2] CRAN (R 3.5.3)
+#  evaluate      0.13    2019-02-12 [2] CRAN (R 3.5.3)
+#  fortunes      1.5-4   2016-12-29 [2] CRAN (R 3.5.3)
+#  htmltools     0.3.6   2017-04-28 [2] CRAN (R 3.5.3)
+#  inline        0.3.15  2018-05-18 [2] CRAN (R 3.5.3)
+#  knitr         1.22    2019-03-08 [2] CRAN (R 3.5.3)
+#  magrittr      1.5     2014-11-22 [2] CRAN (R 3.5.3)
+#  Rcpp          1.0.1   2019-03-17 [2] CRAN (R 3.5.3)
+#  rmarkdown     1.12    2019-03-14 [2] CRAN (R 3.5.3)
+#  sessioninfo   1.1.1   2018-11-05 [2] CRAN (R 3.5.3)
+#  stringi       1.4.3   2019-03-12 [2] CRAN (R 3.5.3)
+#  stringr       1.4.0   2019-02-10 [2] CRAN (R 3.5.3)
+>>>>>>> cb3c84cf4480ecd56c82c180c24f8a2601e03971
 #  withr         2.1.2   2018-03-15 [2] CRAN (R 3.5.3)
 #  xfun          0.6     2019-04-02 [2] CRAN (R 3.5.3)
 #  yaml          2.2.0   2018-07-25 [2] CRAN (R 3.5.3)
