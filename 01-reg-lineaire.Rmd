@@ -646,6 +646,16 @@ lm. %>.%
 
 A l'issue de l'analyse des résidus, nous abservons donc différents problèmes qui suggèrent que le modèle choisi n'est peut être pas le plus adapté. Nous comprendrons pourquoi plus loin.
 
+##### A vous de jouer {-}
+
+```{block2, type='bdd'}
+Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
+
+    BioDataScience2::run("01b_reg_lin")
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
+```
+
 
 ### Comparaison de régressions
 
@@ -670,7 +680,6 @@ chart(trees, volume ~ diameter) +
 ```
 
 Tentez d'analyser le tableau de notre régression.
-
 
 ```{r}
 summary(lm1)
@@ -831,6 +840,15 @@ Vous avez des snippets à votre disposition pour ces deux fonctions\ :
 
 `... -> models ..m -> .models tools .mt -> .mtmoddf` ou encore `... -> models ..m -> .models tools .mt -> .mtpardf`
 
+##### A vous de jouer {-}
+
+```{block2, type='bdd'}
+
+Vous avez à votre disposition la première assignation GitHub Classroom : 
+  
+- <https://classroom.github.com/a/bvqsukEO>
+  
+```
 
 ## Régression linéaire multiple 
 

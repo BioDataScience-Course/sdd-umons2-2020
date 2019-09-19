@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2019-09-18">
+<meta name="date" content="2019-09-19">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -287,6 +287,16 @@ lm. <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">expression</span>(<span class="st">&quot;Cook&#39;s dist vs Leverage h&quot;</span>[ii]<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span>h[ii])))</code></pre>
 <p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>A l’issue de l’analyse des résidus, nous abservons donc différents problèmes qui suggèrent que le modèle choisi n’est peut être pas le plus adapté. Nous comprendrons pourquoi plus loin.</p>
+<div id="a-vous-de-jouer" class="section level5 unnumbered">
+<h5>A vous de jouer</h5>
+
+<div class="bdd">
+<p>Démarrez la SciViews Box et RStudio. Dans la fenêtre <strong>Console</strong> de RStudio, entrez l’instruction suivante suivie de la touche <code>Entrée</code> pour ouvrir le tutoriel concernant les bases de R :</p>
+<pre><code>BioDataScience2::run(&quot;01b_reg_lin&quot;)</code></pre>
+N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
+</div>
+
+</div>
 </div>
 <div id="comparaison-de-regressions" class="section level3">
 <h3><span class="header-section-number">1.3.2</span> Comparaison de régressions</h3>
@@ -305,7 +315,7 @@ lm1 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">da
 <span class="st">  </span><span class="kw">geom_abline</span>(
     <span class="kw">aes</span>(<span class="dt">intercept =</span> lm1<span class="op">$</span>coefficients[<span class="dv">1</span>], <span class="dt">slope =</span> lm1<span class="op">$</span>coefficients[<span class="dv">2</span>]), 
     <span class="dt">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="dt">size =</span> <span class="fl">1.5</span>)</code></pre>
-<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Tentez d’analyser le tableau de notre régression.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm1)</code></pre>
 <pre><code># 
@@ -335,7 +345,7 @@ lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Residuals&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Residuals vs Fitted&quot;</span>) </code></pre>
-<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-44-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm1, which = 2)</span>
 lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">aes</span>(<span class="dt">sample =</span> .std.resid)) <span class="op">+</span>
@@ -343,7 +353,7 @@ lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">geom_qq_line</span>(<span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Theoretical quantiles&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Standardized residuals&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Normal Q-Q&quot;</span>) </code></pre>
-<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-43-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-44-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm1, which = 3)</span>
 lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">sqrt</span>(<span class="kw">abs</span>(.std.resid)) <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
@@ -352,7 +362,7 @@ lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>,
     <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">bold</span>(<span class="kw">sqrt</span>(<span class="kw">abs</span>(<span class="st">&quot;Standardized residuals&quot;</span>))))) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Scale-Location&quot;</span>) </code></pre>
-<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-43-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-44-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm1, which = 4)</span>
 lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .cooksd <span class="op">~</span><span class="st"> </span><span class="kw">seq_along</span>(.cooksd)) <span class="op">+</span>
@@ -360,7 +370,7 @@ lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="dt">by =</span> <span class="fl">0.05</span>), <span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Obs. number&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Cook&#39;s distance&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Cook&#39;s distance&quot;</span>) </code></pre>
-<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-43-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-44-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm1, which = 5)</span>
 lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .std.resid <span class="op">~</span><span class="st"> </span>.hat <span class="op">%size=%</span><span class="st"> </span>.cooksd) <span class="op">+</span>
@@ -407,7 +417,7 @@ new</code></pre>
 <span class="st">  </span><span class="kw">geom_abline</span>(
     <span class="kw">aes</span>(<span class="dt">intercept =</span> lm.<span class="op">$</span>coefficients[<span class="dv">1</span>], <span class="dt">slope =</span> lm.<span class="op">$</span>coefficients[<span class="dv">2</span>]))<span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> new, <span class="kw">f_aes</span>(pred<span class="op">~</span>diameter), <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>) </code></pre>
-<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Le volume de bois prédit est négatif ! Notre modèle est-il alors complètement faux ? Rappelons-nous qu’un modèle est nécessairement une vision simplifiée de la réalité. En particulier, notre modèle a été entraîné avec des données comprises dans un intervalle. Il est alors valable pour effectuer des <strong>interpolations</strong> à l’intérieur de cet intervalle, mais <strong>ne peut pas être utilisé pour effectuer des extrapolations</strong> en dehors, comme nous venos de réaliser.</p>
 <pre class="sourceCode r"><code class="sourceCode r">trees <span class="op">%&gt;.%</span>
 <span class="st">  </span>modelr<span class="op">::</span><span class="kw">add_predictions</span>(., lm.) -&gt;<span class="st"> </span>trees
@@ -415,7 +425,7 @@ new</code></pre>
 <span class="kw">chart</span>(trees, volume<span class="op">~</span>diameter) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">f_aes</span>(pred <span class="op">~</span><span class="st"> </span>diameter))</code></pre>
-<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="pieges-et-astuces-significativite-fortuite" class="section level5 unnumbered">
 <h5>Pièges et astuces : significativité fortuite</h5>
@@ -430,7 +440,7 @@ new</code></pre>
   <span class="kw">chart</span>(model, <span class="kw">aes_string</span>(<span class="dt">x =</span> vars[<span class="dv">2</span>], <span class="dt">y =</span> vars[<span class="dv">1</span>])) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">stat_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x))(.)</code></pre>
-<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Cette enveloppe de confiance est en réalité basée sur l’écart type <em>conditionnel</em> (écart type de <span class="math inline">\(y\)</span> sachant quelle est la valeur de <span class="math inline">\(x\)</span>) qui se calcule comme suit :</p>
 <p><span class="math display">\[s_{y|x}\ =\ \sqrt{ \frac{\sum_{i = 0}^n\left(y_i - \hat y_i\right)^2}{n-2}}\]</span></p>
 <p>A partir de là, il est possible de définir également un intervalle de confiance conditionnel à <span class="math inline">\(x\)</span> :</p>
@@ -455,6 +465,16 @@ new</code></pre>
 # # … with 2 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;</code></pre>
 <p>Vous avez des snippets à votre disposition pour ces deux fonctions :</p>
 <p><code>... -&gt; models ..m -&gt; .models tools .mt -&gt; .mtmoddf</code> ou encore <code>... -&gt; models ..m -&gt; .models tools .mt -&gt; .mtpardf</code></p>
+<div id="a-vous-de-jouer-1" class="section level5 unnumbered">
+<h5>A vous de jouer</h5>
+
+<div class="bdd">
+<p>Vous avez à votre disposition la première assignation GitHub Classroom :</p>
+<ul>
+<li><p><a href="https://classroom.github.com/a/bvqsukEO" class="uri">https://classroom.github.com/a/bvqsukEO</a></p>
+</div></li>
+</ul>
+</div>
 </div>
 </div>
 <div id="disqus_thread"></div>
