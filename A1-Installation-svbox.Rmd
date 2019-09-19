@@ -7,9 +7,7 @@
 knitr::include_graphics('images/sdd1_01/svBox-256.png')
 ```
 
-Pour ce cours SDD 2, nous utiliserons la même SciViews Box... mais actualisée (version de l'année). Vous allez donc devoir installer la nouvelle version. La procédure n'a changé que sur des points de détails. Référez-vous à [l'appendice A1 du cours SDD 1](http://biodatascience-course.sciviews.org/sdd-umons/svbox.html). **Vous pouvez conserver l'ancienne SciViews Box en parallèle avec cette nouvelle version**, mais vérifiez si vous avez assez d'espace sur le disque dur pour contenir les deux simultanément. Comptez par sécurité 20Go par version. Si vous manquez de place, vous pouvez éliminer l'ancienne version avant d'installer la nouvelle (vos projets ne seront pas effacés).
-
-**TODO: procédure pour éliminer une ancienne version.**
+Pour ce cours SDD 2, nous utiliserons la même SciViews Box que pour le cours 1... mais actualisée (version de l'année). Vous allez donc devoir installer la nouvelle version. La procédure n'a changé que sur des points de détails. Référez-vous à [l'appendice A1 du cours SDD 1](http://biodatascience-course.sciviews.org/sdd-umons/svbox.html). **Vous pouvez conserver l'ancienne SciViews Box en parallèle avec cette nouvelle version**, mais vérifiez si vous avez assez d'espace sur le disque dur pour contenir les deux simultanément. Comptez par sécurité 20Go par version. Si vous manquez de place, vous pouvez éliminer l'ancienne version avant d'installer la nouvelle (vos projets ne seront pas effacés).
 
 
 ## Migration des projets

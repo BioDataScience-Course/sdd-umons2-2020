@@ -10,13 +10,22 @@ library(modelr)
 
 ##### Objectifs {-}
 
+- Retrouver ses marques avec R, RStudio et la SciViews Box et découvrir les fonctions supplémentaires de la nouvelle version.
+
 - Découvrir la régression linaire de manière intuitive.
 
+- Appréhender les différentes formes de régressions linéaires par les moindres carrés.
+
+- Choisir sa régression linéaire de manière judicieuse.
+
+- Savoir utiliser les outils de diagnostic de la régression linéaire, en particulier l'analyse des résidus.
 
 
 ##### Prérequis {-}
 
-Avant de poursuivre, vous allez réaliser une séance d'exercice couvrant les points essentiels des notions abordées dans le livre [science des données biologiques partie 1](http://biodatascience-course.sciviews.org/sdd-umons/). 
+Avant de nous lancer tête baissée dans de la matière nouvelle, nous allons **installer la dernière version de la SciViews Box**. Une nouvelle version est disponible chaque année début septembre. Reportez-vous à l'appendice \@ref(svbox) pour son installation et pour la migration éventuelle de vos projets depuis la version précédente. Une fois la box installée, consacrez un petit quart d'heure à repérer les icônes nouvelles dans le Dock et dans le menu `Applications`. Vous retrouverez R et RStudio, mais dans des version plus récentes qui apportent également leur lot de nouveautés. Lancez RStudio et repérez ici aussi les nouveaux onglets et les nouvelles entrées de menu. Aidez-vous de l'aide en ligne ou de recherches sur le net pour vous familiariser avec ces nouvelles fonctionnalités.
+
+Une fois la nouvelle SciViews Box fonctionnelle sur votre ordinateur, vous allez réaliser une séance d'exercice couvrant les points essentiels des notions abordées dans le livre [science des données biologiques partie 1](http://biodatascience-course.sciviews.org/sdd-umons/), histoire de rafraîchir vos connaissances. Les tutoriaux `learnr` auxquels vous êtes maintenant habitués seront là pour vous aider à auto-évaluer votre progression. Pour le cours 2, ces tutoriaux sont dans le package `BioDataScience2` que vous venez normalement d'installer si vous avez bien suivi toutes les instructions de configuration de votre SciViews Box (sinon, vérifiez votre configuration).
 
 ```{block2, type='bdd'}
 Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
@@ -29,36 +38,84 @@ N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à
 
 ## Modèle 
 
-TODO 
+**Qu'est-ce qu'un "modèle" en science des données et en statistique\ ?** Il s'agit d'une représentation *simplifiée* sous forme mathématique du mécanisme responsable de la distribution des observations.
 
-Un modèle a pour objectif de fournir une description des données. 
-On retrouve deux grandes catégories au sein des modèles, les modèles prédictifs et les modèles exploratoires. 
+Rassurez-vous, dans ce module, le côté mathématique du problème sera volontairement peu développé pour laisser une large place à une compréhension *intuitive* du modèle. Les seules notions clés à connaître ici concernent l'équation qui définit une droite quelconque dans le plan $xy$\ :
 
-une observation peut être employé pour explorer et pour confirmer un modèle mais pas les deux. Pour réaliser une analyse confirmatoire, il est proposé de divisé les observations en 2 groupes
+$$y = a \ x + b$$
 
-- jeu d'entrainement 
+Cette équation comporte\ :
 
-- jeu de confirmation
+- deux **variables** $x$ et $y$ qui sont matérialisées par les axes des abscisses et des ordonnées dans le plan $xy$. Ces variables prennent des valeurs bien définies pour les *observations* réalisées sur chaque *individu* du jeu de données.
+
+- deux **paramètres** $a$ et $b$, respectivement la pente de la droite ($a$) et son ordonnée à l'origine ($b$). Ecrit de la sorte, $a$ et $b$ peuvent prendre n'importe quelle valeur et l'équation définit de manière généraliste *toutes* les droites possibles qui existent dans le plan $xy$. *Paramétrer* ou *paramétriser* le modèle consiste à définir **une et une seule droite** en fixant les valeurs de $a$ et de $b$. Par exemple, si je décide de fixer $a = 0.35$ et $b = -1.23$, mon équation définit maintenant **une droite bien précise** dans le plan $xy$\ :
+
+$$y = 0,35 \ x - 1.23$$
+
+```{block2, type='warning'}
+La distinction entre *variable* et *paramètre* dans les équations précédentes semble difficile pour certaines personnes. C'est pourtant crucial de pouvoir le faire pour bien comprendre la suite. Alors, c'est le bon moment de **relire attentivement** ce qui est écrit ci-dessus et de le mémoriser avant d'aller plus avant\ !
+```
 
 
+### Pourquoi modéliser ?
 
-Qu'est ce qu'un modèle 
+Le but de la modélisation consiste à découvrir l'équation mathématique de la droite (ou plus généralement, de la fonction) qui décrit au mieux la forme du nuage de points matérialisant les observations dans le plan $xy$ (ou plus généralement dans un *hyper-espace* représenté par les différentes variables mesurées). Cette équation mathématique peut ensuite être utilisée de différentes façons, toutes plus utiles les unes que les autres\ :
 
-TODO
+- Aide à la **compréhension du mécanisme sous-jacent** qui a généré les données. Par exemple, si une droite représente bien la croissance pondérale d'un organisme dans le plan représenté par le logarithme du poids (`P`) en ordonnée et le temps (`t`) en abscisse, nous pourrons déduire que la croissance de cet organisme est probablement un mécanisme de type exponentiel (puisqu'une transformation inverse, c'est-à-dire logarithmique, linéarise alors le nuage de points). Attention\ ! Le modèle *n'est pos* le mécanisme sous-jacent de génération des données, mais utilisé habilement, ce modèle peut donner des *indices utiles* pour aider à découvrir ce mécanisme.
+
+- Effectuer des **prédictions**. Le modèle paramétré pourra être utilisé pour prédire, par exemple, le poids probable d'un individu de la même population après un certain laps de temps.
+
+- **Comparer différents modèles**. En présence de plusieurs populations, nous pourrons ajuster un modèle linéaire pour chacune d'elles et comparer ensuite les pentes des droites pour déterminer quelle population a le meilleur ou le moins bon taux de croissance.
+
+- **Explorer les relations** entre variables. Sans aucunes connaissances sur le contexte qui a permit d'obtenir nos données, un modèle peut fournir des informations utiles pour orienter les recherches futures.
+
+Idéalement, un modèle devrait pouvoir servir à ces différentes applications. En pratique, comme le modèle est forcément une simplification de la réalité, des compromis doivent être concédés pour arriver à cette simplification. En fonction de son usage, les compromis possibles vont différer. Il s'en suit une *spécialisation* des modèles en modèles **mécanistiques** qui décrivent particulièrement bien le mécanisme sous-jacent (fréquents en physique, par exemple), les modèles **prédictifs** conçus pour calcluer des nouvelles valeurs (que l'intelligence artificielle affectionne particulièrement), les modèles **comparatifs**, et enfin, les modèles **exploratroires** (utilisés dans la phase initiale de découverte et de description des données). Retenez simplement qu'un même modèle est rarement efficace sur les quatre tableaux simultanément.
+
+
+### Quand modéliser ?
+
+A chaque fois que deux ou plusieurs variables (quantitatives dans le cas de la régression) forment un nuage de points qui présente une forme particulière non sphérique, autrement dit, qu'une **corrélation significative** existe dans les données, un modèle peut être utile.
+
+Etant donné deux variables quantitatives, trois niveaux d'association de force croissante peuvent être définies entre ces deux variables\ :
+
+- La **corrélation** quantifie juste l'allongement dans une direction préférentielle du nuage de points à l'aide des coefficients de corrélation linéaire de **Pearson** ou non linéaire de **Spearman**. Ce niveau d'association a été traité dans le [module 12 du cours 1](http://biodatascience-course.sciviews.org/sdd-umons/association-de-deux-variables.html). Il est purement descriptif et n'implique aucunes autres hypothèses sur les données observées.
+
+- La **relation** considère que la corrélation observée entre les deux variables est issue d'un mécanisme sous-jacent qui nous intéresse. Un **modèle mathématique** de l'association entre les deux variables matérialise de manière éventuellement simplifiée, ce mécanisme. Il permet de réaliser ensuite des calculs utiles. Nous verrons plus loin que des contraintes plus fortes doivent être supposées concernant le distribution des deux variables.
+
+- La **causalité** précise encore le mécanisme sous-jacent dans le sens qu'elle exprime le fait que c'est la variation de l'une de ces variables qui est directement ou indirectement la **cause** de la variation de la seconde variable. Bien que des outils statistiques existent pour inférer une causalité (nous ne les aborderons pas dans ce cours), la causalité est plutôt étudiée via l'**expérimentation**\ : le biologiste *contrôle* et *fait varier* la variable supposée causale, toutes autres conditions par ailleurs invariables dans l'expérience. Il mesure alors et constate si la seconde variable répond ou non à ces variations^[En biologie, le vivant peut être étudié essentiellement de deux manières complémentaires\ : par l'**observation** du monde qui nous entoure sans interférer, ou le moins possible, et par l'**expérimentation** où le biologiste fixe alors très précisément les conditions dans lesquelles il étudie ses organismes cibles. Les deux approches se prêtent à la modélisation *mais seule l'expérimentation permet d'inférer avec certitude la causalité*.] et en déduit une causalité éventuelle.
+
+La distinction entre ces trois degrés d'association de deux variables est cruciale. Il est fréquent d'observer une confusion entre corrélation (ou relation) et causalité chez ceux qui ne comprennent pas bien la différence. Cela peut mener à des **interprétations complètement erronées\ !** Comme ceci est à la fois crucial mais subtil, voici une vidéo issue de la série "les statistiques expliquées à mon chat" qui explique clairement le problème. Une troisième **variable confondante** peut en effet expliquer une corrélation, rendant alors la relation et/ou la causalité entre les deux variables fallacieuse...
+
+```{r, echo=FALSE}
+vembedr::embed_youtube("aOX0pIwBCvw", width = 770, height = 433)
+```
+
+
+### Entraînement et confirmation
+
+En statistique, une règle universelle veut qu'une observation ne peut servir qu'une seule fois. Ainsi, toutes les données utilisées pour calculer le modèle ne *peuvent pas servir simultanément* à la confirmer. Il faut échantillonner d'autres valeurs pour effectuer cette confirmation. Il s'en suit une spécialisation des jeux de données en\ :
+
+- jeu d'**entraînement** qui sert à établir le modèle
+
+- jeu de **confirmation** ou de **test** qui sert à vérifier que le modèle est *génaralisable* car il est capable de prédire le comportement d'un *autre* jeu de données indépendant issu de la même population statistique.
+
+```{block2, type='note'}
+C'est une pratique cruciale de toujours confirmer son modèle, et donc, de prendre soin de séparer ses données en jeu d'entraînement et de test. Les bonnes façons de faire cela seront abordées au cours 3 dans la partie consacrée à l'apprentissage machine. Ici, nous nous focaliserons uniquement sur l'établissement du modèle dans la phase d'entraînement. Par conséquent, nous utiliserons toutes nos données pour cet entraînement, mais qu'il soit d'amblée bien clair qu'une confirmation du modèle est une seconde phase également indispensable.
+```
 
 
 ## Régression linéaire simple
 
-Nous allons découvrir les base de la régression linéaire de façon intuitive. Nous utilisons le jeu de données `trees` qui rassemble la mesure du diamètre, de la hauteur et du volume de bois de cerisiers noirs. 
+Nous allons découvrir les bases de la régression linéaire de façon intuitive. Nous utilisons le jeu de données `trees` qui rassemble la mesure du diamètre, de la hauteur et du volume de bois de cerisiers noirs. 
 
 ```{r}
 # importation des données
 trees <- read("trees", package = "datasets", lang = "fr")
 ```
 
-Rapellons nous que dans le [chapitre 12 du livre science des données 1](http://biodatascience-course.sciviews.org/sdd-umons/association-de-deux-variables.html), nous avons étudié l'association de deux variables numériques. Nous utilisons donc une matrice de corrélation afin de mettre en évidence la corrélation entre nos 3 variables qui composent le jeu de donnée `trees`.
+Rapellons-nous que dans le [chapitre 12 du livre science des données 1](http://biodatascience-course.sciviews.org/sdd-umons/association-de-deux-variables.html), nous avons étudié l'association de deux variables quantitatives (ou numériques). Nous utilisons donc une matrice de corrélation afin de mettre en évidence la corrélation entre nos trois variables qui composent le jeu de donnée `trees`.
 
-La fonction `correlation()` nous renvoie un tableau de la matrice de correlation avec l'indice de Pearson.
+La fonction `correlation()` nous renvoie un tableau de la matrice de correlation avec l'indice de Pearson (corrélation linéaire) par défaut. C'est précisement ce coefficient qui nous intéresse dans le cadre d'une régression *linéaire* comme description préalable des données autant que pour nous guider dans le choix de nos variables.
 
 ```{r}
 (trees_corr <- correlation(trees))
@@ -70,13 +127,13 @@ Nous pouvons également observer cette matrice sous la forme d'un graphique plus
 plot(trees_corr, type = "lower")
 ```
 
-Cependant, n'oubliez pas qu'il est indispensable de visualiser les nuages de points pour ne pas tobmer dans le piège mis en avant par le [jeu de données artificiel appelé “quartet d’Anscombe”](http://biodatascience-course.sciviews.org/sdd-umons/association-de-deux-variables.html#importance-des-graphiques) qui montre très bien comment des données très différentes peuvent avoir même moyenne, même variance et même coefficient de corrélation.
+Cependant, n'oubliez pas qu'il est indispensable de visualiser les nuages de points pour ne pas tomber dans le piège mis en avant par le [jeu de données artificiel appelé “quartet d’Anscombe”](http://biodatascience-course.sciviews.org/sdd-umons/association-de-deux-variables.html#importance-des-graphiques) qui montre très bien comment des données très différentes peuvent avoir même moyenne, même variance et même coefficient de corrélation. Un graphique de type matrice de nuages de points est tout indiqué ici.
 
 ```{r}
 GGally::ggscatmat(as.data.frame(trees), 1:3)
 ```
 
-Nous observons une forte corrélation linéaire entre le volume et la hauteur des cerisiers noirs.  Interessons nous à cette association.
+Nous observons une plus forte corrélation linéaire entre le volume et le diamètre. Intéressons nous à cette association.
 
 ```{r}
 chart(trees, volume ~ diameter) +
@@ -85,115 +142,123 @@ chart(trees, volume ~ diameter) +
 
 Si vous deviez ajouter une droite permettant de représenter au mieux les données, où est ce que vous la placeriez ? 
 
-Pour rappel, une droite respecte l'équation mathématique suivante: $$y = ax + b$$ 
+Pour rappel, une droite respecte l'équation mathématique suivante\ :
 
-dont  `a` est la pente (*slope* en anglais) et `b` est l'ordonnée à l'origine (*intercept* en anglais).
+$$y = a \ x + b$$ 
+
+dont `a` est la pente (*slope* en anglais) et `b` est l'ordonnée à l'origine (*intercept* en anglais).
 
 ```{r}
-# Sélection de pente et d'ordonnée à l'origine
+# Sélection de pentes et d'ordonnées à l'origine
 models <- tibble(
-  model = paste("mod", 1:4, sep = "-"),
+  model = paste("model", 1:4, sep = "-"),
   slope = c(5, 5.5, 6, 0),
   intercept = c(-0.5, -0.95, -1.5, 0.85)
 )
 
 chart(trees, volume ~ diameter) +
   geom_point() +
-  geom_abline(data = models, aes(slope = slope, intercept = intercept, color = model)) + 
+  geom_abline(data = models,
+    aes(slope = slope, intercept = intercept, color = model)) + 
   labs( color = "Modèle")
 ```
 
-Nous avons 4 droites qui veulent représenter au mieux les observations. Quel est la meilleure régression selon vous ? 
+Nous avons quatre droites candidates pour représenter au mieux les observations. Quel est la meilleure d'entre elles selon vous\ ? 
 
-### Quantifier la qualité d'un modèle
 
-Nous voulons identifier la meilleure régression, c'est à dire la régression le plus proche de nos données. Nous avons besoin d'une règle qui va nous permettre de quantifier la distance de nos observations à notre modèle afin d'obtenir la régression avec la plus faible distance possible de l'ensemble de nos observations. 
+### Quantifier l'ajustement d'un modèle
 
-Décomposons le problème étape par étape et intéressons nous au `mod-1`
+Nous voulons identifier la meilleure régression, c'est-à-dire la régression le plus proche de nos données. Nous avons besoin d'une règle qui va nous permettre de quantifier la distance de nos observations à notre modèle afin d'obtenir la régression avec la plus faible distance possible de l'ensemble de nos observations. 
 
-- Connaitre les valeurs de y prédite par le modèle 
+Décomposons le problème étape par étape et intéressons nous au `model-1` (droite en rouge sur le graphique précédent).
+
+- Calculer les valeurs de $y_i$ **prédites par le modèle** que nous noterons par convention $\hat y_i$ (prononcez "y chapeau" ou *"y hat"* en anglais) pour chaque observation $i$.
 
 
 ```{r}
 # Calculer la valeur de y pour chaque valeur de x suivant le model souhaité
-## Création de notre fonction 
+# Création de notre fonction 
 model <- function(slope, intercept, x) {
   prediction <- intercept + slope * x
   attributes(prediction) <- NULL
   prediction
 }
-## Application de notre fonction 
-mod1 <- model(slope = 5, intercept = -0.5, x = trees$diameter)
-## Affichage des résultats
-mod1
+# Application de notre fonction 
+yhat <- model(slope = 5, intercept = -0.5, x = trees$diameter)
+# Affichage des résultats
+yhat
 ```
 
-- Connaitre la distance entre les observations mesurées en y et les observations prédites en y par la régression
+- Calculer la distance entre les observations $y_i$ et les prédictions par notre modèle $\hat y_i$, soit $y_i - \hat y_i$
 
-Les distances que nous souhaitons calculer, sont les `résidus`. Nous pouvons premièrement visualiser ces résidus graphiquement :
+Les distances que nous souhaitons calculer, sont appelées les **résidus** du modèle et sont notés $\epsilon_i$ (epsilon). Nous pouvons premièrement visualiser ces résidus graphiquement (ici en rouge par rapport à `model-1`)\ :
 
-```{r}
+```{r, echo = FALSE}
 chart(trees, volume ~ diameter) +
   geom_point() +
   geom_abline(slope = 5, intercept = -0.5) +
   geom_segment(
     aes(x = diameter, y = volume, 
-      xend = diameter, yend = mod1))
+      xend = diameter, yend = yhat,
+      color = "red")) +
+  guides(color = FALSE)
 ```
 
-Nous pouvons ensuite facilement calculer cette distance comme ci-dessous : 
+Nous pouvons ensuite facilement calculer leurs valeurs comme ci-dessous\ : 
 
 ```{r}
-# Calculer la distance entre y observé et y prédit
-## création de notre fonction
-distance <- function(observation, prediction) {
-  diff <- observation - prediction
-  attributes(diff) <- NULL
-  diff
+# Calculer la distance entre y et y barre
+# Création de notre fonction de calcul des résidus
+distance <- function(observations, predictions) {
+  residus <- observations - predictions
+  attributes(residus) <- NULL
+  residus
 }
-## Application de la fonction
-dist1 <- distance(observation = trees$volume, prediction = mod1)
-## affichage des résultats
-dist1
+# Utilisation de la fonction
+resid <- distance(observations = trees$volume, predictions = yhat)
+# Impression des résultats
+resid
 ```
 
-- Définir une règle pour obtenir une valeur unique de la distance de nos observations mesurées en y par rapport aux observations prédites en y par la régression
-
-Une première idée serait de sommer l'ensemble de nos distances comme ci-dessous :
+- Définir une règle pour obtenir une valeur unique qui résume l'ensemble des distances de nos observations par rapport aux prédictions du modèle. Une première idée serait de sommer l'ensemble de nos résidus comme ci-dessous\ :
 
 ```{r}
-sum(dist1)
+sum(resid)
 ```
 
-Appliquons la suite d'étapes ci-dessus pour nos 4 modèles afin de les comparer
+Appliquons ces calculs sur nos quatre modèles afin de les comparer... Le modèle pour lequel notree critère serait le plus proche de zéro serait alors considéré comme le meilleur.
 
 ```{r, echo = FALSE}
 dist_calc <- list()
-for(i in 1:nrow(models)) {
+for (i in 1:nrow(models)) {
   dist_calc[i] <- sum(
   distance(
-    observation = trees$volume, 
-    prediction =  model(slope = models$slope[i], intercept = models$intercept[i], x = trees$diameter)))
+    observations = trees$volume, 
+    predictions =  model(slope = models$slope[i], intercept = models$intercept[i],
+      x = trees$diameter)))
 }
 names(dist_calc) <- models$model
 knitr::kable(as_tibble(dist_calc))
 ```
 
-Selon notre méthode, il en ressort que le modèle 4 est le modèle le plus approprié pour représenter au mieux nos données. Qu'en pensez vous ? 
+Selon notre méthode, il en ressort que le modèle 4 est le plus approprié pour représenter au mieux nos données. Qu'en pensez vous\ ?
 
-```{r}
+```{r, echo = FALSE}
 chart(trees, volume ~ diameter) +
   geom_point() +
   geom_abline(data = models, aes(slope = slope, intercept = intercept, color = model)) + 
   labs( color = "Modèle")
 ```
 
-Intuitivement, nous nous apperçevons que le modèle 4 n'est pas la meilleuire solution pour représenter nos observartions. Nous pouvons en déduire que la somme des résidus n'est pas la meilleur fonction pour ajuster une droite avec nos observations. 
+Intuitivement, nous nous aperçevons que le modèle 4 est loin d'être le meilleur. **Nous pouvons en déduire que la somme des résidus n'est pas un bon critère pour ajuster un modèle linéaire.** 
 
-Le problème lorsque nous sommons des résidus, est la présence de résidus positifs et de résidus négatifs.
+Le problème lorsque nous sommons des résidus, est la présence de résidus positifs et de résidus négatifs (ici par rapport à `model-4`).
 
-```{r}
-mod2 <- model(slope = models$slope[4], intercept = models$intercept[4], x = trees$diameter)
+```{r, echo = FALSE}
+yhat4 <- model(
+  slope = models$slope[4],
+  intercept = models$intercept[4],
+  x = trees$diameter)
 
 chart(trees, volume ~ diameter) +
   geom_point() +
@@ -201,139 +266,154 @@ chart(trees, volume ~ diameter) +
     aes(slope = slope[4], intercept = intercept[4])) +
   geom_segment(
     aes(x = diameter, y = volume, 
-      xend = diameter, yend = mod2)) +
+      xend = diameter, yend = yhat4,
+      colour = "red")) + # Does not work, why? colour = yhat4 > 0)) +
   geom_label(aes(x = 0.3, y = 1.5),
-    label = "Résidus postifis", color = "red") +
+    label = "Résidus positifs", color = "red") +
   geom_label(aes(x = 0.45, y = 0.5), 
-    label = "Résidus négatifs", color = "blue")
+    label = "Résidus négatifs", color = "red") +
+  guides(colour = FALSE)
 ```
 
-Avez vous une autre idée que de sommer les résidus ?
+Ainsi avec notre première méthode naïve de somme des résidus, il suffit d'avoir autant de résidus positifs que négatifs pour avoir un résultat proche de zéro. Mais cela n'implique pas que les observations soient prochent de la droite pour autant. Avez-vous une autre idée que de sommer les résidus\ ?
 
-- Sommer le carré des résidus 
+- **Sommer le carré des résidus** aurait des propriétés intéressantes car d'une part les carrés de nombres positifs et négatifs sont tous positifs, et d'autre part, plus une observation est éloignée plus sa distance au carré pèse fortement dans la somme^[Utiliser le carré des résidus a aussi d'autres propriétés statistiques intéressantes qui rapprochent ce calcul de la variance (qui vaut la somme de la distance au carré à la moyenne pour une seule variables numérique).].
 
-Nous obtenons les résultats suivants :
+Nous obtenons les résultats suivants\ :
 
 ```{r, echo = FALSE}
 dist_calc <- list()
 for (i in 1:nrow(models)) {
   dist_calc[i] <- sum(
   distance(
-    observation = trees$volume, 
-    prediction =  model(slope = models$slope[i], intercept = models$intercept[i], x = trees$diameter))^2)
+    observations = trees$volume, 
+    predictions =  model(slope = models$slope[i], intercept = models$intercept[i],
+      x = trees$diameter))^2)
 }
 names(dist_calc) <- models$model
 knitr::kable(as_tibble(dist_calc))
 ```
 
-- Sommer les valeurs absolues des résidus 
+- **Sommer les valeurs absolues des résidus** mène également à des contributions toutes positives, mais sans pénaliser outre mesure les observations les plus éloignées.
 
-Nous obtenons les résultats suivants :
+Nous obtenons les résultats suivants\ :
 
 ```{r, echo = FALSE}
 dist_calc <- list()
 for (i in 1:nrow(models)) {
   dist_calc[i] <- sum(abs(
   distance(
-    observation = trees$volume, 
-    prediction =  model(slope = models$slope[i], intercept = models$intercept[i], x = trees$diameter))))
+    observations = trees$volume, 
+    predictions =  model(slope = models$slope[i], intercept = models$intercept[i],
+      x = trees$diameter))))
 }
 names(dist_calc) <- models$model
 knitr::kable(as_tibble(dist_calc))
 ```
 
-Nous avons trouvé deux solutions intéressantes pour quantifier la distance de notre droite par rapport à nos observations.
+Nous avons trouvé deux solutions intéressantes pour quantifier la distance de notre droite par rapport à nos observations. En effet, dans les deux cas, la valeur minimale est obtenue pour le `model-2` (en vert sur le graphique) qui est visuellement le meilleur des quatre.
 
-```{block2, type='bdd'}
-Essayez de trouver le meilleur modèle par vous même dans l'application shiny 
+```{block2, type='note'}
+La méthode utilisant les carrés des résidus s'appelle une **régression par les moindres carrés**. Notre objectif est donc de trouver les meilleures valeurs des paramètres $a$ et $b$ de la droite pour minimiser ce critère. Il en résulte une fonction dite **objective** qui dépend de $x$ et de nos paramètres $a$ et $b$ à minimiser. Cette approche s'appelle la **régression par les moindres carrés** et elle est la plus utilisée.
 
-Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R :
-
-    BioDataScience2::app("01a_lin_mod") # TODO
-
-    méthode alternative
-    shiny::runApp(system.file("shiny/01a_lin_mod", package = "BioDataScience2"))
-
-N’oubliez pas d’appuyer sur la touche ESC pour reprendre la main dans R à la fin d’un tutoriel dans la console R
+L'approche utilisant la somme de la valeur absolue des résidus est également utilisable (et elle est d'ailleurs préférable en présence de valeurs extrêmes potentiellement suspectes). Elle s'apppelle **régression par la médiane**, un cas particulier de la **régression quantile** que nous aborderons dans le module 4.
 ```
 
 
 ### Trouver la meilleure droite 
 
-Nous pouvons maintenant nous demander si notre modèle 2 qui est le meilleur modèle de nos 4 modèles est le meilleur modèle possible pour se faire nous allons devoir optimiser notre modèle afin d'avoir le meilleur modèle possible.
+```{block2, type='bdd'}
+Essayez de trouver le meilleur modèle par vous-même dans une application interactive "shiny". Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir l'application :
 
-Nous allons prendre la somme du carré des résidus comme fonction à minimiser.
+    BioDataScience2::app("01a_lin_mod") # TODO
 
-Imaginons que nous avons pas 4 mais 500 modèle linéaire avec une pente et une ordonnée à l'origine différente, quelle est la meilleure droite ? 
+Méthode alternative\ :
+
+    shiny::runApp(system.file("shiny/01a_lin_mod", package = "BioDataScience2"))
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R lorsque vous aurez fini avec l'application shiny.
+```
+
+Nous pouvons nous demander si notre modèle 2 qui est la meilleure droite de nos quatre modèles est le **meilleur modèle possible dans l'absolu**. Pour se faire nous allons devoir définir unez technique d'optimisation qui nous permet de déterminer quelle est la droite qui minimise notre fonction objective. Dans la suite, nous garderonsq le critère des moindres carrés (des résidus).
+
+Imaginons que nous n'avons pas quatre mais 5000 modèles linéaires avec des pentes et des ordonnées à l'origine différentes. Quelle est la meilleure droite\ ? 
 
 ```{r}
+set.seed(34643)
 models1 <- tibble(
-  intercept = runif(5000, -10, 10),
-  slope = runif(5000, 2, 8))
+  intercept = runif(5000, -5, 4),
+  slope = runif(5000, -5, 15))
 
 chart(trees, volume ~ diameter) +
   geom_point() +
-  geom_abline(aes(intercept = intercept, slope = slope), data = models1, alpha = 1/6) 
+  geom_abline(aes(intercept = intercept, slope = slope),
+    data = models1, alpha = 1/6) 
 ```
 
-Sur ces  `r nrow(models)`  modèles, nous pouvons calculer la somme des carrés des résidus et observer quel est le meilleur modèle.
+Nous voyons sur le graphique qu'un grand nombre de droites différentes sont testées, mais nous ne distinguons pas grand chose de plus. Cependant, sur ces  `r nrow(models1)`  modèles, nous pouvons maintenant calculer la somme des carrés des résidus et ensuite déterminer quel est le meilleur d'entre eux.
 
 ```{r}
-# fonction de calcule de la somme des carrés des résidus
-measure_distance <- function(slope, intercept, x, y){
-   predict <- x * slope + intercept
-   dist <- y - predict
-   sum(dist ^ 2)
+# Fonction de calcul de la somme des carrés des résidus
+measure_distance <- function(slope, intercept, x, y) {
+   ybar <- x * slope + intercept
+   resid <- y - ybar
+   sum(resid^2)
 }
-# test de la fonction
+# Test de la fonction
 #measure_distance(slope = 0, intercept = 0.85, x = trees$diameter, y = trees$volume)
 
-# fonction adaptée pour être employé avec purrr:map
-trees_dist <- function(intercept, slope){
-  measure_distance(slope = slope, intercept = intercept, x = trees$diameter, y = trees$volume)
+# Fonction adaptée pour être employé avec purrr:map() pour distribuer le calcul
+trees_dist <- function(intercept, slope) {
+  measure_distance(slope = slope, intercept = intercept,
+    x = trees$diameter, y = trees$volume)
 }
 
 models1 <- models1 %>%
   mutate(dist = purrr::map2_dbl(intercept, slope, trees_dist))
 ```
 
-si nous réalisons un graphique de valeurs de pentes, d'ordonnée à l'origine et des distances calculées, nous obtenons le graphique ci-dessous.
+Si nous réalisons un graphique de valeurs de pentes, d'ordonnées à l'origine et de la valeur de la fonction objective (distance) en couleur, nous obtenons le graphique ci-dessous.
 
 ```{r}
 plot <- chart(models1, slope ~ intercept %col=%  dist) +
-    geom_point() +
-  geom_point(data = filter(models1, rank(dist) <= 10), shape = 1, color = 'red', size = 3) +
+  geom_point() +
+  geom_point(data = filter(models1, rank(dist) <= 10),
+    shape = 1, color = 'red', size = 3) +
   labs( y = "Pente", x = "Ordonnée à l'origine", color = "Distance") +
   scale_color_viridis_c(direction = -1)
-#plot
 plotly::ggplotly(plot)
 ```
 
-rem  : Les 10 valeurs les plus faibles sont mis en évidence par un cercle rouge
+Les 10 valeurs les plus faibles sont mises en évidence sur le graphique par des cercles rouges. Le modèle optimal que nous recherchons se trouve dans cette région.
 
 ```{r}
 best_models <- models1 %>.%
-  filter(., rank(dist) <= 5)
+  filter(., rank(dist) <= 10)
 ```
 
 
-Nous pouvons afficher les `r nrow(best_models)` meilleurs modèles sur notre graphique 
+Nous pouvons afficher les `r nrow(best_models)` meilleurs modèles sur notre graphique\ :
 
 ```{r}
 chart(trees, volume ~ diameter) +
   geom_abline(data = best_models, 
     aes(slope = slope, intercept = intercept, color = dist), alpha = 3/4) +
   geom_point() +
-  labs(color = "Modèle")  +
+  labs(color = "Distance")  +
   scale_color_viridis_c(direction = -1)
-
 ```
 
-**En résumé, nous avons besoin d'une fonction qui calcule la distance d'un modèle par rapport à nos observations et d'un algorihtme pour la minimiser.** 
+**En résumé, nous avons besoin d'une fonction qui calcule la distance d'un modèle par rapport à nos observations et d'un algorithme pour la minimiser.** 
 
-Il n'est cependant pas nécessaire de chercher pendant des heures la meilleure fonction et le meilleur algorithme. Il existe dans R, un outil spécifiquement conçu pour adapter des modèles linéaires sur des observations, la fonction `lm()`. 
+Il n'est cependant pas nécessaire de chercher pendant des heures la meilleure fonction et le meilleur algorithme. Il existe dans R, un outil spécifiquement conçu pour adapter des modèles linéaires sur des observations, la fonction `lm()`. Dans le cas particulier de la régression par les moindres carrés, la solution s'obtient très facilement par un simple calcul\ :
 
-Vous avez à votre disposition des snippets dédiés au focntions liés modèles linéaires. pour ne pas devoir retenir `... -> ...m -> -> .ml`
+$$a = \frac{cov_{x, y}}{var_x} \ \ \ \textrm{et} \ \ \ b = \bar y - a \ \bar x$$
+
+où $\bar x$ et $\bar y$ sont les moyennes pour les deux variables, $cov$ est la covariance et $var$ est la variance.
+
+```{block2, type='note'}
+Vous avez à votre disposition des snippets dédiés aux modèles linéaires (tapez `...`, ensuite choisissez `models`, ensuite `models : linear` et choisissez le snippet qui vous convient dans la liste.
+```
 
 ```{r}
 (lm. <- lm(data = trees, volume ~ diameter))
@@ -349,39 +429,38 @@ chart(trees, volume ~ diameter) +
   geom_abline(
     aes(intercept = lm.$coefficients[1], slope = lm.$coefficients[2]), 
     color = "red", size = 1.5) +
-  labs( color = "Modèle")  +
+  labs( color = "Distance")  +
   scale_color_viridis_c(direction = -1)
 ```
 
 
 ### La fonction `lm()`
 
-Suite à notre découverte de manière intuitive de la régression linéaire simple, nous pouvons ressortir quelques points clés : 
+Suite à notre découverte de manière intuitive de la régression linéaire simple, nous pouvons récapituler quelques points clés\ : 
 
 - Une droite suit l'équation mathématique suivante :
 
-$$y = ax + b$$
-dont `a` est la pente (*slope* en anglais) et `b` est l'ordonnée à l'origine (*intercept* en anglais).
+$$y = a \ x + b$$
+dont $a$ est la pente (*slope* en anglais) et $b$ est l'ordonnée à l'origine (*intercept* en anglais), tous deux les **paramètres** du modèle, alors que $x$ et $y$ en sont les **variables**.
 
-- La distance entre une valeur observée et une valeur prédite se nomme le résidu ($\epsilon$)
+- La distance entre une valeur observée $y_i$ et une valeur prédite $\hat y_i$ se nomme le résidu ($\epsilon_i$) et **se mesure toujours parallèlement** à l'axe $y$. Cela revient à considérer que toute l'erreur du modèle se situe sur $y$ et non sur $x$. Cela donne l'équation complète de notre modèle statistique\ :
 
-$$y_i = ax_i + b + \epsilon_i$$
+$$y_i = a \ x_i + b + \epsilon_i$$
 
-dont $y_i$ est la valeur mesurée pour le point i sur l'axe y, $a$ est la pente (*slope* en anglais), $x_i$  est la valeur mesurée pour le point i sur l'axe x, `b` est l'ordonnée à l'origine (*intercept* en anglais) et $\epsilon_i$ est la distance entre la valeur prédite par la droite  et la valeur de $y_i$.
+avec $y_i$ est la valeur mesurée pour le point i sur l'axe y, $a$ est la pente, $x_i$  est la valeur mesurée pour le point i sur l'axe x, `b` est l'ordonnée à l'origine et $\epsilon_i$ les résidus. On peut montrer (nous ne le ferons pas ici pour limiter les développements mathématiques) que le choix des moindres carrés des résidus comme fonction objective revient à considérer que nos résidus suivent **une distribution normale** centrée autour de zéro et avec un écart type $\sigma$ constant/ :
 
-- La meilleure droite s'obtient par la minimisation de la somme des carrés des résidus (régression par les moindres carrés).
+$$\epsilon_i \approx N(0, \sigma)$$
 
-- La fonction `lm()` permet de calculer la meilleure droite possible 
+- Dans le cas de la régression linéaire simple, la meilleure droite s'obtient très facilement par la minimisation de la somme des carrés des résidus. En effet, la pente $a = \frac{cov_{x, y}}{var_x}$ et l'ordonnée à l'origine $b = \bar y - a \ \bar x$.
+
+- La fonction `lm()` permet de faire ce calcul très facilement dans R.
 
 
 ```{r}
-#trees %>.%
-#  filter(., diameter < 0.5) -> trees
-
-# Modèle linéaire
+# Régression linéaire
 lm. <- lm(data = trees, volume ~ diameter)
 
-# graphique de nos observations et de la droite obtenue avec la fonction lm()
+# Graphique de nos observations et de la droite obtenue avec la fonction lm()
 chart(trees, volume ~ diameter) +
   geom_point() + 
   geom_abline(
@@ -391,93 +470,103 @@ chart(trees, volume ~ diameter) +
   scale_color_viridis_c(direction = -1)
 ```
 
-La fonction `lm()` crée un objet avec de nombreuses informations calculées et mis à notre disposition pour analyser notre modèle linéaire. La fonction `class()` permet de mettre en avant la classe de notre objet.
+La fonction `lm()` crée un objet spécifique qui contient de nombreuses informations pour pouvoir ensuite analyser notre modèle linéaire. La fonction `class()` permet de mettre en avant la classe de notre objet.
 
 ```{r}
 class(lm.)
 ```
 
-Attention, nous devons toujours garder un esprit critique. Que pensez vous du graphique suivant ? On peut mettre en avant que nous avons une seule valeur dont le diamètre est supérieur à 0.5m de diamètre.
 
+### Résumé à l'aide de `summary()`
 
-### Tableau condensé des résultats 
-
-Avec la fonction `summary()` nous obtenons le tableau d'analyse du modèle linéaire. 
+Avec la fonction `summary()` nous obtenons un résumé condensé des informations les plus utiles pour interpréter notre régression linéaire. 
 
 ```{r}
 summary(lm.)
 ```
 
 
-- Call: 
+- Call\ : 
 
-Il s'agit de la formule employée dans la fonction `lm()`. C'est à dire le volume en fonction du diamètre du cerisier noirs
+Il s'agit de la formule employée dans la fonction `lm()`. C'est à dire le volume en fonction du diamètre du jeu de données `trees`.
 
-- Residuals:
+- Residuals\ :
 
-La tableau nous fournit un résumé via les 5 nombres de l'ensemble des résidus (dont vous pouvez faire appel à l'ensemble des résidus avec `lm.$residuals`)
+La tableau nous fournit un résumé via les 5 nombres de l'ensemble des résidus (que vous pouvez récupérer à partir de `lm.$residuals`).
 
 ```{r}
 fivenum(lm.$residuals)
 ```
 
 
-- Coefficients:
+- Coefficients\ :
 
-Il s'agit des résultats associés à la pente et à l'ordonnée à l'origine dont les  valeurs estimées des paramètres *(Estimate*)
+Il s'agit des résultats associés à la pente et à l'ordonnée à l'origine dont les valeurs estimées des paramètres *(Estimate*). Les mêmes valeurs peuvent être obtenues à partir de `lm.$coefficients`\ :
 
 ```{r}
 lm.$coefficients
 ```
 
-On retrouve également les écart-types sur ces valeurs (*Std.Error*), les valeurs des distibutions de Student sur les valeurs estimées (*t value*) et enfin la valeur de valeurs de p (*PR(>|t|)*).
+On retrouve également les écart-types calculés sur ces valeurs (*Std.Error*) qui donnent une indication de la précision de leur estimation, les valeurs des distibutions de Student sur les valeurs estimées (*t value*) et enfin les valeurs p (*PR(>|t|)*) liées à un test de Student pour déterminer si le paramètre `p` correspondant est significativement différent de zéro (avec $H_0: p = 0$ et $H_a: p \neq 0$).
 
-Nous pouvons donc écrire l'équation de notre régression linéaire :
+A partir des données de ce résumé, nous pouvons maintenant **paramétrer** l'équation de notre modèle\ :
 
 $$y = ax + b$$
 
-$$volume \ de \ bois = 5.65 \times diamètre \ à \ 1.4 \ m  - 1.05 $$
- 
-- Residual standard error:
+devient^[Lors de la paramétrisation du modèle, pensez à arrondir la valeur des paramètres à un nombre de chiffres significatifs raisonnables. Inutile de garder 5, ou même 3 chiffres derrière la virgule si vous n'avez que quelques dizaines d'obserrvations pour ajuster votre modèle.]\ :
 
-Il s'agit de l'écart-type résiduel 
+$$volume \ de \ bois = 5.65 \ diamètre \ à \ 1.4 \ m  - 1.05 $$
+ 
+- Residual standard error\ :
+
+Il s'agit de l'écart-type résiduel, considérant que les debrés de liberté du modèle est le nombre d'observations $n$ soustrait du nombre de paramètres à estimer (ici 2).
 
 $$\sqrt{\frac{\sum(y_i - ŷ_i)^2}{n-2}}$$
 
-- Multiple R-squared:
+- Multiple R-squared\ :
 
-Il s'agit de la valuer du coefficient $R^2$ qui exprime la fraction de variance exprimé par le modèle. Souvenons nous que la variance totale respecte la propiété d'additivité. La variance conditionnelle $s^2_{y\left|x\right|}$ peut être décomposé comme étant
+Il s'agit de la valeur du coefficient $R^2$ qui exprime la fraction de variance exprimé par le modèle. Souvenons nous que la variance totale respecte la propiété d'additivité. La variance conditionnelle $s^2_{y\left|x\right|}$ peut être décomposée comme une somme de carrés ($SC$) divisés par des degrés de liberté associés, avec\ :
 
-$$SS(total) = SS(reg) + SS(résidus)$$
+$$SC(total) = SC(reg) + SC(résidus)$$
+
+$$SC(total) = \sum_{i=0}^n(y_i - \bar y_i)^2$$
+
+$$SC(reg) = \sum_{i=0}^n(ŷ_i - \bar y_i)^2$$
+
+$$SC(résidus) = \sum_{i=0}^n(y_i - ŷ_i)^2$$
+
+A partir de la décomposition de ces sommes de carrés, le coefficient $R^2$ se définit comme\ :
+
+$$R^2 = \frac{SC(reg)}{SC(total)}$$
+
+La valeur du $R^2$ est comprise entre 0 (lorsque le modèle est très mauvais et n'explique rien) et 1 (lorsque le modèle est parfait et "capture" toute la variance des données\ ; dans ce cas, tous les résidus valent zéro). Donc, **plus le coefficient $R^2$ se rapproche de un, plus le modèle explique bien les données**.
+
+- Adjusted R-squared\:
+
+La valeur du coefficient $R^2$ ajustée. Le calcul de cette valeur sera abordé dans la suite de ce livre.
+
+- F-statistic\ :
+
+Tout comme pour l'ANOVA, le test de la significativité de la régression car  $MS(reg)/MS(résidus)$ suit une distribution F à respectivement 1 et $n-2$ degré de liberté, avec $MS$ les carrés moyens, c'est-à-dire les sommes des carrés $SC$ divisés par leurs degrés de liberté respectifs.
+
+- p-value\ : 
+
+Il s'agit de la valeur p associé à la statistique de F, donc à l'ANOVA associée à la régression linéaire.
 
 
-$$SS(total) = \sum(y_i - \bar y_i)^2$$
+## Outils de diagnostic
 
-$$SS(reg) = \sum(ŷ_i - \bar y_i)^2$$
+Une fois la meilleure droite de régression obtenue, le travail est loin d'être terminé. Il se peut que le nuage de point ne soit pas tout-à-fait linéaire, que sa dispesion ne soit pas homogène, que les résidus n'aient pas une distribution normale, qu'il existe des valeurs extrêmes aberrantes, ou qui tirent la droite vers alles de manière excessive.
 
-$$SS(residus) = \sum(y_i - ŷ_i)^2$$
-
-$$R^2 = \frac{SS(reg)}{SS(total)}$$
-
-Dès lors la valeur du $R^2$ ne peut être compris que entre 0 et 1. 
-
-
-- Adjusted R-squared:
-
-La valuer du coefficient $R^2$ ajustée. Le calcul de cette valeur sera abordé dans la suite de ce livre. 
-
-- F-statistic
-
-Tout comme pour l'ANOVA, le test de la significativité de la régression car  $MS(reg)/MS(résidus)$ suit une distribution F à respectivement 1 et $n-2$ degré de liberté. 
-
-- p-value: 
-
-Il s'agit de la valeur de p associé à la statistique de F.
+Nous allons maintenant devoir diagnostiquer ces possibles problèmes. L'**analyse des résidus** permet de le faire. Ensuite, si deux ou plusieurs modèles sont utilisable, il nous faut décider lequel conserver. Enfin, nous pouvons aussi calculer et visualiser l'**enveloppe de confiance** 
+du modèle et extraire une série de données de ce modèle.
 
 
 ### Analyse des résidus
 
-Nous avons en plus à notre disposition 6 graphiques pour étudier la qualité de notre régression. Le premier graphique permet de vérifier la distribution homogène des résidus. Dans une bonne régression, nous aurons une distribution équilibrée de part et d'autre du 0. Que pensez vous de notre graphique d'anayse des résidus ? Nous avons une valeur plus éloignée du 0 qui est mis en avant par la courbe en bleue qui montre l'influence des résidus. 
+Le tableau numérique obtenu à l'aide de `summary()` peut faire penser que l'étude d'une régression linéaire se limite à quelques valeurs numériques et divers tests d'hypothèses associés. C'est un premier pas, mais c'est oublier que la technique est **essentiellement visuelle**. Le graphique du nuage de points avec la droite superposée est un premier outil diagnostic visuel indispensable, mais il n'est pas le seul\ ! Plusieurs graphiques spécifiques existent pour mettre en évidence diverses propriétés des résidus qui peuvent révéler des problèmes. Leur inspection est indispensable et s'appelle l'**analyse des résidus**. Les différents graphiques sont faciles à obtenir à partir des snippets.
+
+Le premier de ces graphique permet de vérifier la distribution homogène des résidus. Dans une bonne régression, nous aurons une distribution équilibrée de part et d'autre du zéro sur l'axe Y. Que pensez vous de notre graphique d'anayse des résidus\ ? Nous avons une valeur plus éloignée du zéro qui est mise en avant par la courbe en bleue qui montre l'influence générale des résidus. 
 
 ```{r}
 #plot(lm., which = 1)
@@ -490,7 +579,7 @@ lm. %>.%
   ggtitle("Residuals vs Fitted")
 ```
 
-Ce second graphique permet de vérifier la normalité des résidus par rapport à une distribution normale. 
+Le second graphique permet de vérifier la normalité des résidus par rapport à une distribution normale.
 
 ```{r}
 #plot(lm., which = 2)
@@ -502,7 +591,7 @@ lm. %>.%
   ggtitle("Normal Q-Q")
 ```
 
-Ce troisième graphique va standardiser les résidus afin de pouvoir comparer les résidus positif et les résidus négatifs. A nouveau, nous pouvons observer qu'une valeur influence fortement la courbe bleue.
+Le troisième graphique va standardiser les résidus, et surtout, en prendre la racine carréE. Cela a pour effet de superposer les résidus négatifs sur les résidus positifs. Nous y diagnostiquons beaucoup plus facilement des problèmes de distribution de ces résidus. A nouveau, nous pouvons observer qu'une valeur influence fortement la courbe bleue.
 
 ```{r}
 #plot(lm., which = 3)
@@ -515,7 +604,7 @@ lm. %>.%
   ggtitle("Scale-Location")
 ```
 
-Ce quatrième graphique met en évidence l'influence des individus sur la régression linéaire. Effectivement, la régression linéaire est sensible aux valeurs extrêmes. Nous pouvons observer que nous avons une valeur qui influence fortement notre régression. On utilise pour ce faire la distance de Cook que nous ne détailleront pas dans le cadre de ce cours. 
+Le quatrième graphique met en évidence l'influence des individus sur la régression linéaire. Effectivement, la régression linéaire est sensible aux valeurs extrêmes. Nous pouvons observer que nous avons une valeur qui influence fortement notre régression. On utilise pour ce faire la distance de Cook que nous ne détailleront pas dans le cadre de ce cours.
 
 ```{r}
 #plot(lm., which = 4)
@@ -527,7 +616,7 @@ lm. %>.%
   ggtitle("Cook's distance")
 ```
 
-Ce cinquième grapique utilise l'effet de levier (*Leverage*) qui met également en avant l'influence des individus sur notre régression. Nous avons à nouvea une valeur qui influence notre modèle.
+Le cinquième grapique utilise l'effet de levier (*Leverage*) qui met également en avant l'influence des individus sur notre régression. Il répond à la question suivante\ : "est-ce qu'un ou plusieurs points sont tellement influents qu'ils tirent la régression vers eux de manière abusive\ ?" Nous avons à nouveau une valeur qui influence notre modèle.
 
 ```{r}
 #plot(lm., which = 5)
@@ -541,7 +630,7 @@ lm. %>.%
   ggtitle("Residuals vs Leverage")
 ```
 
-Ce sixième graphique met en relation la distance de Cooks et l'effet de levier. Notre unique point d'une valeur supérieur à 0.5 m de diamètre influence fortement notre modèle.  .... 
+Le sixième graphique met en relation la distance de Cooks et l'effet de levier. Notre unique point d'une valeur supérieur à 0.5 m de diamètre influence fortement notre modèle.
 
 ```{r}
 #plot(lm., which = 6)
@@ -555,10 +644,12 @@ lm. %>.%
   ggtitle(expression("Cook's dist vs Leverage h"[ii]/(1-h[ii])))
 ```
 
+A l'issue de l'analyse des résidus, nous abservons donc différents problèmes qui suggèrent que le modèle choisi n'est peut être pas le plus adapté. Nous comprendrons pourquoi plus loin.
+
 
 ### Comparaison de régressions
 
-Vous pouvez à présent comparer ces résultats avec un tableau et les 6 graphiques sans la valeur supérieur à 0.5m de diamètre. **Attention, On ne peut supprimer une valeur sans raison valable.** La points à supprimer doivent théoriquement être fait avant de débuter l'analyse. La raison de la suppression de ce point est lié au fait qu'il soit seul et unique point supérieur à 0.5m de diamètre.
+Vous pouvez à présent comparer ces résultats avec un tableau et les six graphiques d'analyse des résidus sans la valeur supérieur à 0.5m de diamètre. **Attention, On ne peut supprimer une valeur sans raison valable.** La suppression de pointsd aberrants doit en principe être faite avant de débuter l'analyse. La raison de la suppression de ce point est lié au fait qu'il soit seul et unique point supérieur à 0.5m de diamètre. Nous le faisons ici à titre de comparaison.
 
 ```{r}
 trees_red <- filter(trees, diameter < 0.5)
@@ -578,14 +669,14 @@ chart(trees, volume ~ diameter) +
 
 ```
 
-Tentez d'analyser le tableau de notre régression 
+Tentez d'analyser le tableau de notre régression.
 
 
 ```{r}
 summary(lm1)
 ```
 
-Tentez d'analyser ces graphiques ci-dessous
+Tentez d'analyser les graphiques d'analyse des résidus ci-dessous.
 
 ```{r}
 #plot(lm1, which = 1)
@@ -641,21 +732,20 @@ lm1 %>.%
   geom_smooth(se = FALSE, size = 0.5, method = "loess", formula = y ~ x) +
   labs(x = expression("Leverage h"[ii]), y = "Cook's distance") +
   ggtitle(expression("Cook's dist vs Leverage h"[ii]/(1-h[ii]))) -> b
-
 ```
 
 
 ##### Pièges et astuces : extrapolation {-}
 
-Notre régression linéaire a été réalisé sur des cerisiers noirs dont le diamètre est compris entre `r min(trees$diameter)`  et `r max(trees$diameter)` mètre. Pensez vous qu'il est acceptable de prédire des volumes de bois pour des arbres dont le diamètre est inférieur ou supérieur à nos valeurs minimales et maximales mesurées ? 
+Notre régression linéaire a été réalisé sur des cerisiers noirs dont le diamètre est compris entre `r min(trees$diameter)`  et `r max(trees$diameter)` mètre. Pensez vous qu'il soit acceptable de prédire des volumes de bois pour des arbres dont le diamètre est inférieur ou supérieur à nos valeurs minimales et maximales mesurées (extrapolation)\ ?
 
-Utilisons notre régression linéaire afin de prédire 10 volumes de bois à partir d'arbre dont le diamètre varie entre 0 et 1m.
+Utilisons notre régression linéaire afin de prédire 10 volumes de bois à partir d'arbre dont le diamètre varie entre 0.1 et 0.8m.
 
 ```{r}
-new <- data.frame(diameter = seq(0, 0.7, length.out = 8))
+new <- data.frame(diameter = seq(0.1, 0.7, length.out = 8))
 ```
 
-Ajoutons une variable `pred` qui contient les prédictions en volume de bois. Observez vous un problème particulier sur base du tableau ci-dessous:
+Ajoutons une variable `pred` qui contient les prédictions en volume de bois. Observez-vous un problème particulier sur base du tableau ci-dessous\ ?
 
 ```{r}
 new %>.%
@@ -663,7 +753,7 @@ new %>.%
 new
 ```
 
-Il est peut être plus simple de voir la problématique sur un nuage de points. Pour un diamètre de `r new$diameter[2]` m de diamètre, le volume de bois est de `r round(new$pred[2], 2)` mis en avant par l'intersection des lignes pointillées blues.
+Il est peut-être plus simple de voir le problème sur un nuage de points. Pour un diamètre de `r new$diameter[2]` m de diamètre, le volume de bois est de `r round(new$pred[2], 2)` mis en avant par l'intersection des lignes pointillées bleues.
 
 ```{r}
 chart(trees, volume~diameter) +
@@ -677,10 +767,7 @@ chart(trees, volume~diameter) +
 
 ```
 
-**Retenons qu'il est fortement déconseillé d'extrapoler des données**
-
-Il est de ce fait plus exact de représenter notre régression linéaire dans l'intervalle des données que nous avons.
-
+Le volume de bois prédit est négatif\ ! Notre modèle est-il alors complètement faux\ ? Rappelons-nous qu'un modèle est nécessairement une vision simplifiée de la réalité. En particulier, notre modèle a été entraîné avec des données comprises dans un intervalle. Il est alors valable pour effectuer des **interpolations** à l'intérieur de cet intervalle, mais **ne peut pas être utilisé pour effectuer des extrapolations** en dehors, comme nous venos de réaliser.
 
 ```{r}
 trees %>.%
@@ -692,16 +779,18 @@ chart(trees, volume~diameter) +
 
 ```
 
+
 ##### Pièges et astuces : significativité fortuite {-}
 
-TODO
+Gardez toujours à l'esprit qu'il est possible que votre jeu de données donne une régression significative, mais purement **fortuite**. Les données supplémentaires de test devraient alros démasquer le problème. D'où l'importance de vérifier/valider votre modèle.
+
+Le **principe de parcimonie** veut que l'on ne teste pas toutes les combinaisons possibles deux à deux des variables d'un gros jeu de données, mais que l'on restreigne les explorations à des relations qui ont un sens biologique afin de minimiser le risque d'obtenir une telle régression de manière fortuite.
 
 
-- regression peut être sifgnificatif de manière fortuite
+### Enveloppe de confiance
 
-- tester n'importe quelle variable avec n'improte quelle autre variable (parcimonie)
+De même que l'on peut définir un intervalle de confiance dans lequel la moyenne d'un échantillon se situe avec une probabilité donnée, il est aussi possible de calculer et de tracer une **enveloppe de confiance** qui indique la région dans laquelle le "vrai" modèle se trouve avec une probabilité donnée (généralement, on choisi cette probabilité à 95%). Voici ce que cela donne\ :
 
-### Intervalle de confiance (I.C.)
 
 ```{r}
 lm. %>.% (function(lm, model = lm[["model"]], vars = names(model))
@@ -710,19 +799,21 @@ lm. %>.% (function(lm, model = lm[["model"]], vars = names(model))
   stat_smooth(method = "lm", formula = y ~ x))(.)
 ```
 
-
-calcule de l'écart type
-
-$$s_{y|x}\ =\ \sqrt{ \frac{\sum_{ }^{ }\left(y_i-ŷ_i\right)^2}{n-2}}$$
+Cette enveloppe de confiance est en réalité basée sur l'écart type *conditionnel* (écart type de $y$ sachant quelle est la valeur de $x$) qui se calcule comme suit\ :
 
 
-calcul de l IC
+$$s_{y|x}\ =\ \sqrt{ \frac{\sum_{i = 0}^n\left(y_i - \hat y_i\right)^2}{n-2}}$$
 
-$$CI_{1-\alpha}\ =\ ŷ_i\ \ \pm t_{\frac{\alpha}{2}}^{n-2}  \frac{s_{y\left|x\right|}\ }{\sqrt{n}}$$
+A partir de là, il est possible de définir également un intervalle de confiance conditionnel à $x$\ :
+
+$$CI_{1-\alpha}\ =\ \hat y_i\ \ \pm \  t_{\frac{\alpha}{2}}^{n-2}  \frac{s_{y|x}\ }{\sqrt{n}}$$
+
+C'est cet intervalle de confiance conditionnel qui est matérialisé par l'enveloppe de confiance autour de la droite de régression représentée sur le graphique.
+
 
 ### Extraire les données d'un modèle
 
-Pour extraire facilement et rapidement sous la forme d'un tableau de données les coefficents de votre modèle avec la fonction `tidy()`. 
+La fonction `tidy()` du package `broom` extrait facilement et rapidement sous la forme d'un tableau différentes valeurs associées à votre régression linéaire.
 
 ```{r}
 (DF <- broom::tidy(lm.))
@@ -736,8 +827,7 @@ Pour extraire facilement et rapidement sous la forme d'un tableau de données le
 
 ```
 
-
-vous avez un snippet à votre disposition  pour ces deux fonctions:
+Vous avez des snippets à votre disposition pour ces deux fonctions\ :
 
 `... -> models ..m -> .models tools .mt -> .mtmoddf` ou encore `... -> models ..m -> .models tools .mt -> .mtpardf`
 
@@ -749,21 +839,3 @@ TODO
 ## Régression linéaire polynomiale
 
 TODO
-
-## Les variables facteurs
-
-Le modèle linéaire permet d'analyser une relation linéaire entre deux variables. Jusqu'à présente, nous avons utilisé deux variables quantitative (si vous avez des doutes concernant les types de variables, relisez la section suivante : [Type de variables](http://biodatascience-course.sciviews.org/sdd-umons/types-de-variables.html) ) . Dans le premier ouvrage, vous avez découvert l'analyse de variance dans le [chapitre 10](http://biodatascience-course.sciviews.org/sdd-umons/variance.html), il est indispensable de relire avec attention cette section au minimum. 
-
-Avez vous remarqué une ressemblance particulière entre la regression linéaire que nous avons réalisé précédement et l'analyse de variance ? 
-
-Les plus observateurs auront mis en avant la que la fonction est la même pour réaliser une régression linéaire et une analyse de variance. La fonction `lm()` est capable de traiter aussi bien des variables réponses qualitatives que quantitatives. 
-
-### Matrice de contraste 
-
-## Modèle linéaire
-
-Le modèle linaire regroupe l'ensemble des régressions présentées précédement. Nous savons dorénavant la raison d'avoir une seule fonction  unique pour l'ensemble des procédures ci dessus , la fonction `lm()`
-
-## Comparaison des modèles
-
-Critère d'Akaike

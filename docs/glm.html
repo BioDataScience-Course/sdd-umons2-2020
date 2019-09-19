@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="comparaison-des-modeles.html">
-<link rel="next" href="non-lineaire.html">
+<link rel="prev" href="regression-lineaire-polynomiale.html">
+<link rel="next" href="les-variables-facteurs.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -57,72 +57,6 @@
 <script src="libs/plotly-main-1.39.2/plotly-latest.min.js"></script>
 
 
-<style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    background-color: #ffffff;
-    color: #a0a0a0;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
-div.sourceCode
-  { color: #1f1c1b; background-color: #ffffff; }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span. { color: #1f1c1b; } /* Normal */
-code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
-code span.an { color: #ca60ca; } /* Annotation */
-code span.at { color: #0057ae; } /* Attribute */
-code span.bn { color: #b08000; } /* BaseN */
-code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
-code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #924c9d; } /* Char */
-code span.cn { color: #aa5500; } /* Constant */
-code span.co { color: #898887; } /* Comment */
-code span.cv { color: #0095ff; } /* CommentVar */
-code span.do { color: #607880; } /* Documentation */
-code span.dt { color: #0057ae; } /* DataType */
-code span.dv { color: #b08000; } /* DecVal */
-code span.er { color: #bf0303; text-decoration: underline; } /* Error */
-code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
-code span.fl { color: #b08000; } /* Float */
-code span.fu { color: #644a9b; } /* Function */
-code span.im { color: #ff5500; } /* Import */
-code span.in { color: #b08000; } /* Information */
-code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
-code span.op { color: #1f1c1b; } /* Operator */
-code span.ot { color: #006e28; } /* Other */
-code span.pp { color: #006e28; } /* Preprocessor */
-code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
-code span.sc { color: #3daee9; } /* SpecialChar */
-code span.ss { color: #ff5500; } /* SpecialString */
-code span.st { color: #bf0303; } /* String */
-code span.va { color: #0057ae; } /* Variable */
-code span.vs { color: #bf0303; } /* VerbatimString */
-code span.wa { color: #bf0303; } /* Warning */
-</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -146,26 +80,32 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 <li class="part"><span><b>I Cours II: analyse et modélisation</b></span></li>
 <li class="chapter" data-level="1" data-path="lm.html"><a href="lm.html"><i class="fa fa-check"></i><b>1</b> Régression linéaire</a><ul>
-<li class="chapter" data-level="1.1" data-path="modele.html"><a href="modele.html"><i class="fa fa-check"></i><b>1.1</b> Modèle</a></li>
+<li class="chapter" data-level="1.1" data-path="modele.html"><a href="modele.html"><i class="fa fa-check"></i><b>1.1</b> Modèle</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="modele.html"><a href="modele.html#pourquoi-modeliser"><i class="fa fa-check"></i><b>1.1.1</b> Pourquoi modéliser ?</a></li>
+<li class="chapter" data-level="1.1.2" data-path="modele.html"><a href="modele.html#quand-modeliser"><i class="fa fa-check"></i><b>1.1.2</b> Quand modéliser ?</a></li>
+<li class="chapter" data-level="1.1.3" data-path="modele.html"><a href="modele.html#entrainement-et-confirmation"><i class="fa fa-check"></i><b>1.1.3</b> Entraînement et confirmation</a></li>
+</ul></li>
 <li class="chapter" data-level="1.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html"><i class="fa fa-check"></i><b>1.2</b> Régression linéaire simple</a><ul>
-<li class="chapter" data-level="1.2.1" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#quantifier-la-qualite-dun-modele"><i class="fa fa-check"></i><b>1.2.1</b> Quantifier la qualité d’un modèle</a></li>
+<li class="chapter" data-level="1.2.1" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#quantifier-lajustement-dun-modele"><i class="fa fa-check"></i><b>1.2.1</b> Quantifier l’ajustement d’un modèle</a></li>
 <li class="chapter" data-level="1.2.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#trouver-la-meilleure-droite"><i class="fa fa-check"></i><b>1.2.2</b> Trouver la meilleure droite</a></li>
 <li class="chapter" data-level="1.2.3" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#la-fonction-lm"><i class="fa fa-check"></i><b>1.2.3</b> La fonction <code>lm()</code></a></li>
 <li class="chapter" data-level="1.2.4" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#tableau-condense-des-resultats"><i class="fa fa-check"></i><b>1.2.4</b> Tableau condensé des résultats</a></li>
-<li class="chapter" data-level="1.2.5" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#analyse-des-residus"><i class="fa fa-check"></i><b>1.2.5</b> Analyse des résidus</a></li>
-<li class="chapter" data-level="1.2.6" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#comparaison-de-regressions"><i class="fa fa-check"></i><b>1.2.6</b> Comparaison de régressions</a></li>
-<li class="chapter" data-level="1.2.7" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#intervalle-de-confiance-i.c."><i class="fa fa-check"></i><b>1.2.7</b> Intervalle de confiance (I.C.)</a></li>
-<li class="chapter" data-level="1.2.8" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#extraire-les-donnees-dun-modele"><i class="fa fa-check"></i><b>1.2.8</b> Extraire les données d’un modèle</a></li>
 </ul></li>
-<li class="chapter" data-level="1.3" data-path="regression-lineaire-multiple.html"><a href="regression-lineaire-multiple.html"><i class="fa fa-check"></i><b>1.3</b> Régression linéaire multiple</a></li>
-<li class="chapter" data-level="1.4" data-path="regression-lineaire-polynomiale.html"><a href="regression-lineaire-polynomiale.html"><i class="fa fa-check"></i><b>1.4</b> Régression linéaire polynomiale</a></li>
-<li class="chapter" data-level="1.5" data-path="les-variables-facteurs.html"><a href="les-variables-facteurs.html"><i class="fa fa-check"></i><b>1.5</b> Les variables facteurs</a><ul>
-<li class="chapter" data-level="1.5.1" data-path="les-variables-facteurs.html"><a href="les-variables-facteurs.html#matrice-de-contraste"><i class="fa fa-check"></i><b>1.5.1</b> Matrice de contraste</a></li>
+<li class="chapter" data-level="1.3" data-path="analyse-des-residus.html"><a href="analyse-des-residus.html"><i class="fa fa-check"></i><b>1.3</b> Analyse des résidus</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="analyse-des-residus.html"><a href="analyse-des-residus.html#comparaison-de-regressions"><i class="fa fa-check"></i><b>1.3.1</b> Comparaison de régressions</a></li>
+<li class="chapter" data-level="1.3.2" data-path="analyse-des-residus.html"><a href="analyse-des-residus.html#intervalle-de-confiance-i.c."><i class="fa fa-check"></i><b>1.3.2</b> Intervalle de confiance (I.C.)</a></li>
+<li class="chapter" data-level="1.3.3" data-path="analyse-des-residus.html"><a href="analyse-des-residus.html#extraire-les-donnees-dun-modele"><i class="fa fa-check"></i><b>1.3.3</b> Extraire les données d’un modèle</a></li>
 </ul></li>
-<li class="chapter" data-level="1.6" data-path="modele-lineaire.html"><a href="modele-lineaire.html"><i class="fa fa-check"></i><b>1.6</b> Modèle linéaire</a></li>
-<li class="chapter" data-level="1.7" data-path="comparaison-des-modeles.html"><a href="comparaison-des-modeles.html"><i class="fa fa-check"></i><b>1.7</b> Comparaison des modèles</a></li>
+<li class="chapter" data-level="1.4" data-path="regression-lineaire-multiple.html"><a href="regression-lineaire-multiple.html"><i class="fa fa-check"></i><b>1.4</b> Régression linéaire multiple</a></li>
+<li class="chapter" data-level="1.5" data-path="regression-lineaire-polynomiale.html"><a href="regression-lineaire-polynomiale.html"><i class="fa fa-check"></i><b>1.5</b> Régression linéaire polynomiale</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="glm.html"><a href="glm.html"><i class="fa fa-check"></i><b>2</b> Modèle linéaire généralisé</a></li>
+<li class="chapter" data-level="2" data-path="glm.html"><a href="glm.html"><i class="fa fa-check"></i><b>2</b> Modèle linéaire généralisé</a><ul>
+<li class="chapter" data-level="2.1" data-path="les-variables-facteurs.html"><a href="les-variables-facteurs.html"><i class="fa fa-check"></i><b>2.1</b> Les variables facteurs</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="les-variables-facteurs.html"><a href="les-variables-facteurs.html#matrice-de-contraste"><i class="fa fa-check"></i><b>2.1.1</b> Matrice de contraste</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="modele-lineaire.html"><a href="modele-lineaire.html"><i class="fa fa-check"></i><b>2.2</b> Modèle linéaire</a></li>
+<li class="chapter" data-level="2.3" data-path="comparaison-des-modeles.html"><a href="comparaison-des-modeles.html"><i class="fa fa-check"></i><b>2.3</b> Comparaison des modèles</a></li>
+</ul></li>
 <li class="chapter" data-level="3" data-path="non-lineaire.html"><a href="non-lineaire.html"><i class="fa fa-check"></i><b>3</b> Modèle non linéaire</a></li>
 <li class="chapter" data-level="4" data-path="robuste-survie.html"><a href="robuste-survie.html"><i class="fa fa-check"></i><b>4</b> Régression robuste/quantile &amp; analyse de survie</a></li>
 <li class="chapter" data-level="5" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>5</b> Classification hiérarchique</a></li>
@@ -222,8 +162,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="prerequis-1" class="section level5 unnumbered">
 <h5>Prérequis</h5>
 <p>TODO</p>
-
-</div>
+</div> 
 </div>
 <div id="disqus_thread"></div>
 <script>
@@ -250,8 +189,8 @@ s.setAttribute('data-timestamp', +new Date());
           </div>
         </div>
       </div>
-<a href="comparaison-des-modeles.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="non-lineaire.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="regression-lineaire-polynomiale.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="les-variables-facteurs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -296,19 +235,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
-    script.src = src;
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>

@@ -42,9 +42,13 @@ _Le matériel dans cet ouvrage est distribué sous licence [CC BY-NC-SA 4.0](htt
 
 Le cours de  **Science des données II: analyse et modélisation**  est dispensé aux biologistes de troisième Bachelier en Faculté des Sciences de l'Université de Mons à partir de l'année académique 2019-2020.
 
-La matière est divisée en 8 modules de 6h chacun en présentiel. Il nécessitera environ un tiers de ce temps (voir plus, en fonction de votre rythme et de votre technique d'apprentissage) en travail à domicile. **Cette matière fait suite au premier cours dont le contenu est considéré comme assimilé (voir https://biodatascience-course.sciviews.org/sdd-umons/).**
+La matière est divisée en huit modules de 6h chacun en présentiel. Il nécessitera environ un tiers de ce temps (voir plus, en fonction de votre rythme et de votre technique d'apprentissage) en travail à domicile. **Cette matière fait suite au premier cours dont le contenu est considéré comme assimilé (voir https://biodatascience-course.sciviews.org/sdd-umons/).**
 
 <!-- A faire: un diagramme qui montre la relation entre ces différents modules, et avec les modules du cours 1 -->
+
+La première moitié du cours est consacrée à la **modélisation**, un domaine particulièrement important de la science des données qui étend les concepts déjà vu au cours 1 d'analyse de variance et de corrélation entre deux variables. Ces quatre modules formeront aussi un socle sur lequel nous pourrons élaborer les techniques d'apprentissage machine (classification supervisée), et puis ensuite l'apprentissage profond à la base de l'intelligence artificielle qui seront abordées plus tard dans le cours 3. Cette partie est dense, mais *ultra* importante\ !
+
+La seconde moitié s'intéressera à l'**exploration des données**, encore appelée **analyse des données** qui vise à découvrir des caractéristiques intéressantes dans des très gros jeux de données. Ces techniques sont d'autant plus utiles que les données volumineuses deviennent de plus en plus courantes en biologie.
 
 
 ## Matériel pédagogique {-}
