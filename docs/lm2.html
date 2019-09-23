@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="regression-lineaire-polynomiale.html">
-<link rel="next" href="les-variables-facteurs.html">
+<link rel="prev" href="outils-de-diagnostic.html">
+<link rel="next" href="regression-lineaire-multiple.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -57,6 +57,72 @@
 <script src="libs/plotly-main-1.39.2/plotly-latest.min.js"></script>
 
 
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -89,25 +155,27 @@
 <li class="chapter" data-level="1.2.1" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#quantifier-lajustement-dun-modele"><i class="fa fa-check"></i><b>1.2.1</b> Quantifier l’ajustement d’un modèle</a></li>
 <li class="chapter" data-level="1.2.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#trouver-la-meilleure-droite"><i class="fa fa-check"></i><b>1.2.2</b> Trouver la meilleure droite</a></li>
 <li class="chapter" data-level="1.2.3" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#la-fonction-lm"><i class="fa fa-check"></i><b>1.2.3</b> La fonction <code>lm()</code></a></li>
-<li class="chapter" data-level="1.2.4" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#resume-a-laide-de-summary"><i class="fa fa-check"></i><b>1.2.4</b> Résumé à l’aide de <code>summary()</code></a></li>
+<li class="chapter" data-level="1.2.4" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#resume-avec-summary"><i class="fa fa-check"></i><b>1.2.4</b> Résumé avec <code>summary()</code></a></li>
 </ul></li>
 <li class="chapter" data-level="1.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html"><i class="fa fa-check"></i><b>1.3</b> Outils de diagnostic</a><ul>
 <li class="chapter" data-level="1.3.1" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#analyse-des-residus"><i class="fa fa-check"></i><b>1.3.1</b> Analyse des résidus</a></li>
-<li class="chapter" data-level="1.3.2" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#comparaison-de-regressions"><i class="fa fa-check"></i><b>1.3.2</b> Comparaison de régressions</a></li>
-<li class="chapter" data-level="1.3.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#enveloppe-de-confiance"><i class="fa fa-check"></i><b>1.3.3</b> Enveloppe de confiance</a></li>
-<li class="chapter" data-level="1.3.4" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#extraire-les-donnees-dun-modele"><i class="fa fa-check"></i><b>1.3.4</b> Extraire les données d’un modèle</a></li>
+<li class="chapter" data-level="1.3.2" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#enveloppe-de-confiance"><i class="fa fa-check"></i><b>1.3.2</b> Enveloppe de confiance</a></li>
+<li class="chapter" data-level="1.3.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#extraire-les-donnees-dun-modele"><i class="fa fa-check"></i><b>1.3.3</b> Extraire les données d’un modèle</a></li>
 </ul></li>
-<li class="chapter" data-level="1.4" data-path="regression-lineaire-multiple.html"><a href="regression-lineaire-multiple.html"><i class="fa fa-check"></i><b>1.4</b> Régression linéaire multiple</a></li>
-<li class="chapter" data-level="1.5" data-path="regression-lineaire-polynomiale.html"><a href="regression-lineaire-polynomiale.html"><i class="fa fa-check"></i><b>1.5</b> Régression linéaire polynomiale</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="lm2.html"><a href="lm2.html"><i class="fa fa-check"></i><b>2</b> Régression linéaire II</a><ul>
-<li class="chapter" data-level="2.1" data-path="les-variables-facteurs.html"><a href="les-variables-facteurs.html"><i class="fa fa-check"></i><b>2.1</b> Les variables facteurs</a><ul>
-<li class="chapter" data-level="2.1.1" data-path="les-variables-facteurs.html"><a href="les-variables-facteurs.html#matrice-de-contraste"><i class="fa fa-check"></i><b>2.1.1</b> Matrice de contraste</a></li>
+<li class="chapter" data-level="2.0.1" data-path="lm2.html"><a href="lm2.html#resume-avec-summarysuite"><i class="fa fa-check"></i><b>2.0.1</b> Résumé avec <code>summary()</code>(suite)</a></li>
+<li class="chapter" data-level="2.0.2" data-path="lm2.html"><a href="lm2.html#comparaison-de-regressions"><i class="fa fa-check"></i><b>2.0.2</b> Comparaison de régressions</a></li>
+<li class="chapter" data-level="2.0.3" data-path="lm2.html"><a href="lm2.html#critere-dakaike"><i class="fa fa-check"></i><b>2.0.3</b> Critère d’Akaike</a></li>
+<li class="chapter" data-level="2.1" data-path="regression-lineaire-multiple.html"><a href="regression-lineaire-multiple.html"><i class="fa fa-check"></i><b>2.1</b> Régression linéaire multiple</a></li>
+<li class="chapter" data-level="2.2" data-path="regression-lineaire-polynomiale.html"><a href="regression-lineaire-polynomiale.html"><i class="fa fa-check"></i><b>2.2</b> Régression linéaire polynomiale</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="modele-lineaire.html"><a href="modele-lineaire.html"><i class="fa fa-check"></i><b>2.2</b> Modèle linéaire</a></li>
-<li class="chapter" data-level="2.3" data-path="comparaison-des-modeles.html"><a href="comparaison-des-modeles.html"><i class="fa fa-check"></i><b>2.3</b> Comparaison des modèles</a></li>
+<li class="chapter" data-level="3" data-path="mod-lineaire.html"><a href="mod-lineaire.html"><i class="fa fa-check"></i><b>3</b> Modèle linéaire</a><ul>
+<li class="chapter" data-level="3.1" data-path="les-variables-facteurs.html"><a href="les-variables-facteurs.html"><i class="fa fa-check"></i><b>3.1</b> Les variables facteurs</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="les-variables-facteurs.html"><a href="les-variables-facteurs.html#matrice-de-contraste"><i class="fa fa-check"></i><b>3.1.1</b> Matrice de contraste</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="mod-lineaire.html"><a href="mod-lineaire.html"><i class="fa fa-check"></i><b>3</b> Modèle linéaire</a></li>
+<li class="chapter" data-level="3.2" data-path="modele-lineaire.html"><a href="modele-lineaire.html"><i class="fa fa-check"></i><b>3.2</b> Modèle linéaire</a></li>
+</ul></li>
 <li class="chapter" data-level="4" data-path="reg-non-lin.html"><a href="reg-non-lin.html"><i class="fa fa-check"></i><b>4</b> Régression non linéaire</a></li>
 <li class="chapter" data-level="5" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>5</b> Classification hiérarchique</a></li>
 <li class="chapter" data-level="6" data-path="k-moyenne-som.html"><a href="k-moyenne-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne &amp; SOM</a><ul>
@@ -167,6 +235,136 @@
 <ul>
 <li>Le module précédent est une entrée en matière indispensable qui est complétée par le contenu du présent module.</li>
 </ul>
+</div>
+<div id="resume-avec-summarysuite" class="section level3">
+<h3><span class="header-section-number">2.0.1</span> Résumé avec <code>summary()</code>(suite)</h3>
+<ul>
+<li>Residual standard error :</li>
+</ul>
+<p>Il s’agit de l’écart-type résiduel, considérant que les degrés de liberté du modèle est le nombre d’observations <span class="math inline">\(n\)</span> soustrait du nombre de paramètres à estimer (ici 2).</p>
+<p><span class="math display">\[\sqrt{\frac{\sum(y_i - ŷ_i)^2}{n-2}}\]</span></p>
+<ul>
+<li>Multiple R-squared :</li>
+</ul>
+<p>Il s’agit de la valeur du coefficient <span class="math inline">\(R^2\)</span> qui exprime la fraction de variance exprimé par le modèle. Souvenons nous que la variance totale respecte la propiété d’additivité. La variance conditionnelle <span class="math inline">\(s^2_{y\left|x\right|}\)</span> peut être décomposée comme une somme de carrés (<span class="math inline">\(SC\)</span>) divisés par des degrés de liberté associés, avec :</p>
+<p><span class="math display">\[SC(total) = SC(reg) + SC(résidus)\]</span></p>
+<p><span class="math display">\[SC(total) = \sum_{i=0}^n(y_i - \bar y_i)^2\]</span></p>
+<p><span class="math display">\[SC(reg) = \sum_{i=0}^n(ŷ_i - \bar y_i)^2\]</span></p>
+<p><span class="math display">\[SC(résidus) = \sum_{i=0}^n(y_i - ŷ_i)^2\]</span></p>
+<p>A partir de la décomposition de ces sommes de carrés, le coefficient <span class="math inline">\(R^2\)</span> se définit comme :</p>
+<p><span class="math display">\[R^2 = \frac{SC(reg)}{SC(total)}\]</span></p>
+<p>La valeur du <span class="math inline">\(R^2\)</span> est comprise entre 0 (lorsque le modèle est très mauvais et n’explique rien) et 1 (lorsque le modèle est parfait et “capture” toute la variance des données ; dans ce cas, tous les résidus valent zéro). Donc, <strong>plus le coefficient <span class="math inline">\(R^2\)</span> se rapproche de un, plus le modèle explique bien les données</strong>.</p>
+<ul>
+<li>Adjusted R-squared:</li>
+</ul>
+<p>La valeur du coefficient <span class="math inline">\(R^2\)</span> ajustée. Le calcul de cette valeur sera abordé dans la suite de ce livre.</p>
+<ul>
+<li>F-statistic :</li>
+</ul>
+<p>Tout comme pour l’ANOVA, le test de la significativité de la régression car <span class="math inline">\(MS(reg)/MS(résidus)\)</span> suit une distribution F à respectivement 1 et <span class="math inline">\(n-2\)</span> degré de liberté, avec <span class="math inline">\(MS\)</span> les carrés moyens, c’est-à-dire les sommes des carrés <span class="math inline">\(SC\)</span> divisés par leurs degrés de liberté respectifs.</p>
+<ul>
+<li>p-value :</li>
+</ul>
+<p>Il s’agit de la valeur p associé à la statistique de F, donc à l’ANOVA associée à la régression linéaire.</p>
+</div>
+<div id="comparaison-de-regressions" class="section level3">
+<h3><span class="header-section-number">2.0.2</span> Comparaison de régressions</h3>
+<p>Vous pouvez à présent comparer ces résultats avec un tableau et les six graphiques d’analyse des résidus sans la valeur supérieur à 0.5m de diamètre. <strong>Attention, On ne peut supprimer une valeur sans raison valable.</strong> La suppression de pointsd aberrants doit en principe être faite avant de débuter l’analyse. La raison de la suppression de ce point est lié au fait qu’il soit seul et unique point supérieur à 0.5m de diamètre. Nous le faisons ici à titre de comparaison.</p>
+<pre class="sourceCode r"><code class="sourceCode r">trees &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="st">&quot;trees&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;datasets&quot;</span>, <span class="dt">lang =</span> <span class="st">&quot;fr&quot;</span>)
+lm. &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> trees, volume <span class="op">~</span><span class="st"> </span>diameter)
+
+trees_red &lt;-<span class="st"> </span><span class="kw">filter</span>(trees, diameter <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.5</span>)
+lm1 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> trees_red, volume <span class="op">~</span><span class="st"> </span>diameter)
+
+<span class="kw">chart</span>(trees, volume <span class="op">~</span><span class="st"> </span>diameter) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_abline</span>(
+    <span class="kw">aes</span>(<span class="dt">intercept =</span> lm.<span class="op">$</span>coefficients[<span class="dv">1</span>], <span class="dt">slope =</span> lm.<span class="op">$</span>coefficients[<span class="dv">2</span>]), 
+    <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">size =</span> <span class="fl">1.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>( <span class="dt">color =</span> <span class="st">&quot;Modèle&quot;</span>)  <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_color_viridis_c</span>(<span class="dt">direction =</span> <span class="dv">-1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_abline</span>(
+    <span class="kw">aes</span>(<span class="dt">intercept =</span> lm1<span class="op">$</span>coefficients[<span class="dv">1</span>], <span class="dt">slope =</span> lm1<span class="op">$</span>coefficients[<span class="dv">2</span>]), 
+    <span class="dt">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="dt">size =</span> <span class="fl">1.5</span>)</code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Tentez d’analyser le tableau de notre régression.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm1)</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = volume ~ diameter, data = trees_red)
+# 
+# Residuals:
+#       Min        1Q    Median        3Q       Max 
+# -0.215129 -0.068502 -0.001149  0.070522  0.181398 
+# 
+# Coefficients:
+#             Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept) -0.94445    0.09309  -10.15 6.98e-11 ***
+# diameter     5.31219    0.27540   19.29  &lt; 2e-16 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.1082 on 28 degrees of freedom
+# Multiple R-squared:   0.93,   Adjusted R-squared:  0.9275 
+# F-statistic: 372.1 on 1 and 28 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Tentez d’analyser les graphiques d’analyse des résidus ci-dessous.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm1, which = 1)</span>
+lm1 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .resid <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Residuals&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Residuals vs Fitted&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm1, which = 2)</span>
+lm1 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">aes</span>(<span class="dt">sample =</span> .std.resid)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_qq</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_qq_line</span>(<span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Theoretical quantiles&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Standardized residuals&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Normal Q-Q&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm1, which = 3)</span>
+lm1 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">sqrt</span>(<span class="kw">abs</span>(.std.resid)) <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>,
+    <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">bold</span>(<span class="kw">sqrt</span>(<span class="kw">abs</span>(<span class="st">&quot;Standardized residuals&quot;</span>))))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Scale-Location&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-3-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm1, which = 4)</span>
+lm1 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .cooksd <span class="op">~</span><span class="st"> </span><span class="kw">seq_along</span>(.cooksd)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="dt">by =</span> <span class="fl">0.05</span>), <span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Obs. number&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Cook&#39;s distance&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Cook&#39;s distance&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-3-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm1, which = 5)</span>
+lm1 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .std.resid <span class="op">~</span><span class="st"> </span>.hat <span class="op">%size=%</span><span class="st"> </span>.cooksd) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">size =</span> <span class="fl">0.5</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Leverage&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Standardized residuals&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Residuals vs Leverage&quot;</span>) -&gt;<span class="st"> </span>a
+
+<span class="co">#plot(lm1, which = 6)</span>
+lm1 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .cooksd <span class="op">~</span><span class="st"> </span>.hat <span class="op">%size=%</span><span class="st"> </span>.cooksd) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>, <span class="dt">colour =</span> <span class="ot">NA</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_abline</span>(<span class="dt">slope =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dt">by =</span> <span class="fl">0.5</span>), <span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">size =</span> <span class="fl">0.5</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="kw">expression</span>(<span class="st">&quot;Leverage h&quot;</span>[ii]), <span class="dt">y =</span> <span class="st">&quot;Cook&#39;s distance&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">expression</span>(<span class="st">&quot;Cook&#39;s dist vs Leverage h&quot;</span>[ii]<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span>h[ii]))) -&gt;<span class="st"> </span>b</code></pre>
+</div>
+<div id="critere-dakaike" class="section level3">
+<h3><span class="header-section-number">2.0.3</span> Critère d’Akaike</h3>
+<p>A faire…</p>
 </div> 
 </div>
 <div id="disqus_thread"></div>
@@ -194,8 +392,8 @@ s.setAttribute('data-timestamp', +new Date());
           </div>
         </div>
       </div>
-<a href="regression-lineaire-polynomiale.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="les-variables-facteurs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="outils-de-diagnostic.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="regression-lineaire-multiple.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -240,6 +438,19 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

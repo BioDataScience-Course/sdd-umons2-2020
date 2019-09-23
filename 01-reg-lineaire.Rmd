@@ -65,7 +65,7 @@ Le but de la modélisation consiste à découvrir l'équation mathématique de l
 
 - **Explorer les relations** entre variables. Sans aucunes connaissances sur le contexte qui a permit d'obtenir nos données, un modèle peut fournir des informations utiles pour orienter les recherches futures.
 
-Idéalement, un modèle devrait pouvoir servir à ces différentes applications. En pratique, comme le modèle est forcément une simplification de la réalité, des compromis doivent être concédés pour arriver à cette simplification. En fonction de son usage, les compromis possibles vont différer. Il s'en suit une *spécialisation* des modèles en modèles **mécanistiques** qui décrivent particulièrement bien le mécanisme sous-jacent (fréquents en physique, par exemple), les modèles **prédictifs** conçus pour calcluer des nouvelles valeurs (que l'intelligence artificielle affectionne particulièrement), les modèles **comparatifs**, et enfin, les modèles **exploratroires** (utilisés dans la phase initiale de découverte et de description des données). Retenez simplement qu'un même modèle est rarement efficace sur les quatre tableaux simultanément.
+Idéalement, un modèle devrait pouvoir servir à ces différentes applications. En pratique, comme le modèle est forcément une simplification de la réalité, des compromis doivent être concédés pour arriver à cette simplification. En fonction de son usage, les compromis possibles vont différer. Il s'en suit une *spécialisation* des modèles en modèles **mécanistiques** qui décrivent particulièrement bien le mécanisme sous-jacent (fréquents en physique, par exemple), les modèles **prédictifs** conçus pour calculer des nouvelles valeurs (que l'intelligence artificielle affectionne particulièrement), les modèles **comparatifs**, et enfin, les modèles **exploratroires** (utilisés dans la phase initiale de découverte et de description des données). Retenez simplement qu'un même modèle est rarement efficace sur les quatre tableaux simultanément.
 
 
 ### Quand modéliser ?
@@ -96,7 +96,7 @@ En statistique, une règle universelle veut qu'une observation ne peut servir qu
 - jeu de **confirmation** ou de **test** qui sert à vérifier que le modèle est *génaralisable* car il est capable de prédire le comportement d'un *autre* jeu de données indépendant issu de la même population statistique.
 
 ```{block2, type='note'}
-C'est une pratique cruciale de toujours confirmer son modèle, et donc, de prendre soin de séparer ses données en jeu d'entraînement et de test. Les bonnes façons de faire cela seront abordées au cours 3 dans la partie consacrée à l'apprentissage machine. Ici, nous nous focaliserons uniquement sur l'établissement du modèle dans la phase d'entraînement. Par conséquent, nous utiliserons toutes nos données pour cet entraînement, mais qu'il soit d'amblée bien clair qu'une confirmation du modèle est une seconde phase également indispensable.
+C'est une pratique cruciale de toujours confirmer son modèle, et donc, de prendre soin de séparer ses données en jeu d'entraînement et de test. Les bonnes façons de faire cela seront abordées au cours 3 dans la partie consacrée à l'apprentissage machine. Ici, nous nous focaliserons uniquement sur l'établissement du modèle dans la phase d'entraînement. Par conséquent, nous utiliserons toutes nos données pour cet entraînement, mais qu'il soit d'emblée bien clair qu'une confirmation du modèle est une seconde phase également indispensable.
 ```
 
 
@@ -312,7 +312,7 @@ Nous avons trouvé deux solutions intéressantes pour quantifier la distance de 
 ```{block2, type='note'}
 La méthode utilisant les carrés des résidus s'appelle une **régression par les moindres carrés**. Notre objectif est donc de trouver les meilleures valeurs des paramètres $a$ et $b$ de la droite pour minimiser ce critère. Il en résulte une fonction dite **objective** qui dépend de $x$ et de nos paramètres $a$ et $b$ à minimiser. Cette approche s'appelle la **régression par les moindres carrés** et elle est la plus utilisée.
 
-L'approche utilisant la somme de la valeur absolue des résidus est également utilisable (et elle est d'ailleurs préférable en présence de valeurs extrêmes potentiellement suspectes). Elle s'apppelle **régression par la médiane**, un cas particulier de la **régression quantile** que nous aborderons dans le module 4.
+L'approche utilisant la somme de la valeur absolue des résidus est également utilisable (et elle est d'ailleurs préférable en présence de valeurs extrêmes potentiellement suspectes). Elle s'apppelle **régression par la médiane**, un cas particulier de la **régression quantile**, une approche intéressante dans le cas de non normalité des résidus et/ou de présence de valeurs extrêmes suspectes.
 ```
 
 
@@ -473,7 +473,7 @@ class(lm.)
 ```
 
 
-### Résumé à l'aide de `summary()`
+### Résumé avec `summary()`
 
 Avec la fonction `summary()` nous obtenons un résumé condensé des informations les plus utiles pour interpréter notre régression linéaire. 
 
@@ -505,6 +505,8 @@ lm.$coefficients
 
 On retrouve également les écart-types calculés sur ces valeurs (*Std.Error*) qui donnent une indication de la précision de leur estimation, les valeurs des distibutions de Student sur les valeurs estimées (*t value*) et enfin les valeurs p (*PR(>|t|)*) liées à un test de Student pour déterminer si le paramètre `p` correspondant est significativement différent de zéro (avec $H_0: p = 0$ et $H_a: p \neq 0$).
 
+*Pour l'instant, nous nous contenterons d'interpréter et d'utiliser les informations issues de `summary()` dans sa partie supérieure. Le contenu des trois dernières lignes sera détaillé dans le module suivant.*
+
 A partir des données de ce résumé, nous pouvons maintenant **paramétrer** l'équation de notre modèle\ :
 
 $$y = ax + b$$
@@ -512,42 +514,6 @@ $$y = ax + b$$
 devient^[Lors de la paramétrisation du modèle, pensez à arrondir la valeur des paramètres à un nombre de chiffres significatifs raisonnables. Inutile de garder 5, ou même 3 chiffres derrière la virgule si vous n'avez que quelques dizaines d'obserrvations pour ajuster votre modèle.]\ :
 
 $$volume \ de \ bois = 5.65 \ diamètre \ à \ 1.4 \ m  - 1.05 $$
- 
-- Residual standard error\ :
-
-Il s'agit de l'écart-type résiduel, considérant que les debrés de liberté du modèle est le nombre d'observations $n$ soustrait du nombre de paramètres à estimer (ici 2).
-
-$$\sqrt{\frac{\sum(y_i - ŷ_i)^2}{n-2}}$$
-
-- Multiple R-squared\ :
-
-Il s'agit de la valeur du coefficient $R^2$ qui exprime la fraction de variance exprimé par le modèle. Souvenons nous que la variance totale respecte la propiété d'additivité. La variance conditionnelle $s^2_{y\left|x\right|}$ peut être décomposée comme une somme de carrés ($SC$) divisés par des degrés de liberté associés, avec\ :
-
-$$SC(total) = SC(reg) + SC(résidus)$$
-
-$$SC(total) = \sum_{i=0}^n(y_i - \bar y_i)^2$$
-
-$$SC(reg) = \sum_{i=0}^n(ŷ_i - \bar y_i)^2$$
-
-$$SC(résidus) = \sum_{i=0}^n(y_i - ŷ_i)^2$$
-
-A partir de la décomposition de ces sommes de carrés, le coefficient $R^2$ se définit comme\ :
-
-$$R^2 = \frac{SC(reg)}{SC(total)}$$
-
-La valeur du $R^2$ est comprise entre 0 (lorsque le modèle est très mauvais et n'explique rien) et 1 (lorsque le modèle est parfait et "capture" toute la variance des données\ ; dans ce cas, tous les résidus valent zéro). Donc, **plus le coefficient $R^2$ se rapproche de un, plus le modèle explique bien les données**.
-
-- Adjusted R-squared\:
-
-La valeur du coefficient $R^2$ ajustée. Le calcul de cette valeur sera abordé dans la suite de ce livre.
-
-- F-statistic\ :
-
-Tout comme pour l'ANOVA, le test de la significativité de la régression car  $MS(reg)/MS(résidus)$ suit une distribution F à respectivement 1 et $n-2$ degré de liberté, avec $MS$ les carrés moyens, c'est-à-dire les sommes des carrés $SC$ divisés par leurs degrés de liberté respectifs.
-
-- p-value\ : 
-
-Il s'agit de la valeur p associé à la statistique de F, donc à l'ANOVA associée à la régression linéaire.
 
 
 ## Outils de diagnostic
@@ -653,91 +619,6 @@ N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à
 ```
 
 
-### Comparaison de régressions
-
-Vous pouvez à présent comparer ces résultats avec un tableau et les six graphiques d'analyse des résidus sans la valeur supérieur à 0.5m de diamètre. **Attention, On ne peut supprimer une valeur sans raison valable.** La suppression de pointsd aberrants doit en principe être faite avant de débuter l'analyse. La raison de la suppression de ce point est lié au fait qu'il soit seul et unique point supérieur à 0.5m de diamètre. Nous le faisons ici à titre de comparaison.
-
-```{r}
-trees_red <- filter(trees, diameter < 0.5)
-
-lm1 <- lm(data = trees_red, volume ~ diameter)
-
-chart(trees, volume ~ diameter) +
-  geom_point() + 
-  geom_abline(
-    aes(intercept = lm.$coefficients[1], slope = lm.$coefficients[2]), 
-    color = "red", size = 1.5) +
-  labs( color = "Modèle")  +
-  scale_color_viridis_c(direction = -1) +
-  geom_abline(
-    aes(intercept = lm1$coefficients[1], slope = lm1$coefficients[2]), 
-    color = "blue", size = 1.5)
-
-```
-
-Tentez d'analyser le tableau de notre régression.
-
-```{r}
-summary(lm1)
-```
-
-Tentez d'analyser les graphiques d'analyse des résidus ci-dessous.
-
-```{r}
-#plot(lm1, which = 1)
-lm1 %>.%
-  chart(broom::augment(.), .resid ~ .fitted) +
-  geom_point() +
-  geom_hline(yintercept = 0) +
-  geom_smooth(se = FALSE, method = "loess", formula = y ~ x) +
-  labs(x = "Fitted values", y = "Residuals") +
-  ggtitle("Residuals vs Fitted") 
-
-#plot(lm1, which = 2)
-lm1 %>.%
-  chart(broom::augment(.), aes(sample = .std.resid)) +
-  geom_qq() +
-  geom_qq_line(colour = "darkgray") +
-  labs(x = "Theoretical quantiles", y = "Standardized residuals") +
-  ggtitle("Normal Q-Q") 
-
-#plot(lm1, which = 3)
-lm1 %>.%
-  chart(broom::augment(.), sqrt(abs(.std.resid)) ~ .fitted) +
-  geom_point() +
-  geom_smooth(se = FALSE, method = "loess", formula = y ~ x) +
-  labs(x = "Fitted values",
-    y = expression(bold(sqrt(abs("Standardized residuals"))))) +
-  ggtitle("Scale-Location") 
-
-#plot(lm1, which = 4)
-lm1 %>.%
-  chart(broom::augment(.), .cooksd ~ seq_along(.cooksd)) +
-  geom_bar(stat = "identity") +
-  geom_hline(yintercept = seq(0, 0.1, by = 0.05), colour = "darkgray") +
-  labs(x = "Obs. number", y = "Cook's distance") +
-  ggtitle("Cook's distance") 
-
-#plot(lm1, which = 5)
-lm1 %>.%
-  chart(broom::augment(.), .std.resid ~ .hat %size=% .cooksd) +
-  geom_point() +
-  geom_smooth(se = FALSE, size = 0.5, method = "loess", formula = y ~ x) +
-  geom_vline(xintercept = 0) +
-  geom_hline(yintercept = 0) +
-  labs(x = "Leverage", y = "Standardized residuals") +
-  ggtitle("Residuals vs Leverage") -> a
-
-#plot(lm1, which = 6)
-lm1 %>.%
-  chart(broom::augment(.), .cooksd ~ .hat %size=% .cooksd) +
-  geom_point() +
-  geom_vline(xintercept = 0, colour = NA) +
-  geom_abline(slope = seq(0, 3, by = 0.5), colour = "darkgray") +
-  geom_smooth(se = FALSE, size = 0.5, method = "loess", formula = y ~ x) +
-  labs(x = expression("Leverage h"[ii]), y = "Cook's distance") +
-  ggtitle(expression("Cook's dist vs Leverage h"[ii]/(1-h[ii]))) -> b
-```
 
 
 ##### Pièges et astuces : extrapolation {-}
@@ -845,11 +726,3 @@ Vous avez à votre disposition la première assignation GitHub Classroom :
 - <https://classroom.github.com/a/bvqsukEO>
   
 ```
-
-## Régression linéaire multiple 
-
-TODO 
-
-## Régression linéaire polynomiale
-
-TODO
