@@ -1,4 +1,4 @@
-# Modèle non linéaire {#non-lineaire}
+# Modèle linéaire {#mod-lineaire}
 
 
 

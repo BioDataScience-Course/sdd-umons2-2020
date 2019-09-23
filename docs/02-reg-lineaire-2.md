@@ -1,18 +1,21 @@
-# Modèle linéaire généralisé {#glm}
+# Régression linéaire II {#lm2}
 
-```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
-knitr::opts_chunk$set(comment = '#', fig.align = "center")
-SciViews::R
-```
+
 
 
 ##### Objectifs {-}
 
-- TODO
+- Appréhender les différentes formes de régressions linéaires par les moindres carrés.
+
+- Choisir sa régression linéaire de manière judicieuse.
+
+- Savoir utiliser les outils de diagnostic de la régression linéaire, en particulier l'analyse des résidus.
+
 
 ##### Prérequis {-}
 
-TODO
+- Le module précédent est une entrée en matière indispensable qui est complétée par le contenu du présent module.
+
 
 ## Les variables facteurs
 

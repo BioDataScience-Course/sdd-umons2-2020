@@ -1,6 +1,6 @@
 # (PART) Cours II: analyse et modélisation {-}
 
-# Régression linéaire {#lm}
+# Régression linéaire I {#lm}
 
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
 knitr::opts_chunk$set(comment = '#', fig.align = "center")
@@ -14,11 +14,7 @@ library(modelr)
 
 - Découvrir la régression linaire de manière intuitive.
 
-- Appréhender les différentes formes de régressions linéaires par les moindres carrés.
-
-- Choisir sa régression linéaire de manière judicieuse.
-
-- Savoir utiliser les outils de diagnostic de la régression linéaire, en particulier l'analyse des résidus.
+- Découvrir les outils de diagnostic de la régression linéaire, en particulier l'analyse des résidus.
 
 
 ##### Prérequis {-}

@@ -1,4 +1,4 @@
-# Modèle non linéaire {#non-lineaire}
+# Régression non linéaire {#reg-non-lin}
 
 
 
