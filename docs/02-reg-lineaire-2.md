@@ -5,11 +5,11 @@
 
 ##### Objectifs {-}
 
+- Savoir utiliser les outils de diagnostic de la régression linéaire correctement, en particulier l'analyse des résidus.
+
 - Appréhender les différentes formes de régressions linéaires par les moindres carrés.
 
 - Choisir sa régression linéaire de manière judicieuse.
-
-- Savoir utiliser les outils de diagnostic de la régression linéaire, en particulier l'analyse des résidus.
 
 
 ##### Prérequis {-}
@@ -17,35 +17,85 @@
 - Le module précédent est une entrée en matière indispensable qui est complétée par le contenu du présent module.
 
 
+## Outils de diagnostic (suite)
+
+La régression linéaire est une matière complexe et de nombreux outils existent pour vous aider à déterminer si le modèle que vous ajustez tient la route ou non. Il est très important de le vérifier avant d'utiliser un modèle. **Ajuster un modèle quelconque dans des données est à la portée de tout le monde, mais choisir un modèle pertinent et pouvoir expliquer pourquoi est nettement plus difficile\ !**
+
+
 ### Résumé avec `summary()`(suite)
+
+Reprenons la sortie renvoyée par `summary()` appliqué à un objet `lm`.
+
+
+```r
+trees <- read("trees", package = "datasets", lang = "fr")
+lm. <- lm(data = trees, volume ~ diameter)
+summary(lm.)
+```
+
+```
+# 
+# Call:
+# lm(formula = volume ~ diameter, data = trees)
+# 
+# Residuals:
+#       Min        1Q    Median        3Q       Max 
+# -0.231211 -0.087021  0.003533  0.100594  0.271725 
+# 
+# Coefficients:
+#             Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) -1.04748    0.09553  -10.96 7.85e-12 ***
+# diameter     5.65154    0.27649   20.44  < 2e-16 ***
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+# 
+# Residual standard error: 0.1206 on 29 degrees of freedom
+# Multiple R-squared:  0.9351,	Adjusted R-squared:  0.9329 
+# F-statistic: 417.8 on 1 and 29 DF,  p-value: < 2.2e-16
+```
+
+Nous n'avons pas encore étudié la signification des trois dernières lignes de ce résumé. Voici de quoi il s'agit.
 
 - Residual standard error\ :
 
-Il s'agit de l'écart-type résiduel, considérant que les degrés de liberté du modèle est le nombre d'observations $n$ soustrait du nombre de paramètres à estimer (ici 2).
+Il s'agit de l'écart-type résiduel, considérant que les degrés de liberté du modèle est le nombre d'observations $n$ (ici 31) soustrait du nombre de paramètres à estimer (ici 2, la pente et l'ordonnée à l'origine de la droite). C'est donc une mesure globale de l'importance (c'est-à-dire de l'étendue) des résidus de manière générale.
 
 $$\sqrt{\frac{\sum(y_i - ŷ_i)^2}{n-2}}$$
 
 - Multiple R-squared\ :
 
-Il s'agit de la valeur du coefficient $R^2$ qui exprime la fraction de variance exprimé par le modèle. Souvenons nous que la variance totale respecte la propiété d'additivité. La variance conditionnelle $s^2_{y\left|x\right|}$ peut être décomposée comme une somme de carrés ($SC$) divisés par des degrés de liberté associés, avec\ :
+Il s'agit de la valeur du **coefficient de détermination** du modèle noté *R^2* de manière générale ou *r^2^* dans le cas d'une régression linéaire simple. Il exprime la fraction de variance exprimée par le modèle. Autrement dit, le *R^2^* quantifie la capacité du modèle à *prédire* la valeur de $y$ connaissant la valeur $x$ pour le même individu. C'est dons une indication du *pouvoir prédictif* de notre modèle autant que de sa **qualité d'ajustement** (*goodness-of-fit* en anglais).
 
-$$SC(total) = SC(reg) + SC(résidus)$$
+Souvenons-nous que la variance totale respecte la propiété d'additivité. La variance est composée au numérateur d'une somme de carrés, et au dénominateur de degrés de liberté. La somme des carrés totaux (de la variance) peut elle-même être décomposée en une **fraction expliquée** par notre modèle, et la fraction qui ne l'est pas (les **résidus**)\ :
+
+$$SC(total) = SC(rég) + SC(résidus)$$
+
+avec\ :
 
 $$SC(total) = \sum_{i=0}^n(y_i - \bar y_i)^2$$
 
-$$SC(reg) = \sum_{i=0}^n(ŷ_i - \bar y_i)^2$$
+$$SC(rég) = \sum_{i=0}^n(ŷ_i - \bar y_i)^2$$
 
 $$SC(résidus) = \sum_{i=0}^n(y_i - ŷ_i)^2$$
 
-A partir de la décomposition de ces sommes de carrés, le coefficient $R^2$ se définit comme\ :
+A partir de la décomposition de ces sommes de carrés, le coefficient *R^2^* (ou *r^2^*) se définit comme\ :
 
-$$R^2 = \frac{SC(reg)}{SC(total)}$$
+$$R^2 = \frac{SC(rég)}{SC(total)} = 1 - \frac{SC(résidus)}{SC(total)}$$
 
-La valeur du $R^2$ est comprise entre 0 (lorsque le modèle est très mauvais et n'explique rien) et 1 (lorsque le modèle est parfait et "capture" toute la variance des données\ ; dans ce cas, tous les résidus valent zéro). Donc, **plus le coefficient $R^2$ se rapproche de un, plus le modèle explique bien les données**.
+La valeur du *R^2^* est comprise entre 0 (lorsque le modèle est très mauvais et n'explique rien) et 1 (lorsque le modèle est parfait et "capture" toute la variance des données\ ; dans ce cas, tous les résidus valent zéro). Donc, **plus le coefficient *R^2^* se rapproche de un, plus le modèle explique bien les données et aura un bon pouvoir de prédiction**.
 
-- Adjusted R-squared\:
+\BeginKnitrBlock{warning}<div class="warning">
+Dans R, le *R^2^* multiple se réfère simplement au *R^2^* (ou au *r^2^* pour les régressions linéaires simples) calculé de cette façon. L'adjectif **multiple** indique simplement que le calcul est valable pour une régression **multiple** telle que nous verrons plus loin.
 
-La valeur du coefficient $R^2$ ajustée. Le calcul de cette valeur sera abordé dans la suite de ce livre.
+Par contre, le terme au dénominateur considère en fait la somme des carrés totale **par rapport à un modèle de référence** lorsque la variable dépendante $y$ ne *dépend pas* de la ou des variables indépendantes $x_i$. Les équations indiquées plus haut sont valables lorsque l'ordonnée à l'origine *n'est pas* figée ($y = a \ x + b$) . Dans ce cas, la valeur de référence pour $y$ est bien sa moyenne, $\bar y$.
+
+D'autre part, si l'ordonnée à l'origine est fixée à zéro dans le modèle simplifié $y = a \ x$ (avec $b = 0$ obtenu en indiquant la formule `y ~ x + 0` or `y ~ x - 1`), alors le zéro sur l'axe $y$ est considéré comme une valeur appartenant d'office au modèle et devient valeur de référence. Ainsi, dans les équations ci-dessus il faut remplacer $\hat y$ par 0 partout. Le *R^2^* est alors calculé différemment, et sa valeur peut brusquement augmenter si le nuage de points est très éloigné du zéro sur l'axe. **Ne comparez donc jamais les *R^2^* obtenus avec et sans forçage à zéro de l'ordonnée à l'origine\ !**
+</div>\EndKnitrBlock{warning}
+
+- Adjusted R-squared\ :
+
+La valeur du coefficient *R^2^* ajustée n'est pas utile dans le cadre de la régression linéaire simple, mais est indispensable avec la régression multiple. En effet, à chaque fois que vous rendez votre modèle plus complexe en ajoutant une ou plusieurs variables indépendantes, le modèle s'ajustera de mieux en mieux dans les données. C'est un phénomène que l'on appelle l'**inflation du *R^2^***. A la limite, si nous ajoutons une nouvelle variable fortement corrélée avec les précédentes^[La corrélation entre les prédicteurs dans un modèle linéaire multiple est un gros problème et doit être évité le plus possible. Cela s'appelle la **colinéarité** ou encore **multicollinéairité**. Ainsi, il est toujours préférable de choisir un ensemble de variables indépendantes peu corrélées entre elles dans un même modèle, mais ce n'est pas toujours possible.], l'apport en terme d'information nouvelle sera négligeable, mais le *R^2^* augmentera malgré tout un tout petit peu. 
+Alors dans quel cas l'ajout d'une nouvelle variable est-il pertinent ou non\ ? Le *R^2^* ajuste apporte l'information désirée ici. Il
 
 - F-statistic\ :
 
@@ -61,9 +111,6 @@ Vous pouvez à présent comparer ces résultats avec un tableau et les six graph
 
 
 ```r
-trees <- read("trees", package = "datasets", lang = "fr")
-lm. <- lm(data = trees, volume ~ diameter)
-
 trees_red <- filter(trees, diameter < 0.5)
 lm1 <- lm(data = trees_red, volume ~ diameter)
 
@@ -79,7 +126,7 @@ chart(trees, volume ~ diameter) +
     color = "blue", size = 1.5)
 ```
 
-<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" />
+<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" />
 
 Tentez d'analyser le tableau de notre régression.
 
@@ -123,7 +170,7 @@ lm1 %>.%
   ggtitle("Residuals vs Fitted") 
 ```
 
-<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" />
+<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" />
 
 ```r
 #plot(lm1, which = 2)
@@ -135,7 +182,7 @@ lm1 %>.%
   ggtitle("Normal Q-Q") 
 ```
 
-<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" />
+<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" />
 
 ```r
 #plot(lm1, which = 3)
@@ -148,7 +195,7 @@ lm1 %>.%
   ggtitle("Scale-Location") 
 ```
 
-<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-3-3.png" width="672" style="display: block; margin: auto;" />
+<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" />
 
 ```r
 #plot(lm1, which = 4)
@@ -160,7 +207,7 @@ lm1 %>.%
   ggtitle("Cook's distance") 
 ```
 
-<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-3-4.png" width="672" style="display: block; margin: auto;" />
+<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" />
 
 ```r
 #plot(lm1, which = 5)
