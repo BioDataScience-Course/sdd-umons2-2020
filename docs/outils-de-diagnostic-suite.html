@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2019-09-24">
+<meta name="date" content="2019-10-13">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -271,27 +271,38 @@ lm. &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">da
 
 <div class="warning">
 <p>Dans R, le <em>R<sup>2</sup></em> multiple se réfère simplement au <em>R<sup>2</sup></em> (ou au <em>r<sup>2</sup></em> pour les régressions linéaires simples) calculé de cette façon. L’adjectif <strong>multiple</strong> indique simplement que le calcul est valable pour une régression <strong>multiple</strong> telle que nous verrons plus loin.</p>
-<p>Par contre, le terme au dénominateur considère en fait la somme des carrés totale <strong>par rapport à un modèle de référence</strong> lorsque la variable dépendante <span class="math inline">\(y\)</span> ne <em>dépend pas</em> de la ou des variables indépendantes <span class="math inline">\(x_i\)</span>. Les équations indiquées plus haut sont valables lorsque l’ordonnée à l’origine <em>n’est pas</em> figée (<span class="math inline">\(y = a \ x + b\)</span>) . Dans ce cas, la valeur de référence pour <span class="math inline">\(y\)</span> est bien sa moyenne, <span class="math inline">\(\bar y\)</span>.</p>
-<p>D’autre part, si l’ordonnée à l’origine est fixée à zéro dans le modèle simplifié <span class="math inline">\(y = a \ x\)</span> (avec <span class="math inline">\(b = 0\)</span> obtenu en indiquant la formule <code>y ~ x + 0</code> or <code>y ~ x - 1</code>), alors le zéro sur l’axe <span class="math inline">\(y\)</span> est considéré comme une valeur appartenant d’office au modèle et devient valeur de référence. Ainsi, dans les équations ci-dessus il faut remplacer <span class="math inline">\(\hat y\)</span> par 0 partout. Le <em>R<sup>2</sup></em> est alors calculé différemment, et sa valeur peut brusquement augmenter si le nuage de points est très éloigné du zéro sur l’axe. <strong>Ne comparez donc jamais les <em>R<sup>2</sup></em> obtenus avec et sans forçage à zéro de l’ordonnée à l’origine !</strong></p>
+<p>Par contre, le terme au dénominateur considère en fait la somme des carrés totale <strong>par rapport à un modèle de référence</strong> lorsque la variable dépendante <span class="math inline">\(y\)</span> ne <em>dépend pas</em> de la ou des variables indépendantes <span class="math inline">\(x_i\)</span>. Les équations indiquées plus haut sont valables lorsque l’ordonnée à l’origine <em>n’est pas</em> figée (<span class="math inline">\(y = a \ x + b\)</span>). Dans ce cas, la valeur de référence pour <span class="math inline">\(y\)</span> est bien sa moyenne, <span class="math inline">\(\bar y\)</span>.</p>
+<p>D’un autre côté, si l’ordonnée à l’origine est fixée à zéro dans le modèle simplifié <span class="math inline">\(y = a \ x\)</span> (avec <span class="math inline">\(b = 0\)</span> obtenu en indiquant la formule <code>y ~ x + 0</code> ou <code>y ~ x - 1</code>), alors le zéro sur l’axe <span class="math inline">\(y\)</span> est considéré comme une valeur appartenant d’office au modèle et devient valeur de référence. Ainsi, dans les équations ci-dessus il faut remplacer <span class="math inline">\(\hat y\)</span> par 0 partout. Le <em>R<sup>2</sup></em> est alors calculé différemment, et sa valeur peut brusquement augmenter si le nuage de points est très éloigné du zéro sur l’axe y. <strong>Ne comparez donc jamais les <em>R<sup>2</sup></em> obtenus avec et sans forçage à zéro de l’ordonnée à l’origine !</strong></p>
 </div>
 
 <ul>
 <li>Adjusted R-squared :</li>
 </ul>
 <p>La valeur du coefficient <em>R<sup>2</sup></em> ajustée n’est pas utile dans le cadre de la régression linéaire simple, mais est indispensable avec la régression multiple. En effet, à chaque fois que vous rendez votre modèle plus complexe en ajoutant une ou plusieurs variables indépendantes, le modèle s’ajustera de mieux en mieux dans les données. C’est un phénomène que l’on appelle l’<strong>inflation du <em>R<sup>2</sup></em></strong>. A la limite, si nous ajoutons une nouvelle variable fortement corrélée avec les précédentes<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, l’apport en terme d’information nouvelle sera négligeable, mais le <em>R<sup>2</sup></em> augmentera malgré tout un tout petit peu.
-Alors dans quel cas l’ajout d’une nouvelle variable est-il pertinent ou non ? Le <em>R<sup>2</sup></em> ajuste apporte l’information désirée ici. Il</p>
+Alors dans quel cas l’ajout d’une nouvelle variable est-il pertinent ou non ? Le <em>R<sup>2</sup></em> ajusté apporte l’information désirée ici. TODO: continue explanation…</p>
 <ul>
 <li>F-statistic :</li>
 </ul>
-<p>Tout comme pour l’ANOVA, le test de la significativité de la régression car <span class="math inline">\(MS(reg)/MS(résidus)\)</span> suit une distribution F à respectivement 1 et <span class="math inline">\(n-2\)</span> degré de liberté, avec <span class="math inline">\(MS\)</span> les carrés moyens, c’est-à-dire les sommes des carrés <span class="math inline">\(SC\)</span> divisés par leurs degrés de liberté respectifs.</p>
+<p>Tout comme pour l’ANOVA, le test de la significativité de la régression car <span class="math inline">\(MS(rég)/MS(résidus)\)</span> suit une distribution <em>F</em> à respectivement 1 et <span class="math inline">\(n-2\)</span> degré de liberté, avec <span class="math inline">\(MS\)</span> les carrés moyens, c’est-à-dire les sommes des carrés <span class="math inline">\(SC\)</span> divisés par leurs degrés de liberté respectifs.</p>
 <ul>
 <li>p-value :</li>
 </ul>
-<p>Il s’agit de la valeur p associé à la statistique de F, donc à l’ANOVA associée à la régression linéaire.</p>
+<p>Il s’agit de la valeur <em>p</em> associé à la statistique de <em>F</em>, donc à l’ANOVA associée à la régression linéaire. Pour cette ANOVA particulière, l’hypothèse nulle est que la droite n’apporte pas plus d’explication des valeurs de <em>y</em> à partir des valeurs de <em>x</em> que la valeur moyenne de <em>y</em> (ou zéro, dans le cas paerticulier d’un modèle dont l’ordonnée à l’origine est forcé à zéro). L’hypothèse alternative est donc que le modèle est significatif au seuil <span class="math inline">\(\alpha\)</span> considéré. <strong>Donc, notre objectif est de rejetter <em>H<sub>0</sub></em> pour cet test ANOVA</strong> pour que le modèle ait un sens (valeur <em>p</em> plus petite quez le seuil <span class="math inline">\(\alpha\)</span> choisi).</p>
+<p>Le tableau complet de l’ANOVA associée au modèle peut aussi être obtenu à l’aide de la fonction <code>anova()</code> :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(lm.)</code></pre>
+<pre><code># Analysis of Variance Table
+# 
+# Response: volume
+#           Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+# diameter   1 6.0762  6.0762   417.8 &lt; 2.2e-16 ***
+# Residuals 29 0.4218  0.0145                      
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>On y retrouve les mêmes informations, fortement résumées en une ligne à la fin de la sortie de <code>summary()</code>, mais ici sous une forme plus classique de tableau de l’analyse de la variance.</p>
 </div>
 <div id="comparaison-de-regressions" class="section level3">
 <h3><span class="header-section-number">2.1.2</span> Comparaison de régressions</h3>
-<p>Vous pouvez à présent comparer ces résultats avec un tableau et les six graphiques d’analyse des résidus sans la valeur supérieur à 0.5m de diamètre. <strong>Attention, On ne peut supprimer une valeur sans raison valable.</strong> La suppression de pointsd aberrants doit en principe être faite avant de débuter l’analyse. La raison de la suppression de ce point est lié au fait qu’il soit seul et unique point supérieur à 0.5m de diamètre. Nous le faisons ici à titre de comparaison.</p>
+<p>Vous pouvez à présent comparer ces résultats avec un tableau et les six graphiques d’analyse des résidus sans la valeur supérieure à 0.5m de diamètre. <strong>Attention, On ne peut supprimer une valeur sans raison valable.</strong> La suppression de points aberrants doit en principe être faite avant de débuter l’analyse. La raison de la suppression de ce point est liée au fait qu’il soit seul et unique point supérieur à 0.5m de diamètre. Nous le faisons ici à titre de comparaison.</p>
 <pre class="sourceCode r"><code class="sourceCode r">trees_red &lt;-<span class="st"> </span><span class="kw">filter</span>(trees, diameter <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.5</span>)
 lm1 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> trees_red, volume <span class="op">~</span><span class="st"> </span>diameter)
 
@@ -305,8 +316,8 @@ lm1 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">da
 <span class="st">  </span><span class="kw">geom_abline</span>(
     <span class="kw">aes</span>(<span class="dt">intercept =</span> lm1<span class="op">$</span>coefficients[<span class="dv">1</span>], <span class="dt">slope =</span> lm1<span class="op">$</span>coefficients[<span class="dv">2</span>]), 
     <span class="dt">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="dt">size =</span> <span class="fl">1.5</span>)</code></pre>
-<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Tentez d’analyser le tableau de notre régression.</p>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>La droite en bleu correspond à la régression sans utiliser l’arbre de diamètre supérieur à 0,5m. Tentez d’analyser le tableau de notre régression en bleu (astuce : comparez avec ce que la régeression précédente donnait).</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm1)</code></pre>
 <pre><code># 
 # Call:
@@ -326,7 +337,7 @@ lm1 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">da
 # Residual standard error: 0.1082 on 28 degrees of freedom
 # Multiple R-squared:   0.93,   Adjusted R-squared:  0.9275 
 # F-statistic: 372.1 on 1 and 28 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>Tentez d’analyser les graphiques d’analyse des résidus ci-dessous.</p>
+<p>Tentez d’analyser également les graphiques d’analyse des résidus ci-dessous.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm1, which = 1)</span>
 lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .resid <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
@@ -335,7 +346,7 @@ lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Residuals&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Residuals vs Fitted&quot;</span>) </code></pre>
-<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm1, which = 2)</span>
 lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">aes</span>(<span class="dt">sample =</span> .std.resid)) <span class="op">+</span>
@@ -343,7 +354,7 @@ lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">geom_qq_line</span>(<span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Theoretical quantiles&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Standardized residuals&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Normal Q-Q&quot;</span>) </code></pre>
-<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm1, which = 3)</span>
 lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">sqrt</span>(<span class="kw">abs</span>(.std.resid)) <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
@@ -352,7 +363,7 @@ lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>,
     <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">bold</span>(<span class="kw">sqrt</span>(<span class="kw">abs</span>(<span class="st">&quot;Standardized residuals&quot;</span>))))) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Scale-Location&quot;</span>) </code></pre>
-<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm1, which = 4)</span>
 lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .cooksd <span class="op">~</span><span class="st"> </span><span class="kw">seq_along</span>(.cooksd)) <span class="op">+</span>
@@ -360,7 +371,7 @@ lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="dt">by =</span> <span class="fl">0.05</span>), <span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Obs. number&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Cook&#39;s distance&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Cook&#39;s distance&quot;</span>) </code></pre>
-<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-6-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm1, which = 5)</span>
 lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .std.resid <span class="op">~</span><span class="st"> </span>.hat <span class="op">%size=%</span><span class="st"> </span>.cooksd) <span class="op">+</span>
@@ -379,7 +390,7 @@ lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">geom_abline</span>(<span class="dt">slope =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dt">by =</span> <span class="fl">0.5</span>), <span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">size =</span> <span class="fl">0.5</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="kw">expression</span>(<span class="st">&quot;Leverage h&quot;</span>[ii]), <span class="dt">y =</span> <span class="st">&quot;Cook&#39;s distance&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">expression</span>(<span class="st">&quot;Cook&#39;s dist vs Leverage h&quot;</span>[ii]<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span>h[ii]))) -&gt;<span class="st"> </span>b</code></pre>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">expression</span>(<span class="st">&quot;Cook&#39;s dist vs Leverage h&quot;</span>[ii] <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>h[ii]))) -&gt;<span class="st"> </span>b</code></pre>
 </div>
 <div id="critere-dakaike" class="section level3">
 <h3><span class="header-section-number">2.1.3</span> Critère d’Akaike</h3>

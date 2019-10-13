@@ -87,27 +87,48 @@ La valeur du *R^2^* est comprise entre 0 (lorsque le modèle est très mauvais e
 \BeginKnitrBlock{warning}<div class="warning">
 Dans R, le *R^2^* multiple se réfère simplement au *R^2^* (ou au *r^2^* pour les régressions linéaires simples) calculé de cette façon. L'adjectif **multiple** indique simplement que le calcul est valable pour une régression **multiple** telle que nous verrons plus loin.
 
-Par contre, le terme au dénominateur considère en fait la somme des carrés totale **par rapport à un modèle de référence** lorsque la variable dépendante $y$ ne *dépend pas* de la ou des variables indépendantes $x_i$. Les équations indiquées plus haut sont valables lorsque l'ordonnée à l'origine *n'est pas* figée ($y = a \ x + b$) . Dans ce cas, la valeur de référence pour $y$ est bien sa moyenne, $\bar y$.
+Par contre, le terme au dénominateur considère en fait la somme des carrés totale **par rapport à un modèle de référence** lorsque la variable dépendante $y$ ne *dépend pas* de la ou des variables indépendantes $x_i$. Les équations indiquées plus haut sont valables lorsque l'ordonnée à l'origine *n'est pas* figée ($y = a \ x + b$). Dans ce cas, la valeur de référence pour $y$ est bien sa moyenne, $\bar y$.
 
-D'autre part, si l'ordonnée à l'origine est fixée à zéro dans le modèle simplifié $y = a \ x$ (avec $b = 0$ obtenu en indiquant la formule `y ~ x + 0` or `y ~ x - 1`), alors le zéro sur l'axe $y$ est considéré comme une valeur appartenant d'office au modèle et devient valeur de référence. Ainsi, dans les équations ci-dessus il faut remplacer $\hat y$ par 0 partout. Le *R^2^* est alors calculé différemment, et sa valeur peut brusquement augmenter si le nuage de points est très éloigné du zéro sur l'axe. **Ne comparez donc jamais les *R^2^* obtenus avec et sans forçage à zéro de l'ordonnée à l'origine\ !**
+D'un autre côté, si l'ordonnée à l'origine est fixée à zéro dans le modèle simplifié $y = a \ x$ (avec $b = 0$ obtenu en indiquant la formule `y ~ x + 0` ou `y ~ x - 1`), alors le zéro sur l'axe $y$ est considéré comme une valeur appartenant d'office au modèle et devient valeur de référence. Ainsi, dans les équations ci-dessus il faut remplacer $\hat y$ par 0 partout. Le *R^2^* est alors calculé différemment, et sa valeur peut brusquement augmenter si le nuage de points est très éloigné du zéro sur l'axe y. **Ne comparez donc jamais les *R^2^* obtenus avec et sans forçage à zéro de l'ordonnée à l'origine\ !**
 </div>\EndKnitrBlock{warning}
 
 - Adjusted R-squared\ :
 
 La valeur du coefficient *R^2^* ajustée n'est pas utile dans le cadre de la régression linéaire simple, mais est indispensable avec la régression multiple. En effet, à chaque fois que vous rendez votre modèle plus complexe en ajoutant une ou plusieurs variables indépendantes, le modèle s'ajustera de mieux en mieux dans les données. C'est un phénomène que l'on appelle l'**inflation du *R^2^***. A la limite, si nous ajoutons une nouvelle variable fortement corrélée avec les précédentes^[La corrélation entre les prédicteurs dans un modèle linéaire multiple est un gros problème et doit être évité le plus possible. Cela s'appelle la **colinéarité** ou encore **multicollinéairité**. Ainsi, il est toujours préférable de choisir un ensemble de variables indépendantes peu corrélées entre elles dans un même modèle, mais ce n'est pas toujours possible.], l'apport en terme d'information nouvelle sera négligeable, mais le *R^2^* augmentera malgré tout un tout petit peu. 
-Alors dans quel cas l'ajout d'une nouvelle variable est-il pertinent ou non\ ? Le *R^2^* ajuste apporte l'information désirée ici. Il
+Alors dans quel cas l'ajout d'une nouvelle variable est-il pertinent ou non\ ? Le *R^2^* ajusté apporte l'information désirée ici. TODO: continue explanation...
 
 - F-statistic\ :
 
-Tout comme pour l'ANOVA, le test de la significativité de la régression car  $MS(reg)/MS(résidus)$ suit une distribution F à respectivement 1 et $n-2$ degré de liberté, avec $MS$ les carrés moyens, c'est-à-dire les sommes des carrés $SC$ divisés par leurs degrés de liberté respectifs.
+Tout comme pour l'ANOVA, le test de la significativité de la régression car  $MS(rég)/MS(résidus)$ suit une distribution *F* à respectivement 1 et $n-2$ degré de liberté, avec $MS$ les carrés moyens, c'est-à-dire les sommes des carrés $SC$ divisés par leurs degrés de liberté respectifs.
 
 - p-value\ : 
 
-Il s'agit de la valeur p associé à la statistique de F, donc à l'ANOVA associée à la régression linéaire.
+Il s'agit de la valeur *p* associé à la statistique de *F*, donc à l'ANOVA associée à la régression linéaire. Pour cette ANOVA particulière, l'hypothèse nulle est que la droite n'apporte pas plus d'explication des valeurs de *y* à partir des valeurs de *x* que la valeur moyenne de *y* (ou zéro, dans le cas paerticulier d'un modèle dont l'ordonnée à l'origine est forcé à zéro). L'hypothèse alternative est donc que le modèle est significatif au seuil $\alpha$ considéré. **Donc, notre objectif est de rejetter *H~0~* pour cet test ANOVA** pour que le modèle ait un sens (valeur *p* plus petite quez le seuil $\alpha$ choisi).
+
+Le tableau complet de l'ANOVA associée au modèle peut aussi être obtenu à l'aide de la fonction `anova()`\ :
+
+
+```r
+anova(lm.)
+```
+
+```
+# Analysis of Variance Table
+# 
+# Response: volume
+#           Df Sum Sq Mean Sq F value    Pr(>F)    
+# diameter   1 6.0762  6.0762   417.8 < 2.2e-16 ***
+# Residuals 29 0.4218  0.0145                      
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+On y retrouve les mêmes informations, fortement résumées en une ligne à la fin de la sortie de `summary()`, mais ici sous une forme plus classique de tableau de l'analyse de la variance.
+
 
 ### Comparaison de régressions
 
-Vous pouvez à présent comparer ces résultats avec un tableau et les six graphiques d'analyse des résidus sans la valeur supérieur à 0.5m de diamètre. **Attention, On ne peut supprimer une valeur sans raison valable.** La suppression de pointsd aberrants doit en principe être faite avant de débuter l'analyse. La raison de la suppression de ce point est lié au fait qu'il soit seul et unique point supérieur à 0.5m de diamètre. Nous le faisons ici à titre de comparaison.
+Vous pouvez à présent comparer ces résultats avec un tableau et les six graphiques d'analyse des résidus sans la valeur supérieure à 0.5m de diamètre. **Attention, On ne peut supprimer une valeur sans raison valable.** La suppression de points aberrants doit en principe être faite avant de débuter l'analyse. La raison de la suppression de ce point est liée au fait qu'il soit seul et unique point supérieur à 0.5m de diamètre. Nous le faisons ici à titre de comparaison.
 
 
 ```r
@@ -126,9 +147,9 @@ chart(trees, volume ~ diameter) +
     color = "blue", size = 1.5)
 ```
 
-<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" />
+<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" />
 
-Tentez d'analyser le tableau de notre régression.
+La droite en bleu correspond à la régression sans utiliser l'arbre de diamètre supérieur à 0,5m. Tentez d'analyser le tableau de notre régression en bleu (astuce\ : comparez avec ce que la régeression précédente donnait).
 
 
 ```r
@@ -156,7 +177,7 @@ summary(lm1)
 # F-statistic: 372.1 on 1 and 28 DF,  p-value: < 2.2e-16
 ```
 
-Tentez d'analyser les graphiques d'analyse des résidus ci-dessous.
+Tentez d'analyser également les graphiques d'analyse des résidus ci-dessous.
 
 
 ```r
@@ -170,7 +191,7 @@ lm1 %>.%
   ggtitle("Residuals vs Fitted") 
 ```
 
-<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" />
+<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" />
 
 ```r
 #plot(lm1, which = 2)
@@ -182,7 +203,7 @@ lm1 %>.%
   ggtitle("Normal Q-Q") 
 ```
 
-<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" />
+<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" />
 
 ```r
 #plot(lm1, which = 3)
@@ -195,7 +216,7 @@ lm1 %>.%
   ggtitle("Scale-Location") 
 ```
 
-<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" />
+<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" />
 
 ```r
 #plot(lm1, which = 4)
@@ -207,7 +228,7 @@ lm1 %>.%
   ggtitle("Cook's distance") 
 ```
 
-<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" />
+<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-6-4.png" width="672" style="display: block; margin: auto;" />
 
 ```r
 #plot(lm1, which = 5)
@@ -228,7 +249,7 @@ lm1 %>.%
   geom_abline(slope = seq(0, 3, by = 0.5), colour = "darkgray") +
   geom_smooth(se = FALSE, size = 0.5, method = "loess", formula = y ~ x) +
   labs(x = expression("Leverage h"[ii]), y = "Cook's distance") +
-  ggtitle(expression("Cook's dist vs Leverage h"[ii]/(1-h[ii]))) -> b
+  ggtitle(expression("Cook's dist vs Leverage h"[ii] / (1 - h[ii]))) -> b
 ```
 
 ### Critère d'Akaike

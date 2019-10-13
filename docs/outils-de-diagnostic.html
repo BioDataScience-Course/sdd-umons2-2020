@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2019-09-24">
+<meta name="date" content="2019-10-13">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -164,11 +164,13 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="lm2.html"><a href="lm2.html"><i class="fa fa-check"></i><b>2</b> Régression linéaire II</a><ul>
-<li class="chapter" data-level="2.0.1" data-path="lm2.html"><a href="lm2.html#resume-avec-summarysuite"><i class="fa fa-check"></i><b>2.0.1</b> Résumé avec <code>summary()</code>(suite)</a></li>
-<li class="chapter" data-level="2.0.2" data-path="lm2.html"><a href="lm2.html#comparaison-de-regressions"><i class="fa fa-check"></i><b>2.0.2</b> Comparaison de régressions</a></li>
-<li class="chapter" data-level="2.0.3" data-path="lm2.html"><a href="lm2.html#critere-dakaike"><i class="fa fa-check"></i><b>2.0.3</b> Critère d’Akaike</a></li>
-<li class="chapter" data-level="2.1" data-path="regression-lineaire-multiple.html"><a href="regression-lineaire-multiple.html"><i class="fa fa-check"></i><b>2.1</b> Régression linéaire multiple</a></li>
-<li class="chapter" data-level="2.2" data-path="regression-lineaire-polynomiale.html"><a href="regression-lineaire-polynomiale.html"><i class="fa fa-check"></i><b>2.2</b> Régression linéaire polynomiale</a></li>
+<li class="chapter" data-level="2.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html"><i class="fa fa-check"></i><b>2.1</b> Outils de diagnostic (suite)</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#resume-avec-summarysuite"><i class="fa fa-check"></i><b>2.1.1</b> Résumé avec <code>summary()</code>(suite)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#comparaison-de-regressions"><i class="fa fa-check"></i><b>2.1.2</b> Comparaison de régressions</a></li>
+<li class="chapter" data-level="2.1.3" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#critere-dakaike"><i class="fa fa-check"></i><b>2.1.3</b> Critère d’Akaike</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="regression-lineaire-multiple.html"><a href="regression-lineaire-multiple.html"><i class="fa fa-check"></i><b>2.2</b> Régression linéaire multiple</a></li>
+<li class="chapter" data-level="2.3" data-path="regression-lineaire-polynomiale.html"><a href="regression-lineaire-polynomiale.html"><i class="fa fa-check"></i><b>2.3</b> Régression linéaire polynomiale</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="mod-lineaire.html"><a href="mod-lineaire.html"><i class="fa fa-check"></i><b>3</b> Modèle linéaire</a><ul>
 <li class="chapter" data-level="3.1" data-path="les-variables-facteurs.html"><a href="les-variables-facteurs.html"><i class="fa fa-check"></i><b>3.1</b> Les variables facteurs</a><ul>
@@ -222,13 +224,13 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="outils-de-diagnostic" class="section level2">
 <h2><span class="header-section-number">1.3</span> Outils de diagnostic</h2>
-<p>Une fois la meilleure droite de régression obtenue, le travail est loin d’être terminé. Il se peut que le nuage de point ne soit pas tout-à-fait linéaire, que sa dispesion ne soit pas homogène, que les résidus n’aient pas une distribution normale, qu’il existe des valeurs extrêmes aberrantes, ou qui tirent la droite vers alles de manière excessive.</p>
+<p>Une fois la meilleure droite de régression obtenue, le travail est loin d’être terminé. Il se peut que le nuage de point ne soit pas tout-à-fait linéaire, que sa dispersion ne soit pas homogène, que les résidus n’aient pas une distribution normale, qu’il existe des valeurs extrêmes aberrantes, ou qui tirent la droite vers elle de manière excessive.</p>
 <p>Nous allons maintenant devoir diagnostiquer ces possibles problèmes. L’<strong>analyse des résidus</strong> permet de le faire. Ensuite, si deux ou plusieurs modèles sont utilisable, il nous faut décider lequel conserver. Enfin, nous pouvons aussi calculer et visualiser l’<strong>enveloppe de confiance</strong>
 du modèle et extraire une série de données de ce modèle.</p>
 <div id="analyse-des-residus" class="section level3">
 <h3><span class="header-section-number">1.3.1</span> Analyse des résidus</h3>
 <p>Le tableau numérique obtenu à l’aide de <code>summary()</code> peut faire penser que l’étude d’une régression linéaire se limite à quelques valeurs numériques et divers tests d’hypothèses associés. C’est un premier pas, mais c’est oublier que la technique est <strong>essentiellement visuelle</strong>. Le graphique du nuage de points avec la droite superposée est un premier outil diagnostic visuel indispensable, mais il n’est pas le seul ! Plusieurs graphiques spécifiques existent pour mettre en évidence diverses propriétés des résidus qui peuvent révéler des problèmes. Leur inspection est indispensable et s’appelle l’<strong>analyse des résidus</strong>. Les différents graphiques sont faciles à obtenir à partir des snippets.</p>
-<p>Le premier de ces graphique permet de vérifier la distribution homogène des résidus. Dans une bonne régression, nous aurons une distribution équilibrée de part et d’autre du zéro sur l’axe Y. Que pensez vous de notre graphique d’anayse des résidus ? Nous avons une valeur plus éloignée du zéro qui est mise en avant par la courbe en bleue qui montre l’influence générale des résidus.</p>
+<p>Le premier de ces graphique permet de vérifier la distribution homogène des résidus. Dans une bonne régression, nous aurons une distribution équilibrée de part et d’autre du zéro sur l’axe Y. Que pensez-vous de notre graphique d’anayse des résidus ? Nous avons une valeur plus éloignée du zéro qui est mise en avant par la courbe en bleu qui montre l’influence générale des résidus.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm., which = 1)</span>
 lm. <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .resid <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
@@ -238,7 +240,7 @@ lm. <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Residuals&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Residuals vs Fitted&quot;</span>)</code></pre>
 <p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Le second graphique permet de vérifier la normalité des résidus par rapport à une distribution normale.</p>
+<p>Le second graphique permet de vérifier la normalité des résidus (comparaison par graphique quantile-quantile à une distribution normale).</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm., which = 2)</span>
 lm. <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">aes</span>(<span class="dt">sample =</span> .std.resid)) <span class="op">+</span>
@@ -247,7 +249,7 @@ lm. <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Theoretical quantiles&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Standardized residuals&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Normal Q-Q&quot;</span>)</code></pre>
 <p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Le troisième graphique va standardiser les résidus, et surtout, en prendre la racine carréE. Cela a pour effet de superposer les résidus négatifs sur les résidus positifs. Nous y diagnostiquons beaucoup plus facilement des problèmes de distribution de ces résidus. A nouveau, nous pouvons observer qu’une valeur influence fortement la courbe bleue.</p>
+<p>Le troisième graphique va standardiser les résidus, et surtout, en prendre la racine carrée. Cela a pour effet de superposer les résidus négatifs sur les résidus positifs. Nous y diagnostiquons beaucoup plus facilement des problèmes de distribution de ces résidus. A nouveau, nous pouvons observer qu’une valeur influence fortement la régression.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm., which = 3)</span>
 lm. <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">sqrt</span>(<span class="kw">abs</span>(.std.resid)) <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
@@ -257,7 +259,7 @@ lm. <span class="op">%&gt;.%</span>
     <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">bold</span>(<span class="kw">sqrt</span>(<span class="kw">abs</span>(<span class="st">&quot;Standardized residuals&quot;</span>))))) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Scale-Location&quot;</span>)</code></pre>
 <p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Le quatrième graphique met en évidence l’influence des individus sur la régression linéaire. Effectivement, la régression linéaire est sensible aux valeurs extrêmes. Nous pouvons observer que nous avons une valeur qui influence fortement notre régression. On utilise pour ce faire la distance de Cook que nous ne détailleront pas dans le cadre de ce cours.</p>
+<p>Le quatrième graphique met en évidence l’influence des individus sur la régression linéaire. Effectivement, la régression linéaire est sensible aux valeurs extrêmes. Nous pouvons observer que nous avons une valeur qui influence fortement notre régression. On utilise pour ce faire la distance de Cook que nous ne détaillerons pas dans le cadre de ce cours.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm., which = 4)</span>
 lm. <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .cooksd <span class="op">~</span><span class="st"> </span><span class="kw">seq_along</span>(.cooksd)) <span class="op">+</span>
@@ -266,7 +268,7 @@ lm. <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Obs. number&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Cook&#39;s distance&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Cook&#39;s distance&quot;</span>)</code></pre>
 <p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Le cinquième grapique utilise l’effet de levier (<em>Leverage</em>) qui met également en avant l’influence des individus sur notre régression. Il répond à la question suivante : “est-ce qu’un ou plusieurs points sont tellement influents qu’ils tirent la régression vers eux de manière abusive ?” Nous avons à nouveau une valeur qui influence notre modèle.</p>
+<p>Le cinquième graphique utilise l’effet de levier (<em>Leverage</em>) qui met également en avant l’influence des individus sur notre régression. Il répond à la question suivante : “est-ce qu’un ou plusieurs points sont tellement influents qu’ils tirent la régression vers eux de manière abusive ?” Nous avons à nouveau une valeur qui influence fortement notre modèle.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm., which = 5)</span>
 lm. <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .std.resid <span class="op">~</span><span class="st"> </span>.hat <span class="op">%size=%</span><span class="st"> </span>.cooksd) <span class="op">+</span>
@@ -286,7 +288,7 @@ lm. <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">geom_abline</span>(<span class="dt">slope =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dt">by =</span> <span class="fl">0.5</span>), <span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">size =</span> <span class="fl">0.5</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="kw">expression</span>(<span class="st">&quot;Leverage h&quot;</span>[ii]), <span class="dt">y =</span> <span class="st">&quot;Cook&#39;s distance&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">expression</span>(<span class="st">&quot;Cook&#39;s dist vs Leverage h&quot;</span>[ii]<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span>h[ii])))</code></pre>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">expression</span>(<span class="st">&quot;Cook&#39;s dist vs Leverage h&quot;</span>[ii] <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>h[ii])))</code></pre>
 <p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>A l’issue de l’analyse des résidus, nous abservons donc différents problèmes qui suggèrent que le modèle choisi n’est peut être pas le plus adapté. Nous comprendrons pourquoi plus loin.</p>
 <div id="a-vous-de-jouer" class="section level5 unnumbered">
@@ -301,7 +303,7 @@ N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la mai
 </div>
 <div id="pieges-et-astuces-extrapolation" class="section level5 unnumbered">
 <h5>Pièges et astuces : extrapolation</h5>
-<p>Notre régression linéaire a été réalisé sur des cerisiers noirs dont le diamètre est compris entre 0.211 et 0.523 mètre. Pensez vous qu’il soit acceptable de prédire des volumes de bois pour des arbres dont le diamètre est inférieur ou supérieur à nos valeurs minimales et maximales mesurées (extrapolation) ?</p>
+<p>Notre régression linéaire a été réalisée sur des cerisiers noirs dont le diamètre est compris entre 0.211 et 0.523 mètre. Pensez vous qu’il soit acceptable de prédire des volumes de bois pour des arbres dont le diamètre est inférieur ou supérieur à nos valeurs minimales et maximales mesurées (extrapolation) ?</p>
 <p>Utilisons notre régression linéaire afin de prédire 10 volumes de bois à partir d’arbre dont le diamètre varie entre 0.1 et 0.8m.</p>
 <pre class="sourceCode r"><code class="sourceCode r">new &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">diameter =</span> <span class="kw">seq</span>(<span class="fl">0.1</span>, <span class="fl">0.7</span>, <span class="dt">length.out =</span> <span class="dv">8</span>))</code></pre>
 <p>Ajoutons une variable <code>pred</code> qui contient les prédictions en volume de bois. Observez-vous un problème particulier sur base du tableau ci-dessous ?</p>
@@ -323,11 +325,10 @@ new</code></pre>
 <span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> new<span class="op">$</span>diameter[<span class="dv">2</span>], <span class="dt">linetype =</span> <span class="st">&quot;twodash&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;blue&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> new<span class="op">$</span>pred[<span class="dv">2</span>], <span class="dt">linetype =</span> <span class="st">&quot;twodash&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;blue&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_abline</span>(
-    <span class="kw">aes</span>(<span class="dt">intercept =</span> lm.<span class="op">$</span>coefficients[<span class="dv">1</span>], <span class="dt">slope =</span> lm.<span class="op">$</span>coefficients[<span class="dv">2</span>]))<span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_abline</span>(<span class="kw">aes</span>(<span class="dt">intercept =</span> lm.<span class="op">$</span>coefficients[<span class="dv">1</span>], <span class="dt">slope =</span> lm.<span class="op">$</span>coefficients[<span class="dv">2</span>])) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> new, <span class="kw">f_aes</span>(pred<span class="op">~</span>diameter), <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>) </code></pre>
 <p><img src="01-reg-lineaire_files/figure-html/unnamed-chunk-44-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Le volume de bois prédit est négatif ! Notre modèle est-il alors complètement faux ? Rappelons-nous qu’un modèle est nécessairement une vision simplifiée de la réalité. En particulier, notre modèle a été entraîné avec des données comprises dans un intervalle. Il est alors valable pour effectuer des <strong>interpolations</strong> à l’intérieur de cet intervalle, mais <strong>ne peut pas être utilisé pour effectuer des extrapolations</strong> en dehors, comme nous venos de réaliser.</p>
+<p>Le volume de bois prédit est négatif ! Notre modèle est-il alors complètement faux ? Rappelons-nous qu’un modèle est nécessairement une vision simplifiée de la réalité. En particulier, notre modèle a été entraîné avec des données comprises dans un intervalle. Il est alors valable pour effectuer des <strong>interpolations</strong> à l’intérieur de cet intervalle, mais <strong>ne peut pas être utilisé pour effectuer des extrapolations</strong> en dehors, comme nous venons de le faire.</p>
 <pre class="sourceCode r"><code class="sourceCode r">trees <span class="op">%&gt;.%</span>
 <span class="st">  </span>modelr<span class="op">::</span><span class="kw">add_predictions</span>(., lm.) -&gt;<span class="st"> </span>trees
 
@@ -338,7 +339,7 @@ new</code></pre>
 </div>
 <div id="pieges-et-astuces-significativite-fortuite" class="section level5 unnumbered">
 <h5>Pièges et astuces : significativité fortuite</h5>
-<p>Gardez toujours à l’esprit qu’il est possible que votre jeu de données donne une régression significative, mais purement <strong>fortuite</strong>. Les données supplémentaires de test devraient alros démasquer le problème. D’où l’importance de vérifier/valider votre modèle.</p>
+<p>Gardez toujours à l’esprit qu’il est possible que votre jeu de données donne une régression significative, mais purement <strong>fortuite</strong>. Les données supplémentaires de test devraient alors démasquer le problème. D’où l’importance de vérifier/valider votre modèle.</p>
 <p>Le <strong>principe de parcimonie</strong> veut que l’on ne teste pas toutes les combinaisons possibles deux à deux des variables d’un gros jeu de données, mais que l’on restreigne les explorations à des relations qui ont un sens biologique afin de minimiser le risque d’obtenir une telle régression de manière fortuite.</p>
 </div>
 </div>
@@ -365,7 +366,7 @@ new</code></pre>
 #   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
 # 1 (Intercept)    -1.05    0.0955     -11.0 7.85e-12
 # 2 diameter        5.65    0.276       20.4 9.09e-19</code></pre>
-<p>Pour extraire facilement et rapidement sous la forme d’un tableau de données les paramètres de votre modèle avec la fonction <code>glance()</code>.</p>
+<p>Pour extraire facilement et rapidement sous la forme d’un tableau de données les paramètres de votre modèle vouys pouvez aussi utiliser la fonction <code>glance()</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">(DF &lt;-<span class="st"> </span>broom<span class="op">::</span><span class="kw">glance</span>(lm.))</code></pre>
 <pre><code># # A tibble: 1 x 11
 #   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC

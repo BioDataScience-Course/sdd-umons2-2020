@@ -518,7 +518,7 @@ $$volume \ de \ bois = 5.65 \ diamètre \ à \ 1.4 \ m  - 1.05 $$
 
 ## Outils de diagnostic
 
-Une fois la meilleure droite de régression obtenue, le travail est loin d'être terminé. Il se peut que le nuage de point ne soit pas tout-à-fait linéaire, que sa dispesion ne soit pas homogène, que les résidus n'aient pas une distribution normale, qu'il existe des valeurs extrêmes aberrantes, ou qui tirent la droite vers alles de manière excessive.
+Une fois la meilleure droite de régression obtenue, le travail est loin d'être terminé. Il se peut que le nuage de point ne soit pas tout-à-fait linéaire, que sa dispersion ne soit pas homogène, que les résidus n'aient pas une distribution normale, qu'il existe des valeurs extrêmes aberrantes, ou qui tirent la droite vers elle de manière excessive.
 
 Nous allons maintenant devoir diagnostiquer ces possibles problèmes. L'**analyse des résidus** permet de le faire. Ensuite, si deux ou plusieurs modèles sont utilisable, il nous faut décider lequel conserver. Enfin, nous pouvons aussi calculer et visualiser l'**enveloppe de confiance** 
 du modèle et extraire une série de données de ce modèle.
@@ -528,7 +528,7 @@ du modèle et extraire une série de données de ce modèle.
 
 Le tableau numérique obtenu à l'aide de `summary()` peut faire penser que l'étude d'une régression linéaire se limite à quelques valeurs numériques et divers tests d'hypothèses associés. C'est un premier pas, mais c'est oublier que la technique est **essentiellement visuelle**. Le graphique du nuage de points avec la droite superposée est un premier outil diagnostic visuel indispensable, mais il n'est pas le seul\ ! Plusieurs graphiques spécifiques existent pour mettre en évidence diverses propriétés des résidus qui peuvent révéler des problèmes. Leur inspection est indispensable et s'appelle l'**analyse des résidus**. Les différents graphiques sont faciles à obtenir à partir des snippets.
 
-Le premier de ces graphique permet de vérifier la distribution homogène des résidus. Dans une bonne régression, nous aurons une distribution équilibrée de part et d'autre du zéro sur l'axe Y. Que pensez vous de notre graphique d'anayse des résidus\ ? Nous avons une valeur plus éloignée du zéro qui est mise en avant par la courbe en bleue qui montre l'influence générale des résidus. 
+Le premier de ces graphique permet de vérifier la distribution homogène des résidus. Dans une bonne régression, nous aurons une distribution équilibrée de part et d'autre du zéro sur l'axe Y. Que pensez-vous de notre graphique d'anayse des résidus\ ? Nous avons une valeur plus éloignée du zéro qui est mise en avant par la courbe en bleu qui montre l'influence générale des résidus. 
 
 ```{r}
 #plot(lm., which = 1)
@@ -541,7 +541,7 @@ lm. %>.%
   ggtitle("Residuals vs Fitted")
 ```
 
-Le second graphique permet de vérifier la normalité des résidus par rapport à une distribution normale.
+Le second graphique permet de vérifier la normalité des résidus (comparaison par graphique quantile-quantile à une distribution normale).
 
 ```{r}
 #plot(lm., which = 2)
@@ -553,7 +553,7 @@ lm. %>.%
   ggtitle("Normal Q-Q")
 ```
 
-Le troisième graphique va standardiser les résidus, et surtout, en prendre la racine carréE. Cela a pour effet de superposer les résidus négatifs sur les résidus positifs. Nous y diagnostiquons beaucoup plus facilement des problèmes de distribution de ces résidus. A nouveau, nous pouvons observer qu'une valeur influence fortement la courbe bleue.
+Le troisième graphique va standardiser les résidus, et surtout, en prendre la racine carrée. Cela a pour effet de superposer les résidus négatifs sur les résidus positifs. Nous y diagnostiquons beaucoup plus facilement des problèmes de distribution de ces résidus. A nouveau, nous pouvons observer qu'une valeur influence fortement la régression.
 
 ```{r}
 #plot(lm., which = 3)
@@ -566,7 +566,7 @@ lm. %>.%
   ggtitle("Scale-Location")
 ```
 
-Le quatrième graphique met en évidence l'influence des individus sur la régression linéaire. Effectivement, la régression linéaire est sensible aux valeurs extrêmes. Nous pouvons observer que nous avons une valeur qui influence fortement notre régression. On utilise pour ce faire la distance de Cook que nous ne détailleront pas dans le cadre de ce cours.
+Le quatrième graphique met en évidence l'influence des individus sur la régression linéaire. Effectivement, la régression linéaire est sensible aux valeurs extrêmes. Nous pouvons observer que nous avons une valeur qui influence fortement notre régression. On utilise pour ce faire la distance de Cook que nous ne détaillerons pas dans le cadre de ce cours.
 
 ```{r}
 #plot(lm., which = 4)
@@ -578,7 +578,7 @@ lm. %>.%
   ggtitle("Cook's distance")
 ```
 
-Le cinquième grapique utilise l'effet de levier (*Leverage*) qui met également en avant l'influence des individus sur notre régression. Il répond à la question suivante\ : "est-ce qu'un ou plusieurs points sont tellement influents qu'ils tirent la régression vers eux de manière abusive\ ?" Nous avons à nouveau une valeur qui influence notre modèle.
+Le cinquième graphique utilise l'effet de levier (*Leverage*) qui met également en avant l'influence des individus sur notre régression. Il répond à la question suivante\ : "est-ce qu'un ou plusieurs points sont tellement influents qu'ils tirent la régression vers eux de manière abusive\ ?" Nous avons à nouveau une valeur qui influence fortement notre modèle.
 
 ```{r}
 #plot(lm., which = 5)
@@ -603,7 +603,7 @@ lm. %>.%
   geom_abline(slope = seq(0, 3, by = 0.5), colour = "darkgray") +
   geom_smooth(se = FALSE, size = 0.5, method = "loess", formula = y ~ x) +
   labs(x = expression("Leverage h"[ii]), y = "Cook's distance") +
-  ggtitle(expression("Cook's dist vs Leverage h"[ii]/(1-h[ii])))
+  ggtitle(expression("Cook's dist vs Leverage h"[ii] / (1 - h[ii])))
 ```
 
 A l'issue de l'analyse des résidus, nous abservons donc différents problèmes qui suggèrent que le modèle choisi n'est peut être pas le plus adapté. Nous comprendrons pourquoi plus loin.
@@ -619,11 +619,9 @@ N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à
 ```
 
 
-
-
 ##### Pièges et astuces : extrapolation {-}
 
-Notre régression linéaire a été réalisé sur des cerisiers noirs dont le diamètre est compris entre `r min(trees$diameter)`  et `r max(trees$diameter)` mètre. Pensez vous qu'il soit acceptable de prédire des volumes de bois pour des arbres dont le diamètre est inférieur ou supérieur à nos valeurs minimales et maximales mesurées (extrapolation)\ ?
+Notre régression linéaire a été réalisée sur des cerisiers noirs dont le diamètre est compris entre `r min(trees$diameter)`  et `r max(trees$diameter)` mètre. Pensez vous qu'il soit acceptable de prédire des volumes de bois pour des arbres dont le diamètre est inférieur ou supérieur à nos valeurs minimales et maximales mesurées (extrapolation)\ ?
 
 Utilisons notre régression linéaire afin de prédire 10 volumes de bois à partir d'arbre dont le diamètre varie entre 0.1 et 0.8m.
 
@@ -647,13 +645,12 @@ chart(trees, volume~diameter) +
   geom_vline(xintercept = new$diameter[2], linetype = "twodash", color = "blue") +
   geom_hline(yintercept = new$pred[2], linetype = "twodash", color = "blue") +
   geom_point() +
-  geom_abline(
-    aes(intercept = lm.$coefficients[1], slope = lm.$coefficients[2]))+
+  geom_abline(aes(intercept = lm.$coefficients[1], slope = lm.$coefficients[2])) +
   geom_point(data = new, f_aes(pred~diameter), color = "red") 
 
 ```
 
-Le volume de bois prédit est négatif\ ! Notre modèle est-il alors complètement faux\ ? Rappelons-nous qu'un modèle est nécessairement une vision simplifiée de la réalité. En particulier, notre modèle a été entraîné avec des données comprises dans un intervalle. Il est alors valable pour effectuer des **interpolations** à l'intérieur de cet intervalle, mais **ne peut pas être utilisé pour effectuer des extrapolations** en dehors, comme nous venos de réaliser.
+Le volume de bois prédit est négatif\ ! Notre modèle est-il alors complètement faux\ ? Rappelons-nous qu'un modèle est nécessairement une vision simplifiée de la réalité. En particulier, notre modèle a été entraîné avec des données comprises dans un intervalle. Il est alors valable pour effectuer des **interpolations** à l'intérieur de cet intervalle, mais **ne peut pas être utilisé pour effectuer des extrapolations** en dehors, comme nous venons de le faire.
 
 ```{r}
 trees %>.%
@@ -668,7 +665,7 @@ chart(trees, volume~diameter) +
 
 ##### Pièges et astuces : significativité fortuite {-}
 
-Gardez toujours à l'esprit qu'il est possible que votre jeu de données donne une régression significative, mais purement **fortuite**. Les données supplémentaires de test devraient alros démasquer le problème. D'où l'importance de vérifier/valider votre modèle.
+Gardez toujours à l'esprit qu'il est possible que votre jeu de données donne une régression significative, mais purement **fortuite**. Les données supplémentaires de test devraient alors démasquer le problème. D'où l'importance de vérifier/valider votre modèle.
 
 Le **principe de parcimonie** veut que l'on ne teste pas toutes les combinaisons possibles deux à deux des variables d'un gros jeu de données, mais que l'on restreigne les explorations à des relations qui ont un sens biologique afin de minimiser le risque d'obtenir une telle régression de manière fortuite.
 
@@ -706,7 +703,7 @@ La fonction `tidy()` du package `broom` extrait facilement et rapidement sous la
 ```
 
 
-Pour extraire facilement et rapidement sous la forme d'un tableau de données les paramètres de votre modèle avec la fonction `glance()`. 
+Pour extraire facilement et rapidement sous la forme d'un tableau de données les paramètres de votre modèle vouys pouvez aussi utiliser la fonction `glance()`. 
 
 ```{r}
 (DF <- broom::glance(lm.))
