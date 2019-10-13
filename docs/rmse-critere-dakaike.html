@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>2.2 Régression linéaire multiple | Science des données biologiques 2</title>
+  <title>2.4 RMSE &amp; critère d’Akaike | Science des données biologiques 2</title>
   <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="2.2 Régression linéaire multiple | Science des données biologiques 2" />
+  <meta property="og:title" content="2.4 RMSE &amp; critère d’Akaike | Science des données biologiques 2" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
   <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.2 Régression linéaire multiple | Science des données biologiques 2" />
+  <meta name="twitter:title" content="2.4 RMSE &amp; critère d’Akaike | Science des données biologiques 2" />
   
   <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
   <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="outils-de-diagnostic-suite.html">
-<link rel="next" href="regression-lineaire-polynomiale.html">
+<link rel="prev" href="regression-lineaire-polynomiale.html">
+<link rel="next" href="mod-lineaire.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -222,10 +222,24 @@ code span.wa { color: #bf0303; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="regression-lineaire-multiple" class="section level2">
-<h2><span class="header-section-number">2.2</span> Régression linéaire multiple</h2>
-<p>TODO</p>
+<div id="rmse-critere-dakaike" class="section level2">
+<h2><span class="header-section-number">2.4</span> RMSE &amp; critère d’Akaike</h2>
+<p>Le <em>R<sup>2</sup></em>/<em>r<sup>2</sup></em> (ajusté) n’est pas la seule mesure d’ajustement d’un modèle. Il existe d’autres indicateurs. Par exemple, l’<strong>erreur quadratique moyenne</strong>, (root mean square error, ou RMSE en anglais) est la racine carrée de la moyenne des résidus au carré. Elle représente en quelque sorte la distance “typique” des résidus. Comme cette distance est exprimée dans les mêmes unités que l’axe <em>y</em>, cette mesure est particulièrement parlante. Nous pouvons l’obtenir par exemple comme ceci :</p>
+<pre class="sourceCode r"><code class="sourceCode r">modelr<span class="op">::</span><span class="kw">rmse</span>(lm., trees)</code></pre>
+<pre><code># [1] 0.1166409</code></pre>
+<p>Cela signifie que l’on peut s’attendre à ce que, en moyenne, les valeurs prédites de volume de bois s’écartent (dans un sens ou dans l’autre) de 0,117 m<sup>3</sup> de la valeur effectivement observée. Evidemment, plus un modèle est bon, plus le RMSE est <strong>faible</strong>, contrairement au <em>R<sup>2</sup></em> qui lui doit être <strong>élevé</strong>.</p>
+<p>Si le <em>R<sup>2</sup></em> comme le RMSE sont utiles pour quantifier la qualité d’ajustement d’<em>une</em> régression, ces mesures sont peu adaptées pour la comparaison de modèles entre eux. En effet, nous avons vu que plus le modèle est complexe, mieux il s’ajuste dans les données. Le <em>R<sup>2</sup> ajusté</em> tente de remédier partiellement à ce problème, mais cette métrique reste peu fiable pour comparer des modèles très différents. Le <strong>critère d’Akaike</strong>, du nom du statisticien japonais qui l’a conçu, est une métrique plus adaptée à de telles comparaisons. Elle se base au départ sur encore une autre mesure de la qualité d’ajustement d’un modèle : la <strong>log-vraisemblance</strong>. Les explications relatives à cette mesure sont obligatoirement complexes d’un point de vue mathématique et nous vous proposons ici d’en retenir la définition sur un plan purement conceptuel. Un <strong>estimateur de maximum de vraisemblance</strong> est une mesure qui permet d’inférer le meilleur ajustement possible d’une loi de probabilité par rapport à des données. Dans le cas de la régression par les moindres carrés, la distribution de probabilité à ajuster est celle des résidus (pour rappel, il s’agit d’une distribution Normale de moyenne nulle et d’écart type constant <span class="math inline">\(\sigma\)</span>). La <strong>log-vraisemblance</strong>, pour des raisons purement techniques est souvent préféré au maximum de vraissemblance. Il s’agit simplement du logarithme de sa valeur.</p>
+<p>Donc, plus la log-vraisemblance est grande, mieux les données sont compatibles avec le modèle probabiliste considéré. <strong>Pour un même jeu de données</strong>, ces valeurs sont comparables entre elles… même pour des modèles très différents. Mais cela ne règle pas la question de la complexité du modèle. C’est ici qu’Akaike entre en piste. Il propose le critère suivant :</p>
+<p><span class="math display">\[
+\textrm{AIC} = -2 . \textrm{log-vraisemblance} + 2 . \textrm{nbrpar}
+\]</span></p>
+<ul>
+<li>où <strong>nbrpar</strong> est le nombre de paramètres à estimer dans le modèle. Donc ici, nous prenons comme point de départ moins deux fois la log-vraisemblance, une valeur <em>a priori</em> à <strong>minimiser</strong>, mais nous lui ajoutons le second terme de <strong>pénalisation</strong> en fonction de la complexité du modèle valant 2 fois le nombre de paramètres du modèle. Notons d’ailleurs que le terme multiplicateur 2 ici est modifiable. Si nous voulons un modèle le moins complexe possible, nous pourrions très bien multiplier par 3 ou 4 pour pénaliser encore plus. Et si nous voulons être moins restrictifs, nous pouvons aussi diminuer ce facteur multiplicatif. Dans la pratique, le facteur 2 est quand même très majoritairement adapté par les praticiens, mais la possibilité de changer l’impact de complexité du modèle est inclue dans le calcul <em>de facto</em>.</li>
+</ul>
+<p>Dès lors que ce critère peut être calculé (et R le fait pour pratiquement tous les modèles qu’il propose), une comparaison est possible avec pour objectif de sélectionner le, ou un des modèles qui a l’AIC <strong>la plus faible</strong>. N’oubliez toutefois pas de comparer <em>visuellement</em> les différents modèles ajustés et d’interpréter les graphiques d’analyse des résidus respectifs en plus des valeurs d’AIC. <strong>C’est l’ensemble de ces outils qui vous orientent vers le meilleur modèle, pas l’AIC seul !</strong></p>
+
 </div>
+<!-- </div> -->
 <div id="disqus_thread"></div>
 <script>
 
@@ -251,8 +265,8 @@ s.setAttribute('data-timestamp', +new Date());
           </div>
         </div>
       </div>
-<a href="outils-de-diagnostic-suite.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="regression-lineaire-polynomiale.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="regression-lineaire-polynomiale.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="mod-lineaire.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

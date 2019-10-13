@@ -239,8 +239,12 @@ lm1 %>.%
   geom_vline(xintercept = 0) +
   geom_hline(yintercept = 0) +
   labs(x = "Leverage", y = "Standardized residuals") +
-  ggtitle("Residuals vs Leverage") -> a
+  ggtitle("Residuals vs Leverage")
+```
 
+<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-6-5.png" width="672" style="display: block; margin: auto;" />
+
+```r
 #plot(lm1, which = 6)
 lm1 %>.%
   chart(broom::augment(.), .cooksd ~ .hat %size=% .cooksd) +
@@ -249,12 +253,12 @@ lm1 %>.%
   geom_abline(slope = seq(0, 3, by = 0.5), colour = "darkgray") +
   geom_smooth(se = FALSE, size = 0.5, method = "loess", formula = y ~ x) +
   labs(x = expression("Leverage h"[ii]), y = "Cook's distance") +
-  ggtitle(expression("Cook's dist vs Leverage h"[ii] / (1 - h[ii]))) -> b
+  ggtitle(expression("Cook's dist vs Leverage h"[ii] / (1 - h[ii])))
 ```
 
-### Critère d'Akaike
+<img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-6-6.png" width="672" style="display: block; margin: auto;" />
 
-A faire...
+Au travers de cet exemple, nous constatons que la comparaison de modèles, dans le but de choisir le meilleur est un travail utile. Cela apparaitra d'autant plus utile que la situation va passablement se complexifier (dans le bon sens) avec l'introduction de la régression multiple et polynomiale ci-dessous. Heureusement, nous terminerons ce module avec la découverte d'une métrique qui va nous permettre d'effectuer le choix du meilleur modèle de manière fiable\ : le critère d'Akaike.
 
 
 ## Régression linéaire multiple 
@@ -264,3 +268,31 @@ TODO
 ## Régression linéaire polynomiale
 
 TODO
+
+
+## RMSE & critère d'Akaike
+
+Le *R^2^*/*r^2^* (ajusté) n'est pas la seule mesure d'ajustement d'un modèle. Il existe d'autres indicateurs. Par exemple, l'**erreur quadratique moyenne**, (root mean square error, ou RMSE en anglais) est la racine carrée de la moyenne des résidus au carré. Elle représente en quelque sorte la distance "typique" des résidus. Comme cette distance est exprimée dans les mêmes unités que l'axe *y*, cette mesure est particulièrement parlante. Nous pouvons l'obtenir par exemple comme ceci\ :
+
+
+```r
+modelr::rmse(lm., trees)
+```
+
+```
+# [1] 0.1166409
+```
+
+Cela signifie que l'on peut s'attendre à ce que, en moyenne, les valeurs prédites de volume de bois s'écartent (dans un sens ou dans l'autre) de 0,117 m^3^ de la valeur effectivement observée. Evidemment, plus un modèle est bon, plus le RMSE est **faible**, contrairement au *R^2^* qui lui doit être **élevé**.
+
+Si le *R^2^* comme le RMSE sont utiles pour quantifier la qualité d'ajustement d'*une* régression, ces mesures sont peu adaptées pour la comparaison de modèles entre eux. En effet, nous avons vu que plus le modèle est complexe, mieux il s'ajuste dans les données. Le *R^2^ ajusté* tente de remédier partiellement à ce problème, mais cette métrique reste peu fiable pour comparer des modèles très différents. Le **critère d'Akaike**, du nom du statisticien japonais qui l'a conçu, est une métrique plus adaptée à de telles comparaisons. Elle se base au départ sur encore une autre mesure de la qualité d'ajustement d'un modèle\ : la **log-vraisemblance**. Les explications relatives à cette mesure sont obligatoirement complexes d'un point de vue mathématique et nous vous proposons ici d'en retenir la définition sur un plan purement conceptuel. Un **estimateur de maximum de vraisemblance** est une mesure qui permet d'inférer le meilleur ajustement possible d'une loi de probabilité par rapport à des données. Dans le cas de la régression par les moindres carrés, la distribution de probabilité à ajuster est celle des résidus (pour rappel, il s'agit d'une distribution Normale de moyenne nulle et d'écart type constant $\sigma$). La **log-vraisemblance**, pour des raisons purement techniques est souvent préféré au maximum de vraissemblance. Il s'agit simplement du logarithme de sa valeur.
+
+Donc, plus la log-vraisemblance est grande, mieux les données sont compatibles avec le modèle probabiliste considéré. **Pour un même jeu de données**, ces valeurs sont comparables entre elles... même pour des modèles très différents. Mais cela ne règle pas la question de la complexité du modèle. C'est ici qu'Akaike entre en piste. Il propose le critère suivant\ :
+
+$$
+\textrm{AIC} = -2 . \textrm{log-vraisemblance} + 2 . \textrm{nbrpar}
+$$
+
+- où **nbrpar** est le nombre de paramètres à estimer dans le modèle. Donc ici, nous prenons comme point de départ moins deux fois la log-vraisemblance, une valeur *a priori* à **minimiser**, mais nous lui ajoutons le second terme de **pénalisation** en fonction de la complexité du modèle valant 2 fois le nombre de paramètres du modèle. Notons d'ailleurs que le terme multiplicateur 2 ici est modifiable. Si nous voulons un modèle le moins complexe possible, nous pourrions très bien multiplier par 3 ou 4 pour pénaliser encore plus. Et si nous voulons être moins restrictifs, nous pouvons aussi diminuer ce facteur multiplicatif. Dans la pratique, le facteur 2 est quand même très majoritairement adapté par les praticiens, mais la possibilité de changer l'impact de complexité du modèle est inclue dans le calcul *de facto*.
+
+Dès lors que ce critère peut être calculé (et R le fait pour pratiquement tous les modèles qu'il propose), une comparaison est possible avec pour objectif de sélectionner le, ou un des modèles qui a l'AIC **la plus faible**. N'oubliez toutefois pas de comparer *visuellement* les différents modèles ajustés et d'interpréter les graphiques d'analyse des résidus respectifs en plus des valeurs d'AIC. **C'est l'ensemble de ces outils qui vous orientent vers le meilleur modèle, pas l'AIC seul\ !**
