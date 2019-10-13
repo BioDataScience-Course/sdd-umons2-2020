@@ -228,7 +228,7 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="rmse-critere-dakaike" class="section level2">
 <h2><span class="header-section-number">2.4</span> RMSE &amp; critère d’Akaike</h2>
-<p>Le <em>R<sup>2</sup></em>/<em>r<sup>2</sup></em> (ajusté) n’est pas la seule mesure d’ajustement d’un modèle. Il existe d’autres indicateurs. Par exemple, l’<strong>erreur quadratique moyenne</strong>, (root mean square error, ou RMSE en anglais) est la racine carrée de la moyenne des résidus au carré. Elle représente en quelque sorte la distance “typique” des résidus. Comme cette distance est exprimée dans les mêmes unités que l’axe <em>y</em>, cette mesure est particulièrement parlante. Nous pouvons l’obtenir par exemple comme ceci :</p>
+<p>Le <em>R<sup>2</sup></em> (ajusté) n’est pas la seule mesure d’ajustement d’un modèle. Il existe d’autres indicateurs. Par exemple, l’<strong>erreur quadratique moyenne</strong>, (root mean square error, ou RMSE en anglais) est la racine carrée de la moyenne des résidus au carré. Elle représente en quelque sorte la distance “typique” des résidus. Comme cette distance est exprimée dans les mêmes unités que l’axe <em>y</em>, cette mesure est particulièrement parlante. Nous pouvons l’obtenir par exemple comme ceci :</p>
 <pre class="sourceCode r"><code class="sourceCode r">modelr<span class="op">::</span><span class="kw">rmse</span>(lm., trees)</code></pre>
 <pre><code># [1] 0.1166409</code></pre>
 <p>Cela signifie que l’on peut s’attendre à ce que, en moyenne, les valeurs prédites de volume de bois s’écartent (dans un sens ou dans l’autre) de 0,117 m<sup>3</sup> de la valeur effectivement observée. Evidemment, plus un modèle est bon, plus le RMSE est <strong>faible</strong>, contrairement au <em>R<sup>2</sup></em> qui lui doit être <strong>élevé</strong>.</p>
@@ -241,6 +241,66 @@ code span.wa { color: #bf0303; } /* Warning */
 <li>où <strong>nbrpar</strong> est le nombre de paramètres à estimer dans le modèle. Donc ici, nous prenons comme point de départ moins deux fois la log-vraisemblance, une valeur <em>a priori</em> à <strong>minimiser</strong>, mais nous lui ajoutons le second terme de <strong>pénalisation</strong> en fonction de la complexité du modèle valant 2 fois le nombre de paramètres du modèle. Notons d’ailleurs que le terme multiplicateur 2 ici est modifiable. Si nous voulons un modèle le moins complexe possible, nous pourrions très bien multiplier par 3 ou 4 pour pénaliser encore plus. Et si nous voulons être moins restrictifs, nous pouvons aussi diminuer ce facteur multiplicatif. Dans la pratique, le facteur 2 est quand même très majoritairement adapté par les praticiens, mais la possibilité de changer l’impact de complexité du modèle est inclue dans le calcul <em>de facto</em>.</li>
 </ul>
 <p>Dès lors que ce critère peut être calculé (et R le fait pour pratiquement tous les modèles qu’il propose), une comparaison est possible avec pour objectif de sélectionner le, ou un des modèles qui a l’AIC <strong>la plus faible</strong>. N’oubliez toutefois pas de comparer <em>visuellement</em> les différents modèles ajustés et d’interpréter les graphiques d’analyse des résidus respectifs en plus des valeurs d’AIC. <strong>C’est l’ensemble de ces outils qui vous orientent vers le meilleur modèle, pas l’AIC seul !</strong></p>
+<p>Calculons maintenant les critères d’Akaike pour nos 6 modèles <code>lm.</code> à <code>lm5</code>…</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(lm.) <span class="co"># Linéaire diamètre</span></code></pre>
+<pre><code># [1] -39.24246</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(lm2) <span class="co"># Multiple diamètre et hauteur</span></code></pre>
+<pre><code># [1] -43.82811</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(lm3) <span class="co"># Polynomial diamètre</span></code></pre>
+<pre><code># [1] -53.50964</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(lm4) <span class="co"># Diamètre^2</span></code></pre>
+<pre><code># [1] -50.15027</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(lm5) <span class="co"># Multiple et polynomial</span></code></pre>
+<pre><code># [1] -67.4391</code></pre>
+<p>D’après ce critère, le modèle linéaire est le moins bon, et le dernier modèle le plus complexe serait le meilleur. Notez toutefois que la différence est relativement minime (en regard du gain total) entre le modèle polynomial complet <code>lm3</code> et la version simplifié au seul terme diamètre<sup>2</sup> en <code>lm4</code>, ce qui permet de penser que cette simplification est justifiée.</p>
+<p>Dans l’hypothèse où nous déciderions de conserver le modèle <code>lm5</code>, en voici l’analyse des résidus qui est bonne dans l’ensemble :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm5, which = 1)</span>
+lm5 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .resid <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Residuals&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Residuals vs Fitted&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm5, which = 2)</span>
+lm5 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">aes</span>(<span class="dt">sample =</span> .std.resid)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_qq</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_qq_line</span>(<span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Theoretical quantiles&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Standardized residuals&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Normal Q-Q&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-20-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm5, which = 3)</span>
+lm5 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">sqrt</span>(<span class="kw">abs</span>(.std.resid)) <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>,
+    <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">bold</span>(<span class="kw">sqrt</span>(<span class="kw">abs</span>(<span class="st">&quot;Standardized residuals&quot;</span>))))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Scale-Location&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-20-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm5, which = 4)</span>
+lm5 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .cooksd <span class="op">~</span><span class="st"> </span><span class="kw">seq_along</span>(.cooksd)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="dt">by =</span> <span class="fl">0.05</span>), <span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Obs. number&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Cook&#39;s distance&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Cook&#39;s distance&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-20-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Naturellement, même si c’est le cas ici, ce n’est pas toujours le modèle le plus complexe qui “gagne” toujours. Même ici, nous pourrions nous demander si le modèle polynomial utilisant uniquement le diamètre ne serait pas plus intéressant en pratique car son ajustement est tout de même relativement bon (même si son critère d’Akaike est nettement moins en sa faveur), mais d’un point de vue pratique, il nous dispense de devoir mesurer la hauteur des arbres pour prédire le volume de bois. Ce n’est peut-être pas négligeable comme gain, pour une erreur de prédiction légèrement supérieure si on compare les valeurs de RMSE.</p>
+<pre class="sourceCode r"><code class="sourceCode r">modelr<span class="op">::</span><span class="kw">rmse</span>(lm5, trees) <span class="co"># Multiple et polynomial</span></code></pre>
+<pre><code># [1] 0.06939391</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">modelr<span class="op">::</span><span class="kw">rmse</span>(lm3, trees) <span class="co"># Polynomial diamètre</span></code></pre>
+<pre><code># [1] 0.08972287</code></pre>
+<p>L’erreur moyenne d’estimation du volume de bois passe de 0,07 m<sup>3</sup> pour le modèle le plus complexe <code>lm5</code> utilisant à la fois le diamètre et la hauteur à 0,09 m<sup>3</sup>. C’est à l’exploitant qu’il appartient de déterminer si le gain de précision vaut la peine de devoir effectuer deux mesures au lieu d’une seule. Mais au moins, nous sommes capables, en qualité de scientifiques des données, de lui proposer les alternatives possible et d’en quantifier les effets respectifs.</p>
+<!-- TODO: discuter également le cas du jeu de données ANSCOMBE pour montrer les biais qui peuvent apparaitre si on ne visualise pas l'ajustement du modèle sur un graphique-->
+<center>
+<div class="figure">
+<img src="https://imgs.xkcd.com/comics/curve_fitting.png" alt="Différentes méthodes d’ajustement par xkcd." />
+<p class="caption"><a href="https://xkcd.com/2048/">Différentes méthodes d’ajustement par xkcd</a>.</p>
+</div>
+</center>
 
 </div>
 <!-- </div> -->

@@ -271,12 +271,105 @@ Notez que dans le cas de l'ajout d'*un seul* terme, la valeur *p* de cette ANOVA
 
 ## Régression linéaire polynomiale
 
-TODO
+Pour rappel, un polynome est une expression mathématique du type (*notez la ressemblance avec l'équation de la régression multiple*)\ :
+
+$$
+a_0 + a_1 . x + a_2 . x^2 + ... + a_n . x^n
+$$
+
+Un polynome d'ordre 2 (terme jusqu'au $x^2$) correspond à une parabole dans le plan *xy*. Que se passe-t-il si nous calculons une variable `diametre2` qui est le carré du diamètre et que nous prétendons faire une régression multiple en utilisant à la fois `diamètre` et `diamètre2`/ ?
+
+```{r}
+trees %>.%
+  mutate(., diameter2 = diameter^2) -> trees
+summary(lm(data = trees, volume ~ diameter + diameter2))
+```
+
+Il semble que R ait pu réaliser cette analyse. Cette fois-ci, nous n'avons cependant pas une droite ou un plan ajusté, mais par ce subterfuge, nous avons pu ajuster une **courbe** dans les données\ ! Nous pourrions augmenter le degré du polynome (ajouter un terme en `diameter^3`, voire encore des puissance supérieures). Dans ce cas, nous obtiendrons une courbe de plus en plus flexible, toujours dans le plan `xy`. Ceci illustre parfaitement d'ailleurs l'ambiguité de la complexité du modèle qui s'ajuste de mieux en mieux dans les données, mais qui ce faisant, perd également progressivement son pouvoir explicatif. En effet, on sait qu'il existe toujours une droite qui passe entre deux points dans le plan. De même, il existe toujours une parabole qui passe par 3 points quelconques dans le plan. Et par extension, il existe une courbe correspondant à un polynome d'ordre *n* - 1 qui passe par n'importe quel ensemble de *n* points dans le plan. Un modèle construit à l'aide d'un tel polynome aura **toujours** un *R^2^* égal à un, ... mais en même temps ce modèle ne sera d'**aucune** utilité car il ne contient plus aucune information pertinente. C'est ce qu'on appelle le **surajustement** (overfitting en anglais). La figure ci-dessous (issue d'un article écrit par Anup Bhande [ici](https://medium.com/greyatom/what-is-underfitting-and-overfitting-in-machine-learning-and-how-to-deal-with-it-6803a989c76)) illuste bien ce phénomène.
+
+![](images/sdd2_02/under_overfitting.png)
+
+Devoir calculer les différentes puissance des variables au préalable devient rapidement fastidieux. Heureusement, R autorise de glisser ce cacul *directement dans la formule*, mais à condition de lui indiquer qu'il ne s'agit pas du nom d'une variable `diameter^2`, mais d'un calcul effectué sur `diameter` en utilisant la fonction, d'identité `I()`. Ainsi, sans rien calculer au préalable, nous pouvons utiliser la formule `volume ~ diameter + I(diameter^2)`. Un snippet est d'ailleurs disponible pour ajuster un polynome d'ordre 2 ou d'ordre 3, et il est accompagné du code nécessaire pour représenter également graphiquement cette régression polynomiale. Le code ci-dessous qui construit le modèle `lm3` l'utilise.
+
+```{r}
+summary(lm3 <- lm(data = trees,
+  volume ~  diameter + I(diameter^2)))
+lm3 %>.% (function(lm, model = lm[["model"]], vars = names(model))
+  chart(model, aes_string(x = vars[2], y = vars[1])) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x + I(x^2)))(.)
+```
+
+Remarquez sur le graphique comment, à présent, la courbe s'ajuste bien mieux dans le nuage de point et comme l'arbre le plus grand avec un diamètre supérieur à 0,5m est à présent presque parfaitement ajusté par le modèle. **Faites donc très attention que des points influents ou extrêmes peuvent apparaitre également comme tel à cause d'un mauvais choix de modèle\ !**
+
+L'analyse des résidus nous montre aussi un comportement plus sain.
+
+```{r}
+#plot(lm3, which = 1)
+lm3 %>.%
+  chart(broom::augment(.), .resid ~ .fitted) +
+  geom_point() +
+  geom_hline(yintercept = 0) +
+  geom_smooth(se = FALSE, method = "loess", formula = y ~ x) +
+  labs(x = "Fitted values", y = "Residuals") +
+  ggtitle("Residuals vs Fitted") 
+
+#plot(lm3, which = 2)
+lm3 %>.%
+  chart(broom::augment(.), aes(sample = .std.resid)) +
+  geom_qq() +
+  geom_qq_line(colour = "darkgray") +
+  labs(x = "Theoretical quantiles", y = "Standardized residuals") +
+  ggtitle("Normal Q-Q") 
+
+#plot(lm3, which = 3)
+lm3 %>.%
+  chart(broom::augment(.), sqrt(abs(.std.resid)) ~ .fitted) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = "loess", formula = y ~ x) +
+  labs(x = "Fitted values",
+    y = expression(bold(sqrt(abs("Standardized residuals"))))) +
+  ggtitle("Scale-Location") 
+
+#plot(lm3, which = 4)
+lm3 %>.%
+  chart(broom::augment(.), .cooksd ~ seq_along(.cooksd)) +
+  geom_bar(stat = "identity") +
+  geom_hline(yintercept = seq(0, 0.1, by = 0.05), colour = "darkgray") +
+  labs(x = "Obs. number", y = "Cook's distance") +
+  ggtitle("Cook's distance") 
+```
+
+Revenons un instant sur le résumé de ce modèle.
+
+```{r}
+summary(lm3)
+```
+
+La pente relative au `diameter` nécessite quelques élkéments d'explication. En effet, que signifie une pente pour une courbe dont la dérivée première ("pente locale") change constamment\ ? En fait, il faut comprendre ce paramètre comme étant la pente de la courbe au point *x* = 0.
+
+Si le modèle est très nettement significatif (ANOVA, valeur *p* <<< 0,001), et si le *R^2^* ajusté grimpe maintenant à 0,959, seul le paramètre relatif au diamètre^2^ est significatif cette fois-ci. Ce résultat suggère que ce modèle pourrait êtrte simplifié en considérant que l'ordonnée à l'origine et la pente pour le terme `diameter` valent zéro. Cela peut être tenté, mais **à condition de refaire l'analyse**. On ne peut jamais laisser tomber un paramètre dans une analyse et considérer que les autres sont utilisable tels quels. tous les paramètres caculés sont interconnectés.
+
+Voyons ce que cela donne (la formule devient `volume ~ I(diameter^2) - 1`  ou `volume ~ I(diameter^2) + 0`, ce qui est identique)\ :
+
+```{r}
+summary(lm4 <- lm(data = trees, volume ~  I(diameter^2) - 1))
+```
+
+Notez bien que quand on réajuste un modèle simplifié, les paramètres restants doivent être recalculés. En effet, le paramètre relatif au diamètre^2^ vallait 11,2 dans le modèle `lm3` plus haut. Un fois les autres termes éliminés, ce paramètre devient 7,30 dans ce modèle `lm4` simplifié.
+
+Faites bien attention de ne pas comparer le *R^2^* acvec ordonnée à l'origine fixée à zéro ici dans notre modèle `lm4` avec les *R^2^* des modèles `lm.` ou `lm3` qui ont ce paramètre estimé. Rappelez-vous que le *R^2^* est calculé différemment dans les deux cas\ ! Donc, nous voilà une fois de plus face à un nouveau modèle pour lequel il nous est difficile de décider s'il est meilleur que les précédents. Avant de comparer, élaborons un tout dernier modèle, le plus complexe, qui reprend à la fois notre régression polynomiale d'ordre 2 sur le diamètre **et** la hauteur. Autrement dit, une régression à la fois multiple et polynomiale.
+
+```{r}
+summary(lm5 <- lm(data = trees, volume ~  diameter + I(diameter^2) + height))
+```
+
+Ah ha, ceci est bizarre\ ! Le *R^2^* ajusté nous indique que le modèle serait très bon puisqu'il grimpe à 0,975. Le terme en diamètre^2^ reste très significatif, ... mais la pente relative à la hauteur est maintenant elle aussi très significative alors que dans le modèle multiple `lm2` ce n'était pas le cas. De plus, la pente à l'origine en face du diamètre semble devenir un peu plus significative. Bienvenue dans les instabilités liées aux intercorrelations entre paramètres dans les modèles linéaires complexes.
 
 
 ## RMSE & critère d'Akaike
 
-Le *R^2^*/*r^2^* (ajusté) n'est pas la seule mesure d'ajustement d'un modèle. Il existe d'autres indicateurs. Par exemple, l'**erreur quadratique moyenne**, (root mean square error, ou RMSE en anglais) est la racine carrée de la moyenne des résidus au carré. Elle représente en quelque sorte la distance "typique" des résidus. Comme cette distance est exprimée dans les mêmes unités que l'axe *y*, cette mesure est particulièrement parlante. Nous pouvons l'obtenir par exemple comme ceci\ :
+Le *R^2^* (ajusté) n'est pas la seule mesure d'ajustement d'un modèle. Il existe d'autres indicateurs. Par exemple, l'**erreur quadratique moyenne**, (root mean square error, ou RMSE en anglais) est la racine carrée de la moyenne des résidus au carré. Elle représente en quelque sorte la distance "typique" des résidus. Comme cette distance est exprimée dans les mêmes unités que l'axe *y*, cette mesure est particulièrement parlante. Nous pouvons l'obtenir par exemple comme ceci\ :
 
 ```{r}
 modelr::rmse(lm., trees)
@@ -295,3 +388,70 @@ $$
 - où **nbrpar** est le nombre de paramètres à estimer dans le modèle. Donc ici, nous prenons comme point de départ moins deux fois la log-vraisemblance, une valeur *a priori* à **minimiser**, mais nous lui ajoutons le second terme de **pénalisation** en fonction de la complexité du modèle valant 2 fois le nombre de paramètres du modèle. Notons d'ailleurs que le terme multiplicateur 2 ici est modifiable. Si nous voulons un modèle le moins complexe possible, nous pourrions très bien multiplier par 3 ou 4 pour pénaliser encore plus. Et si nous voulons être moins restrictifs, nous pouvons aussi diminuer ce facteur multiplicatif. Dans la pratique, le facteur 2 est quand même très majoritairement adapté par les praticiens, mais la possibilité de changer l'impact de complexité du modèle est inclue dans le calcul *de facto*.
 
 Dès lors que ce critère peut être calculé (et R le fait pour pratiquement tous les modèles qu'il propose), une comparaison est possible avec pour objectif de sélectionner le, ou un des modèles qui a l'AIC **la plus faible**. N'oubliez toutefois pas de comparer *visuellement* les différents modèles ajustés et d'interpréter les graphiques d'analyse des résidus respectifs en plus des valeurs d'AIC. **C'est l'ensemble de ces outils qui vous orientent vers le meilleur modèle, pas l'AIC seul\ !**
+
+Calculons maintenant les critères d'Akaike pour nos 6 modèles `lm.` à `lm5`...
+
+```{r}
+AIC(lm.) # Linéaire diamètre
+AIC(lm2) # Multiple diamètre et hauteur
+AIC(lm3) # Polynomial diamètre
+AIC(lm4) # Diamètre^2
+AIC(lm5) # Multiple et polynomial
+```
+
+D'après ce critère, le modèle linéaire est le moins bon, et le dernier modèle le plus complexe serait le meilleur. Notez toutefois que la différence est relativement minime (en regard du gain total) entre le modèle polynomial complet `lm3` et la version simplifié au seul terme diamètre^2^ en `lm4`, ce qui permet de penser que cette simplification est justifiée.
+
+Dans l'hypothèse où nous déciderions de conserver le modèle `lm5`, en voici l'analyse des résidus qui est bonne dans l'ensemble\ :
+
+```{r}
+#plot(lm5, which = 1)
+lm5 %>.%
+  chart(broom::augment(.), .resid ~ .fitted) +
+  geom_point() +
+  geom_hline(yintercept = 0) +
+  geom_smooth(se = FALSE, method = "loess", formula = y ~ x) +
+  labs(x = "Fitted values", y = "Residuals") +
+  ggtitle("Residuals vs Fitted") 
+
+#plot(lm5, which = 2)
+lm5 %>.%
+  chart(broom::augment(.), aes(sample = .std.resid)) +
+  geom_qq() +
+  geom_qq_line(colour = "darkgray") +
+  labs(x = "Theoretical quantiles", y = "Standardized residuals") +
+  ggtitle("Normal Q-Q") 
+
+#plot(lm5, which = 3)
+lm5 %>.%
+  chart(broom::augment(.), sqrt(abs(.std.resid)) ~ .fitted) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = "loess", formula = y ~ x) +
+  labs(x = "Fitted values",
+    y = expression(bold(sqrt(abs("Standardized residuals"))))) +
+  ggtitle("Scale-Location") 
+
+#plot(lm5, which = 4)
+lm5 %>.%
+  chart(broom::augment(.), .cooksd ~ seq_along(.cooksd)) +
+  geom_bar(stat = "identity") +
+  geom_hline(yintercept = seq(0, 0.1, by = 0.05), colour = "darkgray") +
+  labs(x = "Obs. number", y = "Cook's distance") +
+  ggtitle("Cook's distance") 
+```
+
+Naturellement, même si c'est le cas ici, ce n'est pas toujours le modèle le plus complexe qui "gagne" toujours. Même ici, nous pourrions nous demander si le modèle polynomial utilisant uniquement le diamètre ne serait pas plus intéressant en pratique car son ajustement est tout de même relativement bon (même si son critère d'Akaike est nettement moins en sa faveur), mais d'un point de vue pratique, il nous dispense de devoir mesurer la hauteur des arbres pour prédire le volume de bois. Ce n'est peut-être pas négligeable comme gain, pour une erreur de prédiction légèrement supérieure si on compare les valeurs de RMSE.
+
+```{r}
+modelr::rmse(lm5, trees) # Multiple et polynomial
+modelr::rmse(lm3, trees) # Polynomial diamètre
+```
+
+L'erreur moyenne d'estimation du volume de bois passe de 0,07 m^3^ pour le modèle le plus complexe `lm5` utilisant à la fois le diamètre et la hauteur à 0,09 m^3^. C'est à l'exploitant qu'il appartient de déterminer si le gain de précision vaut la peine de devoir effectuer deux mesures au lieu d'une seule. Mais au moins, nous sommes capables, en qualité de scientifiques des données, de lui proposer les alternatives possible et d'en quantifier les effets respectifs.
+
+<!-- TODO: discuter également le cas du jeu de données ANSCOMBE pour montrer les biais qui peuvent apparaitre si on ne visualise pas l'ajustement du modèle sur un graphique-->
+
+<center>
+
+![[Différentes méthodes d'ajustement par xkcd](https://xkcd.com/2048/).](https://imgs.xkcd.com/comics/curve_fitting.png)
+
+</center>

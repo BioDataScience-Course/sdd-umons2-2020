@@ -228,7 +228,164 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="regression-lineaire-polynomiale" class="section level2">
 <h2><span class="header-section-number">2.3</span> Régression linéaire polynomiale</h2>
-<p>TODO</p>
+<p>Pour rappel, un polynome est une expression mathématique du type (<em>notez la ressemblance avec l’équation de la régression multiple</em>) :</p>
+<p><span class="math display">\[
+a_0 + a_1 . x + a_2 . x^2 + ... + a_n . x^n
+\]</span></p>
+<p>Un polynome d’ordre 2 (terme jusqu’au <span class="math inline">\(x^2\)</span>) correspond à une parabole dans le plan <em>xy</em>. Que se passe-t-il si nous calculons une variable <code>diametre2</code> qui est le carré du diamètre et que nous prétendons faire une régression multiple en utilisant à la fois <code>diamètre</code> et <code>diamètre2</code>/ ?</p>
+<pre class="sourceCode r"><code class="sourceCode r">trees <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">diameter2 =</span> diameter<span class="op">^</span><span class="dv">2</span>) -&gt;<span class="st"> </span>trees
+<span class="kw">summary</span>(<span class="kw">lm</span>(<span class="dt">data =</span> trees, volume <span class="op">~</span><span class="st"> </span>diameter <span class="op">+</span><span class="st"> </span>diameter2))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = volume ~ diameter + diameter2, data = trees)
+# 
+# Residuals:
+#       Min        1Q    Median        3Q       Max 
+# -0.157938 -0.068324 -0.009027  0.060611  0.214988 
+# 
+# Coefficients:
+#             Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)   0.3111     0.3180   0.978 0.336293    
+# diameter     -2.3718     1.8381  -1.290 0.207489    
+# diameter2    11.2363     2.5563   4.396 0.000144 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.09441 on 28 degrees of freedom
+# Multiple R-squared:  0.9616,  Adjusted R-squared:  0.9589 
+# F-statistic: 350.5 on 2 and 28 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Il semble que R ait pu réaliser cette analyse. Cette fois-ci, nous n’avons cependant pas une droite ou un plan ajusté, mais par ce subterfuge, nous avons pu ajuster une <strong>courbe</strong> dans les données ! Nous pourrions augmenter le degré du polynome (ajouter un terme en <code>diameter^3</code>, voire encore des puissance supérieures). Dans ce cas, nous obtiendrons une courbe de plus en plus flexible, toujours dans le plan <code>xy</code>. Ceci illustre parfaitement d’ailleurs l’ambiguité de la complexité du modèle qui s’ajuste de mieux en mieux dans les données, mais qui ce faisant, perd également progressivement son pouvoir explicatif. En effet, on sait qu’il existe toujours une droite qui passe entre deux points dans le plan. De même, il existe toujours une parabole qui passe par 3 points quelconques dans le plan. Et par extension, il existe une courbe correspondant à un polynome d’ordre <em>n</em> - 1 qui passe par n’importe quel ensemble de <em>n</em> points dans le plan. Un modèle construit à l’aide d’un tel polynome aura <strong>toujours</strong> un <em>R<sup>2</sup></em> égal à un, … mais en même temps ce modèle ne sera d’<strong>aucune</strong> utilité car il ne contient plus aucune information pertinente. C’est ce qu’on appelle le <strong>surajustement</strong> (overfitting en anglais). La figure ci-dessous (issue d’un article écrit par Anup Bhande <a href="https://medium.com/greyatom/what-is-underfitting-and-overfitting-in-machine-learning-and-how-to-deal-with-it-6803a989c76">ici</a>) illuste bien ce phénomène.</p>
+<p><img src="images/sdd2_02/under_overfitting.png" /></p>
+<p>Devoir calculer les différentes puissance des variables au préalable devient rapidement fastidieux. Heureusement, R autorise de glisser ce cacul <em>directement dans la formule</em>, mais à condition de lui indiquer qu’il ne s’agit pas du nom d’une variable <code>diameter^2</code>, mais d’un calcul effectué sur <code>diameter</code> en utilisant la fonction, d’identité <code>I()</code>. Ainsi, sans rien calculer au préalable, nous pouvons utiliser la formule <code>volume ~ diameter + I(diameter^2)</code>. Un snippet est d’ailleurs disponible pour ajuster un polynome d’ordre 2 ou d’ordre 3, et il est accompagné du code nécessaire pour représenter également graphiquement cette régression polynomiale. Le code ci-dessous qui construit le modèle <code>lm3</code> l’utilise.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm3 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> trees,
+  volume <span class="op">~</span><span class="st">  </span>diameter <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(diameter<span class="op">^</span><span class="dv">2</span>)))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = volume ~ diameter + I(diameter^2), data = trees)
+# 
+# Residuals:
+#       Min        1Q    Median        3Q       Max 
+# -0.157938 -0.068324 -0.009027  0.060611  0.214988 
+# 
+# Coefficients:
+#               Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)     0.3111     0.3180   0.978 0.336293    
+# diameter       -2.3718     1.8381  -1.290 0.207489    
+# I(diameter^2)  11.2363     2.5563   4.396 0.000144 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.09441 on 28 degrees of freedom
+# Multiple R-squared:  0.9616,  Adjusted R-squared:  0.9589 
+# F-statistic: 350.5 on 2 and 28 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">lm3 <span class="op">%&gt;.%</span><span class="st"> </span>(<span class="cf">function</span>(lm, <span class="dt">model =</span> lm[[<span class="st">&quot;model&quot;</span>]], <span class="dt">vars =</span> <span class="kw">names</span>(model))
+  <span class="kw">chart</span>(model, <span class="kw">aes_string</span>(<span class="dt">x =</span> vars[<span class="dv">2</span>], <span class="dt">y =</span> vars[<span class="dv">1</span>])) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(x<span class="op">^</span><span class="dv">2</span>)))(.)</code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Remarquez sur le graphique comment, à présent, la courbe s’ajuste bien mieux dans le nuage de point et comme l’arbre le plus grand avec un diamètre supérieur à 0,5m est à présent presque parfaitement ajusté par le modèle. <strong>Faites donc très attention que des points influents ou extrêmes peuvent apparaitre également comme tel à cause d’un mauvais choix de modèle !</strong></p>
+<p>L’analyse des résidus nous montre aussi un comportement plus sain.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm3, which = 1)</span>
+lm3 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .resid <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Residuals&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Residuals vs Fitted&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm3, which = 2)</span>
+lm3 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">aes</span>(<span class="dt">sample =</span> .std.resid)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_qq</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_qq_line</span>(<span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Theoretical quantiles&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Standardized residuals&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Normal Q-Q&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-14-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm3, which = 3)</span>
+lm3 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">sqrt</span>(<span class="kw">abs</span>(.std.resid)) <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>,
+    <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">bold</span>(<span class="kw">sqrt</span>(<span class="kw">abs</span>(<span class="st">&quot;Standardized residuals&quot;</span>))))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Scale-Location&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-14-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm3, which = 4)</span>
+lm3 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .cooksd <span class="op">~</span><span class="st"> </span><span class="kw">seq_along</span>(.cooksd)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="dt">by =</span> <span class="fl">0.05</span>), <span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Obs. number&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Cook&#39;s distance&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Cook&#39;s distance&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-14-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Revenons un instant sur le résumé de ce modèle.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm3)</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = volume ~ diameter + I(diameter^2), data = trees)
+# 
+# Residuals:
+#       Min        1Q    Median        3Q       Max 
+# -0.157938 -0.068324 -0.009027  0.060611  0.214988 
+# 
+# Coefficients:
+#               Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)     0.3111     0.3180   0.978 0.336293    
+# diameter       -2.3718     1.8381  -1.290 0.207489    
+# I(diameter^2)  11.2363     2.5563   4.396 0.000144 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.09441 on 28 degrees of freedom
+# Multiple R-squared:  0.9616,  Adjusted R-squared:  0.9589 
+# F-statistic: 350.5 on 2 and 28 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>La pente relative au <code>diameter</code> nécessite quelques élkéments d’explication. En effet, que signifie une pente pour une courbe dont la dérivée première (“pente locale”) change constamment ? En fait, il faut comprendre ce paramètre comme étant la pente de la courbe au point <em>x</em> = 0.</p>
+<p>Si le modèle est très nettement significatif (ANOVA, valeur <em>p</em> &lt;&lt;&lt; 0,001), et si le <em>R<sup>2</sup></em> ajusté grimpe maintenant à 0,959, seul le paramètre relatif au diamètre<sup>2</sup> est significatif cette fois-ci. Ce résultat suggère que ce modèle pourrait êtrte simplifié en considérant que l’ordonnée à l’origine et la pente pour le terme <code>diameter</code> valent zéro. Cela peut être tenté, mais <strong>à condition de refaire l’analyse</strong>. On ne peut jamais laisser tomber un paramètre dans une analyse et considérer que les autres sont utilisable tels quels. tous les paramètres caculés sont interconnectés.</p>
+<p>Voyons ce que cela donne (la formule devient <code>volume ~ I(diameter^2) - 1</code> ou <code>volume ~ I(diameter^2) + 0</code>, ce qui est identique) :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm4 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> trees, volume <span class="op">~</span><span class="st">  </span><span class="kw">I</span>(diameter<span class="op">^</span><span class="dv">2</span>) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = volume ~ I(diameter^2) - 1, data = trees)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -0.19474 -0.07234 -0.04120  0.04522  0.18240 
+# 
+# Coefficients:
+#               Estimate Std. Error t value Pr(&gt;|t|)    
+# I(diameter^2)   7.3031     0.1397   52.26   &lt;2e-16 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.1027 on 30 degrees of freedom
+# Multiple R-squared:  0.9891,  Adjusted R-squared:  0.9888 
+# F-statistic:  2731 on 1 and 30 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Notez bien que quand on réajuste un modèle simplifié, les paramètres restants doivent être recalculés. En effet, le paramètre relatif au diamètre<sup>2</sup> vallait 11,2 dans le modèle <code>lm3</code> plus haut. Un fois les autres termes éliminés, ce paramètre devient 7,30 dans ce modèle <code>lm4</code> simplifié.</p>
+<p>Faites bien attention de ne pas comparer le <em>R<sup>2</sup></em> acvec ordonnée à l’origine fixée à zéro ici dans notre modèle <code>lm4</code> avec les <em>R<sup>2</sup></em> des modèles <code>lm.</code> ou <code>lm3</code> qui ont ce paramètre estimé. Rappelez-vous que le <em>R<sup>2</sup></em> est calculé différemment dans les deux cas ! Donc, nous voilà une fois de plus face à un nouveau modèle pour lequel il nous est difficile de décider s’il est meilleur que les précédents. Avant de comparer, élaborons un tout dernier modèle, le plus complexe, qui reprend à la fois notre régression polynomiale d’ordre 2 sur le diamètre <strong>et</strong> la hauteur. Autrement dit, une régression à la fois multiple et polynomiale.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm5 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> trees, volume <span class="op">~</span><span class="st">  </span>diameter <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(diameter<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span>height))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = volume ~ diameter + I(diameter^2) + height, data = trees)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -0.12169 -0.04806 -0.00237  0.05156  0.12559 
+# 
+# Coefficients:
+#                Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)   -0.267097   0.284895  -0.938 0.356798    
+# diameter      -3.281421   1.463401  -2.242 0.033354 *  
+# I(diameter^2) 11.891724   2.019252   5.889 2.83e-06 ***
+# height         0.034788   0.008169   4.259 0.000223 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.07436 on 27 degrees of freedom
+# Multiple R-squared:  0.977,   Adjusted R-squared:  0.9745 
+# F-statistic: 382.8 on 3 and 27 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Ah ha, ceci est bizarre ! Le <em>R<sup>2</sup></em> ajusté nous indique que le modèle serait très bon puisqu’il grimpe à 0,975. Le terme en diamètre<sup>2</sup> reste très significatif, … mais la pente relative à la hauteur est maintenant elle aussi très significative alors que dans le modèle multiple <code>lm2</code> ce n’était pas le cas. De plus, la pente à l’origine en face du diamètre semble devenir un peu plus significative. Bienvenue dans les instabilités liées aux intercorrelations entre paramètres dans les modèles linéaires complexes.</p>
 </div>
 <div id="disqus_thread"></div>
 <script>
