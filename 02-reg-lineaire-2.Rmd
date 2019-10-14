@@ -184,6 +184,19 @@ lm1 %>.%
 Au travers de cet exemple, nous constatons que la comparaison de modèles, dans le but de choisir le meilleur est un travail utile. Cela apparaitra d'autant plus utile que la situation va passablement se complexifier (dans le bon sens) avec l'introduction de la régression multiple et polynomiale ci-dessous. Heureusement, nous terminerons ce module avec la découverte d'une métrique qui va nous permettre d'effectuer le choix du meilleur modèle de manière fiable\ : le critère d'Akaike.
 
 
+##### A vous de jouer ! {-}
+
+Réalisez une nouvelle assignation individuelle :
+
+
+```{block2, type='bdd'}
+
+Vous avez à votre disposition une assignation GitHub Classroom : 
+  
+- <https://classroom.github.com/a/jkh3ruyX>
+  
+```
+
 ## Régression linéaire multiple 
 
 Dans le cas de la régression linéaire simple, nous considèrions le modèle stqatistique suivant (avec $\epsilon$ représentant les résidus, terme statistique dans l'équation)\ :
@@ -471,13 +484,5 @@ N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à
 ```
 
 
-- une nouvelle assignation individuelle
 
-```{block2, type='bdd'}
-
-Vous avez à votre disposition une assignation GitHub Classroom : 
-  
-- <https://classroom.github.com/a/jkh3ruyX>
-  
-```
 
