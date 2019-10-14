@@ -262,7 +262,7 @@ lm5 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Residuals&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Residuals vs Fitted&quot;</span>) </code></pre>
-<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm5, which = 2)</span>
 lm5 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">aes</span>(<span class="dt">sample =</span> .std.resid)) <span class="op">+</span>
@@ -270,7 +270,7 @@ lm5 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">geom_qq_line</span>(<span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Theoretical quantiles&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Standardized residuals&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Normal Q-Q&quot;</span>) </code></pre>
-<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-20-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-21-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm5, which = 3)</span>
 lm5 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">sqrt</span>(<span class="kw">abs</span>(.std.resid)) <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
@@ -279,7 +279,7 @@ lm5 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>,
     <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">bold</span>(<span class="kw">sqrt</span>(<span class="kw">abs</span>(<span class="st">&quot;Standardized residuals&quot;</span>))))) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Scale-Location&quot;</span>) </code></pre>
-<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-20-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-21-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm5, which = 4)</span>
 lm5 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .cooksd <span class="op">~</span><span class="st"> </span><span class="kw">seq_along</span>(.cooksd)) <span class="op">+</span>
@@ -287,7 +287,7 @@ lm5 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="dt">by =</span> <span class="fl">0.05</span>), <span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Obs. number&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Cook&#39;s distance&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Cook&#39;s distance&quot;</span>) </code></pre>
-<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-20-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-21-4.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Naturellement, même si c’est le cas ici, ce n’est pas toujours le modèle le plus complexe qui “gagne” toujours. Même ici, nous pourrions nous demander si le modèle polynomial utilisant uniquement le diamètre ne serait pas plus intéressant en pratique car son ajustement est tout de même relativement bon (même si son critère d’Akaike est nettement moins en sa faveur), mais d’un point de vue pratique, il nous dispense de devoir mesurer la hauteur des arbres pour prédire le volume de bois. Ce n’est peut-être pas négligeable comme gain, pour une erreur de prédiction légèrement supérieure si on compare les valeurs de RMSE.</p>
 <pre class="sourceCode r"><code class="sourceCode r">modelr<span class="op">::</span><span class="kw">rmse</span>(lm5, trees) <span class="co"># Multiple et polynomial</span></code></pre>
 <pre><code># [1] 0.06939391</code></pre>
@@ -301,7 +301,7 @@ lm5 <span class="op">%&gt;.%</span>
 <p class="caption"><a href="https://xkcd.com/2048/">Différentes méthodes d’ajustement par xkcd</a>.</p>
 </div>
 </center>
-<div id="a-vous-de-jouer-2" class="section level5 unnumbered">
+<div id="a-vous-de-jouer-3" class="section level5 unnumbered">
 <h5>A vous de jouer !</h5>
 <p>Après cette longue lecture avec énormément de nouvelles matières, nous vous proposons les exercices suivants :</p>
 <ul>
@@ -314,16 +314,6 @@ lm5 <span class="op">%&gt;.%</span>
 N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
 </div>
 
-<ul>
-<li>une nouvelle assignation individuelle</li>
-</ul>
-
-<div class="bdd">
-<p>Vous avez à votre disposition une assignation GitHub Classroom :</p>
-<ul>
-<li><p><a href="https://classroom.github.com/a/jkh3ruyX" class="uri">https://classroom.github.com/a/jkh3ruyX</a></p>
-</div></li>
-</ul>
 
 </div>
 </div>
