@@ -282,7 +282,7 @@ lm. &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">da
 <ul>
 <li>Adjusted R-squared :</li>
 </ul>
-<p>La valeur du coefficient <em>R<sup>2</sup></em> <strong>ajustée</strong>, noté <span class="math inline">\(\bar{R^2}\)</span> n’est pas utile dans le cadre de la régression linéaire simple, mais est indispensable avec la régression multiple. En effet, à chaque fois que vous rendez votre modèle plus complexe en ajoutant une ou plusieurs variables indépendantes, le modèle s’ajustera de mieux en mieux dans les données, même par pur hasard. C’est un phénomène que l’on appelle l’<strong>inflation du <em>R<sup>2</sup></em></strong>. A la limite, si nous ajoutons une nouvelle variable fortement corrélée avec les précédentes<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, l’apport en terme d’information nouvelle sera négligeable, mais le <em>R<sup>2</sup></em> augmentera malgré tout un tout petit peu. Alors dans quel cas l’ajout d’une nouvelle variable est-il pertinent ou non ? Le <em>R<sup>2</sup></em> ajusté apporte l’information désirée ici. Sa valeur n’augmentera pour l’ajout d’un nouveau prédicteur <em>que si l’ajustement est meilleur que ce que l’on obtiendrait par le pur hasard</em>. Le <em>R<sup>2</sup></em> ajusté se calcule comme suit (il n’est pas nécessaire de retenir cette formule, mais juste de constater que l’ajustement fait intervenir <em>p</em>, le nombre de paramètres du modèle et <em>n</em>, la taille de l’échantillon) :</p>
+<p>La valeur du coefficient <em>R<sup>2</sup></em> <strong>ajustée</strong>, noté <span class="math inline">\(\bar{R^2}\)</span> n’est pas utile dans le cadre de la régression linéaire simple, mais est indispensable avec la régression multiple. En effet, à chaque fois que vous rendez votre modèle plus complexe en ajoutant une ou plusieurs variables indépendantes, le modèle s’ajustera de mieux en mieux dans les données, même par pur hasard. C’est un phénomène que l’on appelle l’<strong>inflation du <em>R<sup>2</sup></em></strong>. A la limite, si nous ajoutons une nouvelle variable fortement corrélée avec les précédentes<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>, l’apport en terme d’information nouvelle sera négligeable, mais le <em>R<sup>2</sup></em> augmentera malgré tout un tout petit peu. Alors dans quel cas l’ajout d’une nouvelle variable est-il pertinent ou non ? Le <em>R<sup>2</sup></em> ajusté apporte l’information désirée ici. Sa valeur n’augmentera pour l’ajout d’un nouveau prédicteur <em>que si l’ajustement est meilleur que ce que l’on obtiendrait par le pur hasard</em>. Le <em>R<sup>2</sup></em> ajusté se calcule comme suit (il n’est pas nécessaire de retenir cette formule, mais juste de constater que l’ajustement fait intervenir <em>p</em>, le nombre de paramètres du modèle et <em>n</em>, la taille de l’échantillon) :</p>
 <p><span class="math display">\[
 \bar{R^2} = 1 - (1 - R^2) \frac{n - 1}{n - p - 1}
 \]</span></p>
@@ -399,12 +399,23 @@ lm1 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">expression</span>(<span class="st">&quot;Cook&#39;s dist vs Leverage h&quot;</span>[ii] <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>h[ii])))</code></pre>
 <p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-6-6.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Au travers de cet exemple, nous constatons que la comparaison de modèles, dans le but de choisir le meilleur est un travail utile. Cela apparaitra d’autant plus utile que la situation va passablement se complexifier (dans le bon sens) avec l’introduction de la régression multiple et polynomiale ci-dessous. Heureusement, nous terminerons ce module avec la découverte d’une métrique qui va nous permettre d’effectuer le choix du meilleur modèle de manière fiable : le critère d’Akaike.</p>
+<div id="a-vous-de-jouer-2" class="section level5 unnumbered">
+<h5>A vous de jouer !</h5>
+<p>Réalisez une nouvelle assignation individuelle :</p>
+
+<div class="bdd">
+<p>Vous avez à votre disposition une assignation GitHub Classroom :</p>
+<ul>
+<li><p><a href="https://classroom.github.com/a/jkh3ruyX" class="uri">https://classroom.github.com/a/jkh3ruyX</a></p>
+</div></li>
+</ul>
+</div>
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="1">
-<li id="fn1"><p>La corrélation entre les prédicteurs dans un modèle linéaire multiple est un gros problème et doit être évité le plus possible. Cela s’appelle la <strong>colinéarité</strong> ou encore <strong>multicollinéairité</strong>. Ainsi, il est toujours préférable de choisir un ensemble de variables indépendantes peu corrélées entre elles dans un même modèle, mais ce n’est pas toujours possible.<a href="outils-de-diagnostic-suite.html#fnref1" class="footnote-back">↩</a></p></li>
+<ol start="4">
+<li id="fn4"><p>La corrélation entre les prédicteurs dans un modèle linéaire multiple est un gros problème et doit être évité le plus possible. Cela s’appelle la <strong>colinéarité</strong> ou encore <strong>multicollinéairité</strong>. Ainsi, il est toujours préférable de choisir un ensemble de variables indépendantes peu corrélées entre elles dans un même modèle, mais ce n’est pas toujours possible.<a href="outils-de-diagnostic-suite.html#fnref4" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>
