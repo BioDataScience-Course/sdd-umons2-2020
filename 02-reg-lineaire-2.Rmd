@@ -455,3 +455,29 @@ L'erreur moyenne d'estimation du volume de bois passe de 0,07 m^3^ pour le modè
 ![[Différentes méthodes d'ajustement par xkcd](https://xkcd.com/2048/).](https://imgs.xkcd.com/comics/curve_fitting.png)
 
 </center>
+
+##### A vous de jouer ! {-}
+
+Après cette longue lecture avec énormément de nouvelles matières, nous vous proposons les exercices suivants :
+
+- un learnr afin de vérifier vos acquis
+
+```{block2, type='bdd'}
+Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
+
+    BioDataScience2::run("02b_reg_poly")
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
+```
+
+
+- une nouvelle assignation individuelle
+
+```{block2, type='bdd'}
+
+Vous avez à votre disposition une assignation GitHub Classroom : 
+  
+- <https://classroom.github.com/a/jkh3ruyX>
+  
+```
+
