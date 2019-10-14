@@ -77,8 +77,11 @@ D'un autre côté, si l'ordonnée à l'origine est fixée à zéro dans le modè
 
 - Adjusted R-squared\ :
 
-La valeur du coefficient *R^2^* ajustée n'est pas utile dans le cadre de la régression linéaire simple, mais est indispensable avec la régression multiple. En effet, à chaque fois que vous rendez votre modèle plus complexe en ajoutant une ou plusieurs variables indépendantes, le modèle s'ajustera de mieux en mieux dans les données. C'est un phénomène que l'on appelle l'**inflation du *R^2^***. A la limite, si nous ajoutons une nouvelle variable fortement corrélée avec les précédentes^[La corrélation entre les prédicteurs dans un modèle linéaire multiple est un gros problème et doit être évité le plus possible. Cela s'appelle la **colinéarité** ou encore **multicollinéairité**. Ainsi, il est toujours préférable de choisir un ensemble de variables indépendantes peu corrélées entre elles dans un même modèle, mais ce n'est pas toujours possible.], l'apport en terme d'information nouvelle sera négligeable, mais le *R^2^* augmentera malgré tout un tout petit peu. 
-Alors dans quel cas l'ajout d'une nouvelle variable est-il pertinent ou non\ ? Le *R^2^* ajusté apporte l'information désirée ici. TODO: continue explanation...
+La valeur du coefficient *R^2^* **ajustée**, noté $\bar{R^2}$ n'est pas utile dans le cadre de la régression linéaire simple, mais est indispensable avec la régression multiple. En effet, à chaque fois que vous rendez votre modèle plus complexe en ajoutant une ou plusieurs variables indépendantes, le modèle s'ajustera de mieux en mieux dans les données, même par pur hasard. C'est un phénomène que l'on appelle l'**inflation du *R^2^***. A la limite, si nous ajoutons une nouvelle variable fortement corrélée avec les précédentes^[La corrélation entre les prédicteurs dans un modèle linéaire multiple est un gros problème et doit être évité le plus possible. Cela s'appelle la **colinéarité** ou encore **multicollinéairité**. Ainsi, il est toujours préférable de choisir un ensemble de variables indépendantes peu corrélées entre elles dans un même modèle, mais ce n'est pas toujours possible.], l'apport en terme d'information nouvelle sera négligeable, mais le *R^2^* augmentera malgré tout un tout petit peu. Alors dans quel cas l'ajout d'une nouvelle variable est-il pertinent ou non\ ? Le *R^2^* ajusté apporte l'information désirée ici. Sa valeur n'augmentera pour l'ajout d'un nouveau prédicteur *que si l'ajustement est meilleur que ce que l'on obtiendrait par le pur hasard*. Le *R^2^* ajusté se calcule comme suit (il n'est pas nécessaire de retenir cette formule, mais juste de constater que l'ajustement fait intervenir *p*, le nombre de paramètres du modèle et *n*, la taille de l'échantillon)\ :
+
+$$
+\bar{R^2} = 1 - (1 - R^2) \frac{n - 1}{n - p - 1}
+$$
 
 - F-statistic\ :
 
@@ -346,7 +349,7 @@ Revenons un instant sur le résumé de ce modèle.
 summary(lm3)
 ```
 
-La pente relative au `diameter` nécessite quelques élkéments d'explication. En effet, que signifie une pente pour une courbe dont la dérivée première ("pente locale") change constamment\ ? En fait, il faut comprendre ce paramètre comme étant la pente de la courbe au point *x* = 0.
+La pente relative au `diameter` nécessite quelques éléments d'explication. En effet, que signifie une pente pour une courbe dont la dérivée première ("pente locale") change constamment\ ? En fait, il faut comprendre ce paramètre comme étant la pente de la courbe au point *x* = 0.
 
 Si le modèle est très nettement significatif (ANOVA, valeur *p* <<< 0,001), et si le *R^2^* ajusté grimpe maintenant à 0,959, seul le paramètre relatif au diamètre^2^ est significatif cette fois-ci. Ce résultat suggère que ce modèle pourrait êtrte simplifié en considérant que l'ordonnée à l'origine et la pente pour le terme `diameter` valent zéro. Cela peut être tenté, mais **à condition de refaire l'analyse**. On ne peut jamais laisser tomber un paramètre dans une analyse et considérer que les autres sont utilisable tels quels. tous les paramètres caculés sont interconnectés.
 
@@ -357,6 +360,14 @@ summary(lm4 <- lm(data = trees, volume ~  I(diameter^2) - 1))
 ```
 
 Notez bien que quand on réajuste un modèle simplifié, les paramètres restants doivent être recalculés. En effet, le paramètre relatif au diamètre^2^ vallait 11,2 dans le modèle `lm3` plus haut. Un fois les autres termes éliminés, ce paramètre devient 7,30 dans ce modèle `lm4` simplifié.
+
+Le modèle `lm4` revient aussi (autre point de vue) à transformer d'abord le diamètre en diamètre^2^ et à effectuer ensuite une régression linéaire simple entre deux variables, `volume` et `diametre2`\ :
+
+```{r}
+summary(lm4bis <- lm(data = trees, volume ~ diameter2 - 1))
+```
+
+Notez qu'on obtient bien évidemment exactement les mêmes résultats si nous transformons *d'abord* les données ou si nous intégrons le calcul à l'intérieur de la formule qui décrit le modèle.
 
 Faites bien attention de ne pas comparer le *R^2^* acvec ordonnée à l'origine fixée à zéro ici dans notre modèle `lm4` avec les *R^2^* des modèles `lm.` ou `lm3` qui ont ce paramètre estimé. Rappelez-vous que le *R^2^* est calculé différemment dans les deux cas\ ! Donc, nous voilà une fois de plus face à un nouveau modèle pour lequel il nous est difficile de décider s'il est meilleur que les précédents. Avant de comparer, élaborons un tout dernier modèle, le plus complexe, qui reprend à la fois notre régression polynomiale d'ordre 2 sur le diamètre **et** la hauteur. Autrement dit, une régression à la fois multiple et polynomiale.
 

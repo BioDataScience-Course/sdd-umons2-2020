@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2019-10-13">
+<meta name="date" content="2019-10-14">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -341,7 +341,7 @@ lm3 <span class="op">%&gt;.%</span>
 # Residual standard error: 0.09441 on 28 degrees of freedom
 # Multiple R-squared:  0.9616,  Adjusted R-squared:  0.9589 
 # F-statistic: 350.5 on 2 and 28 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>La pente relative au <code>diameter</code> nécessite quelques élkéments d’explication. En effet, que signifie une pente pour une courbe dont la dérivée première (“pente locale”) change constamment ? En fait, il faut comprendre ce paramètre comme étant la pente de la courbe au point <em>x</em> = 0.</p>
+<p>La pente relative au <code>diameter</code> nécessite quelques éléments d’explication. En effet, que signifie une pente pour une courbe dont la dérivée première (“pente locale”) change constamment ? En fait, il faut comprendre ce paramètre comme étant la pente de la courbe au point <em>x</em> = 0.</p>
 <p>Si le modèle est très nettement significatif (ANOVA, valeur <em>p</em> &lt;&lt;&lt; 0,001), et si le <em>R<sup>2</sup></em> ajusté grimpe maintenant à 0,959, seul le paramètre relatif au diamètre<sup>2</sup> est significatif cette fois-ci. Ce résultat suggère que ce modèle pourrait êtrte simplifié en considérant que l’ordonnée à l’origine et la pente pour le terme <code>diameter</code> valent zéro. Cela peut être tenté, mais <strong>à condition de refaire l’analyse</strong>. On ne peut jamais laisser tomber un paramètre dans une analyse et considérer que les autres sont utilisable tels quels. tous les paramètres caculés sont interconnectés.</p>
 <p>Voyons ce que cela donne (la formule devient <code>volume ~ I(diameter^2) - 1</code> ou <code>volume ~ I(diameter^2) + 0</code>, ce qui est identique) :</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm4 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> trees, volume <span class="op">~</span><span class="st">  </span><span class="kw">I</span>(diameter<span class="op">^</span><span class="dv">2</span>) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>))</code></pre>
@@ -363,6 +363,26 @@ lm3 <span class="op">%&gt;.%</span>
 # Multiple R-squared:  0.9891,  Adjusted R-squared:  0.9888 
 # F-statistic:  2731 on 1 and 30 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Notez bien que quand on réajuste un modèle simplifié, les paramètres restants doivent être recalculés. En effet, le paramètre relatif au diamètre<sup>2</sup> vallait 11,2 dans le modèle <code>lm3</code> plus haut. Un fois les autres termes éliminés, ce paramètre devient 7,30 dans ce modèle <code>lm4</code> simplifié.</p>
+<p>Le modèle <code>lm4</code> revient aussi (autre point de vue) à transformer d’abord le diamètre en diamètre<sup>2</sup> et à effectuer ensuite une régression linéaire simple entre deux variables, <code>volume</code> et <code>diametre2</code> :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm4bis &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> trees, volume <span class="op">~</span><span class="st"> </span>diameter2 <span class="op">-</span><span class="st"> </span><span class="dv">1</span>))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = volume ~ diameter2 - 1, data = trees)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -0.19474 -0.07234 -0.04120  0.04522  0.18240 
+# 
+# Coefficients:
+#           Estimate Std. Error t value Pr(&gt;|t|)    
+# diameter2   7.3031     0.1397   52.26   &lt;2e-16 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.1027 on 30 degrees of freedom
+# Multiple R-squared:  0.9891,  Adjusted R-squared:  0.9888 
+# F-statistic:  2731 on 1 and 30 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Notez qu’on obtient bien évidemment exactement les mêmes résultats si nous transformons <em>d’abord</em> les données ou si nous intégrons le calcul à l’intérieur de la formule qui décrit le modèle.</p>
 <p>Faites bien attention de ne pas comparer le <em>R<sup>2</sup></em> acvec ordonnée à l’origine fixée à zéro ici dans notre modèle <code>lm4</code> avec les <em>R<sup>2</sup></em> des modèles <code>lm.</code> ou <code>lm3</code> qui ont ce paramètre estimé. Rappelez-vous que le <em>R<sup>2</sup></em> est calculé différemment dans les deux cas ! Donc, nous voilà une fois de plus face à un nouveau modèle pour lequel il nous est difficile de décider s’il est meilleur que les précédents. Avant de comparer, élaborons un tout dernier modèle, le plus complexe, qui reprend à la fois notre régression polynomiale d’ordre 2 sur le diamètre <strong>et</strong> la hauteur. Autrement dit, une régression à la fois multiple et polynomiale.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm5 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> trees, volume <span class="op">~</span><span class="st">  </span>diameter <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(diameter<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span>height))</code></pre>
 <pre><code># 

@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2019-10-13">
+<meta name="date" content="2019-10-14">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -282,8 +282,10 @@ lm. &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">da
 <ul>
 <li>Adjusted R-squared :</li>
 </ul>
-<p>La valeur du coefficient <em>R<sup>2</sup></em> ajustée n’est pas utile dans le cadre de la régression linéaire simple, mais est indispensable avec la régression multiple. En effet, à chaque fois que vous rendez votre modèle plus complexe en ajoutant une ou plusieurs variables indépendantes, le modèle s’ajustera de mieux en mieux dans les données. C’est un phénomène que l’on appelle l’<strong>inflation du <em>R<sup>2</sup></em></strong>. A la limite, si nous ajoutons une nouvelle variable fortement corrélée avec les précédentes<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, l’apport en terme d’information nouvelle sera négligeable, mais le <em>R<sup>2</sup></em> augmentera malgré tout un tout petit peu.
-Alors dans quel cas l’ajout d’une nouvelle variable est-il pertinent ou non ? Le <em>R<sup>2</sup></em> ajusté apporte l’information désirée ici. TODO: continue explanation…</p>
+<p>La valeur du coefficient <em>R<sup>2</sup></em> <strong>ajustée</strong>, noté <span class="math inline">\(\bar{R^2}\)</span> n’est pas utile dans le cadre de la régression linéaire simple, mais est indispensable avec la régression multiple. En effet, à chaque fois que vous rendez votre modèle plus complexe en ajoutant une ou plusieurs variables indépendantes, le modèle s’ajustera de mieux en mieux dans les données, même par pur hasard. C’est un phénomène que l’on appelle l’<strong>inflation du <em>R<sup>2</sup></em></strong>. A la limite, si nous ajoutons une nouvelle variable fortement corrélée avec les précédentes<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, l’apport en terme d’information nouvelle sera négligeable, mais le <em>R<sup>2</sup></em> augmentera malgré tout un tout petit peu. Alors dans quel cas l’ajout d’une nouvelle variable est-il pertinent ou non ? Le <em>R<sup>2</sup></em> ajusté apporte l’information désirée ici. Sa valeur n’augmentera pour l’ajout d’un nouveau prédicteur <em>que si l’ajustement est meilleur que ce que l’on obtiendrait par le pur hasard</em>. Le <em>R<sup>2</sup></em> ajusté se calcule comme suit (il n’est pas nécessaire de retenir cette formule, mais juste de constater que l’ajustement fait intervenir <em>p</em>, le nombre de paramètres du modèle et <em>n</em>, la taille de l’échantillon) :</p>
+<p><span class="math display">\[
+\bar{R^2} = 1 - (1 - R^2) \frac{n - 1}{n - p - 1}
+\]</span></p>
 <ul>
 <li>F-statistic :</li>
 </ul>
