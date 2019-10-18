@@ -284,6 +284,19 @@ anova(lm., lm2)
 
 Notez que dans le cas de l'ajout d'*un seul* terme, la valeur *p* de cette ANOVA est identique à la valeur *p* de test de significativité du paramètre (ici, cette valeur *p* est de 0,0156 dans les deux cas). Donc, le choix peut se faire directement à partir de `summary()` pour ce terme unique. La conclusion est similaire\ : l'ANOVA donne un résultat seulement moyennent significatif entre les 2 modèles. Dans un cas plus complexe, la fonction `anova()` de comparaison pourra être utile. Enfin, tous les modèles ne sont pas nécessairement imbriqués. Dans ce cas, il nous faudra un autre moyen de les départager, ... mais avant d'aborder cela, étudions une variante intéressante de la régression multiple\ : la régression polynomiale.
 
+##### A vous de jouer ! {-}
+
+Réalisez une nouvelle assignation individuelle :
+
+
+```{block2, type='bdd'}
+Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
+
+    BioDataScience2::run("02a_reg_multi")
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
+```
+
 
 ## Régression linéaire polynomiale
 
@@ -494,6 +507,9 @@ Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, e
 N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
 ```
 
+- Une nouvelles assignation 
+
+TODO
 
 
 
