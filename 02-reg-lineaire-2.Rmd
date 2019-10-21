@@ -71,7 +71,7 @@ Dans R, le *R^2^* multiple se réfère simplement au *R^2^* (ou au *r^2^* pour l
 
 Par contre, le terme au dénominateur considère en fait la somme des carrés totale **par rapport à un modèle de référence** lorsque la variable dépendante $y$ ne *dépend pas* de la ou des variables indépendantes $x_i$. Les équations indiquées plus haut sont valables lorsque l'ordonnée à l'origine *n'est pas* figée ($y = a \ x + b$). Dans ce cas, la valeur de référence pour $y$ est bien sa moyenne, $\bar y$.
 
-D'un autre côté, si l'ordonnée à l'origine est fixée à zéro dans le modèle simplifié $y = a \ x$ (avec $b = 0$ obtenu en indiquant la formule `y ~ x + 0` ou `y ~ x - 1`), alors le zéro sur l'axe $y$ est considéré comme une valeur appartenant d'office au modèle et devient valeur de référence. Ainsi, dans les équations ci-dessus il faut remplacer $\hat y$ par 0 partout. Le *R^2^* est alors calculé différemment, et sa valeur peut brusquement augmenter si le nuage de points est très éloigné du zéro sur l'axe y. **Ne comparez donc jamais les *R^2^* obtenus avec et sans forçage à zéro de l'ordonnée à l'origine\ !**
+D'un autre côté, si l'ordonnée à l'origine est fixée à zéro dans le modèle simplifié $y = a \ x$ (avec $b = 0$ obtenu en indiquant la formule `y ~ x + 0` ou `y ~ x - 1`), alors le zéro sur l'axe $y$ est considéré comme une valeur appartenant d'office au modèle et devient valeur de référence. Ainsi, dans les équations ci-dessus il faut remplacer $\bar y$ par 0 partout. Le *R^2^* est alors calculé différemment, et sa valeur peut brusquement augmenter si le nuage de points est très éloigné du zéro sur l'axe y. **Ne comparez donc jamais les *R^2^* obtenus avec et sans forçage à zéro de l'ordonnée à l'origine\ !**
 
 ```
 
