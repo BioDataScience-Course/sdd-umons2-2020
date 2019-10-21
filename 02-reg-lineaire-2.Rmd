@@ -507,9 +507,25 @@ Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, e
 N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
 ```
 
-- Une nouvelles assignation 
+- Réalisez un carnet de laboratoire sur la biométrie des oursins avec l'assignation ci-dessous
 
-TODO
+```{block2, type='bdd'}
+
+Vous avez à votre disposition une assignation GitHub Classroom : 
+  
+- <https://classroom.github.com/a/5hI-HSOv>
+  
+```
+
+- Réalisez un rapport scientifique sur la croissance des escargots geants d'Afrique.
+
+```{block2, type='bdd'}
+
+Vous avez à votre disposition une assignation GitHub Classroom : 
+  
+- <https://classroom.github.com/a/_wJZDbNp>
+
+```
 
 
 
