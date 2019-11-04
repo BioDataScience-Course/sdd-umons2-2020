@@ -206,31 +206,70 @@ getOption("contrasts")
 
 ## ANCOVA
 
-Avant l'apparition du modèle linéaire, une version particulière d'un mélange de régression linéaire et d'une ANOVA avec une variable indépendante quantitative et une autre variable indépendante qualitative s'appelait une ANCOVA (ANalyse de la COVaraiance). Un tel modèle d'ANCOVA peut naturellement également se résoudre à l'aide de la fonction `lm()` qui, en outre, peut faire bien plus.
+Avant l'apparition du modèle linéaire, une version particulière d'un mélange de régression linéaire et d'une ANOVA avec une variable indépendante quantitative et une autre variable indépendante qualitative s'appelait une ANCOVA (ANalyse de la COVariance). Un tel modèle d'ANCOVA peut naturellement également se résoudre à l'aide de la fonction `lm()` qui, en outre, peut faire bien plus. Nous allons maintenant ajuster un tel modèle à titre de première application concrète de tout ce que nous venons de voir sur le modèle linéaire et sur les matrices de contrastes associées.
 
 
-### Exemple
+### Bébés à la naissance
 
-Masse de nouveaux nés en fonction du poids de la mère et du fait qu’elle fume ou non.
+Nous étudions la masse de nouveaux nés en fonction du poids de la mère et du fait qu’elle fume ou non. Nous avons donc ici une variable dépendante `wt`, la masse des bébés qui est quantitative, et deux variables indépendantes ou prédictives `wt1`, la masse de la mère, et `smoke` le fait que la mère fume ou non. Or la première de ces variables explicatives est quantitative (`wt1`)  et l'autre (`smoke`) est une variable facteur à quatre niveaux (0 = la mère n'a jamais fumé, 1 = elle fume y compris pendant la grossesse, 2 = elle fumait mais a arrêté à la grossesses, et 3 = la mère a fumé, mais a arrêté, et ce, bien avant la grossesse. Un dernier niveau 9 = inconnu encode de manière non orthodoxe les valeurs manquantes dans notre tableau de données (valeurs que nous éliminerons). De même les masses des nouveaux nés et des mères sont des des unités impériales (américaines) respectivement en "onces" et en "livres". Enfin, nous devons prendre soin de bien encoder la variable `smoke` comme une variable `factor` (ici nous ne considèrerons pas qu'il s'agit d'un facteur ordonné et nous voulons faire un contraste de type traitement avec comparaison à des mères qui n'ont jamais fumé). **Un reminement soigneux des données est donc nécessaire avant de pouvoir appliquer notre modèle\ !**
 
-```{r eval=FALSE}
+```{r}
 SciViews::R
 babies <- read("babies", package = "UsingR")
+knitr::kable(head(babies))
+```
+
+Ce tableau est "brut de décoffrage". Voyez `help("babies", package = "UsingR")` pour de plus amples informations. Nous allons maintenant remanier tout cela correctement.
+
+```{r}
 # wt = masse du bébé à la naissance en onces et 999 = valeur manquante
 # wt1 = masse de la mère à la naissance en livres et 999 = valeur manquante
 # smoke = 0 (non), = 1 (oui), = 2 (jusqu'à grossesse),
 #       = 3 (plus depuis un certain temps) and = 9 (inconnu)
-babies %>.% select(., wt, wt1, smoke) %>.%
-  filter(., wt1 < 999, wt < 999, smoke < 9) %>.%
-  mutate(., wt = wt * 0.02835) %>.%
-  mutate(., wt1 = wt1 * 0.4536) -> Babies
-Babies$smoke <- as.factor(Babies$smoke)
-# Descriptions graphiques
-boxplot(data = Babies, wt ~ smoke)
-boxplot(data = Babies, wt1 ~ smoke)
-# ANCOVA
-anova(lm(data = Babies, wt ~ smoke * wt1))
+babies %>.% select(., wt, wt1, smoke) %>.% # Garder seulement wt, wt1 & smoke
+  filter(., wt1 < 999, wt < 999, smoke < 9) %>.% # Eliminer les valeurs manquantes
+  mutate(., wt = wt * 0.02835) %>.% # Transformer le poids en kg
+  mutate(., wt1 = wt1 * 0.4536) %>.% # Idem
+  mutate(., smoke = as.factor(smoke)) -> # S'assurer d'avoir une variable factor
+  Babies # Enregistrer le résultat dans Babies
+
+knitr::kable(head(Babies))
 ```
+
+Description des données\ :
+
+```{r}
+skimr::skim(Babies)
+```
+
+```{r}
+chart(data = Babies, wt ~ smoke) +
+  geom_boxplot() +
+  ylab("Masse du bébé [kg]")
+```
+
+```{r}
+chart(data = Babies, wt1 ~ smoke) +
+  geom_boxplot() +
+  ylab("Masse de la mère [kg]")
+```
+
+Visuellement, nous ne voyons pas d'effet marquant. Peut-être la condition 1 de `smoke` (mère qui fume pendant la grossesse) mène-t-il à des bébés moins gros, mais est-ce significatif\ ? Pour cela, ajustons notre modèle ANCOVA avec matrice traitement (choix par défaut pour une la variable `factor` `smoke`). Comme nous savons déjà utiliser `lm()`, c'est très simple. Cela fonctionne exactement comme avant^[Pour rappel, on utilise le signe `+` pour indiquer un modèle sans interactions et un signe `*`pour spécifier un modèle complet avec interactions entre les variables.].
+
+```{r}
+# ANCOVA
+Babies_lm <- lm(data = Babies, wt ~ smoke * wt1)
+summary(Babies_lm)
+anova(Babies_lm)
+```
+
+L'analyse de variance montre que la masse de la mère a un effet significatif au seuil alpha de 5%, de même si la mère fume. Par contre, il n'y a pas d'**interactions** entre les deux. Le fait de pouvoir meurer des interactions entre variables qualitatives et quantitatives est ici bien évidemment un plus du modèle linéaire par rapport à ce qu'on pouvait faire avant\ !
+
+Le résumé de l'analyse nous montre que la régression de la masse des bébés en fonction de la masse de la mère (ligne `wt1` dans le tableau des coefficients), bien qu'étant significative, n'explique que 8% de la variance totale (le $R^2$). Les termes `smoke1`, `smoke2` et `smoke3` sont les contrastes appliqués par rapport au contrôle (`smoke == 0`). On voit ici qu'aucun de ces contrastes n'est significatif au seuil alpha de 5%. Cela signifie que le seul effet significatif est celui lié à une ordonnée à l'origine non nulle `(Intercept)` matérialisant la condition `smoke == 0`. Cela signifie que des mères de masse nulle n'ayant jamais fumé engendreraient des bébés pesant environ 3kg. Dans le contexte présent, cette constatation n'a bien sûr aucun sens, et l'interprétation  de l'ordonnée à l'origine ne doit pas être faite. Donc, le modèle linéaire, en offrant plus de contrôle dans notre ajustement et une définition de contrastes "utiles" matérialisés par les lignes `smoke1`, `smoke2` et `smoke3` du tableau nous permet de faire des tests plus utiles dans le contexte de notre analyse.
+
+N'oublions pas non plus la possibilité de déterminer si des interactions entre `smoke` et `wt1` existent pour ces différents contrastes, interactions testées respectivements aux lignes `smoke1:wt1`, `smoke2:wt1`, et `smoke3:wt1`du tableau des coefficients. Dans le cas présent, aucune de ces interactions n'est siginificative au seuil alpha de 5%.
+
+Voilà, nous venons d'analyser et d'interpréter notre premier modèle linéaire sous forme d'une ANCOVA.
 
 
 ## Modèle linéaire généralisé
