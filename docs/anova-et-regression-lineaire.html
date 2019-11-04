@@ -245,7 +245,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <li><p><span class="math inline">\(y = \beta_1 + \beta_2 x + \epsilon\)</span> pour la régression linéaire, avec</p></li>
 <li><p><span class="math inline">\(\epsilon \sim \mathcal{N}(0, \sigma)\)</span> dans les deux cas.</p></li>
 </ul>
-<p>Donc, nous retrouvons bien au niceau du modèle mathématique sous-jacent la différence principale entre les deux qui réside dans le type de variable indépendante (ou explicative) :</p>
+<p>Donc, nous retrouvons bien au niveau du modèle mathématique sous-jacent la différence principale entre les deux qui réside dans le type de variable indépendante (ou explicative) :</p>
 <ul>
 <li>Variable <strong>qualitative</strong> pour l’ANOVA,</li>
 <li>Variable <strong>quantitative</strong> pour la régression linéaire.</li>
@@ -253,7 +253,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <p>Le calcul est, en réalité, identique en interne. Il est donc possible de généraliser ces deux approches en une seule appelée <strong>modèle linéaire</strong>, mais à condition d’utiliser une astuce pour modifier nos modèles afin qu’ils soient intercompatibles.</p>
 <div id="modele-lineaire-commun" class="section level3">
 <h3><span class="header-section-number">3.2.1</span> Modèle linéaire commun</h3>
-<p>Le nœud du problème revient donc à transformet nos modèles mathématiques pour qu’ils puissent être fusionnés en un seul. Comment homogénéiser ces deux modèles ?</p>
+<p>Le nœud du problème revient donc à transformer nos modèles mathématiques pour qu’ils puissent être fusionnés en un seul. Comment homogénéiser ces deux modèles ?</p>
 <ul>
 <li><p><span class="math inline">\(y = \mu + \tau_i + \epsilon\)</span> pour l’ANOVA et</p></li>
 <li><p><span class="math inline">\(y = \beta_1 + \beta_2 x + \epsilon\)</span> pour la régression linéaire.</p></li>
@@ -267,9 +267,9 @@ code span.wa { color: #bf0303; } /* Warning */
 y = \mu + \tau_1 I_1 + \tau_2 I_2 + \epsilon
 \]</span></p>
 <p>avec <span class="math inline">\(I_i\)</span>, une variable dite <strong>indicatrice</strong> créée de toute pièce qui prend la valeur 1 lorsque le niveau
-correspond à <em>i</em>, et 0 dans tous les autres cas. Vous pouvez vérifier par vous-même que l’équation ci-dessus fonctionnera exactement de la même manièrte qsue le modèle utilisé jusqu’ici pour l’ANOVA. En effet, poiur un individu de la population 1, <span class="math inline">\(I_1\)</span> vaut 1 et <span class="math inline">\(\tau_1\)</span> est utilisé, alors que comme <span class="math inline">\(I_2\)</span> vaut 0, <span class="math inline">\(\tau_2\)</span> est annulé dans l’équation car <span class="math inline">\(\tau_2 I_2\)</span> vaut également 0.</p>
-<p>Notez que notre nouvelle formulation, à l’aide de variables indicatrices ressemble fortement à la régression linéaire. La seule différence par rapport à cette dernière est que nos varaibles <span class="math inline">\(I_i\)</span> ne peuvent prendre que des valeurs 0 ou 1, alors que les <span class="math inline">\(x_i\)</span> dans la régression linéaire multiple sont des variables quantitatives qui penvent prendre une infinité de valeurs différentes (nombres réels).</p>
-<p>On peut encore réécrire notre équation comme suit pour qu’elle se rapproche encore plus de celle de la régression linéaire simple :</p>
+correspond à <em>i</em>, et 0 dans tous les autres cas. Vous pouvez vérifier par vous-même que l’équation ci-dessus fonctionnera exactement de la même manière que le modèle utilisé jusqu’ici pour l’ANOVA. En effet, poiur un individu de la population 1, <span class="math inline">\(I_1\)</span> vaut 1 et <span class="math inline">\(\tau_1\)</span> est utilisé, alors que comme <span class="math inline">\(I_2\)</span> vaut 0, <span class="math inline">\(\tau_2\)</span> est annulé dans l’équation car <span class="math inline">\(\tau_2 I_2\)</span> vaut également 0. Et c’est exactement l’inverse qui se produit pour un individu de la population 2, de sorte que c’est <span class="math inline">\(\tau_2\)</span> qui est utilisé cette fois-ci.</p>
+<p>Notez que notre nouvelle formulation, à l’aide de variables indicatrices ressemble fortement à la régression linéaire. La seule différence par rapport à cette dernière est que nos variables <span class="math inline">\(I_i\)</span> ne peuvent prendre que des valeurs 0 ou 1 (en tous cas, pour l’instant), alors que les <span class="math inline">\(x_i\)</span> dans la régression linéaire multiple sont des variables quantitatives qui peuvent prendre une infinité de valeurs différentes (nombres réels).</p>
+<p>Nouys pouvons encore réécrire notre équation comme suit pour qu’elle se rapproche encore plus de celle de la régression linéaire simple. Passons par l’introduction de deux termes identiques <span class="math inline">\(\tau_1 I_2\)</span> additionné et soustrait, ce qui revient au même qu’en leur absence :</p>
 <p><span class="math display">\[
 y = \mu + \tau_1 I_1 + \tau_1 I_2 - \tau_1 I_2 + \tau_2 I_2 + \epsilon
 \]</span></p>
@@ -280,12 +280,20 @@ y = \mu + \tau_1 I_1 + \tau_1 I_2 - \tau_1 I_2 + \tau_2 I_2 + \epsilon
 y = \mu + \tau_1 I_1 + \tau_1 I_2 + \beta_2 I_2 + \epsilon
 \]</span></p>
 <ul>
-<li>En considérant <span class="math inline">\(\beta_1 = \mu + \tau_1 = \mu + \tau_1 I_1 + \tau_1 I_2\)</span> car quelle que soit la population à laquelle notre individu appartient, il n’y a jamais qu’une seule des deux valeurs <span class="math inline">\(\tau_1 I_1\)</span> ou <span class="math inline">\(\tau_1 I_2\)</span> non nulle et dans tous les cas le résultat est égal à <span class="math inline">\(\tau_1\)</span>, on obtient :</li>
+<li>En considérant <span class="math inline">\(\beta_1 = \mu + \tau_1 = \mu + \tau_1 I_1 + \tau_1 I_2\)</span> (car quelle que soit la population à laquelle notre individu appartient, il n’y a jamais qu’une seule des deux valeurs <span class="math inline">\(I_1\)</span> ou <span class="math inline">\(I_2\)</span> non nulle et dans tous les cas le résultat est donc égal à <span class="math inline">\(\tau_1\)</span>), on obtient :</li>
 </ul>
 <p><span class="math display">\[
 y = \beta_1 + \beta_2 I_2 + \epsilon
 \]</span></p>
-<p>Cette dernière formulation est strictement équivalente au modèle de la régression linéaire simple dans laquelle la variable <span class="math inline">\(x\)</span> a simplement été remplacée par notre variable indicatrice <span class="math inline">\(I_2\)</span>. Ceci se généralise pour une variable indépendante à <em>k</em> niveaux, avec <span class="math inline">\(k - 1\)</span> variables indicatrices au final.</p>
+<p>Cette dernière formulation est strictement équivalente au modèle de la régression linéaire simple dans laquelle la variable <span class="math inline">\(x\)</span> a simplement été remplacée par notre variable indicatrice <span class="math inline">\(I_2\)</span>. Ceci se généralise pour une variable indépendante à <span class="math inline">\(k\)</span> niveaux, avec <span class="math inline">\(k - 1\)</span> variables indicatrices au final.</p>
+
+<div class="note">
+<p>En prenant soin de réencoder le modèle de l’ANOVA relatif aux variables indépendantes qualitatives, nous pouvons à présent mélanger les termes des deux modèles en un seul : notre fameux modèle linéaire. Nous aurons donc, quelque chose du genre (avec les <span class="math inline">\(x_i\)</span> correspondant aux variables quantitatives et les <span class="math inline">\(I_j\)</span> des variables indicatrices pour les différents niveaux des variables qualitatives) :</p>
+<p><span class="math display">\[
+y = \beta_1 + \beta_2 x_1 + \beta_3 x_2 + ... + \beta_n I_1 + \beta_{n+1} I_2 ... + \epsilon  
+\]</span></p>
+</div>
+
 </div>
 </div>
 <div class="footnotes">

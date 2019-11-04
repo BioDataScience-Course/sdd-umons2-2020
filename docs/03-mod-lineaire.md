@@ -23,7 +23,7 @@
 
 L'ANOVA analyse une **variable dépendante numérique** en fonction d'une ou plusieurs **variables indépendantes qualitatives**. Ces variables sont dites "facteurs" non ordonnés (objets de classe `factor`), ou "facteurs" ordonnés (objets de classe `ordered`) dans R. 
 
-La régression linéaire anaqlyse une **variable dépendante numérique** en fonction d'une ou plusieurs **variables indépendantes numérique** (quantitatives) également. Ce sont des objets de classe `numeric` (ou éventuellement `integer`, mais assimilé à `numeric` concrètement) dans R.
+La régression linéaire analyse une **variable dépendante numérique** en fonction d'une ou plusieurs **variables indépendantes numérique** (quantitatives) également. Ce sont des objets de classe `numeric` (ou éventuellement `integer`, mais assimilé à `numeric` concrètement) dans R.
 
 Donc, la principale différence entre ANOVA et régression linéaire telles que nous les avnos abordés jusqu'ici réside dans la **nature** de la ou des variables indépendantes, c'est-à-dire, leur type. Pour rappel, il existe deux grandes catégories de variables\ : quantitatives et qualitatives, et deux sous-catégories pour chacune d'elle. Cela donne quatyre types principaux de variables, formant plus de 90% des cas rencontrés\ :
 
@@ -52,7 +52,7 @@ Par ailleurs, nous avons vu que l’ANOVA et la régression linéaire se représ
 
 - $\epsilon \sim \mathcal{N}(0, \sigma)$ dans les deux cas.
 
-Donc, nous retrouvons bien au niceau du modèle mathématique sous-jacent la différence principale entre les deux qui réside dans le type de variable indépendante (ou explicative)\ :
+Donc, nous retrouvons bien au niveau du modèle mathématique sous-jacent la différence principale entre les deux qui réside dans le type de variable indépendante (ou explicative)\ :
 
 - Variable **qualitative** pour l’ANOVA,
 - Variable **quantitative** pour la régression linéaire.
@@ -62,7 +62,7 @@ Le calcul est, en réalité, identique en interne. Il est donc possible de gén�
 
 ### Modèle linéaire commun
 
-Le nœud du problème revient donc à transformet nos modèles mathématiques pour qu'ils puissent être fusionnés en un seul. Comment homogénéiser ces deux modèles\ ?
+Le nœud du problème revient donc à transformer nos modèles mathématiques pour qu'ils puissent être fusionnés en un seul. Comment homogénéiser ces deux modèles\ ?
 
 - $y = \mu + \tau_i + \epsilon$ pour l’ANOVA et
 
@@ -80,11 +80,11 @@ y = \mu + \tau_1 I_1 + \tau_2 I_2 + \epsilon
 $$
 
 avec $I_i$, une variable dite **indicatrice** créée de toute pièce qui prend la valeur 1 lorsque le niveau
-correspond à _i_, et 0 dans tous les autres cas. Vous pouvez vérifier par vous-même que l'équation ci-dessus fonctionnera exactement de la même manièrte qsue le modèle utilisé jusqu'ici pour l'ANOVA. En effet, poiur un individu de la population 1, $I_1$ vaut 1 et $\tau_1$ est utilisé, alors que comme $I_2$ vaut 0, $\tau_2$ est annulé dans l'équation car $\tau_2 I_2$ vaut également 0.
+correspond à _i_, et 0 dans tous les autres cas. Vous pouvez vérifier par vous-même que l'équation ci-dessus fonctionnera exactement de la même manière que le modèle utilisé jusqu'ici pour l'ANOVA. En effet, poiur un individu de la population 1, $I_1$ vaut 1 et $\tau_1$ est utilisé, alors que comme $I_2$ vaut 0, $\tau_2$ est annulé dans l'équation car $\tau_2 I_2$ vaut également 0. Et c'est exactement l'inverse qui se produit pour un individu de la population 2, de sorte que c'est $\tau_2$ qui est utilisé cette fois-ci.
 
-Notez que notre nouvelle formulation, à l'aide de variables indicatrices ressemble fortement à la régression linéaire. La seule différence par rapport à cette dernière est que nos varaibles $I_i$ ne peuvent prendre que des valeurs 0 ou 1, alors que les $x_i$ dans la régression linéaire multiple sont des variables quantitatives qui penvent prendre une infinité de valeurs différentes (nombres réels).
+Notez que notre nouvelle formulation, à l'aide de variables indicatrices ressemble fortement à la régression linéaire. La seule différence par rapport à cette dernière est que nos variables $I_i$ ne peuvent prendre que des valeurs 0 ou 1 (en tous cas, pour l'instant), alors que les $x_i$ dans la régression linéaire multiple sont des variables quantitatives qui peuvent prendre une infinité de valeurs différentes (nombres réels).
 
-On peut encore réécrire notre équation comme suit pour qu'elle se rapproche encore plus de celle de la régression linéaire simple\ :
+Nouys pouvons encore réécrire notre équation comme suit pour qu'elle se rapproche encore plus de celle de la régression linéaire simple. Passons par l'introduction de deux termes identiques $\tau_1 I_2$ additionné et soustrait, ce qui revient au même qu'en leur absence\ :
 
 $$
 y = \mu + \tau_1 I_1 + \tau_1 I_2 - \tau_1 I_2 + \tau_2 I_2 + \epsilon
@@ -96,13 +96,21 @@ $$
 y = \mu + \tau_1 I_1 + \tau_1 I_2 + \beta_2 I_2 + \epsilon
 $$
 
-- En considérant $\beta_1 = \mu + \tau_1 = \mu + \tau_1 I_1 + \tau_1 I_2$ car quelle que soit la population à laquelle notre individu appartient, il n'y a jamais qu'une seule des deux valeurs $\tau_1 I_1$ ou $\tau_1 I_2$ non nulle et dans tous les cas le résultat est égal à $\tau_1$, on obtient\ :
+- En considérant $\beta_1 = \mu + \tau_1 = \mu + \tau_1 I_1 + \tau_1 I_2$ (car quelle que soit la population à laquelle notre individu appartient, il n'y a jamais qu'une seule des deux valeurs $I_1$ ou $I_2$ non nulle et dans tous les cas le résultat est donc égal à $\tau_1$), on obtient\ :
 
 $$
 y = \beta_1 + \beta_2 I_2 + \epsilon
 $$
 
-Cette dernière formulation est strictement équivalente au modèle de la régression linéaire simple dans laquelle la variable $x$ a simplement été remplacée par notre variable indicatrice $I_2$. Ceci se généralise pour une variable indépendante à _k_ niveaux, avec $k - 1$ variables indicatrices au final.
+Cette dernière formulation est strictement équivalente au modèle de la régression linéaire simple dans laquelle la variable $x$ a simplement été remplacée par notre variable indicatrice $I_2$. Ceci se généralise pour une variable indépendante à $k$ niveaux, avec $k - 1$ variables indicatrices au final.
+
+\BeginKnitrBlock{note}<div class="note">
+En prenant soin de réencoder le modèle de l'ANOVA relatif aux variables indépendantes qualitatives, nous pouvons à présent mélanger les termes des deux modèles en un seul\ : notre fameux modèle linéaire. Nous aurons donc, quelque chose du genre (avec les $x_i$ correspondant aux variables quantitatives et les $I_j$ des variables indicatrices pour les différents niveaux des variables qualitatives)\ :
+
+$$
+y = \beta_1 + \beta_2 x_1 + \beta_3 x_2 + ... + \beta_n I_1 + \beta_{n+1} I_2 ... + \epsilon  
+$$
+</div>\EndKnitrBlock{note}
 
 
 ## Matrice de contraste
