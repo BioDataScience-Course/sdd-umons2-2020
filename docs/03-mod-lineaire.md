@@ -483,6 +483,31 @@ Maintenant, la pente pour notre droite ajustée sur la population `smoke == 1` u
 
 Donc, notre modèle complet ne fait rien d'autre que d'ajuster les quatre droites correspondant aux relations linéaires entre `wt` et `wt1`, **mais en décompose les effets, niveau par niveau de la variable qualitative `smoke`** en fonction de la matrice de contraste que l'on a choisie. En bonnus, nous avons la possibilité de tester si chacune des composantes (tableau coefficient de `summary()`) ou si globalement chacune des variables (tableau obtenu avec `anova()`) a un effet significatif ou non dans le modèle.
 
+Le graphique correspondant est le même que si nous avions ajusté les 4 régressions linéaires indépendamment l'une de l'autre (mais les tests et les enveloppes de confiance diffèrent).
+
+
+```r
+chart(data = Babies, wt ~ wt1 %col=% smoke) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x) +
+  xlab("Masse de la mère [kg]") +
+  ylab("Masse du bébé [kg]")
+```
+
+<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" />
+
+
+```r
+chart(data = Babies, wt ~ wt1 | smoke) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x) +
+  xlab("Masse de la mère [kg]") +
+  ylab("Masse du bébé [kg]")
+```
+
+<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" />
+
+
 Comme toujours, lorsqu'un effet n'est pas siugnificatif, nous pouvons décider de *simplifier* le modèle. **Mais attention\ ! Toujours considérer que les composantes sont interdépendantes.** Donc, éliminer une composante du modèle peut avoir des effets parfois surprenants sur les autres.
 
 Voyons ce que cela donne si nous éliminons les interactions. Dans ce cas, nous ajustons des droites toutes parallèles avec uniquement un décalage de leur ordonnée à l'origine matérialisé par `smoke1`, `smoke2` et `smoke3` par rapport au modèle de référence ajusté pour la population `smoke == 0` (notez l'utilisation, du signe `+` dans la formuile, là où nous utilisions le signe `*` dans la modèle précédent).
@@ -534,7 +559,26 @@ anova(Babies_lm2)
 # Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
 
-Hé, ça c'est intéressant\ ! Maintenant que nous avons éliminé les interactions qui apparaissent non pertinentes ici, nous avons toujours une régression significative entre `wt` et `wt1` (mais avec un $R^2$  très faible de 7,7%, attention), mais maintenant, nous faisons apparaitre un effet signicfication du contraste avec `smoke1` au seuil alpha de 5%. Et du coup, les effets des deux variables deviennent plus clairs dans notre tableau de l'ANOVA. Voyons ce que donne l'analyse *post hoc* des comparaisons multiples (nous utilisons ici simplement le snippet disponible à partir de `...` -> `hypothesis tests` -> `hypothesis tests: means` -> `hmanovamult : anova - multiple comparaisons [multcomp]`) que nous avons déjà employé et qui reste valable ici.
+Hé, ça c'est intéressant\ ! Maintenant que nous avons éliminé les interactions qui apparaissent non pertinentes ici, nous avons toujours une régression significative entre `wt` et `wt1` (mais avec un $R^2$  très faible de 7,7%, attention), mais maintenant, nous faisons apparaitre un effet signicfication du contraste avec `smoke1` au seuil alpha de 5%. Et du coup, les effets des deux variables deviennent plus clairs dans notre tableau de l'ANOVA. 
+
+Le graphique correspondant est l'ajustement de droites parallèles les unes aux autres pour les 4 sous-populations en fonction de `smoke`. Ce graphique est difficile à réaliser. Il faut ruser, et les détails du code vont au delà de ce cours (il n'est pas nécessaire de les comprendre à ce stade).
+
+
+```r
+cols <- iterators::iter(scales::hue_pal()(4)) # Get colors for lines
+chart(data = Babies, wt ~ wt1) +
+  geom_point(aes(col = smoke)) +
+  lapply(c(0, -0.238, 0.0227, 0.0355), function(offset)
+    geom_smooth(method = lm, formula = y + offset ~ x,
+      col = iterators::nextElem(cols))) +
+  xlab("Masse de la mère [kg]") +
+  ylab("Masse du bébé [kg]")
+```
+
+<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" />
+
+
+Voyons ce que donne l'analyse *post hoc* des comparaisons multiples (nous utilisons ici simplement le snippet disponible à partir de `...` -> `hypothesis tests` -> `hypothesis tests: means` -> `hmanovamult : anova - multiple comparaisons [multcomp]`) que nous avons déjà employé et qui reste valable ici.
 
 
 ```r
@@ -556,7 +600,7 @@ summary(anovaComp. <- confint(multcomp::glht(Babies_lm2,
 # 1 - 0 == 0 -0.23794    0.03182  -7.478  < 1e-05 ***
 # 2 - 0 == 0  0.02267    0.05651   0.401    0.977    
 # 3 - 0 == 0  0.03549    0.05407   0.656    0.908    
-# 2 - 1 == 0  0.26060    0.05704   4.568 2.89e-05 ***
+# 2 - 1 == 0  0.26060    0.05704   4.568 2.47e-05 ***
 # 3 - 1 == 0  0.27342    0.05478   4.991  < 1e-05 ***
 # 3 - 2 == 0  0.01282    0.07199   0.178    0.998    
 # ---
@@ -568,7 +612,7 @@ summary(anovaComp. <- confint(multcomp::glht(Babies_lm2,
 .oma <- par(oma = c(0, 5.1, 0, 0)); plot(anovaComp.); par(.oma); rm(.oma)
 ```
 
-<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" />
+<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" />
 
 Ici, comme nous testons tous les contrastes, nous pouvons dire que la population des mères qui ont fumé pendant la grossesse `smoke == 1` donne des bébés significativement moins gros au seuil alpha de 5%, et ce, en comparaison de tous les autres niveaux (mère n'ayant jamais fumé, ou ayant fumé mais arrêté avant la grossesse, que ce soit longtemps avant ou juste avant).
 
