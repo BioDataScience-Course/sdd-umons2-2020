@@ -243,6 +243,14 @@ skimr::skim(Babies)
 ```
 
 ```{r}
+chart(data = Babies, wt ~ wt1 %col=% smoke) +
+  geom_point() +
+  xlab("Masse de la mère [kg]") +
+  ylab("Masse du bébé [kg]")
+```
+
+
+```{r}
 chart(data = Babies, wt ~ smoke) +
   geom_boxplot() +
   ylab("Masse du bébé [kg]")
@@ -268,6 +276,49 @@ L'analyse de variance montre que la masse de la mère a un effet significatif au
 Le résumé de l'analyse nous montre que la régression de la masse des bébés en fonction de la masse de la mère (ligne `wt1` dans le tableau des coefficients), bien qu'étant significative, n'explique que 8% de la variance totale (le $R^2$). Les termes `smoke1`, `smoke2` et `smoke3` sont les contrastes appliqués par rapport au contrôle (`smoke == 0`). On voit ici qu'aucun de ces contrastes n'est significatif au seuil alpha de 5%. Cela signifie que le seul effet significatif est celui lié à une ordonnée à l'origine non nulle `(Intercept)` matérialisant la condition `smoke == 0`. Cela signifie que des mères de masse nulle n'ayant jamais fumé engendreraient des bébés pesant environ 3kg. Dans le contexte présent, cette constatation n'a bien sûr aucun sens, et l'interprétation  de l'ordonnée à l'origine ne doit pas être faite. Donc, le modèle linéaire, en offrant plus de contrôle dans notre ajustement et une définition de contrastes "utiles" matérialisés par les lignes `smoke1`, `smoke2` et `smoke3` du tableau nous permet de faire des tests plus utiles dans le contexte de notre analyse.
 
 N'oublions pas non plus la possibilité de déterminer si des interactions entre `smoke` et `wt1` existent pour ces différents contrastes, interactions testées respectivements aux lignes `smoke1:wt1`, `smoke2:wt1`, et `smoke3:wt1`du tableau des coefficients. Dans le cas présent, aucune de ces interactions n'est siginificative au seuil alpha de 5%.
+
+Pour comprendre à quoi tout cela fait référence, il faut considérer le modèle de base comme une droite de régression ajustée entre `wt` et `wt1` pour la population de référence `smoke == 0`. Ainsi, si nous faisons\ :
+
+```{r}
+summary(lm(data = Babies, wt ~ wt1, subset = smoke == 0))
+```
+
+Nous voyons en effet que les pentes et ordonnées à l'origine sont ici parfaitement identiques au modèle ANCOVA complet (mais pas les tests associés).
+
+Maintenant plus difficile\ : à quoi correspond une régression entre `wt` et `wt1` pour `smoke == 1`\ ?
+
+```{r}
+summary(lm(data = Babies, wt ~ wt1, subset = smoke == 1))
+```
+
+Nous avons une ordonnées à l'origine qui vaut 2,70 ici. Notons que cela correspond aussi à `(Intercept)` + `smoke1` = 3,00 - 0,30 = 2,70. Donc, l'ordonnées à l'origine pour `smoke == 1` est bien la valeur de référence additionnée de la valeur fournie à la ligne `smoke1` dans l'ANCOVA. Cela se vérifie aussi pour les deux autres droites pour `smoke2` et `smoke3`.
+
+Maintenant, la pente pour notre droite ajustée sur la population `smoke == 1` uniquement vaut 0,00927. Dans l'ANCOVA, nous avions une pente `wt1` de 0,00812 et une interaction `smoke1:wt1` claculée comme 0,00115. Notez alors que la pente de la droite seule 0,00927 = 0,00812 + 0,00115. Donc, tout comme `smoke1` correspond au décalage de l'ordonnée à l'origine du modèle de référence, les interactions `smoke1:wt1` correspondent au décalage de la pente par rapport au modèle de référence. Cela se vérifie également pour `smoke2:wt1` et `smoke3:wt1`.
+
+Donc, notre modèle complet ne fait rien d'autre que d'ajuster les quatre droites correspondant aux relations linéaires entre `wt` et `wt1`, **mais en décompose les effets, niveau par niveau de la variable qualitative `smoke`** en fonction de la matrice de contraste que l'on a choisie. En bonnus, nous avons la possibilité de tester si chacune des composantes (tableau coefficient de `summary()`) ou si globalement chacune des variables (tableau obtenu avec `anova()`) a un effet significatif ou non dans le modèle.
+
+Comme toujours, lorsqu'un effet n'est pas siugnificatif, nous pouvons décider de *simplifier* le modèle. **Mais attention\ ! Toujours considérer que les composantes sont interdépendantes.** Donc, éliminer une composante du modèle peut avoir des effets parfois surprenants sur les autres.
+
+Voyons ce que cela donne si nous éliminons les interactions. Dans ce cas, nous ajustons des droites toutes parallèles avec uniquement un décalage de leur ordonnée à l'origine matérialisé par `smoke1`, `smoke2` et `smoke3` par rapport au modèle de référence ajusté pour la population `smoke == 0` (notez l'utilisation, du signe `+` dans la formuile, là où nous utilisions le signe `*` dans la modèle précédent).
+
+```{r}
+# ANCOVA
+Babies_lm2 <- lm(data = Babies, wt ~ smoke + wt1)
+summary(Babies_lm2)
+anova(Babies_lm2)
+```
+
+Hé, ça c'est intéressant\ ! Maintenant que nous avons éliminé les interactions qui apparaissent non pertinentes ici, nous avons toujours une régression significative entre `wt` et `wt1` (mais avec un $R^2$  très faible de 7,7%, attention), mais maintenant, nous faisons apparaitre un effet signicfication du contraste avec `smoke1` au seuil alpha de 5%. Et du coup, les effets des deux variables deviennent plus clairs dans notre tableau de l'ANOVA. Voyons ce que donne l'analyse *post hoc* des comparaisons multiples (nous utilisons ici simplement le snippet disponible à partir de `...` -> `hypothesis tests` -> `hypothesis tests: means` -> `hmanovamult : anova - multiple comparaisons [multcomp]`) que nous avons déjà employé et qui reste valable ici.
+
+```{r}
+summary(anovaComp. <- confint(multcomp::glht(Babies_lm2,
+  linfct = multcomp::mcp(smoke = "Tukey"))))
+.oma <- par(oma = c(0, 5.1, 0, 0)); plot(anovaComp.); par(.oma); rm(.oma)
+```
+
+Ici, comme nous testons tous les contrastes, nous pouvons dire que la population des mères qui ont fumé pendant la grossesse `smoke == 1` donne des bébés significativement moins gros au seuil alpha de 5%, et ce, en comparaison de tous les autres niveaux (mère n'ayant jamais fumé, ou ayant fumé mais arrêté avant la grossesse, que ce soit longtemps avant ou juste avant).
+
+En conclusion de cette analyse, nous pouvons dire que la masse du bébé dépend de la masse de la mère, mais assez faiblement (seulement 7,7% de la variance totale expliquée). Par contre, nous pouvons aussi dire que le fait de fumer pendant la grossesse a un effet significatif sur la réduction de la masse du bébé à la naissance (en moyenne cette réduction est de 0,24kg pour une masse moyenne de 3,03kg, soit une réduction de 0,24 / 3,03 * 100 = 8%).
 
 Voilà, nous venons d'analyser et d'interpréter notre premier modèle linéaire sous forme d'une ANCOVA.
 

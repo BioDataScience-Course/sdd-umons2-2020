@@ -316,13 +316,13 @@ skimr::skim(Babies)
 #  n obs: 1190 
 #  n variables: 3 
 # 
-# ── Variable type:factor ──────────────────────────────────────────────────────────────────────────────
+# ── Variable type:factor ─────────────────────────────────────────────────────────────
 #  variable missing complete    n n_unique                    top_counts
 #     smoke       0     1190 1190        4 0: 531, 1: 465, 3: 102, 2: 92
 #  ordered
 #    FALSE
 # 
-# ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────
+# ── Variable type:numeric ────────────────────────────────────────────────────────────
 #  variable missing complete    n  mean   sd    p0   p25  p50   p75   p100
 #        wt       0     1190 1190  3.39 0.52  1.56  3.06  3.4  3.71   4.99
 #       wt1       0     1190 1190 58.3  9.49 39.46 51.82 56.7 62.6  113.4 
@@ -333,12 +333,23 @@ skimr::skim(Babies)
 
 
 ```r
+chart(data = Babies, wt ~ wt1 %col=% smoke) +
+  geom_point() +
+  xlab("Masse de la mère [kg]") +
+  ylab("Masse du bébé [kg]")
+```
+
+<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" />
+
+
+
+```r
 chart(data = Babies, wt ~ smoke) +
   geom_boxplot() +
   ylab("Masse du bébé [kg]")
 ```
 
-<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" />
+<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ```r
@@ -347,7 +358,7 @@ chart(data = Babies, wt1 ~ smoke) +
   ylab("Masse de la mère [kg]")
 ```
 
-<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" />
+<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" />
 
 Visuellement, nous ne voyons pas d'effet marquant. Peut-être la condition 1 de `smoke` (mère qui fume pendant la grossesse) mène-t-il à des bébés moins gros, mais est-ce significatif\ ? Pour cela, ajustons notre modèle ANCOVA avec matrice traitement (choix par défaut pour une la variable `factor` `smoke`). Comme nous savons déjà utiliser `lm()`, c'est très simple. Cela fonctionne exactement comme avant^[Pour rappel, on utilise le signe `+` pour indiquer un modèle sans interactions et un signe `*`pour spécifier un modèle complet avec interactions entre les variables.].
 
@@ -407,6 +418,161 @@ L'analyse de variance montre que la masse de la mère a un effet significatif au
 Le résumé de l'analyse nous montre que la régression de la masse des bébés en fonction de la masse de la mère (ligne `wt1` dans le tableau des coefficients), bien qu'étant significative, n'explique que 8% de la variance totale (le $R^2$). Les termes `smoke1`, `smoke2` et `smoke3` sont les contrastes appliqués par rapport au contrôle (`smoke == 0`). On voit ici qu'aucun de ces contrastes n'est significatif au seuil alpha de 5%. Cela signifie que le seul effet significatif est celui lié à une ordonnée à l'origine non nulle `(Intercept)` matérialisant la condition `smoke == 0`. Cela signifie que des mères de masse nulle n'ayant jamais fumé engendreraient des bébés pesant environ 3kg. Dans le contexte présent, cette constatation n'a bien sûr aucun sens, et l'interprétation  de l'ordonnée à l'origine ne doit pas être faite. Donc, le modèle linéaire, en offrant plus de contrôle dans notre ajustement et une définition de contrastes "utiles" matérialisés par les lignes `smoke1`, `smoke2` et `smoke3` du tableau nous permet de faire des tests plus utiles dans le contexte de notre analyse.
 
 N'oublions pas non plus la possibilité de déterminer si des interactions entre `smoke` et `wt1` existent pour ces différents contrastes, interactions testées respectivements aux lignes `smoke1:wt1`, `smoke2:wt1`, et `smoke3:wt1`du tableau des coefficients. Dans le cas présent, aucune de ces interactions n'est siginificative au seuil alpha de 5%.
+
+Pour comprendre à quoi tout cela fait référence, il faut considérer le modèle de base comme une droite de régression ajustée entre `wt` et `wt1` pour la population de référence `smoke == 0`. Ainsi, si nous faisons\ :
+
+
+```r
+summary(lm(data = Babies, wt ~ wt1, subset = smoke == 0))
+```
+
+```
+# 
+# Call:
+# lm(formula = wt ~ wt1, data = Babies, subset = smoke == 0)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.95685 -0.25825  0.01476  0.25464  1.49890 
+# 
+# Coefficients:
+#             Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) 3.000663   0.123572  24.283  < 2e-16 ***
+# wt1         0.008117   0.002069   3.922 9.92e-05 ***
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+# 
+# Residual standard error: 0.4806 on 529 degrees of freedom
+# Multiple R-squared:  0.02826,	Adjusted R-squared:  0.02642 
+# F-statistic: 15.38 on 1 and 529 DF,  p-value: 9.924e-05
+```
+
+Nous voyons en effet que les pentes et ordonnées à l'origine sont ici parfaitement identiques au modèle ANCOVA complet (mais pas les tests associés).
+
+Maintenant plus difficile\ : à quoi correspond une régression entre `wt` et `wt1` pour `smoke == 1`\ ?
+
+
+```r
+summary(lm(data = Babies, wt ~ wt1, subset = smoke == 1))
+```
+
+```
+# 
+# Call:
+# lm(formula = wt ~ wt1, data = Babies, subset = smoke == 1)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.70870 -0.35089  0.01034  0.33576  1.39420 
+# 
+# Coefficients:
+#             Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) 2.697048   0.153270  17.597  < 2e-16 ***
+# wt1         0.009270   0.002632   3.522 0.000471 ***
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+# 
+# Residual standard error: 0.5122 on 463 degrees of freedom
+# Multiple R-squared:  0.02609,	Adjusted R-squared:  0.02399 
+# F-statistic:  12.4 on 1 and 463 DF,  p-value: 0.0004711
+```
+
+Nous avons une ordonnées à l'origine qui vaut 2,70 ici. Notons que cela correspond aussi à `(Intercept)` + `smoke1` = 3,00 - 0,30 = 2,70. Donc, l'ordonnées à l'origine pour `smoke == 1` est bien la valeur de référence additionnée de la valeur fournie à la ligne `smoke1` dans l'ANCOVA. Cela se vérifie aussi pour les deux autres droites pour `smoke2` et `smoke3`.
+
+Maintenant, la pente pour notre droite ajustée sur la population `smoke == 1` uniquement vaut 0,00927. Dans l'ANCOVA, nous avions une pente `wt1` de 0,00812 et une interaction `smoke1:wt1` claculée comme 0,00115. Notez alors que la pente de la droite seule 0,00927 = 0,00812 + 0,00115. Donc, tout comme `smoke1` correspond au décalage de l'ordonnée à l'origine du modèle de référence, les interactions `smoke1:wt1` correspondent au décalage de la pente par rapport au modèle de référence. Cela se vérifie également pour `smoke2:wt1` et `smoke3:wt1`.
+
+Donc, notre modèle complet ne fait rien d'autre que d'ajuster les quatre droites correspondant aux relations linéaires entre `wt` et `wt1`, **mais en décompose les effets, niveau par niveau de la variable qualitative `smoke`** en fonction de la matrice de contraste que l'on a choisie. En bonnus, nous avons la possibilité de tester si chacune des composantes (tableau coefficient de `summary()`) ou si globalement chacune des variables (tableau obtenu avec `anova()`) a un effet significatif ou non dans le modèle.
+
+Comme toujours, lorsqu'un effet n'est pas siugnificatif, nous pouvons décider de *simplifier* le modèle. **Mais attention\ ! Toujours considérer que les composantes sont interdépendantes.** Donc, éliminer une composante du modèle peut avoir des effets parfois surprenants sur les autres.
+
+Voyons ce que cela donne si nous éliminons les interactions. Dans ce cas, nous ajustons des droites toutes parallèles avec uniquement un décalage de leur ordonnée à l'origine matérialisé par `smoke1`, `smoke2` et `smoke3` par rapport au modèle de référence ajusté pour la population `smoke == 0` (notez l'utilisation, du signe `+` dans la formuile, là où nous utilisions le signe `*` dans la modèle précédent).
+
+
+```r
+# ANCOVA
+Babies_lm2 <- lm(data = Babies, wt ~ smoke + wt1)
+summary(Babies_lm2)
+```
+
+```
+# 
+# Call:
+# lm(formula = wt ~ smoke + wt1, data = Babies)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.95453 -0.30780  0.01289  0.31108  1.49443 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)  3.030052   0.092861  32.630  < 2e-16 ***
+# smoke1      -0.237938   0.031816  -7.478 1.46e-13 ***
+# smoke2       0.022666   0.056508   0.401    0.688    
+# smoke3       0.035486   0.054068   0.656    0.512    
+# wt1          0.007617   0.001534   4.966 7.85e-07 ***
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+# 
+# Residual standard error: 0.4999 on 1185 degrees of freedom
+# Multiple R-squared:  0.07733,	Adjusted R-squared:  0.07422 
+# F-statistic: 24.83 on 4 and 1185 DF,  p-value: < 2.2e-16
+```
+
+```r
+anova(Babies_lm2)
+```
+
+```
+# Analysis of Variance Table
+# 
+# Response: wt
+#             Df  Sum Sq Mean Sq F value    Pr(>F)    
+# smoke        3  18.659  6.2197  24.887 1.285e-15 ***
+# wt1          1   6.162  6.1621  24.657 7.853e-07 ***
+# Residuals 1185 296.150  0.2499                      
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+Hé, ça c'est intéressant\ ! Maintenant que nous avons éliminé les interactions qui apparaissent non pertinentes ici, nous avons toujours une régression significative entre `wt` et `wt1` (mais avec un $R^2$  très faible de 7,7%, attention), mais maintenant, nous faisons apparaitre un effet signicfication du contraste avec `smoke1` au seuil alpha de 5%. Et du coup, les effets des deux variables deviennent plus clairs dans notre tableau de l'ANOVA. Voyons ce que donne l'analyse *post hoc* des comparaisons multiples (nous utilisons ici simplement le snippet disponible à partir de `...` -> `hypothesis tests` -> `hypothesis tests: means` -> `hmanovamult : anova - multiple comparaisons [multcomp]`) que nous avons déjà employé et qui reste valable ici.
+
+
+```r
+summary(anovaComp. <- confint(multcomp::glht(Babies_lm2,
+  linfct = multcomp::mcp(smoke = "Tukey"))))
+```
+
+```
+# 
+# 	 Simultaneous Tests for General Linear Hypotheses
+# 
+# Multiple Comparisons of Means: Tukey Contrasts
+# 
+# 
+# Fit: lm(formula = wt ~ smoke + wt1, data = Babies)
+# 
+# Linear Hypotheses:
+#            Estimate Std. Error t value Pr(>|t|)    
+# 1 - 0 == 0 -0.23794    0.03182  -7.478  < 1e-05 ***
+# 2 - 0 == 0  0.02267    0.05651   0.401    0.977    
+# 3 - 0 == 0  0.03549    0.05407   0.656    0.908    
+# 2 - 1 == 0  0.26060    0.05704   4.568 2.89e-05 ***
+# 3 - 1 == 0  0.27342    0.05478   4.991  < 1e-05 ***
+# 3 - 2 == 0  0.01282    0.07199   0.178    0.998    
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+# (Adjusted p values reported -- single-step method)
+```
+
+```r
+.oma <- par(oma = c(0, 5.1, 0, 0)); plot(anovaComp.); par(.oma); rm(.oma)
+```
+
+<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" />
+
+Ici, comme nous testons tous les contrastes, nous pouvons dire que la population des mères qui ont fumé pendant la grossesse `smoke == 1` donne des bébés significativement moins gros au seuil alpha de 5%, et ce, en comparaison de tous les autres niveaux (mère n'ayant jamais fumé, ou ayant fumé mais arrêté avant la grossesse, que ce soit longtemps avant ou juste avant).
+
+En conclusion de cette analyse, nous pouvons dire que la masse du bébé dépend de la masse de la mère, mais assez faiblement (seulement 7,7% de la variance totale expliquée). Par contre, nous pouvons aussi dire que le fait de fumer pendant la grossesse a un effet significatif sur la réduction de la masse du bébé à la naissance (en moyenne cette réduction est de 0,24kg pour une masse moyenne de 3,03kg, soit une réduction de 0,24 / 3,03 * 100 = 8%).
 
 Voilà, nous venons d'analyser et d'interpréter notre premier modèle linéaire sous forme d'une ANCOVA.
 
