@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>A.2 Configuration Git et Github | Science des données biologiques 2</title>
+  <title>3.5 Modèle linéaire généralisé | Science des données biologiques 2</title>
   <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="A.2 Configuration Git et Github | Science des données biologiques 2" />
+  <meta property="og:title" content="3.5 Modèle linéaire généralisé | Science des données biologiques 2" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
   <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="A.2 Configuration Git et Github | Science des données biologiques 2" />
+  <meta name="twitter:title" content="3.5 Modèle linéaire généralisé | Science des données biologiques 2" />
   
   <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
   <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="migration-des-projets.html">
-<link rel="next" href="references.html">
+<link rel="prev" href="ancova.html">
+<link rel="next" href="reg-non-lin.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -236,70 +236,44 @@ code span.wa { color: #bf0303; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="configuration-git-et-github" class="section level2">
-<h2><span class="header-section-number">A.2</span> Configuration Git et Github</h2>
-<p>A chaque nouvelle installation de la SciViews Box, vous devez la reconfigurer via la boite de dialogue <code>SciViews Box Configuration</code>. En particulier, il est très important d’indiquer correctement votre identifiant et email Git (zone encadrée en rouge dans la copie d’écran ci-dessous).</p>
-<p><img src="images/sdd2_A1/svbox_config.png" /></p>
-<p>Assurez-vous (si ce n’est déjà fait) que vous possédez un compte Github valide. Vous pouvez cliquer sur le bouton <code>Go to Github</code> par facilté dans la même boite de dialogue. <strong>Choisissez de manière judicieuse votre login</strong>. Vous pourriez être amenés à l’utiliser bien plus longtemps que vous ne le pensez, y compris plus tard dans votre carrière. Donc, lisez les conseils ci-dessous (inspirés et adaptés de <a href="https://happygitwithr.com/github-acct.html">Happy Git and Github for the UseR - Register a Github Account</a> :</p>
-<ul>
-<li><p>Incluez votre nom réel. Les gens aiment savoir à qui ils ont affaire. Rendez aussi votre nom/login facile à deviner et à retenir. Philippe Grosjean a comme login <code>phgrosjean</code>, par exemple.</p></li>
-<li><p>Vous pouvez réutiliser votre login d’autres contextes, par exemple Twitter ou Slack (ou Facebook).</p></li>
-<li><p>Choisissez un login que vous pourrez échanger de manière confortable avec votre futur boss.</p></li>
-<li><p>Un login plus court est préférable.</p></li>
-<li><p>Soyez unique dans votre login, mais à l’aide d’aussi peu de caractères que possible. Github propose parfois des logins en auto-complétion. Examinez ce qu’il propose.</p></li>
-<li><p>Rendez votre login invariable dans le temps. Par exemple, n’utilisez pas un login lié à votre université (numéro de matricule, ou nom de l’université inclue dans le login). Si tout va bien votre login vous suivra dans votre carrière, … donc, potentiellement loin de l’université où vous avez fait vos études.</p></li>
-<li><p>N’utilisez pas de logins qui sont aussi des mots ayant une signification particulière en programmation, par exemple, n’utilisez pas <code>NA</code>, même si c’est vos initiales !</p></li>
-</ul>
-<p>Une fois votre compte Github créé, et votre login/email pour votre identification Git correctement enregistrés dans la SciViews Box, vous devez pouvoir travailler, faire des “pushs”, des “pulls” et des “commits”<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. Cependant, RStudio vous demandera constamment vos logins et mots de passe… à la longue, c’est lassant ! La procédure ci-dessous vous enregistre une fois pour toutes sur votre compte Github dans RStudio.</p>
-<div id="compte-github-dans-rstudio" class="section level3">
-<h3><span class="header-section-number">A.2.1</span> Compte Github dans RStudio</h3>
-<p>RStudio offre la possibilité d’enregistrer une clé publique/privée dans votre SciViews Box afin de vous enregistrer sur Github de manière permanente. L’avantage, c’est que vous ne devrez plus constamment entrer votre login et mot de passe à chaque opération sur Github ! Nous vous le conseillons donc vivement.</p>
-<ul>
-<li>Entrez dans Rstudio Server, et allez dans le menu <code>Tools -&gt; Global Options...</code>. Ensuite, cliquez dans la rubrique <code>Git/SVN</code> dans la boite de dialogue.</li>
-</ul>
-<p><img src="images/sdd2_A1/github_config_rstudio1.png" /></p>
-<ul>
-<li>Ensuite, cliquez sur le bouton <code>Create RSA key...</code>. La phrase de passe n’est pas nécessaire (il est même préférable de la laisser vide si vous voulez utiliser Github sans rien devoir taper à chaque fois). Cliquez sur le bouton <code>Create</code>.</li>
-</ul>
-<p><img src="images/sdd2_A1/github_config_rstudio2.png" /></p>
-<ul>
-<li>Vous obtenez alors une fenêtre similaire à celle ci-dessous (bien sûr avec des données différentes). Ceci confirme que votre clé cryptographique a été créée localement. Fermez cette fenêtre pour revenir à la boite de dialogue de configuration de RStudio Server.</li>
-</ul>
-<p><img src="images/sdd2_A1/github_config_rstudio3.png" /></p>
-<ul>
-<li>Dans la boite de dialogue de configuration de RStudio Server, section <code>Git/SVN</code> cliquez sur le lien <code>View public key</code> qui apparait une fois la clé créée :</li>
-</ul>
-<p><img src="images/sdd2_A1/github_config_rstudio4.png" /></p>
-<ul>
-<li>La clé apparait dans une fenêtre, déjà présélectionnée. Copiez-là dans le presse-papier (<code>Ctrl-C</code> ou clic bouton droit et sélection de <code>Copy</code> dans le menu contextuel), puis fermez cette fenêtre.</li>
-</ul>
-<p><img src="images/sdd2_A1/github_config_rstudio5.png" /></p>
-<ul>
-<li>Dans votre navigateur web favori, naviguez vers <a href="https://github.com" class="uri">https://github.com</a>, loggez-vous, et accédez aux paramètres de votre compte Github (menu déroulant en haut à droite, entrée <code>Settings</code>) :</li>
-</ul>
-<p><img src="images/sdd2_A1/github_config_rstudio6.png" /></p>
-<ul>
-<li>Dans les paramètres de votre compte, cliquez sur la rubrique <code>SSH and GPG keys</code>, ensuite sur le bouton vert <code>New SSH key</code></li>
-</ul>
-<p><img src="images/sdd2_A1/github_config_rstudio7.png" /></p>
-<ul>
-<li>Collez-y votre clé à partir du presse-papier dans la zone <code>Key</code>. Vous pouvez lui donner un nom évocateur dans le champ <code>Title</code>. Ensuite, cliquez sur <code>Add SSH key</code>.</li>
-</ul>
-<p><img src="images/sdd2_A1/github_config_rstudio8.png" /></p>
-<ul>
-<li>Déloggez, puis reloggez-vous dans RStudio Server pour que les changements soient pris en compte. La prochaine action sur Github depuis RStudio pourrait encore déclencher la demande de votre login et mot de passe, mais ensuite, les opérations devraient se faire directement.</li>
-</ul>
-<p>Si vous éprouvez toujours des difficultés à faire collaborer R et RStudio avec Git et Github, voyez <a href="Happy%20Git%20and%20Github%20for%20the%20UseR">https://happygitwithr.com</a> (en anglais) qui explique les différentes procédures bien plus en détails.</p>
+<div id="modele-lineaire-generalise" class="section level2">
+<h2><span class="header-section-number">3.5</span> Modèle linéaire généralisé</h2>
+<p>Le modèle linéaire nous a permis de *\alert{<strong>généraliser la régression linéaire multiple</strong> (applicable seulement sur des variables quantitatives) à des variables réponses qualitatives grâce aux variables indicatrices <span class="math inline">\(I_i\)</span>. Le <strong>modèle linéaire généralisé</strong> reprend cette idée, mais permet en plus d’avoir d’autres variables dépendantes (ou réponses) que quantitatives, ou avec des distributions des résidus différentes. Dans R, c’est la fonction <code>glm()</code> qui se charge de calculer un modèle linéaire généralisé.</p>
+<p>Nous rajoutons une <strong>fonction de lien</strong> <em>f</em>(<em>y</em>) qui transforme la variable initiale en une variable quantitative dont la relation avec les variables explicatives est linéarisée :</p>
+<p><span class="math display">\[
+f(y) = \beta_1 + \beta_2 I_2 + \beta_3 I_3 + ... + \beta_k I_k + \beta_l x_1 + \beta_m x_2 + ... + \epsilon
+\]</span></p>
+<p>Par exemple, pour une variable réponse binaire (distribution binomiale), avec une réponse de type logistique</p>
+<p><span class="math display">\[
+y = 1/(1 + e^{- \beta x})
+\]</span></p>
+<p>la transformation <strong>logit</strong> est une bonne fonction de lien : <span class="math inline">\(\ln(y / (1 - y)) = \beta x\)</span>.</p>
+<div id="exemple-1" class="section level3">
+<h3><span class="header-section-number">3.5.1</span> Exemple</h3>
+<p>Recherche d’effet de variables qualitatives et quantitatives sur une réponse binaire :</p>
+<pre class="sourceCode r"><code class="sourceCode r">SciViews<span class="op">::</span><span class="st"> </span>R
+babies &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="st">&quot;babies&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;UsingR&quot;</span>)
+<span class="co"># Transformation : garder aussi la variable &#39;gestation&#39; en jours</span>
+<span class="co"># et &#39;ht&#39;, la taille de la mère en pouces à convertir en m (/ 39.37)</span>
+babies <span class="op">%&gt;.%</span><span class="st"> </span><span class="kw">select</span>(., gestation, smoke, wt1, ht) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">filter</span>(., gestation <span class="op">&lt;</span><span class="st"> </span><span class="dv">999</span>, smoke <span class="op">&lt;</span><span class="st"> </span><span class="dv">9</span>, wt1 <span class="op">&lt;</span><span class="st"> </span><span class="dv">999</span>, ht <span class="op">&lt;</span><span class="st"> </span><span class="dv">999</span>) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="co"># Transformer wt1 en kg et ht en cm</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">wt1 =</span> wt1 <span class="op">*</span><span class="st"> </span><span class="fl">0.4536</span>) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">ht =</span> ht <span class="op">/</span><span class="st"> </span><span class="fl">39.37</span>) -&gt;<span class="st"> </span>Babies_prem
+Babies_prem<span class="op">$</span>smoke &lt;-<span class="st"> </span><span class="kw">as.factor</span>(Babies_prem<span class="op">$</span>smoke)
+<span class="co"># Déterminer quels sont les enfants prématurés (nés avant 37 semaines)</span>
+Babies_prem<span class="op">$</span>premat &lt;-<span class="st"> </span><span class="kw">as.factor</span>(<span class="kw">as.numeric</span>(Babies_prem<span class="op">$</span>gestation <span class="op">&lt;</span><span class="st"> </span><span class="dv">7</span><span class="op">*</span><span class="dv">37</span>))
+<span class="co"># BMI peut être plus parlant que la masse pour la mère?</span>
+Babies_prem <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">bmi =</span> wt1 <span class="op">/</span><span class="st"> </span>ht<span class="op">^</span><span class="dv">2</span>) -&gt;<span class="st"> </span>Babies_prem
+
+<span class="co"># Modèle linéaire généralisé avec fonction de lien de type logit</span>
+<span class="kw">summary</span>(<span class="kw">glm</span>(<span class="dt">data =</span> Babies_prem, premat <span class="op">~</span><span class="st"> </span>smoke <span class="op">+</span><span class="st"> </span>bmi,
+  <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> logit)))</code></pre>
 
 </div>
 </div>
 <!-- </div> -->
-<div class="footnotes">
-<hr />
-<ol start="6">
-<li id="fn6"><p>Vérifiez <strong>toujours</strong> lors de votre premier commit que Github vous reconnait bien. Pour cela, naviguez vers le dépôt où vous avez commité avec votre explorateur web, et vérifiez l’identité prise en compte lors de votre commit.<a href="configuration-git-et-github.html#fnref6" class="footnote-back">↩</a></p></li>
-</ol>
-</div>
 <div id="disqus_thread"></div>
 <script>
 
@@ -325,8 +299,8 @@ s.setAttribute('data-timestamp', +new Date());
           </div>
         </div>
       </div>
-<a href="migration-des-projets.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ancova.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="reg-non-lin.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -356,7 +330,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/BioDataScience-Course/sdd-umons2/edit/master/A1-Installation-svbox.Rmd",
+"link": "https://github.com/BioDataScience-Course/sdd-umons2/edit/master/03-mod-lineaire.Rmd",
 "text": "Editer"
 },
 "history": {

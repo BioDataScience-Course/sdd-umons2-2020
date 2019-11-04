@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2019-11-03">
+<meta name="date" content="2019-11-04">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -33,7 +33,7 @@
   
   
 <link rel="prev" href="rmse-critere-dakaike.html">
-<link rel="next" href="les-variables-facteurs.html">
+<link rel="next" href="variables-numeriques-ou-facteurs.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -177,10 +177,20 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="2.4" data-path="rmse-critere-dakaike.html"><a href="rmse-critere-dakaike.html"><i class="fa fa-check"></i><b>2.4</b> RMSE &amp; critère d’Akaike</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="mod-lineaire.html"><a href="mod-lineaire.html"><i class="fa fa-check"></i><b>3</b> Modèle linéaire</a><ul>
-<li class="chapter" data-level="3.1" data-path="les-variables-facteurs.html"><a href="les-variables-facteurs.html"><i class="fa fa-check"></i><b>3.1</b> Les variables facteurs</a><ul>
-<li class="chapter" data-level="3.1.1" data-path="les-variables-facteurs.html"><a href="les-variables-facteurs.html#matrice-de-contraste"><i class="fa fa-check"></i><b>3.1.1</b> Matrice de contraste</a></li>
+<li class="chapter" data-level="3.1" data-path="variables-numeriques-ou-facteurs.html"><a href="variables-numeriques-ou-facteurs.html"><i class="fa fa-check"></i><b>3.1</b> Variables numériques ou facteurs</a></li>
+<li class="chapter" data-level="3.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html"><i class="fa fa-check"></i><b>3.2</b> ANOVA et régression linéaire</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#modele-lineaire-commun"><i class="fa fa-check"></i><b>3.2.1</b> Modèle linéaire commun</a></li>
+<li class="chapter" data-level="3.2.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#reencodage-des-variables-de-lanova"><i class="fa fa-check"></i><b>3.2.2</b> Réencodage des variables de l’ANOVA</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="modele-lineaire.html"><a href="modele-lineaire.html"><i class="fa fa-check"></i><b>3.2</b> Modèle linéaire</a></li>
+<li class="chapter" data-level="3.3" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html"><i class="fa fa-check"></i><b>3.3</b> Matrice de contraste</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#autres-matrices-de-contrastes-courantes"><i class="fa fa-check"></i><b>3.3.1</b> Autres matrices de contrastes courantes</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="ancova.html"><a href="ancova.html"><i class="fa fa-check"></i><b>3.4</b> ANCOVA</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="ancova.html"><a href="ancova.html#exemple"><i class="fa fa-check"></i><b>3.4.1</b> Exemple</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html"><i class="fa fa-check"></i><b>3.5</b> Modèle linéaire généralisé</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html#exemple-1"><i class="fa fa-check"></i><b>3.5.1</b> Exemple</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="reg-non-lin.html"><a href="reg-non-lin.html"><i class="fa fa-check"></i><b>4</b> Régression non linéaire</a></li>
 <li class="chapter" data-level="5" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>5</b> Classification hiérarchique</a></li>
@@ -231,12 +241,17 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="objectifs-2" class="section level5 unnumbered">
 <h5>Objectifs</h5>
 <ul>
-<li>TODO</li>
+<li><p>Comprendre le modèle linéaire (ANOVA et régression linéaire tout en un)</p></li>
+<li><p>Appréhender la logique des matrices de contraste</p></li>
+<li><p>Découvrir l’ANCOVA</p></li>
+<li><p>Comprendre le mécanisme du modèle linéaire généralisé</p></li>
 </ul>
 </div>
 <div id="prerequis-2" class="section level5 unnumbered">
 <h5>Prérequis</h5>
-<p>TODO</p>
+<ul>
+<li>L’ANOVA (modules 10 &amp; 11 du cours <a href="http://biodatascience-course.sciviews.org/sdd-umons/">SDD 1</a>), ainsi que la régression linéaires (modules 1 et 2 du présent cours) doivent être maitrisés avant d’aborder cette matière.</li>
+</ul>
 </div> 
 </div>
 <div id="disqus_thread"></div>
@@ -265,7 +280,7 @@ s.setAttribute('data-timestamp', +new Date());
         </div>
       </div>
 <a href="rmse-critere-dakaike.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="les-variables-facteurs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="variables-numeriques-ou-facteurs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
