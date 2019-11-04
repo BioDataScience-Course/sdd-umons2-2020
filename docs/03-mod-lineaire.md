@@ -316,13 +316,13 @@ skimr::skim(Babies)
 #  n obs: 1190 
 #  n variables: 3 
 # 
-# ── Variable type:factor ─────────────────────────────────────────────────────────────
+# ── Variable type:factor ──────────────────────────────────────────────────────────────────────────────
 #  variable missing complete    n n_unique                    top_counts
 #     smoke       0     1190 1190        4 0: 531, 1: 465, 3: 102, 2: 92
 #  ordered
 #    FALSE
 # 
-# ── Variable type:numeric ────────────────────────────────────────────────────────────
+# ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────
 #  variable missing complete    n  mean   sd    p0   p25  p50   p75   p100
 #        wt       0     1190 1190  3.39 0.52  1.56  3.06  3.4  3.71   4.99
 #       wt1       0     1190 1190 58.3  9.49 39.46 51.82 56.7 62.6  113.4 
@@ -597,11 +597,11 @@ summary(anovaComp. <- confint(multcomp::glht(Babies_lm2,
 # 
 # Linear Hypotheses:
 #            Estimate Std. Error t value Pr(>|t|)    
-# 1 - 0 == 0 -0.23794    0.03182  -7.478  < 1e-05 ***
+# 1 - 0 == 0 -0.23794    0.03182  -7.478   <1e-04 ***
 # 2 - 0 == 0  0.02267    0.05651   0.401    0.977    
 # 3 - 0 == 0  0.03549    0.05407   0.656    0.908    
-# 2 - 1 == 0  0.26060    0.05704   4.568 2.47e-05 ***
-# 3 - 1 == 0  0.27342    0.05478   4.991  < 1e-05 ***
+# 2 - 1 == 0  0.26060    0.05704   4.568   <1e-04 ***
+# 3 - 1 == 0  0.27342    0.05478   4.991   <1e-04 ***
 # 3 - 2 == 0  0.01282    0.07199   0.178    0.998    
 # ---
 # Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
@@ -623,7 +623,7 @@ Voilà, nous venons d'analyser et d'interpréter notre premier modèle linéaire
 
 ## Modèle linéaire généralisé
 
-Le modèle linéaire nous a permis de *\alert{**généraliser la régression linéaire multiple** (applicable seulement sur des variables quantitatives) à des variables réponses qualitatives grâce aux variables indicatrices $I_i$. Le **modèle linéaire généralisé** reprend cette idée, mais permet en plus d’avoir d’autres variables dépendantes (ou réponses) que quantitatives, ou avec des distributions des résidus différentes. Dans R, c’est la fonction `glm()` qui se charge de calculer un modèle linéaire généralisé.
+Le modèle linéaire nous a permis de **généraliser la régression linéaire multiple** (applicable seulement sur des variables quantitatives) à des variables réponses qualitatives grâce aux variables indicatrices $I_i$. Le **modèle linéaire généralisé** reprend cette idée, mais permet en plus d’avoir d’autres variables dépendantes (ou réponses) que quantitatives, ou avec des distributions des résidus différentes. Dans R, c’est la fonction `glm()` qui se charge de calculer un modèle linéaire généralisé.
 
 Nous rajoutons une **fonction de lien** *f*(*y*) qui transforme la variable initiale en une variable quantitative dont la relation avec les variables explicatives est linéarisée\ :
 
