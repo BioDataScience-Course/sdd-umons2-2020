@@ -242,7 +242,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <p>Avant l’apparition du modèle linéaire, une version particulière d’un mélange de régression linéaire et d’une ANOVA avec une variable indépendante quantitative et une autre variable indépendante qualitative s’appelait une ANCOVA (ANalyse de la COVariance). Un tel modèle d’ANCOVA peut naturellement également se résoudre à l’aide de la fonction <code>lm()</code> qui, en outre, peut faire bien plus. Nous allons maintenant ajuster un tel modèle à titre de première application concrète de tout ce que nous venons de voir sur le modèle linéaire et sur les matrices de contrastes associées.</p>
 <div id="bebes-a-la-naissance" class="section level3">
 <h3><span class="header-section-number">3.4.1</span> Bébés à la naissance</h3>
-<p>Nous étudions la masse de nouveaux nés en fonction du poids de la mère et du fait qu’elle fume ou non. Nous avons donc ici une variable dépendante <code>wt</code>, la masse des bébés qui est quantitative, et deux variables indépendantes ou prédictives <code>wt1</code>, la masse de la mère, et <code>smoke</code> le fait que la mère fume ou non. Or la première de ces variables explicatives est quantitative (<code>wt1</code>) et l’autre (<code>smoke</code>) est une variable facteur à quatre niveaux (0 = la mère n’a jamais fumé, 1 = elle fume y compris pendant la grossesse, 2 = elle fumait mais a arrêté à la grossesses, et 3 = la mère a fumé, mais a arrêté, et ce, bien avant la grossesse. Un dernier niveau 9 = inconnu encode de manière non orthodoxe les valeurs manquantes dans notre tableau de données (valeurs que nous éliminerons). De même les masses des nouveaux nés et des mères sont des des unités impériales (américaines) respectivement en “onces” et en “livres”. Enfin, nous devons prendre soin de bien encoder la variable <code>smoke</code> comme une variable <code>factor</code> (ici nous ne considèrerons pas qu’il s’agit d’un facteur ordonné et nous voulons faire un contraste de type traitement avec comparaison à des mères qui n’ont jamais fumé). <strong>Un reminement soigneux des données est donc nécessaire avant de pouvoir appliquer notre modèle !</strong></p>
+<p>Nous étudions la masse de nouveaux nés en fonction du poids de la mère et du fait qu’elle fume ou non. Cette analyse s’inspire de <span class="citation">Verzani (<a href="#ref-verzani2005">2005</a>)</span>. Nous avons donc ici une variable dépendante <code>wt</code>, la masse des bébés qui est quantitative, et deux variables indépendantes ou prédictives <code>wt1</code>, la masse de la mère, et <code>smoke</code> le fait que la mère fume ou non. Or la première de ces variables explicatives est quantitative (<code>wt1</code>) et l’autre (<code>smoke</code>) est une variable facteur à quatre niveaux (0 = la mère n’a jamais fumé, 1 = elle fume y compris pendant la grossesse, 2 = elle fumait mais a arrêté à la grossesses, et 3 = la mère a fumé, mais a arrêté, et ce, bien avant la grossesse. Un dernier niveau 9 = inconnu encode de manière non orthodoxe les valeurs manquantes dans notre tableau de données (valeurs que nous éliminerons). De même les masses des nouveaux nés et des mères sont des des unités impériales (américaines) respectivement en “onces” et en “livres”. Enfin, nous devons prendre soin de bien encoder la variable <code>smoke</code> comme une variable <code>factor</code> (ici nous ne considèrerons pas qu’il s’agit d’un facteur ordonné et nous voulons faire un contraste de type traitement avec comparaison à des mères qui n’ont jamais fumé). <strong>Un reminement soigneux des données est donc nécessaire avant de pouvoir appliquer notre modèle !</strong></p>
 <pre class="sourceCode r"><code class="sourceCode r">SciViews<span class="op">::</span>R
 babies &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="st">&quot;babies&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;UsingR&quot;</span>)
 knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">head</span>(babies))</code></pre>
@@ -487,13 +487,13 @@ knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">he
 #  n obs: 1190 
 #  n variables: 3 
 # 
-# ── Variable type:factor ───────────────────────────────────────────────────────────────────
+# ── Variable type:factor ──────────────────────────────────────────────────────────────────────────────────────────
 #  variable missing complete    n n_unique                    top_counts
 #     smoke       0     1190 1190        4 0: 531, 1: 465, 3: 102, 2: 92
 #  ordered
 #    FALSE
 # 
-# ── Variable type:numeric ──────────────────────────────────────────────────────────────────
+# ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────────────────
 #  variable missing complete    n  mean   sd    p0   p25  p50   p75   p100
 #        wt       0     1190 1190  3.39 0.52  1.56  3.06  3.4  3.71   4.99
 #       wt1       0     1190 1190 58.3  9.49 39.46 51.82 56.7 62.6  113.4 
@@ -513,7 +513,7 @@ knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">he
 <span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Masse de la mère [kg]&quot;</span>)</code></pre>
 <p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Visuellement, nous ne voyons pas d’effet marquant. Peut-être la condition 1 de <code>smoke</code> (mère qui fume pendant la grossesse) mène-t-il à des bébés moins gros, mais est-ce significatif ? Pour cela, ajustons notre modèle ANCOVA avec matrice traitement (choix par défaut pour une la variable <code>factor</code> <code>smoke</code>). Comme nous savons déjà utiliser <code>lm()</code>, c’est très simple. Cela fonctionne exactement comme avant<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>.</p>
+<p>Visuellement, nous ne voyons pas d’effet marquant. Peut-être la condition 1 de <code>smoke</code> (mère qui fume pendant la grossesse) mène-t-il à des bébés moins gros, mais est-ce significatif ? Pour cela, ajustons notre modèle ANCOVA avec matrice traitement (choix par défaut pour une la variable <code>factor</code> <code>smoke</code>). Comme nous savons déjà utiliser <code>lm()</code>, c’est très simple. Cela fonctionne exactement comme avant<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ANCOVA</span>
 Babies_lm &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>smoke <span class="op">*</span><span class="st"> </span>wt1)
 <span class="kw">summary</span>(Babies_lm)</code></pre>
@@ -675,7 +675,7 @@ Babies_lm2 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class=
 # 1 - 0 == 0 -0.23794    0.03182  -7.478  &lt; 1e-05 ***
 # 2 - 0 == 0  0.02267    0.05651   0.401    0.977    
 # 3 - 0 == 0  0.03549    0.05407   0.656    0.908    
-# 2 - 1 == 0  0.26060    0.05704   4.568  2.9e-05 ***
+# 2 - 1 == 0  0.26060    0.05704   4.568 2.71e-05 ***
 # 3 - 1 == 0  0.27342    0.05478   4.991  &lt; 1e-05 ***
 # 3 - 2 == 0  0.01282    0.07199   0.178    0.998    
 # ---
@@ -684,7 +684,190 @@ Babies_lm2 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class=
 <pre class="sourceCode r"><code class="sourceCode r">.oma &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">oma =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">5.1</span>, <span class="dv">0</span>, <span class="dv">0</span>)); <span class="kw">plot</span>(anovaComp.); <span class="kw">par</span>(.oma); <span class="kw">rm</span>(.oma)</code></pre>
 <p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Ici, comme nous testons tous les contrastes, nous pouvons dire que la population des mères qui ont fumé pendant la grossesse <code>smoke == 1</code> donne des bébés significativement moins gros au seuil alpha de 5%, et ce, en comparaison de tous les autres niveaux (mère n’ayant jamais fumé, ou ayant fumé mais arrêté avant la grossesse, que ce soit longtemps avant ou juste avant).</p>
-<p>En conclusion de cette analyse, nous pouvons dire que la masse du bébé dépend de la masse de la mère, mais assez faiblement (seulement 7,7% de la variance totale expliquée). Par contre, nous pouvons aussi dire que le fait de fumer pendant la grossesse a un effet significatif sur la réduction de la masse du bébé à la naissance (en moyenne cette réduction est de 0,24kg pour une masse moyenne de 3,03kg, soit une réduction de 0,24 / 3,03 * 100 = 8%).</p>
+<p>Il semble évident maintenant qu’il n’est pas utile de préciser si la mère a fumé ou non avant sa grossesse. L’élément déterminant est uniquement le fait de fumer <em>pendant</em> la grossesse ou non. Nous pouvons le montrer également en utilisant des contrastes de Helmert, à condition de recoder <code>smoke</code> avec des niveaux de “gravité” croissants (“0” = n’a jamais fumé, “1” = a arrêté il y a longtemps, “2” = a arrêté juste avant la grossesse et finalement, “1” = a continué à fumé à la grossesse). Il faut donc intervertir les cas “1” et “3”. Nous pouvons utiliser <code>recode()</code> pour cela, mais attention, nous avons ici une variable <code>factor</code>, donc, ce ne sont pas des nombres mais des chaines de caractères (à placer entre guillements). Une fois le recodage réalisé, il faut aussi retrier les niveaux en appelant <code>factor(..., levels = c(&quot;0&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;))</code> sinon l’ancien ordre est conservé.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Babies <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">smoke =</span> <span class="kw">recode</span>(smoke, <span class="st">&quot;0&quot;</span> =<span class="st"> &quot;0&quot;</span>, <span class="st">&quot;1&quot;</span> =<span class="st"> &quot;3&quot;</span>, <span class="st">&quot;2&quot;</span> =<span class="st"> &quot;2&quot;</span>, <span class="st">&quot;3&quot;</span> =<span class="st"> &quot;1&quot;</span>)) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">smoke =</span> <span class="kw">factor</span>(smoke, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;0&quot;</span>, <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2&quot;</span>, <span class="st">&quot;3&quot;</span>))) -&gt;
+<span class="st">  </span>Babies2</code></pre>
+<p>Si cela semble trop compliqué, vous pouvez aussi utiliser l’addins de réencodage dans R (<code>QUESTIONR</code> -&gt; <code>Levels Recoding</code> or <code>Levels Ordering</code>). A présent que l’encodage de <code>smoke</code> est corrigé dans <code>Babies2</code>, nous pouvons modéliser à nouveau, mais cette fois-ci avec des contrastes de Helmert (notez la façon particulière de spécifier des contrastes différents de la valeur pas défaut pour une variable <code>factor</code>) :</p>
+<pre class="sourceCode r"><code class="sourceCode r">Babies_lm3 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> Babies2, wt <span class="op">~</span><span class="st"> </span>smoke <span class="op">+</span><span class="st"> </span>wt1,
+  <span class="dt">contrasts =</span> <span class="kw">list</span>(<span class="dt">smoke =</span> <span class="st">&quot;contr.helmert&quot;</span>))
+<span class="kw">summary</span>(Babies_lm3)</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = wt ~ smoke + wt1, data = Babies2, contrasts = list(smoke = &quot;contr.helmert&quot;))
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.95453 -0.30780  0.01289  0.31108  1.49443 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)  2.985106   0.091695  32.555  &lt; 2e-16 ***
+# smoke1       0.017743   0.027034   0.656    0.512    
+# smoke2       0.001641   0.019599   0.084    0.933    
+# smoke3      -0.064330   0.008540  -7.533 9.82e-14 ***
+# wt1          0.007617   0.001534   4.966 7.85e-07 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.4999 on 1185 degrees of freedom
+# Multiple R-squared:  0.07733, Adjusted R-squared:  0.07422 
+# F-statistic: 24.83 on 4 and 1185 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(Babies_lm3)</code></pre>
+<pre><code># Analysis of Variance Table
+# 
+# Response: wt
+#             Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+# smoke        3  18.659  6.2197  24.887 1.285e-15 ***
+# wt1          1   6.162  6.1621  24.657 7.853e-07 ***
+# Residuals 1185 296.150  0.2499                      
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Ici les valeurs estimées pour <code>smoke1-3</code> sont à interpréter en fonction des contrastes utilisés, soit :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">contr.helmert</span>(<span class="dv">4</span>)</code></pre>
+<pre><code>#   [,1] [,2] [,3]
+# 1   -1   -1   -1
+# 2    1   -1   -1
+# 3    0    2   -1
+# 4    0    0    3</code></pre>
+<ul>
+<li><code>smoke1</code> est le décalage de l’ordonnée à l’origine entre la modèle moyen établi avec les données <code>smoke == 0</code> et <code>smoke == 1</code> et celui pour <code>smoke == 1</code> (non significatif au seuil alpha de 5%),</li>
+<li><code>smoke2</code> est le décalage de l’ordonnée à l’origine pour <code>smoke == 2</code> <em>par rapport au modèle ajusté sur <code>smoke == 0</code>, <code>smoke == 1</code> <strong>et</strong> <code>smoke == 2</code> avec des pondérations respectives de -1, -1, et 2</em> (non significatif au seuil alpha de 5%),</li>
+<li><code>smoke3</code> est le décalage de l’ordonnée à l’origine par rapport au modèle ajusté sur l’ensemble des autres observations, donc, avec <code>smoke</code> valant 0, 1, ou 2, et des pondérations respectives comme dans la dernière colonne de la matrice de contraste.. Donc, ce dernier contraste est celui qui nous intéresse car il compare les cas où la mère n’a pas fumé pendant la grossesse avec le cas <code>smoke == 3</code> où la mère a fumé pendant la grossesse, et il est significatif au seuil alpha de 5%. L’interprétation des vlauers estimées est plus complexe ici. Comparer ce résultat avec le modèle ajusté avec les contrastes traitement par défaut avec <code>smoke</code> réencodé :</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">lm</span>(<span class="dt">data =</span> Babies2, wt <span class="op">~</span><span class="st"> </span>smoke <span class="op">+</span><span class="st"> </span>wt1))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = wt ~ smoke + wt1, data = Babies2)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.95453 -0.30780  0.01289  0.31108  1.49443 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)  3.030052   0.092861  32.630  &lt; 2e-16 ***
+# smoke1       0.035486   0.054068   0.656    0.512    
+# smoke2       0.022666   0.056508   0.401    0.688    
+# smoke3      -0.237938   0.031816  -7.478 1.46e-13 ***
+# wt1          0.007617   0.001534   4.966 7.85e-07 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.4999 on 1185 degrees of freedom
+# Multiple R-squared:  0.07733, Adjusted R-squared:  0.07422 
+# F-statistic: 24.83 on 4 and 1185 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Les conclusions sont les mêmes, mais la valeurs estimées pour <code>smoke1</code>, <code>smoke2</code> et <code>smoke3</code> diffèrent. Par exemple, dans ce dernier cas, <code>smoke1</code> est double de la valeur avec les contrastes Helmert, ce qui est logique puisque la référence est ici la droite ajustée pour la sous-population <code>smoke == 0</code> là où dans le modèle avec les contrastes de Helmert, le décalage est mesuré par rapport au modèle moyen (donc à “mi-chemin” entre les deux droites pour <code>smoke == 0</code> et <code>smoke == 1</code>).</p>
+<p>Naturellement, nous pouvons aussi considérer la variable <code>smoke</code> réencodée dans <code>Babies2</code> comme une variable facteur ordonné (<code>ordered</code>). Dans ce cas, c’est les contrastes polynomiaux qui sont utilisés :</p>
+<pre class="sourceCode r"><code class="sourceCode r">Babies2 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">smoke =</span> <span class="kw">as.ordered</span>(smoke)) -&gt;
+<span class="st">  </span>Babies3
+<span class="kw">summary</span>(<span class="kw">lm</span>(<span class="dt">data =</span> Babies3, wt <span class="op">~</span><span class="st"> </span>smoke <span class="op">+</span><span class="st"> </span>wt1))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = wt ~ smoke + wt1, data = Babies3)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.95453 -0.30780  0.01289  0.31108  1.49443 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)  2.985106   0.091695  32.555  &lt; 2e-16 ***
+# smoke.L     -0.162480   0.026780  -6.067 1.75e-09 ***
+# smoke.Q     -0.148045   0.039294  -3.768 0.000173 ***
+# smoke.C     -0.044605   0.048790  -0.914 0.360787    
+# wt1          0.007617   0.001534   4.966 7.85e-07 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.4999 on 1185 degrees of freedom
+# Multiple R-squared:  0.07733, Adjusted R-squared:  0.07422 
+# F-statistic: 24.83 on 4 and 1185 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Notez comment R est capable d’utiliser automatiquement les contrasts adéquats (polynomiaux) lorsque la variable facteur <code>smoke</code> est encodée en <code>ordered</code>. Nous voyons ici que des contrastes tenant compte d’une variation le long des successions croissante de niveaux de “gravité” de la variable <code>smoke</code> sont maintenant calculés. La ligne <code>smoke.L</code> du tableau <code>Coefficients</code> indique une variation linéaire (significative au seuil alpha de 5%), <code>smoke.Q</code> est une variation quadratique (également significative) et enfin <code>smoke.C</code> est une variation cubique. Voyez la présentation des matrices de contrastes plus haut pour bien comprendre ce qui est calculé ici.</p>
+<p>Au final, l’élément important relatif à la variable <code>smoke</code> est en définitive le fait de fumer <strong>pendant</strong> la grossesse ou non, pas l’histoire de la mère avant sa grossesse en matière de tabocologie ! En modélisation, nous avons toujours intérêt à choisir le <strong>modèle le plus simple</strong>. Donc ici, cela vaut le coup de simplifier <code>smoke</code> à une variable à deux niveaux <code>smoke_preg</code> qui indique uniquement si la mère fume ou non pendant la grossesse. Ensuite, nous ajustons à nouveau un modèle plus simple avec cette nouvelle variable.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Babies <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">smoke_preg =</span> <span class="kw">recode</span>(smoke, <span class="st">&quot;0&quot;</span> =<span class="st"> &quot;0&quot;</span>, <span class="st">&quot;1&quot;</span> =<span class="st"> &quot;1&quot;</span>, <span class="st">&quot;2&quot;</span> =<span class="st"> &quot;0&quot;</span>, <span class="st">&quot;3&quot;</span> =<span class="st"> &quot;0&quot;</span>)) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">smoke_preg =</span> <span class="kw">factor</span>(smoke_preg, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;0&quot;</span>, <span class="st">&quot;1&quot;</span>))) -&gt;
+<span class="st">  </span>Babies
+Babies_lm4 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>smoke_preg <span class="op">+</span><span class="st"> </span>wt1)
+<span class="kw">summary</span>(Babies_lm4)</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = wt ~ smoke_preg + wt1, data = Babies)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.96243 -0.30708  0.01208  0.31051  1.48662 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)  3.037508   0.091896  33.054  &lt; 2e-16 ***
+# smoke_preg1 -0.245797   0.029747  -8.263 3.76e-16 ***
+# wt1          0.007624   0.001531   4.981 7.25e-07 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.4996 on 1187 degrees of freedom
+# Multiple R-squared:  0.07692, Adjusted R-squared:  0.07537 
+# F-statistic: 49.46 on 2 and 1187 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(Babies_lm4)</code></pre>
+<pre><code># Analysis of Variance Table
+# 
+# Response: wt
+#              Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+# smoke_preg    1  18.497 18.4971  74.106 &lt; 2.2e-16 ***
+# wt1           1   6.193  6.1934  24.813 7.253e-07 ***
+# Residuals  1187 296.281  0.2496                      
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>A présent, tous les termes de notre modèle sont significatifs au seuil alpha de 5%. La ligne <code>smoke_preg1</code> est le décalage de l’ordonnée à l’origine du poids des bébés issus de mères fumant pendant la grossesse. Il donne donc directement la perte moyenne de poids du à la tabacologie. La représentation graphique de ce dernier modèle est la suivante :</p>
+<pre class="sourceCode r"><code class="sourceCode r">cols &lt;-<span class="st"> </span>iterators<span class="op">::</span><span class="kw">iter</span>(scales<span class="op">::</span><span class="kw">hue_pal</span>()(<span class="dv">2</span>)) <span class="co"># Get colors for lines</span>
+<span class="kw">chart</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>wt1) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">col =</span> smoke_preg)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">lapply</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">-0.246</span>), <span class="cf">function</span>(offset)
+    <span class="kw">geom_smooth</span>(<span class="dt">method =</span> lm, <span class="dt">formula =</span> y <span class="op">+</span><span class="st"> </span>offset <span class="op">~</span><span class="st"> </span>x,
+      <span class="dt">col =</span> iterators<span class="op">::</span><span class="kw">nextElem</span>(cols))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Masse de la mère [kg]&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Masse du bébé [kg]&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Enfin, n’oublions pas que notre modèle n’est valide que si les conditions d’application sont rencontrées, en particulier, une distribution normale des résidus et une homoscédasticité (même variance pour les résidus). Nous vérifions cela visuellement toujours avec les graphiques d’analyse des résidus. En voici les plus importants (pensez à utiliser les snippets pour récupérer le template du code) :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(Babies_lm4, which = 1)</span>
+Babies_lm4 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .resid <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Residuals&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Residuals vs Fitted&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(Babies_lm4, which = 2)</span>
+Babies_lm4 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">aes</span>(<span class="dt">sample =</span> .std.resid)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_qq</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_qq_line</span>(<span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Theoretical quantiles&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Standardized residuals&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Normal Q-Q&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(Babies_lm4, which = 3)</span>
+Babies_lm4 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">sqrt</span>(<span class="kw">abs</span>(.std.resid)) <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>,
+    <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">bold</span>(<span class="kw">sqrt</span>(<span class="kw">abs</span>(<span class="st">&quot;Standardized residuals&quot;</span>))))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Scale-Location&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(Babies_lm4, which = 4)</span>
+Babies_lm4 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .cooksd <span class="op">~</span><span class="st"> </span><span class="kw">seq_along</span>(.cooksd)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="dt">by =</span> <span class="fl">0.05</span>), <span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Obs. number&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Cook&#39;s distance&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Cook&#39;s distance&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ici le comportement des résidus est sain. Des petits écarts de la normalité sur le graphique quantile-quantile s’observent peut-être, mais ce n’est pas dramatique et le modèle linéaire est rabuste à ce genre de petis changements d’autant plus qu’ils apparaissent relativement symétriques en haut et et en bas de la distribution. En conclusion de cette analyse, nous pouvons dire que la masse du bébé dépend de la masse de la mère, mais assez faiblement (seulement 7,7% de la variance totale expliquée). Par contre, nous pouvons aussi dire que le fait de fumer pendant la grossesse a un effet significatif sur la réduction de la masse du bébé à la naissance (en moyenne cette réduction est de 0,246kg pour une masse moyenne à la naissance de 3,038kg, soit une réduction de 0,246 / 3,034 * 100 = 8%).</p>
 <p>Voilà, nous venons d’analyser et d’interpréter notre premier modèle linéaire sous forme d’une ANCOVA.</p>
 <div id="a-vous-de-jouer-5" class="section level5 unnumbered">
 <h5>A vous de jouer !</h5>
@@ -710,10 +893,16 @@ N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la mai
 </div>
 </div>
 </div>
+<h3>Références</h3>
+<div id="refs" class="references">
+<div id="ref-verzani2005">
+<p>Verzani, John. 2005. <em>Using R for Introductory Statistics</em>. Boca Raton, Florida: Chapman; Hall/CRC. <a href="https://www.crcpress.com/Using-R-for-Introductory-Statistics/Verzani/p/book/9781466590731">https://www.crcpress.com/Using-R-for-Introductory-Statistics/Verzani/p/book/9781466590731</a>.</p>
+</div>
+</div>
 <div class="footnotes">
 <hr />
-<ol start="7">
-<li id="fn7"><p>Pour rappel, on utilise le signe <code>+</code> pour indiquer un modèle sans interactions et un signe <code>*</code>pour spécifier un modèle complet avec interactions entre les variables.<a href="ancova.html#fnref7" class="footnote-back">↩</a></p></li>
+<ol start="3">
+<li id="fn3"><p>Pour rappel, on utilise le signe <code>+</code> pour indiquer un modèle sans interactions et un signe <code>*</code>pour spécifier un modèle complet avec interactions entre les variables.<a href="ancova.html#fnref3" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>

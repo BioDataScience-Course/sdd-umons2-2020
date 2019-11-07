@@ -257,7 +257,7 @@ Avant l'apparition du modèle linéaire, une version particulière d'un mélange
 
 ### Bébés à la naissance
 
-Nous étudions la masse de nouveaux nés en fonction du poids de la mère et du fait qu’elle fume ou non. Nous avons donc ici une variable dépendante `wt`, la masse des bébés qui est quantitative, et deux variables indépendantes ou prédictives `wt1`, la masse de la mère, et `smoke` le fait que la mère fume ou non. Or la première de ces variables explicatives est quantitative (`wt1`)  et l'autre (`smoke`) est une variable facteur à quatre niveaux (0 = la mère n'a jamais fumé, 1 = elle fume y compris pendant la grossesse, 2 = elle fumait mais a arrêté à la grossesses, et 3 = la mère a fumé, mais a arrêté, et ce, bien avant la grossesse. Un dernier niveau 9 = inconnu encode de manière non orthodoxe les valeurs manquantes dans notre tableau de données (valeurs que nous éliminerons). De même les masses des nouveaux nés et des mères sont des des unités impériales (américaines) respectivement en "onces" et en "livres". Enfin, nous devons prendre soin de bien encoder la variable `smoke` comme une variable `factor` (ici nous ne considèrerons pas qu'il s'agit d'un facteur ordonné et nous voulons faire un contraste de type traitement avec comparaison à des mères qui n'ont jamais fumé). **Un reminement soigneux des données est donc nécessaire avant de pouvoir appliquer notre modèle\ !**
+Nous étudions la masse de nouveaux nés en fonction du poids de la mère et du fait qu’elle fume ou non. Cette analyse s'inspire de @verzani2005. Nous avons donc ici une variable dépendante `wt`, la masse des bébés qui est quantitative, et deux variables indépendantes ou prédictives `wt1`, la masse de la mère, et `smoke` le fait que la mère fume ou non. Or la première de ces variables explicatives est quantitative (`wt1`)  et l'autre (`smoke`) est une variable facteur à quatre niveaux (0 = la mère n'a jamais fumé, 1 = elle fume y compris pendant la grossesse, 2 = elle fumait mais a arrêté à la grossesses, et 3 = la mère a fumé, mais a arrêté, et ce, bien avant la grossesse. Un dernier niveau 9 = inconnu encode de manière non orthodoxe les valeurs manquantes dans notre tableau de données (valeurs que nous éliminerons). De même les masses des nouveaux nés et des mères sont des des unités impériales (américaines) respectivement en "onces" et en "livres". Enfin, nous devons prendre soin de bien encoder la variable `smoke` comme une variable `factor` (ici nous ne considèrerons pas qu'il s'agit d'un facteur ordonné et nous voulons faire un contraste de type traitement avec comparaison à des mères qui n'ont jamais fumé). **Un reminement soigneux des données est donc nécessaire avant de pouvoir appliquer notre modèle\ !**
 
 
 ```r
@@ -316,13 +316,13 @@ skimr::skim(Babies)
 #  n obs: 1190 
 #  n variables: 3 
 # 
-# ── Variable type:factor ───────────────────────────────────────────────────────────────────
+# ── Variable type:factor ──────────────────────────────────────────────────────────────────────────────────────────
 #  variable missing complete    n n_unique                    top_counts
 #     smoke       0     1190 1190        4 0: 531, 1: 465, 3: 102, 2: 92
 #  ordered
 #    FALSE
 # 
-# ── Variable type:numeric ──────────────────────────────────────────────────────────────────
+# ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────────────────
 #  variable missing complete    n  mean   sd    p0   p25  p50   p75   p100
 #        wt       0     1190 1190  3.39 0.52  1.56  3.06  3.4  3.71   4.99
 #       wt1       0     1190 1190 58.3  9.49 39.46 51.82 56.7 62.6  113.4 
@@ -600,7 +600,7 @@ summary(anovaComp. <- confint(multcomp::glht(Babies_lm2,
 # 1 - 0 == 0 -0.23794    0.03182  -7.478  < 1e-05 ***
 # 2 - 0 == 0  0.02267    0.05651   0.401    0.977    
 # 3 - 0 == 0  0.03549    0.05407   0.656    0.908    
-# 2 - 1 == 0  0.26060    0.05704   4.568  2.9e-05 ***
+# 2 - 1 == 0  0.26060    0.05704   4.568 2.71e-05 ***
 # 3 - 1 == 0  0.27342    0.05478   4.991  < 1e-05 ***
 # 3 - 2 == 0  0.01282    0.07199   0.178    0.998    
 # ---
@@ -616,9 +616,278 @@ summary(anovaComp. <- confint(multcomp::glht(Babies_lm2,
 
 Ici, comme nous testons tous les contrastes, nous pouvons dire que la population des mères qui ont fumé pendant la grossesse `smoke == 1` donne des bébés significativement moins gros au seuil alpha de 5%, et ce, en comparaison de tous les autres niveaux (mère n'ayant jamais fumé, ou ayant fumé mais arrêté avant la grossesse, que ce soit longtemps avant ou juste avant).
 
-En conclusion de cette analyse, nous pouvons dire que la masse du bébé dépend de la masse de la mère, mais assez faiblement (seulement 7,7% de la variance totale expliquée). Par contre, nous pouvons aussi dire que le fait de fumer pendant la grossesse a un effet significatif sur la réduction de la masse du bébé à la naissance (en moyenne cette réduction est de 0,24kg pour une masse moyenne de 3,03kg, soit une réduction de 0,24 / 3,03 * 100 = 8%).
+Il semble évident maintenant qu'il n'est pas utile de préciser si la mère a fumé ou non avant sa grossesse. L'élément déterminant est uniquement le fait de fumer *pendant* la grossesse ou non. Nous pouvons le montrer également en utilisant des contrastes de Helmert, à condition de recoder `smoke` avec des niveaux de "gravité" croissants ("0" = n'a jamais fumé, "1" = a arrêté il y a longtemps, "2" = a arrêté juste avant la grossesse et finalement, "1" = a continué à fumé à la grossesse). Il faut donc intervertir les cas "1" et "3". Nous pouvons utiliser `recode()` pour cela, mais attention, nous avons ici une variable `factor`, donc, ce ne sont pas des nombres mais des chaines de caractères (à placer entre guillements). Une fois le recodage réalisé, il faut aussi retrier les niveaux en appelant `factor(..., levels = c("0", "1", "2", "3"))` sinon l'ancien ordre est conservé.
+
+
+```r
+Babies %>.%
+  mutate(., smoke = recode(smoke, "0" = "0", "1" = "3", "2" = "2", "3" = "1")) %>.%
+  mutate(., smoke = factor(smoke, levels = c("0", "1", "2", "3"))) ->
+  Babies2
+```
+
+Si cela semble trop compliqué, vous pouvez aussi utiliser l'addins de réencodage dans R (`QUESTIONR` -> `Levels Recoding` or `Levels Ordering`). A présent que l'encodage de `smoke` est corrigé dans `Babies2`, nous pouvons modéliser à nouveau, mais cette fois-ci avec des contrastes de Helmert (notez la façon particulière de spécifier des contrastes différents de la valeur pas défaut pour une variable `factor`)\ :
+
+
+```r
+Babies_lm3 <- lm(data = Babies2, wt ~ smoke + wt1,
+  contrasts = list(smoke = "contr.helmert"))
+summary(Babies_lm3)
+```
+
+```
+# 
+# Call:
+# lm(formula = wt ~ smoke + wt1, data = Babies2, contrasts = list(smoke = "contr.helmert"))
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.95453 -0.30780  0.01289  0.31108  1.49443 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)  2.985106   0.091695  32.555  < 2e-16 ***
+# smoke1       0.017743   0.027034   0.656    0.512    
+# smoke2       0.001641   0.019599   0.084    0.933    
+# smoke3      -0.064330   0.008540  -7.533 9.82e-14 ***
+# wt1          0.007617   0.001534   4.966 7.85e-07 ***
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+# 
+# Residual standard error: 0.4999 on 1185 degrees of freedom
+# Multiple R-squared:  0.07733,	Adjusted R-squared:  0.07422 
+# F-statistic: 24.83 on 4 and 1185 DF,  p-value: < 2.2e-16
+```
+
+```r
+anova(Babies_lm3)
+```
+
+```
+# Analysis of Variance Table
+# 
+# Response: wt
+#             Df  Sum Sq Mean Sq F value    Pr(>F)    
+# smoke        3  18.659  6.2197  24.887 1.285e-15 ***
+# wt1          1   6.162  6.1621  24.657 7.853e-07 ***
+# Residuals 1185 296.150  0.2499                      
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+Ici les valeurs estimées pour `smoke1-3` sont à interpréter en fonction des contrastes utilisés, soit\ :
+
+
+```r
+contr.helmert(4)
+```
+
+```
+#   [,1] [,2] [,3]
+# 1   -1   -1   -1
+# 2    1   -1   -1
+# 3    0    2   -1
+# 4    0    0    3
+```
+
+
+- `smoke1` est le décalage de l'ordonnée à l'origine entre la modèle moyen établi avec les données `smoke == 0` et `smoke == 1` et celui pour `smoke == 1` (non significatif au seuil alpha de 5%),
+- `smoke2` est le décalage de l'ordonnée à l'origine pour `smoke == 2` _par rapport au modèle ajusté sur `smoke == 0`, `smoke == 1` **et** `smoke == 2` avec des pondérations respectives de -1, -1, et 2_ (non significatif au seuil alpha de 5%),
+- `smoke3` est le décalage de l'ordonnée à l'origine par rapport au modèle ajusté sur l'ensemble des autres observations, donc, avec `smoke` valant 0, 1, ou 2, et des pondérations respectives comme dans la dernière colonne de la matrice de contraste.. Donc, ce dernier contraste est celui qui nous intéresse car il compare les cas où la mère n'a pas fumé pendant la grossesse avec le cas `smoke == 3` où la mère a fumé pendant la grossesse, et il est significatif au seuil alpha de 5%. L'interprétation des vlauers estimées est plus complexe ici. Comparer ce résultat avec le modèle ajusté avec les contrastes traitement par défaut avec `smoke` réencodé\ :
+
+
+```r
+summary(lm(data = Babies2, wt ~ smoke + wt1))
+```
+
+```
+# 
+# Call:
+# lm(formula = wt ~ smoke + wt1, data = Babies2)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.95453 -0.30780  0.01289  0.31108  1.49443 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)  3.030052   0.092861  32.630  < 2e-16 ***
+# smoke1       0.035486   0.054068   0.656    0.512    
+# smoke2       0.022666   0.056508   0.401    0.688    
+# smoke3      -0.237938   0.031816  -7.478 1.46e-13 ***
+# wt1          0.007617   0.001534   4.966 7.85e-07 ***
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+# 
+# Residual standard error: 0.4999 on 1185 degrees of freedom
+# Multiple R-squared:  0.07733,	Adjusted R-squared:  0.07422 
+# F-statistic: 24.83 on 4 and 1185 DF,  p-value: < 2.2e-16
+```
+
+Les conclusions sont les mêmes, mais la valeurs estimées pour `smoke1`, `smoke2` et `smoke3` diffèrent. Par exemple, dans ce dernier cas, `smoke1` est double de la valeur avec les contrastes Helmert, ce qui est logique puisque la référence est ici la droite ajustée pour la sous-population `smoke == 0` là où dans le modèle avec les contrastes de Helmert, le décalage est mesuré par rapport au modèle moyen (donc à "mi-chemin" entre les deux droites pour `smoke == 0` et `smoke == 1`).
+
+Naturellement, nous pouvons aussi considérer la variable `smoke` réencodée dans `Babies2` comme une variable facteur ordonné (`ordered`). Dans ce cas, c'est les contrastes polynomiaux qui sont utilisés\ :
+
+
+```r
+Babies2 %>.%
+  mutate(., smoke = as.ordered(smoke)) ->
+  Babies3
+summary(lm(data = Babies3, wt ~ smoke + wt1))
+```
+
+```
+# 
+# Call:
+# lm(formula = wt ~ smoke + wt1, data = Babies3)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.95453 -0.30780  0.01289  0.31108  1.49443 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)  2.985106   0.091695  32.555  < 2e-16 ***
+# smoke.L     -0.162480   0.026780  -6.067 1.75e-09 ***
+# smoke.Q     -0.148045   0.039294  -3.768 0.000173 ***
+# smoke.C     -0.044605   0.048790  -0.914 0.360787    
+# wt1          0.007617   0.001534   4.966 7.85e-07 ***
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+# 
+# Residual standard error: 0.4999 on 1185 degrees of freedom
+# Multiple R-squared:  0.07733,	Adjusted R-squared:  0.07422 
+# F-statistic: 24.83 on 4 and 1185 DF,  p-value: < 2.2e-16
+```
+
+Notez comment R est capable d'utiliser automatiquement les contrasts adéquats (polynomiaux) lorsque la variable facteur `smoke` est encodée en `ordered`. Nous voyons ici que des contrastes tenant compte d'une variation le long des successions croissante de niveaux de "gravité" de la variable `smoke` sont maintenant calculés. La ligne `smoke.L` du tableau `Coefficients` indique une variation linéaire (significative au seuil alpha de 5%), `smoke.Q` est une variation quadratique (également significative) et enfin `smoke.C` est une variation cubique. Voyez la présentation des matrices de contrastes plus haut pour bien comprendre ce qui est calculé ici.
+
+Au final, l'élément important relatif à la variable `smoke` est en définitive le fait de fumer **pendant** la grossesse ou non, pas l'histoire de la mère avant sa grossesse en matière de tabocologie\ ! En modélisation, nous avons toujours intérêt à choisir le **modèle le plus simple**. Donc ici, cela vaut le coup de simplifier `smoke` à une variable à deux niveaux `smoke_preg` qui indique uniquement si la mère fume ou non pendant la grossesse. Ensuite, nous ajustons à nouveau un modèle plus simple avec cette nouvelle variable.
+
+
+```r
+Babies %>.%
+  mutate(., smoke_preg = recode(smoke, "0" = "0", "1" = "1", "2" = "0", "3" = "0")) %>.%
+  mutate(., smoke_preg = factor(smoke_preg, levels = c("0", "1"))) ->
+  Babies
+Babies_lm4 <- lm(data = Babies, wt ~ smoke_preg + wt1)
+summary(Babies_lm4)
+```
+
+```
+# 
+# Call:
+# lm(formula = wt ~ smoke_preg + wt1, data = Babies)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.96243 -0.30708  0.01208  0.31051  1.48662 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)  3.037508   0.091896  33.054  < 2e-16 ***
+# smoke_preg1 -0.245797   0.029747  -8.263 3.76e-16 ***
+# wt1          0.007624   0.001531   4.981 7.25e-07 ***
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+# 
+# Residual standard error: 0.4996 on 1187 degrees of freedom
+# Multiple R-squared:  0.07692,	Adjusted R-squared:  0.07537 
+# F-statistic: 49.46 on 2 and 1187 DF,  p-value: < 2.2e-16
+```
+
+```r
+anova(Babies_lm4)
+```
+
+```
+# Analysis of Variance Table
+# 
+# Response: wt
+#              Df  Sum Sq Mean Sq F value    Pr(>F)    
+# smoke_preg    1  18.497 18.4971  74.106 < 2.2e-16 ***
+# wt1           1   6.193  6.1934  24.813 7.253e-07 ***
+# Residuals  1187 296.281  0.2496                      
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+A présent, tous les termes de notre modèle sont significatifs au seuil alpha de 5%. La ligne `smoke_preg1` est le décalage de l'ordonnée à l'origine du poids des bébés issus de mères fumant pendant la grossesse. Il donne donc directement la perte moyenne de poids du à la tabacologie. La représentation graphique de ce dernier modèle est la suivante\ :
+
+
+```r
+cols <- iterators::iter(scales::hue_pal()(2)) # Get colors for lines
+chart(data = Babies, wt ~ wt1) +
+  geom_point(aes(col = smoke_preg)) +
+  lapply(c(0, -0.246), function(offset)
+    geom_smooth(method = lm, formula = y + offset ~ x,
+      col = iterators::nextElem(cols))) +
+  xlab("Masse de la mère [kg]") +
+  ylab("Masse du bébé [kg]")
+```
+
+<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" />
+
+Enfin, n'oublions pas que notre modèle n'est valide que si les conditions d'application sont rencontrées, en particulier, une distribution normale des résidus et une homoscédasticité (même variance pour les résidus). Nous vérifions cela visuellement toujours avec les graphiques d'analyse des résidus. En voici les plus importants (pensez à utiliser les snippets pour récupérer le template du code)\ :
+
+
+```r
+#plot(Babies_lm4, which = 1)
+Babies_lm4 %>.%
+  chart(broom::augment(.), .resid ~ .fitted) +
+  geom_point() +
+  geom_hline(yintercept = 0) +
+  geom_smooth(se = FALSE, method = "loess", formula = y ~ x) +
+  labs(x = "Fitted values", y = "Residuals") +
+  ggtitle("Residuals vs Fitted")
+```
+
+<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" />
+
+
+```r
+#plot(Babies_lm4, which = 2)
+Babies_lm4 %>.%
+  chart(broom::augment(.), aes(sample = .std.resid)) +
+  geom_qq() +
+  geom_qq_line(colour = "darkgray") +
+  labs(x = "Theoretical quantiles", y = "Standardized residuals") +
+  ggtitle("Normal Q-Q")
+```
+
+<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" />
+
+
+```r
+#plot(Babies_lm4, which = 3)
+Babies_lm4 %>.%
+  chart(broom::augment(.), sqrt(abs(.std.resid)) ~ .fitted) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = "loess", formula = y ~ x) +
+  labs(x = "Fitted values",
+    y = expression(bold(sqrt(abs("Standardized residuals"))))) +
+  ggtitle("Scale-Location")
+```
+
+<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" />
+
+
+```r
+#plot(Babies_lm4, which = 4)
+Babies_lm4 %>.%
+  chart(broom::augment(.), .cooksd ~ seq_along(.cooksd)) +
+  geom_bar(stat = "identity") +
+  geom_hline(yintercept = seq(0, 0.1, by = 0.05), colour = "darkgray") +
+  labs(x = "Obs. number", y = "Cook's distance") +
+  ggtitle("Cook's distance")
+```
+
+<img src="03-mod-lineaire_files/figure-html/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" />
+
+Ici le comportement des résidus est sain. Des petits écarts de la normalité sur le graphique quantile-quantile s'observent peut-être, mais ce n'est pas dramatique et le modèle linéaire est rabuste à ce genre de petis changements d'autant plus qu'ils apparaissent relativement symétriques en haut et et en bas de la distribution. En conclusion de cette analyse, nous pouvons dire que la masse du bébé dépend de la masse de la mère, mais assez faiblement (seulement 7,7% de la variance totale expliquée). Par contre, nous pouvons aussi dire que le fait de fumer pendant la grossesse a un effet significatif sur la réduction de la masse du bébé à la naissance (en moyenne cette réduction est de 0,246kg pour une masse moyenne à la naissance de 3,038kg, soit une réduction de 0,246 / 3,034 * 100 = 8%).
 
 Voilà, nous venons d'analyser et d'interpréter notre premier modèle linéaire sous forme d'une ANCOVA.
+
 
 ##### A vous de jouer ! {-}
 
@@ -639,9 +908,15 @@ N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à
 Reprenez votre travail sur la biométrie des oursins et appliquer les nouvelles notions vues
 </div>\EndKnitrBlock{bdd}
 
+
 ## Modèle linéaire généralisé
 
-Le modèle linéaire nous a permis de **généraliser la régression linéaire multiple** (applicable seulement sur des variables quantitatives) à des variables réponses qualitatives grâce aux variables indicatrices $I_i$. Le **modèle linéaire généralisé** reprend cette idée, mais permet en plus d’avoir d’autres variables dépendantes (ou réponses) que quantitatives, ou avec des distributions des résidus différentes. Dans R, c’est la fonction `glm()` qui se charge de calculer un modèle linéaire généralisé.
+Le modèle linéaire nous a permis de combiner différent types de **variables indépendantes ou explicatives ** dans un même modèle. Cependant la **variable dépendante ou réponse** à la gauche de l'équation doit *absolument*  être numérique et une distribution normale est exigée pour la composante statistique du modèle exprimée dans les résidus $\epsilon$. Donc, si nous voulons modéliser une variable dépendante qui ne répond pas à ces caractéristiques, nous sommes dans l'impasse avec la fonction `lm()`. Dans certains cas, une transformation des données peut résoudre le problème. Par exemple, prendre le logarithme d'une variable qui a une distributiuon log-normale. Dans d'autres cas, il semble qu'il n'y ait pas de solution... C'est ici que la **modèle linéaire _généralisé_** vient nous sauver la mise.
+
+Continuons à analyser nos données concernant les bébés à la naissance.
+
+
+généraliser la régression linéaire multiple** (applicable seulement sur des variables quantitatives) à des variables réponses qualitatives grâce aux variables indicatrices $I_i$. Le **modèle linéaire généralisé** reprend cette idée, mais permet en plus d’avoir d’autres variables dépendantes (ou réponses) que quantitatives, ou avec des distributions des résidus différentes. Dans R, c’est la fonction `glm()` qui se charge de calculer un modèle linéaire généralisé.
 
 Nous rajoutons une **fonction de lien** *f*(*y*) qui transforme la variable initiale en une variable quantitative dont la relation avec les variables explicatives est linéarisée\ :
 
