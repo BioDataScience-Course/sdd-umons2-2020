@@ -316,13 +316,13 @@ skimr::skim(Babies)
 #  n obs: 1190 
 #  n variables: 3 
 # 
-# ── Variable type:factor ──────────────────────────────────────────────────────────────────────────────
+# ── Variable type:factor ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #  variable missing complete    n n_unique                    top_counts
 #     smoke       0     1190 1190        4 0: 531, 1: 465, 3: 102, 2: 92
 #  ordered
 #    FALSE
 # 
-# ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────
+# ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #  variable missing complete    n  mean   sd    p0   p25  p50   p75   p100
 #        wt       0     1190 1190  3.39 0.52  1.56  3.06  3.4  3.71   4.99
 #       wt1       0     1190 1190 58.3  9.49 39.46 51.82 56.7 62.6  113.4 
@@ -620,6 +620,24 @@ En conclusion de cette analyse, nous pouvons dire que la masse du bébé dépend
 
 Voilà, nous venons d'analyser et d'interpréter notre premier modèle linéaire sous forme d'une ANCOVA.
 
+##### A vous de jouer ! {-}
+
+Après cette longue lecture avec énormément de nouvelles matières, nous vous proposons les exercices suivants\ :
+
+- Répondez aux questions d'un learnr afin de vérifier vos acquis.
+
+\BeginKnitrBlock{bdd}<div class="bdd">Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
+
+    BioDataScience2::run("03a_mod_lin")
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.</div>\EndKnitrBlock{bdd}
+
+
+- Poursuivez l'analyse des données sur la biométrie des oursins en y intégrant vos nouvelles notions sur le modèle linéaire
+
+\BeginKnitrBlock{bdd}<div class="bdd">
+Reprenez votre travail sur la biométrie des oursins et appliquer les nouvelles notions vues
+</div>\EndKnitrBlock{bdd}
 
 ## Modèle linéaire généralisé
 
@@ -666,3 +684,16 @@ Babies_prem %>.%
 summary(glm(data = Babies_prem, premat ~ smoke + bmi,
   family = binomial(link = logit)))
 ```
+
+##### A vous de jouer ! {-}
+
+- Réalisez un rapport scientifique sur la maturation d'ovocytes.
+
+\BeginKnitrBlock{bdd}<div class="bdd">
+Vous avez à votre disposition une assignation GitHub Classroom : 
+  
+- <https://classroom.github.com/a/mXAIu4Ir>
+
+Lisez le README afin de prendre connaissance de l'exercice
+</div>\EndKnitrBlock{bdd}
+

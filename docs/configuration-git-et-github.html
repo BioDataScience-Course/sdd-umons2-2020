@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2019-11-04">
+<meta name="date" content="2019-11-07">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -183,13 +183,14 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="3.2.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#reencodage-des-variables-de-lanova"><i class="fa fa-check"></i><b>3.2.2</b> Réencodage des variables de l’ANOVA</a></li>
 </ul></li>
 <li class="chapter" data-level="3.3" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html"><i class="fa fa-check"></i><b>3.3</b> Matrice de contraste</a><ul>
-<li class="chapter" data-level="3.3.1" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#autres-matrices-de-contrastes-courantes"><i class="fa fa-check"></i><b>3.3.1</b> Autres matrices de contrastes courantes</a></li>
+<li class="chapter" data-level="3.3.1" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#contraste-orthogonaux"><i class="fa fa-check"></i><b>3.3.1</b> Contraste orthogonaux</a></li>
+<li class="chapter" data-level="3.3.2" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#autres-matrices-de-contrastes-courantes"><i class="fa fa-check"></i><b>3.3.2</b> Autres matrices de contrastes courantes</a></li>
 </ul></li>
 <li class="chapter" data-level="3.4" data-path="ancova.html"><a href="ancova.html"><i class="fa fa-check"></i><b>3.4</b> ANCOVA</a><ul>
-<li class="chapter" data-level="3.4.1" data-path="ancova.html"><a href="ancova.html#exemple"><i class="fa fa-check"></i><b>3.4.1</b> Exemple</a></li>
+<li class="chapter" data-level="3.4.1" data-path="ancova.html"><a href="ancova.html#bebes-a-la-naissance"><i class="fa fa-check"></i><b>3.4.1</b> Bébés à la naissance</a></li>
 </ul></li>
 <li class="chapter" data-level="3.5" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html"><i class="fa fa-check"></i><b>3.5</b> Modèle linéaire généralisé</a><ul>
-<li class="chapter" data-level="3.5.1" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html#exemple-1"><i class="fa fa-check"></i><b>3.5.1</b> Exemple</a></li>
+<li class="chapter" data-level="3.5.1" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html#exemple"><i class="fa fa-check"></i><b>3.5.1</b> Exemple</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="reg-non-lin.html"><a href="reg-non-lin.html"><i class="fa fa-check"></i><b>4</b> Régression non linéaire</a></li>
@@ -250,7 +251,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <li><p>Rendez votre login invariable dans le temps. Par exemple, n’utilisez pas un login lié à votre université (numéro de matricule, ou nom de l’université inclue dans le login). Si tout va bien votre login vous suivra dans votre carrière, … donc, potentiellement loin de l’université où vous avez fait vos études.</p></li>
 <li><p>N’utilisez pas de logins qui sont aussi des mots ayant une signification particulière en programmation, par exemple, n’utilisez pas <code>NA</code>, même si c’est vos initiales !</p></li>
 </ul>
-<p>Une fois votre compte Github créé, et votre login/email pour votre identification Git correctement enregistrés dans la SciViews Box, vous devez pouvoir travailler, faire des “pushs”, des “pulls” et des “commits”<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. Cependant, RStudio vous demandera constamment vos logins et mots de passe… à la longue, c’est lassant ! La procédure ci-dessous vous enregistre une fois pour toutes sur votre compte Github dans RStudio.</p>
+<p>Une fois votre compte Github créé, et votre login/email pour votre identification Git correctement enregistrés dans la SciViews Box, vous devez pouvoir travailler, faire des “pushs”, des “pulls” et des “commits”<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>. Cependant, RStudio vous demandera constamment vos logins et mots de passe… à la longue, c’est lassant ! La procédure ci-dessous vous enregistre une fois pour toutes sur votre compte Github dans RStudio.</p>
 <div id="compte-github-dans-rstudio" class="section level3">
 <h3><span class="header-section-number">A.2.1</span> Compte Github dans RStudio</h3>
 <p>RStudio offre la possibilité d’enregistrer une clé publique/privée dans votre SciViews Box afin de vous enregistrer sur Github de manière permanente. L’avantage, c’est que vous ne devrez plus constamment entrer votre login et mot de passe à chaque opération sur Github ! Nous vous le conseillons donc vivement.</p>
@@ -296,8 +297,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <!-- </div> -->
 <div class="footnotes">
 <hr />
-<ol start="6">
-<li id="fn6"><p>Vérifiez <strong>toujours</strong> lors de votre premier commit que Github vous reconnait bien. Pour cela, naviguez vers le dépôt où vous avez commité avec votre explorateur web, et vérifiez l’identité prise en compte lors de votre commit.<a href="configuration-git-et-github.html#fnref6" class="footnote-back">↩</a></p></li>
+<ol start="8">
+<li id="fn8"><p>Vérifiez <strong>toujours</strong> lors de votre premier commit que Github vous reconnait bien. Pour cela, naviguez vers le dépôt où vous avez commité avec votre explorateur web, et vérifiez l’identité prise en compte lors de votre commit.<a href="configuration-git-et-github.html#fnref8" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>
