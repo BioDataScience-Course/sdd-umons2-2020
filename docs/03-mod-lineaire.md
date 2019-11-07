@@ -1112,13 +1112,17 @@ Vous avez à votre disposition une assignation GitHub Classroom :
 Lisez le README afin de prendre connaissance de l'exercice
 </div>\EndKnitrBlock{bdd}
 
-- Réalisez un rapport scientifique sur la biométrie humaine. 
-\BeginKnitrBlock{bdd}<div class="bdd">Vous avez à votre disposition une assignation GitHub Classroom : 
+- Réalisez un rapport scientifique sur la biométrie humaine
+
+\BeginKnitrBlock{bdd}<div class="bdd">
+Vous avez à votre disposition une assignation GitHub Classroom : 
   
 - <https://classroom.github.com/a/hS069etL>
 
 Lisez le README afin de prendre connaissance de l'exercice
 </div>\EndKnitrBlock{bdd}
+
+
 
 
 
