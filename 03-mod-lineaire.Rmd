@@ -357,6 +357,28 @@ En conclusion de cette analyse, nous pouvons dire que la masse du bébé dépend
 
 Voilà, nous venons d'analyser et d'interpréter notre premier modèle linéaire sous forme d'une ANCOVA.
 
+##### A vous de jouer ! {-}
+
+Après cette longue lecture avec énormément de nouvelles matières, nous vous proposons les exercices suivants\ :
+
+- Répondez aux questions d'un learnr afin de vérifier vos acquis.
+
+```{block2, type='bdd'}
+Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
+
+    BioDataScience2::run("03a_mod_lin")
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
+```
+
+
+- Poursuivez l'analyse des données sur la biométrie des oursins en y intégrant vos nouvelles notions sur le modèle linéaire
+
+```{block2, type='bdd'}
+
+Reprenez votre travail sur la biométrie des oursins et appliquer les nouvelles notions vues
+
+```
 
 ## Modèle linéaire généralisé
 
@@ -402,3 +424,18 @@ Babies_prem %>.%
 summary(glm(data = Babies_prem, premat ~ smoke + bmi,
   family = binomial(link = logit)))
 ```
+
+##### A vous de jouer ! {-}
+
+- Réalisez un rapport scientifique sur la maturation d'ovocytes.
+
+```{block2, type='bdd'}
+
+Vous avez à votre disposition une assignation GitHub Classroom : 
+  
+- <https://classroom.github.com/a/mXAIu4Ir>
+
+Lisez le README afin de prendre connaissance de l'exercice
+
+```
+
