@@ -627,10 +627,8 @@ Lisez le README afin de prendre connaissance de l'exercice
 
 ```
 
-
 - Réalisez un rapport scientifique sur la biométrie humaine. 
 ```{block2, type='bdd'}
-
 Vous avez à votre disposition une assignation GitHub Classroom : 
   
 - <https://classroom.github.com/a/hS069etL>
@@ -638,3 +636,6 @@ Vous avez à votre disposition une assignation GitHub Classroom :
 Lisez le README afin de prendre connaissance de l'exercice
 
 ```
+
+
+
