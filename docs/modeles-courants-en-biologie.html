@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>4.2 Modèles courants en biologie | Science des données biologiques 2</title>
+  <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="4.2 Modèles courants en biologie | Science des données biologiques 2" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
+  <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+  <meta property="og:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="4.2 Modèles courants en biologie | Science des données biologiques 2" />
+  
+  <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+
+<meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
+
+
+<meta name="date" content="2019-11-19">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="croissance-de.html">
+<link rel="next" href="hierarchique.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.8.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.39.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.39.2/plotly-latest.min.js"></script>
+<link href="libs/rglwidgetClass-2/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-2/rglClass.src.js"></script>
+<script src="libs/CanvasMatrix4-2016/CanvasMatrix.src.js"></script>
+<script src="libs/rglWebGL-binding-0.100.19/rglWebGL.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Science des données biologiques 2</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Préambule</a><ul>
+<li class="chapter" data-level="" data-path="vue-generale-des-cours.html"><a href="vue-generale-des-cours.html"><i class="fa fa-check"></i>Vue générale des cours</a></li>
+<li class="chapter" data-level="" data-path="materiel-pedagogique.html"><a href="materiel-pedagogique.html"><i class="fa fa-check"></i>Matériel pédagogique</a></li>
+</ul></li>
+<li class="part"><span><b>I Cours II: analyse et modélisation</b></span></li>
+<li class="chapter" data-level="1" data-path="lm.html"><a href="lm.html"><i class="fa fa-check"></i><b>1</b> Régression linéaire I</a><ul>
+<li class="chapter" data-level="1.1" data-path="modele.html"><a href="modele.html"><i class="fa fa-check"></i><b>1.1</b> Modèle</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="modele.html"><a href="modele.html#pourquoi-modeliser"><i class="fa fa-check"></i><b>1.1.1</b> Pourquoi modéliser ?</a></li>
+<li class="chapter" data-level="1.1.2" data-path="modele.html"><a href="modele.html#quand-modeliser"><i class="fa fa-check"></i><b>1.1.2</b> Quand modéliser ?</a></li>
+<li class="chapter" data-level="1.1.3" data-path="modele.html"><a href="modele.html#entrainement-et-confirmation"><i class="fa fa-check"></i><b>1.1.3</b> Entraînement et confirmation</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html"><i class="fa fa-check"></i><b>1.2</b> Régression linéaire simple</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#quantifier-lajustement-dun-modele"><i class="fa fa-check"></i><b>1.2.1</b> Quantifier l’ajustement d’un modèle</a></li>
+<li class="chapter" data-level="1.2.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#trouver-la-meilleure-droite"><i class="fa fa-check"></i><b>1.2.2</b> Trouver la meilleure droite</a></li>
+<li class="chapter" data-level="1.2.3" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#la-fonction-lm"><i class="fa fa-check"></i><b>1.2.3</b> La fonction <code>lm()</code></a></li>
+<li class="chapter" data-level="1.2.4" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#resume-avec-summary"><i class="fa fa-check"></i><b>1.2.4</b> Résumé avec <code>summary()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html"><i class="fa fa-check"></i><b>1.3</b> Outils de diagnostic</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#analyse-des-residus"><i class="fa fa-check"></i><b>1.3.1</b> Analyse des résidus</a></li>
+<li class="chapter" data-level="1.3.2" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#enveloppe-de-confiance"><i class="fa fa-check"></i><b>1.3.2</b> Enveloppe de confiance</a></li>
+<li class="chapter" data-level="1.3.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#extraire-les-donnees-dun-modele"><i class="fa fa-check"></i><b>1.3.3</b> Extraire les données d’un modèle</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="lm2.html"><a href="lm2.html"><i class="fa fa-check"></i><b>2</b> Régression linéaire II</a><ul>
+<li class="chapter" data-level="2.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html"><i class="fa fa-check"></i><b>2.1</b> Outils de diagnostic (suite)</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#resume-avec-summarysuite"><i class="fa fa-check"></i><b>2.1.1</b> Résumé avec <code>summary()</code>(suite)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#comparaison-de-regressions"><i class="fa fa-check"></i><b>2.1.2</b> Comparaison de régressions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="regression-lineaire-multiple.html"><a href="regression-lineaire-multiple.html"><i class="fa fa-check"></i><b>2.2</b> Régression linéaire multiple</a></li>
+<li class="chapter" data-level="2.3" data-path="regression-lineaire-polynomiale.html"><a href="regression-lineaire-polynomiale.html"><i class="fa fa-check"></i><b>2.3</b> Régression linéaire polynomiale</a></li>
+<li class="chapter" data-level="2.4" data-path="rmse-critere-dakaike.html"><a href="rmse-critere-dakaike.html"><i class="fa fa-check"></i><b>2.4</b> RMSE &amp; critère d’Akaike</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="mod-lineaire.html"><a href="mod-lineaire.html"><i class="fa fa-check"></i><b>3</b> Modèle linéaire</a><ul>
+<li class="chapter" data-level="3.1" data-path="variables-numeriques-ou-facteurs.html"><a href="variables-numeriques-ou-facteurs.html"><i class="fa fa-check"></i><b>3.1</b> Variables numériques ou facteurs</a></li>
+<li class="chapter" data-level="3.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html"><i class="fa fa-check"></i><b>3.2</b> ANOVA et régression linéaire</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#modele-lineaire-commun"><i class="fa fa-check"></i><b>3.2.1</b> Modèle linéaire commun</a></li>
+<li class="chapter" data-level="3.2.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#reencodage-des-variables-de-lanova"><i class="fa fa-check"></i><b>3.2.2</b> Réencodage des variables de l’ANOVA</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html"><i class="fa fa-check"></i><b>3.3</b> Matrice de contraste</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#contraste-orthogonaux"><i class="fa fa-check"></i><b>3.3.1</b> Contraste orthogonaux</a></li>
+<li class="chapter" data-level="3.3.2" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#autres-matrices-de-contrastes-courantes"><i class="fa fa-check"></i><b>3.3.2</b> Autres matrices de contrastes courantes</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="ancova.html"><a href="ancova.html"><i class="fa fa-check"></i><b>3.4</b> ANCOVA</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="ancova.html"><a href="ancova.html#bebes-a-la-naissance"><i class="fa fa-check"></i><b>3.4.1</b> Bébés à la naissance</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html"><i class="fa fa-check"></i><b>3.5</b> Modèle linéaire généralisé</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html#exemple"><i class="fa fa-check"></i><b>3.5.1</b> Exemple</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="reg-non-lin.html"><a href="reg-non-lin.html"><i class="fa fa-check"></i><b>4</b> Régression non linéaire</a><ul>
+<li class="chapter" data-level="4.1" data-path="croissance-de.html"><a href="croissance-de.html"><i class="fa fa-check"></i><b>4.1</b> Croissance de …</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="croissance-de.html"><a href="croissance-de.html#quand-passer-a-la-regression-lineaire"><i class="fa fa-check"></i><b>4.1.1</b> Quand passer à la régression linéaire ?</a></li>
+<li class="chapter" data-level="4.1.2" data-path="croissance-de.html"><a href="croissance-de.html#principe-fonction-objective-et-calcul-iteratif"><i class="fa fa-check"></i><b>4.1.2</b> Principe : fonction objective et calcul itératif</a></li>
+<li class="chapter" data-level="4.1.3" data-path="croissance-de.html"><a href="croissance-de.html#algorithmes-de-convergence"><i class="fa fa-check"></i><b>4.1.3</b> Algorithmes de convergence</a></li>
+<li class="chapter" data-level="4.1.4" data-path="croissance-de.html"><a href="croissance-de.html#pieges-et-difficultes"><i class="fa fa-check"></i><b>4.1.4</b> Pièges et difficultés</a></li>
+<li class="chapter" data-level="4.1.5" data-path="croissance-de.html"><a href="croissance-de.html#les-fonctions-self-start"><i class="fa fa-check"></i><b>4.1.5</b> Les fonctions “self-start”</a></li>
+<li class="chapter" data-level="4.1.6" data-path="croissance-de.html"><a href="croissance-de.html#modeles-non-lineaires-courants-en-biologie"><i class="fa fa-check"></i><b>4.1.6</b> Modèles non linéaires courants en biologie</a></li>
+<li class="chapter" data-level="4.1.7" data-path="croissance-de.html"><a href="croissance-de.html#fonction-objective"><i class="fa fa-check"></i><b>4.1.7</b> Fonction objective</a></li>
+<li class="chapter" data-level="4.1.8" data-path="croissance-de.html"><a href="croissance-de.html#modeles-selfstart-dans-r"><i class="fa fa-check"></i><b>4.1.8</b> Modèles ‘selfStart’ dans R</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html"><i class="fa fa-check"></i><b>4.2</b> Modèles courants en biologie</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-croissance"><i class="fa fa-check"></i><b>4.2.1</b> Modèles de croissance</a></li>
+<li class="chapter" data-level="4.2.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#exemple-dutilisation"><i class="fa fa-check"></i><b>4.2.2</b> Exemple d’utilisation</a></li>
+<li class="chapter" data-level="4.2.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#bibliographie-a-remanier"><i class="fa fa-check"></i><b>4.2.3</b> Bibliographie (à remanier)</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>5</b> Classification hiérarchique</a></li>
+<li class="chapter" data-level="6" data-path="k-moyenne-som.html"><a href="k-moyenne-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne &amp; SOM</a><ul>
+<li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a></li>
+<li class="chapter" data-level="6.2" data-path="cartes-auto-adaptatives.html"><a href="cartes-auto-adaptatives.html"><i class="fa fa-check"></i><b>6.2</b> Cartes auto adaptatives</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
+<li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a></li>
+<li class="chapter" data-level="7.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>7.2</b> Analyse factorielle des correspondances</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM</a><ul>
+<li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a></li>
+</ul></li>
+<li class="appendix"><span><b>Appendices</b></span></li>
+<li class="chapter" data-level="A" data-path="svbox.html"><a href="svbox.html"><i class="fa fa-check"></i><b>A</b> Installation de la SciViews Box</a><ul>
+<li class="chapter" data-level="A.1" data-path="migration-des-projets.html"><a href="migration-des-projets.html"><i class="fa fa-check"></i><b>A.1</b> Migration des projets</a></li>
+<li class="chapter" data-level="A.2" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html"><i class="fa fa-check"></i><b>A.2</b> Configuration Git et Github</a><ul>
+<li class="chapter" data-level="A.2.1" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html#compte-github-dans-rstudio"><i class="fa fa-check"></i><b>A.2.1</b> Compte Github dans RStudio</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>Références</a></li>
+<li class="divider"></li>
+<li><a href="http://biodatascience-course.sciviews.org">Site Web du cours</a></li>
+<li><a href="https://github.com/BioDataScience-Course">Site Github du cours</a></li>
+<br/>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Science des données biologiques 2</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="modeles-courants-en-biologie" class="section level2">
+<h2><span class="header-section-number">4.2</span> Modèles courants en biologie</h2>
+<p>Les domaines les plus courants où des modèles non linéaires sont utilisés en biologie concernent les cinétiques de réactions (chimiques, biochimiques), les courbes de type dose-réponse, les courbes de survie et les modèles de croissance. Nous verrons principalement divers modèles de croissance dans la section suivante. Certains de ces modèles, comme le modèle exponentiel, celui de Gompertz ou de Weibull sont aussi utilisés comme courbes de survie. De plus, la courbe logistique est un modèle classique de type dose-réponse. Ainsi, les différentes courbes de croissances recouvrent également une majorité des modèles utilisés dans d’autres domaines des biostatistiques. Nous mentionnerons ici un autre modèle courant qui n’est pourtant pas utilisé comme modèle de croissance : le modèle de Michaelis-Menten, fréquemment utilisé pour modéliser la cinétique de réactions chimiques, enzymatiques, en particulier.</p>
+<p>TODO: grphique de la courbe Michaelis-Menten avec légende : Exemple de courbe cinétique de type Michaelis-Menten. La vitesse de la réaction augmente à un rythme donné par KM pour atteindre une vitesse maximale asymptotique Vmax.</p>
+<p>Dans R, il existe un modèle ‘selfStart’ facile à utiliser pour ajuster une courbe de type Michaelis-Menten. Il s’agit de la fonction <code>SSmicmen()</code>.</p>
+<div id="modeles-de-croissance" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Modèles de croissance</h3>
+<p>Parmi les phénomènes biologiques courants qui sont essentiellement non linéaires, les modèles de croissance occupent une part importante. Il s’agit de phénomènes complexes, résultat d’un ensemble de processus, eux-même très complexes : l’anabolisme, ou élaboration de matière organique et le catabolisme qui la détruit pour la transformer en énergie, en ce qui concerne la croissance somatique individuelle. Un modèle typique de croissance individuelle est le modèle de von Bertalanffy (von Bertalanffy, 1938, 1957).</p>
+<p>Il existe un autre type de modèle de croissance : la croissance des populations. Ce type de modèle décrit l’évolution du nombre d’individus dans une population au cours du temps. Dans ce cas particulier, il s’agit également du résultat de plusieurs processus : la natalité, la mortalité et, éventuellement, les migrations. Une courbe type de modèle de croissance de population est la courbe logistique. Un autre modèle couramment utilisé est celui de Weibull pour décrire un nombre décroissant d’individus suite à une mortalité prédominante dans celle-ci.</p>
+<p>Il existe de nombreux modèles de croissance différents. Certains sont exclusivement des modèles de croissance individuelle, d’autres sont exclusivement des modèles de croissance de populations, mais beaucoup peuvent être utilisés indifféremment dans les deux cas. Tous ont comme particularité d’être l’une ou l’autre forme de modèle exponentiel, exprimant ainsi le fait que la croissance est fondamentalement un processus exponentiel (comprenez que l’augmentation de masse ou du nombre d’individus est proportionnelle à la masse ou au nombre préexistant à chaque incrément temporel).</p>
+<p>Nous allons décrire ci-dessous quelques un des modèles de croissance principaux. Ensuite, nous les utiliserons pour ajuster une courbe de croissance dans un jeu de donnée réel.</p>
+<div id="courbe-exponentielle" class="section level4">
+<h4><span class="header-section-number">4.2.1.1</span> Courbe exponentielle</h4>
+<p>En 1798, Thomas Malthus a décrit un modèle de croissance applicable pour décrire la croissance de la population humaine. Cependant, d’après Murray (1993), ce modèle a été suggéré en premier lieu par Euler. Quoi qu’il en soit, ce modèle n’est plus guère utilisé actuellement, mais son importance historique ne doit pas être négligée. Il s’agit, en effet, de la première modélisation mathématique d’une des caractéristiques les plus fondamentales de la croissance : son caractère exponentiel (positive ou négative). Malthus a observé que la population des Etat-Unis double tous les 25 ans. Il suggère alors que les populations humaines augmentent d’une proportion fixe <span class="math inline">\(r\)</span> sur un intervalle de temps donné, lorsqu’elles ne sont pas affectées de contraintes environnementales ou sociales. Cette proportion <span class="math inline">\(r\)</span> est par ailleurs indépendante de la taille initiale de la population :</p>
+<p><span class="math display">\[y_{t+1} = (1+r) \ y_t = k \ y_t\]</span></p>
+<p>Une forme continue du modèle précédent (intervalle de temps infinitésimal) donne une équation différentielle :</p>
+<p><span class="math display">\[\frac{d y(t)}{dt} = y&#39;(t) = k \ y(t)\]</span></p>
+<p>Cette équation différentielle admet la solution suivante :</p>
+<p><span class="math display">\[y(t) = y_0 \ e^{k \ t}\]</span></p>
+<p>avec <span class="math inline">\(y_0\)</span>, la taille initiale de la population au temps <span class="math inline">\(t = 0\)</span>. Ce modèle à deux paramètres est également intéressant parce qu’il montre une bonne manière de construire un modèle de croissance. Il suffit de décrire la croissance pour un accroissement infinitésimal de temps par le biais d’une équation différentielle, et ensuite de la résoudre (modélisation dynamique). Presque tous les modèles de croissance existants ont été élaborés de cette manière. Ainsi, la quasi-totalité des modèles de croissance correspondent en fait à une équation différentielle relativement simple.</p>
+<p>TODO: figure modèle exponentiel, avec légende: Exemple d’un modèle de croissance exponentiel avec <span class="math inline">\(y_0 = 1,5\)</span> et <span class="math inline">\(k = 0,9\)</span>.</p>
+</div>
+<div id="courbe-logistique" class="section level4">
+<h4><span class="header-section-number">4.2.1.2</span> Courbe logistique</h4>
+<p>Le modèle exponentiel décrit une croissance infinie sans aucunes contraintes. Ce n’est pas une hypothèse réaliste. En pratique, la croissance est limitée par les ressources disponibles. Verhulst (1838), en travaillant aussi sur la croissance de populations, propose un modèle qui contient un terme d’auto-limitation <span class="math inline">\([y_\infty – y (t)] / y_\infty\)</span> qui représente une quelconque limite théorique des ressources disponibles :</p>
+<p><span class="math display">\[\frac{dy(t)}{dt} = k \ \frac{y_\infty - y(t)}{y_\infty} \ y(t) = - \frac{k}{y_\infty} \ y(t)^2 + k \ y(t)\]</span></p>
+<p>Lorsque l’on résout et simplifie cette équation différentielle, on obtient :</p>
+<p><span class="math display">\[y(t) = \frac{y_\infty}{1 + e^{-k \ (t - t_0)}}\]</span></p>
+<p>Ceci est une des formes de la courbe logistique. Cette fonction a deux asymptotes horizontales en <span class="math inline">\(y(t) = 0\)</span> et <span class="math inline">\(y(t) = y_\infty\)</span> (voir schéma ci-dessous) et c’est une sigmoïde symétrique autour du point d’inflexion (les deux courbes du S sont identiques). Le modèle ‘selfStart’ correspondant dans R s’appelle <code>SSlogis()</code>.</p>
+<p>TODO: figure avec légende: Exemple d’une courbe logistique avec <span class="math inline">\(k = 1\)</span>, <span class="math inline">\(y_\infty = 0,95\)</span>, <span class="math inline">\(t_0 = 5\)</span>. Cette courbe sigmoïdale est asymptotique en 0 et <span class="math inline">\(y_\infty\)</span>, et elle est également symétrique autour de son point d’inflexion <span class="math inline">\(i\)</span> situé à <span class="math inline">\({t_0, y_\infty / 2}\)</span>.
+Il est possible de généraliser ce modèle en définissant une courbe logistique dont l’asymptote basse peut se situer n’importe où ailleurs qu’en 0. Si cette asymptote se situe en <span class="math inline">\(y_0\)</span>, nous obtenons l’équation :</p>
+<p><span class="math display">\[y(t) = y_0 + \frac{y_\infty - y_0}{1 + e^{-k \ (t - t_0)}}\]</span></p>
+<p>Ceci est le modèle logistique généralisé à quatre paramètres (modèle ‘selfSart’ <code>SSfpl()</code> dans R, pour <strong>f</strong>our-<strong>p</strong>arameters <strong>l</strong>ogistic).</p>
+</div>
+<div id="modele-de-gompertz" class="section level4">
+<h4><span class="header-section-number">4.2.1.3</span> Modèle de Gompertz</h4>
+<p>Gompertz (1825) a observé de manière empirique que le taux de survie décroît souvent de manière proportionnelle au logarithme du nombre d’animaux qui survivent. Bien que ce modèle reste utilisé pour décrire des courbes de survie, elle trouve de nombreuses applications pour décrire également des données de croissance. L’équation différentielle du modèle de Gompertz est :</p>
+<p><span class="math display">\[\frac{dy(t)}{dt} = k \ [ \ln y_\infty - \ln y(t)] \ y(t)\]</span></p>
+<p>qui se résout et se simplifie en :</p>
+<p><span class="math display">\[y(t) = y_\infty \ e^{-k \ (t - t_0)} = y_\infty \ a^{e^{-k \ t}} = y_\infty \ a^{b^t}\]</span></p>
+<p>La dernière forme apparaît plus simple et est le plus souvent utilisée. La première forme est directement dérivée de l’équation différentielle et donne une meilleure comparaison avec la courbe logistique, puisque <span class="math inline">\(t_0\)</span> correspond aussi à l’abscisse du point d’inflexion, qui n’est plus en position symétrique ici (voir figure ci-dessous). Le modèle ‘selfStart’ correspondant dans R s’appelle <code>SSgompertz()</code>.</p>
+<p>TODO: figure de gompertz annotée avec légende: Exemple d’une courbe de Gompertz avec <span class="math inline">\(k = 1\)</span>, <span class="math inline">\(y_\infty = 0,95\)</span>, <span class="math inline">\(t_0 = 1,5\)</span>. Le point d’inflexion <span class="math inline">\(i\)</span>, à <span class="math inline">\({t_0, y_\infty / e}\)</span>, est plus bas que pour la courbe logistique.</p>
+</div>
+<div id="modeles-de-von-bertalanffy" class="section level4">
+<h4><span class="header-section-number">4.2.1.4</span> Modèles de von Bertalanffy</h4>
+<p>Le modèle de von Bertalanffy, parfois appelé Brody-Bertalanffy (d’après les travaux de von Bertalanffy et Brody) ou modèle de Pütter (dans Ricker, 1979 notamment), est la première courbe de croissance qui a été élaborée spécifiquement pour décrire la croissance somatique individuelle. Il est basé sur une analyse bioénergétique simple. Un individu est vu comme un simple réacteur biochimique dynamique où les entrées (anabolisme) sont en compétition avec les sorties (catabolisme). Le résultat de ces deux flux étant la croissance. L’anabolisme est plus ou moins proportionnel à la respiration et la respiration est proportionnelle à une surface pour beaucoup d’animaux (la surface développée des poumons ou des branchies), soit encore, les 2/3 de la masse. Le catabolisme est toujours proportionnel à la masse. Ces relations mécanistiques sont rassemblées dans l’équation différentielle suivante où <span class="math inline">\(y(t)\)</span> mesure l’évolution d’un volume ou d’un poids au cours du temps :</p>
+<p><span class="math display">\[\frac{dy(t)}{dt} = a \ y(t)^{2/3} - b \ y(t)\]</span></p>
+<p>En résolvant cette équation, nous obtenons le modèle de croissance pondérale de von Bertalanffy :</p>
+<p><span class="math display">\[y(t) = y_\infty \ (1 - e^{-k \ (t - t_0)})^3\]</span></p>
+<p>La forme la plus simple de ce modèle est obtenue lorsque nous mesurons des dimensions linéaires pour quantifier la taille de l’organisme, car une dimension linéaire est, en première approximation, la racine cubique d’une masse, proportionnelle au volume à densité constante (sans prendre en compte une possible allométrie). Le modèle de von Bertalanffy pour des mesures linéaires est alors simplement  :</p>
+<p><span class="math display">\[y(t) = y_\infty \ (1 - e^{-k \ (t - t_0)})\]</span></p>
+<p>Un graphique des deux modèles est présenté ci-dessous. Le modèle de von Bertalanffy pour mesures linéaire n’a pas de point d’inflexion. La croissance est la plus rapide à la naissance et ne fait que diminuer avec le temps pour finalement atteindre zéro lorsque la taille maximale asymptotique est atteinte. Avec ce modèle, la croissance est donc déterminée et elle ne peut dépasser cette asymptote horizontale située en <span class="math inline">\(y(t)= y_\infty\)</span>. A cause de la puissance cubique de la forme pondérale du modèle von Bertalanffy, cette dernière est une sigmoïde asymétrique, comme l’est le modèle de Gompertz également. Trois modèles ‘selfStart’ existent dans R, selon que la courbe passe par 0 ou non sur l’un des deux axes, voire sur les deux : <code>SSasymp()</code>, <code>SSasympOff()</code> et <code>SSasympOrig()</code>.</p>
+<p>TODO: figure exemple £VB avec légende: Exemples de modèles de croissance de von Bertalanffy linéaire (courbe en gras) et pondérale (courbe en trait fin) avec <span class="math inline">\(k = 1\)</span>, <span class="math inline">\(y_\infty = 0,95\)</span> et <span class="math inline">\(t_0 = 0\)</span>. Les deux modèles décrivent une croissance asymptotique, mais la première courbe n’a pas de point d’inflexion alors que la seconde est sigmoïdale.</p>
+</div>
+<div id="modele-de-richards" class="section level4">
+<h4><span class="header-section-number">4.2.1.5</span> Modèle de Richards</h4>
+<p>La forme généralisée du modèle de von Bertalanffy est :</p>
+<p><span class="math display">\[y(t) = y_\infty \ (1 - e^{-k \ (t - t_0)})^m\]</span></p>
+<p>Von Bertalanffy (1938, 1957) a fixé <span class="math inline">\(m\)</span> à 1 ou à 3. Richards (1959) permet à <span class="math inline">\(m\)</span> de varier librement, et donc son modèle a un paramètre de plus. Cette dernière courbe est très flexible (voir schéma ci-dessous) et il est possible de démontrer que plusieurs autres modèles de croissance ne sont que des cas particuliers de ce modèle généraliste avec différentes valeurs de <span class="math inline">\(m\)</span>. Nous avons déjà observé que le modèle de Richards se réduit aux deux modèles de von Bertalanffy quand <span class="math inline">\(m = 1\)</span> et <span class="math inline">\(m = 3\)</span>. Il se réduit aussi à une courbe logistique lorsque <span class="math inline">\(m = -1\)</span> et il est possible de montrer qu’il converge vers le modèle de Gompertz lorsque <span class="math inline">\(|m| \rightarrow \infty\)</span>. Il n’existe aucun modèle ‘selfStart’ pour la courbe de Richards dans R. Par ailleurs, il s’agit d’un modèle particulièrement délicat à ajuster, comme nous le verrons dans un exemple concret plus loin.</p>
+<p>TODO: graphique avec légende: Allure de différentes courbes de Richards en fonction de la valeur de <span class="math inline">\(m\)</span>. De gauche à droite: <span class="math inline">\(m\)</span> = 0,5, 1, 3, 6 et 10; avec <span class="math inline">\(k = 0,5\)</span>, <span class="math inline">\(y_\infty = 0,95\)</span> et <span class="math inline">\(t_0 = 0\)</span> pour toutes les courbes. La courbe en gras, avec <span class="math inline">\(m = 1\)</span>, est équivalente au modèle de von Bertalanffy linéaire.</p>
+</div>
+<div id="modele-de-weibull" class="section level4">
+<h4><span class="header-section-number">4.2.1.6</span> Modèle de Weibull</h4>
+<p>Depuis son introduction en 1951 par Weibull, ce modèle est présenté comme polyvalent. Il a été décrit à l’origine comme une distribution statistique. Il trouve de nombreuses applications en croissance de population (éventuellement négative), et il est utilisé également pour décrire la courbe de survie en cas de maladie ou dans des études de dynamique de populations. Il a parfois été utilisé comme un modèle de croissance. La forme la plus générale de ce modèle est  :</p>
+<p><span class="math display">\[y(t) = y_\infty - d \ e^{-k \ t^m}\]</span></p>
+<p>avec <span class="math inline">\(d = y_\infty - y_0\)</span>. Un modèle à trois paramètres est également utilisé où <span class="math inline">\(y_0 = 0\)</span>. La fonction est sigmoïdale lorsque <span class="math inline">\(m &gt; 1\)</span>, sinon elle ne possède pas de point d’inflexion (voir graphique ci-dessous). Dans R, le modèle ‘selfStart’ s’appelle <code>SSweibull()</code>.</p>
+<p>TODO: figure avec légende: Exemples de courbes de Weibull pour respectivement <span class="math inline">\(m\)</span> = 5, 2, 1 et 0,5, avec <span class="math inline">\(k = 0,6\)</span>,
+<span class="math inline">\(y_\infty = 0,95\)</span> et <span class="math inline">\(y_0= 0,05\)</span>. En gras, la courbe avec <span class="math inline">\(m = 1\)</span>, équivalente à un modèle de von Bertalanffy linéaire. Toutes les courbes démarrent en <span class="math inline">\(y_0\)</span> et passent par <span class="math inline">\(y_\infty - d \ e^{-k}\)</span> qui est également le point d’inflexion pour les sigmoïdes lorsque <span class="math inline">\(m &gt; 1\)</span>.</p>
+</div>
+<div id="courbe-de-jolicoeur" class="section level4">
+<h4><span class="header-section-number">4.2.1.7</span> Courbe de Jolicoeur</h4>
+<p>Une autre courbe qui est tantôt sigmoïdale, tantôt non est le modèle de Jolicoeur (1985). Elle est dérivée d’une courbe logistique, mais en utilisant le logarithme du temps au lieu du temps lui-même dans l’équation différentielle de départ :</p>
+<p><span class="math display">\[y(t) = \frac{y_\infty}{1 + b \ t^{-m}}\]</span></p>
+<p>Comme la fonction de Weibull, elle est sigmoïdale lorsque <span class="math inline">\(m &gt; 1\)</span>, mais avec l’asymétrie entre les deux courbures de part et d’autre du point d’inflexion qui peuvent varier indépendamment l’une de l’autre, en fonction de la valeur du paramètre <span class="math inline">\(b\)</span>. Lorsque <span class="math inline">\(m \leq 1\)</span>, il n’y a aucun point d’inflexion (voir schéma ci-dessous).</p>
+<p>TODO figure avec légende: Exemples de courbes de Jolicoeur avec <span class="math inline">\(m\)</span> = 3, 1 (trait gras) et 0,5 respectivement depuis la courbe supérieure vers la courbe inférieure; <span class="math inline">\(y_\infty = 0,95\)</span> et <span class="math inline">\(b = 0,9\)</span>. Lorsque <span class="math inline">\(m &gt; 1\)</span>, la courbe est sigmoïdale.</p>
+</div>
+<div id="modele-de-johnson" class="section level4">
+<h4><span class="header-section-number">4.2.1.8</span> Modèle de Johnson</h4>
+<p>La courbe de croissance de Johnson (voir Ricker, 1979) utilise <span class="math inline">\(1/t\)</span> à la place de <span class="math inline">\(t\)</span> :</p>
+<p><span class="math display">\[y(t) = y_\infty \ e^{1/k \ (t - t_0)}\]</span></p>
+<p>TODO figure avec légende: Exemple d’une courbe de Johnson, avec <span class="math inline">\(k = 0,7\)</span>, <span class="math inline">\(y_\infty = 0,95\)</span> et <span class="math inline">\(t_0 = 0\)</span>.</p>
+<p>Ce modèle est sigmoïdal également mais une asymétrie tellement forte que le point d’inflexion est très bas, presque à 0 sur l’axe des ordonnées (il est donc difficilement visible sur le graphe). Cette courbe ressemble donc à une courbe de croissance non sigmoïdale, mais pour laquelle on observerait un petit temps de latence avant le début de la croissance sur l’axe temporel.</p>
+</div>
+<div id="modele-preece-baines-1" class="section level4">
+<h4><span class="header-section-number">4.2.1.9</span> Modèle Preece-Baines 1</h4>
+<p>Preece et Baines (1978) ont décrit plusieurs modèles spécifiques à la croissance humaine. Ces modèles combinent deux phases de croissance exponentielle pour représenter la croissance graduelle d’enfants suivie par une courte phase de croissance accélérée à l’adolescence, mais qui atteint rapidement un plateau correspondant à la taille adulte définitive (voir graphique ci-dessous). Ce type de modèle est naturellement très utile pour tous les mammifères, mais certains, comme le modèle 1, ont aussi été utilisés dans d’autres circonstances, profitant de sa grande flexibilité. Son équation est :</p>
+<p><span class="math display">\[y(t) = y_\infty - \frac{2 (y_\infty - d)}{e^{k1 \ (t - t_0)} + e^{k2 \ (t - t_0)}}\]</span></p>
+<p>TODO figure avec légende: Exemple d’une courbe Preece-Baines 1 avec <span class="math inline">\(k1 = 0,19\)</span>, <span class="math inline">\(k2 = 2,5\)</span>, <span class="math inline">\(y_\infty = 0,95\)</span>, <span class="math inline">\(d = 0,8\)</span> et <span class="math inline">\(t_0 = 6\)</span>.</p>
+</div>
+<div id="modele-de-tanaka" class="section level4">
+<h4><span class="header-section-number">4.2.1.10</span> Modèle de Tanaka</h4>
+<p>Tous les modèles précédents sont asymptotiques, à l’exception de la courbe exponentielle (mais cette dernière ne modélise valablement que la phase de croissance initiale). Tous ces modèles décrivent donc une <strong>croissance déterminée</strong> qui n’excédera jamais une taille maximale représentée par une asymptote horizontale en <span class="math inline">\(y(t) = y_\infty\)</span>. Knight (1968) s’est demandé s’il s’agit d’une réalité biologique ou simplement d’un artefact mathématique. Dans le second cas, la croissance n’apparaîtrait déterminée que parce que les modèles choisis pour la représenter sont asymptotiques. Pour s’affranchir d’une telle contrainte, Tanaka (1982, 1988) a élaboré un nouveau modèle de croissance qui décrit une croissance non déterminée :</p>
+<p><span class="math display">\[y(t) = \frac{1}{\sqrt{b}} \ \ln |2 \ b \ (t - t_0) + 2 \ \sqrt{b^2 \ (t - t_0)^2 + a \ b}| + d\]</span></p>
+<p>Ce modèle complexe à quatre paramètres a une période initiale de croissance lente, suivie d’une période de croissance exponentielle qui se poursuit par une croissance continue mais plus faible tout au long de la vie de l’animal (voir graphique ci-dessous).</p>
+<p>TODO figure avec légende: Exemple d’une courbe de Tanaka avec <span class="math inline">\(a = 3\)</span>, <span class="math inline">\(b = 2,5\)</span>, <span class="math inline">\(d = -0,2\)</span> et <span class="math inline">\(t_0 = 2\)</span>.</p>
+</div>
+</div>
+<div id="exemple-dutilisation" class="section level3">
+<h3><span class="header-section-number">4.2.2</span> Exemple d’utilisation</h3>
+<p>Nous allons illustrer l’ajustement d’une courbe non linéaire par le choix et l’ajustement d’un modèle de croissance dans un jeu de données en modélisant la croissance somatique de l’oursin <em>Paracentrotus lividus</em> (voir Grosjean 2001). Ce jeu de données est disponible dans le package <code>data.io</code>, sous le nom <code>urchin_growth</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">SciViews<span class="op">::</span>R
+urchins &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="st">&quot;urchin_growth&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;data.io&quot;</span>, <span class="dt">lang =</span> <span class="st">&quot;fr&quot;</span>)
+<span class="kw">chart</span>(<span class="dt">data =</span> urchins, diameter <span class="op">~</span><span class="st"> </span>age) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>()</code></pre>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Comme vous pouvez le voir, différents oursins ont été mesurés via le diamètre à l’ambitus du test (zone la plus large) en mm à différents âges (en années). Les mesures ont été effectuées tous les 6 mois pendant 7 ans, ce qui donne un bon aperçu de la croissance de cet animal y compris la taille maximale asymptotique qui est atteinte vers les 4 à 5 ans (pour ce genre de modèle, il est très important de continuer à mesurer les animaux afin de bien quantifier cette taille maximale asymptotique). Pour les individus survivants, dès mesures ont également été réalisées jusqu’à 10,5 ans. Ainsi, l’examen du graphique nous permet d’emblée de choisir un modèle à croissance finie (pas le modèle de Tanaka, donc), et de forme sigmoïdale. Les modèles logistique, Weibull ou Gompertz pourraient convenir par exemple. Nous pouvons à ce stade, essayer différents modèles et choisir celui qui nous semble le plus adapté.</p>
+<p>Le choix du meilleur modèle se fait grâce à deux critères:</p>
+<ol style="list-style-type: decimal">
+<li><p>Les connaissances théoriques et <em>a priori</em> du modèle que l’on ajuste. En effet, il n’existe qu’un seul modèle linéaire, mais une infinité de modèles curvilinéaires qui peuvent s’ajuster dans les données. Le choix du meilleur modèle se fait en fonction de considérations sur le phénomène sous-jacent qui doivent se refléter dans les propriétés mathématiques de la courbe choisie. Par exemple, si on sait que la croissance est asymptotique vers une taille maximale, nous devrons choisir une courbe mathématique qui présente une asymptote horizontale à son maximum pour représente au mieux le phénomène étudié.</p></li>
+<li><p>Le coefficient de détermination <span class="math inline">\(R^2\)</span> n’est pas calculé par R pour une régression non linéaire car sa validité est sujette à discussion entre les statisticiens (d’autres logiciels statistiques le calculent). Nous n’avons donc pas d’estimation de la qualité de l’ajustement par ce biais, comme dans le cas de la régression linéaire. Par contre, il est possible de calculer un autre critère plus fiable que nous avons déjà utilisé : le <strong>critère d’Akaïke</strong> (fonction <code>AIC()</code> dans R). Ce critère tient compte à la fois de la qualité d’ajustement et de la complexité du modèle, exprimée par le nombre de paramètres qu’il faut estimer. Plus le modèle est complexe, plus on peut s’attendre à ce qu’il s’ajuste bien aux données car il est plus flexible. Cependant, en ce domaine, la complexité n’est pas forcément un gage de qualité. On recherche plutôt un compromis entre meilleur ajustement et simplicité. Le critère d’information d’Akaiké quantifie précisément ce compromis, c’est-à-dire que le modèle qui a un AIC le plus faible est considéré comme le meilleur. Appliquons donc ce concept pour sélectionner le meilleur modèle de croissance pour décrire la croissance somatique de nos oursins après avoir sélectionné les modèles candidats les plus judicieux (modèle sigmoïdal avec asymptote horizontale au maximum).</p></li>
+</ol>
+<p>Notons toutefois que, comme les animaux sont mesurés aux mêmes âges, tous les six mois, certains points se superposent. Afin d’afficher tous les points, il est utile d’utiliser la fonction <code>geom_jitter()</code> à la place de <code>geom_point()</code> qui décale les points d’une valeur aléatoire pour éviter ces superpositions (l’argument <code>width =</code> indique le décalage maximum à appliquer). Voici ce que cela donne  :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(<span class="dt">data =</span> urchins, diameter <span class="op">~</span><span class="st"> </span>age) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">width =</span> <span class="fl">0.1</span>, <span class="dt">alpha =</span> <span class="fl">0.2</span>)</code></pre>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Nous avons ici également représenté les poiints de manière semi-transparent avec <code>alpha = 0.2</code>(transparence de 20%) pour encore mieux mettre en évidence les points de mesures qui se superposent.</p>
+<p>Ajustons maintenant un modèle de Gompertz (modèle ‘SelfStart’) :</p>
+<pre class="sourceCode r"><code class="sourceCode r">urchins_gomp &lt;-<span class="st"> </span><span class="kw">nls</span>(<span class="dt">data =</span> urchins, diameter <span class="op">~</span><span class="st"> </span><span class="kw">SSgompertz</span>(age, Asym, b2, b3))
+<span class="kw">summary</span>(urchins_gomp)</code></pre>
+<pre><code># 
+# Formula: diameter ~ SSgompertz(age, Asym, b2, b3)
+# 
+# Parameters:
+#       Estimate Std. Error t value Pr(&gt;|t|)    
+# Asym 57.403687   0.257588  222.85   &lt;2e-16 ***
+# b2    3.901916   0.046354   84.18   &lt;2e-16 ***
+# b3    0.434744   0.003852  112.86   &lt;2e-16 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 5.49 on 7021 degrees of freedom
+# 
+# Number of iterations to convergence: 3 
+# Achieved convergence tolerance: 2.655e-06</code></pre>
+<p>Pour ajouter cette courbe sur le graphique, il faut créer un vecteur de valeurs x (Age) espacé régulièrement et prédire les valeurs de size obtenues avec ce modèle:</p>
+<blockquote>
+<p>Pred &lt;- list(age = seq(from = 0, to = 7, by = 0.1))
+Pred
+$age
+[1] 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4
+[16] 1.5 1.6 1.7 1.8 1.9 2.0 2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9
+[31] 3.0 3.1 3.2 3.3 3.4 3.5 3.6 3.7 3.8 3.9 4.0 4.1 4.2 4.3 4.4
+[46] 4.5 4.6 4.7 4.8 4.9 5.0 5.1 5.2 5.3 5.4 5.5 5.6 5.7 5.8 5.9
+[61] 6.0 6.1 6.2 6.3 6.4 6.5 6.6 6.7 6.8 6.9 7.0</p>
+</blockquote>
+<blockquote>
+<p>lines(Pred$age, predict(reg.gomp, newdata = Pred), col = “red”)</p>
+</blockquote>
+<p>L’ajustement de cette fonction semble très bon, à l’oeil. Voyons ce qu’il en est d’autres modèles :</p>
+<pre class="sourceCode r"><code class="sourceCode r">urchins_logis &lt;-<span class="st"> </span><span class="kw">nls</span>(<span class="dt">data =</span> urchins, diameter <span class="op">~</span><span class="st"> </span><span class="kw">SSlogis</span>(age, Asym, xmid, scal))
+<span class="kw">summary</span>(urchins_logis)</code></pre>
+<pre><code># 
+# Formula: diameter ~ SSlogis(age, Asym, xmid, scal)
+# 
+# Parameters:
+#       Estimate Std. Error t value Pr(&gt;|t|)    
+# Asym 54.628069   0.202985   269.1   &lt;2e-16 ***
+# xmid  2.055285   0.009568   214.8   &lt;2e-16 ***
+# scal  0.764830   0.007355   104.0   &lt;2e-16 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 5.6 on 7021 degrees of freedom
+# 
+# Number of iterations to convergence: 4 
+# Achieved convergence tolerance: 1.079e-06</code></pre>
+<p>Et voici le graphique avec les deux modèlmes superposés :</p>
+<blockquote>
+<p>lines(Pred, predict(reg.logis, newdata = Pred), col = “blue”)</p>
+</blockquote>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(urchins_gomp, urchins_logis)</code></pre>
+<pre><code>#               df      AIC
+# urchins_gomp   4 43861.73
+# urchins_logis  4 44139.13</code></pre>
+<p>Comme on peut le voir clairement sur le graphe, la courbe logistique donne une autre solution, cette dernière est à peine moins bonne que le modèle de Gompertz, selon le critère d’Akaiké. Pourtant, la courbe est assez bien démarquée de celle de Gompertz. Essayons maintenant un modèle de Weibull. Ce modèle est plus complexe car il a quatre paramètres au lieu de trois pour les deux modèles précédents :</p>
+<pre class="sourceCode r"><code class="sourceCode r">urchins_weib &lt;-<span class="st"> </span><span class="kw">nls</span>(<span class="dt">data =</span> urchins, diameter <span class="op">~</span><span class="st"> </span><span class="kw">SSweibull</span>(age, Asym, Drop, lrc, pwr))
+<span class="kw">summary</span>(urchins_weib)</code></pre>
+<pre><code># 
+# Formula: diameter ~ SSweibull(age, Asym, Drop, lrc, pwr)
+# 
+# Parameters:
+#      Estimate Std. Error t value Pr(&gt;|t|)    
+# Asym 56.80491    0.32704  173.69   &lt;2e-16 ***
+# Drop 56.81320    0.59393   95.66   &lt;2e-16 ***
+# lrc  -1.57392    0.02865  -54.94   &lt;2e-16 ***
+# pwr   1.67880    0.02960   56.72   &lt;2e-16 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 5.47 on 7020 degrees of freedom
+# 
+# Number of iterations to convergence: 3 
+# Achieved convergence tolerance: 2.532e-06</code></pre>
+<p>Ajoutons ce nouveau modèle sur le graphique :</p>
+<blockquote>
+<p>lines(Pred$age, predict(reg.weib, newdata = Pred), col = “green”)</p>
+</blockquote>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(urchins_gomp, urchins_logis, urchins_weib)</code></pre>
+<pre><code>#               df      AIC
+# urchins_gomp   4 43861.73
+# urchins_logis  4 44139.13
+# urchins_weib   5 43810.72</code></pre>
+<p>Ce modèle fait presque jeu égal avec le modèle de Gompertz en terme de critère d’Akaiké; juste un tout petit peu mieux. En fait, les deux courbes sont pratiquement superposées l’une à l’autre, mais le modèle de Weibull à un démarrage de croissance plus lent au début, ce qui se reflète dans les données. Par contre, il est pénalisé par le fait que c’est un modèle plus complexe qui possède un paramètre de plus. L’un dans l’autre, le critère d’information d’Akaiké considère donc les deux modèles sur pratiquement sur le même plan du point de vue de la qualité de leurs ajustements respectifs.</p>
+<p>A ce stade, nous voudrions également essayer un autre modèle flexible à quatre paramètres : le modèle de Richards. Malheureusement, il n’existe pas de fonction ‘SelfStart’ dans R pour ce modèle. Nous sommes donc réduit “à mettre les mains dans le cambouis”, à définir la fonction nous même, à trouver de bonnes valeurs de départ, etc. Voici comment définir la fonction :</p>
+<pre class="sourceCode r"><code class="sourceCode r">richards &lt;-<span class="st"> </span><span class="cf">function</span>(x, Asym, k, x0, m) Asym<span class="op">*</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span>k <span class="op">*</span><span class="st"> </span>(x <span class="op">-</span><span class="st"> </span>x0)))<span class="op">^</span>m</code></pre>
+<p>Pour les valeurs de départ, là ce n’est pas facile. <code>Asym</code> est l’ asymptote horizontale à la taille maximum. On voit qu’elle se situe aux environ de 55 mm sur le graphique. Pour les autres paramètres, c’est plus difficile à évaluer. Prenons par exemple 1 comme valeur de départ pour les trois autres paramètres, ce qui donne (les valeurs de départ sonty obligatoires ici puisque ce n’est pas un modèle ‘SelfStart’) :</p>
+<pre class="sourceCode r"><code class="sourceCode r">urchins_rich &lt;-<span class="st"> </span><span class="kw">nls</span>(<span class="dt">data =</span> urchins, diameter <span class="op">~</span><span class="st"> </span><span class="kw">richards</span>(age, Asym, k, x0, m),
+  <span class="dt">start =</span> <span class="kw">c</span>(<span class="dt">Asym =</span> <span class="dv">55</span>, <span class="dt">k =</span> <span class="dv">1</span>, <span class="dt">x0 =</span> <span class="dv">1</span>, <span class="dt">m =</span> <span class="dv">1</span>))</code></pre>
+<pre><code># Error in numericDeriv(form[[3L]], names(ind), env): Missing value or an infinity produced when evaluating the model</code></pre>
+<p>… et voilà ! Un excellent exemple de plantage de l’algorithme de minimisation de la fonction objective suite à un comportement inadéquat de la fonction avec les valeurs testées. Ici, la fonction renvoie l’infini et l’algorithme ne peut donc effectuer la minimisation. La fonction de Richards est effectivement connue pour être difficile à ajuster pour cette raison.</p>
+<p>Il nous faut donc soit tester d’autres valeurs de départ, soit utiliser un autre algorithme de minimisation, soit les deux. Après différents essais il apparaît que le changement des valeurs de départ suffit dans le cas présent :</p>
+<pre class="sourceCode r"><code class="sourceCode r">urchins_rich &lt;-<span class="st"> </span><span class="kw">nls</span>(<span class="dt">data =</span> urchins, diameter <span class="op">~</span><span class="st"> </span><span class="kw">richards</span>(age, Asym, k, x0, m),
+  <span class="dt">start =</span> <span class="kw">c</span>(<span class="dt">Asym =</span> <span class="dv">55</span>, <span class="dt">k =</span> <span class="fl">0.5</span>, <span class="dt">x0 =</span> <span class="dv">0</span>, <span class="dt">m =</span> <span class="dv">1</span>))
+<span class="kw">summary</span>(urchins_rich)</code></pre>
+<pre><code># 
+# Formula: diameter ~ richards(age, Asym, k, x0, m)
+# 
+# Parameters:
+#      Estimate Std. Error t value Pr(&gt;|t|)    
+# Asym 58.14344    0.37772 153.935  &lt; 2e-16 ***
+# k     0.75886    0.02392  31.723  &lt; 2e-16 ***
+# x0   -0.87553    0.28467  -3.076 0.002109 ** 
+# m     6.20757    1.82374   3.404 0.000668 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 5.487 on 7020 degrees of freedom
+# 
+# Number of iterations to convergence: 11 
+# Achieved convergence tolerance: 4.346e-06</code></pre>
+<p>Ajoutons ce dernière modèle sur notre graphique :</p>
+<blockquote>
+<p>lines(Pred$age, predict(reg.rich, newdata = Pred), col = “black”)
+legend(5, 20, c(“Gompertz”, “logistique”, “Weibull”, “Richards”),
++ col =c(“red”, “blue”, “green”, “black”), lwd = 2)</p>
+</blockquote>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(urchins_gomp, urchins_logis, urchins_weib, urchins_rich)</code></pre>
+<pre><code>#               df      AIC
+# urchins_gomp   4 43861.73
+# urchins_logis  4 44139.13
+# urchins_weib   5 43810.72
+# urchins_rich   5 43854.53</code></pre>
+<p>La courbe est intermédiaire entre Gompertz et Weibull aux jeunes âges, mais l’asymptote maximale est légèrement plus haute que pour les deux autres modèles (58 mm au lieu de 57 mm). Les trois courbes sont très, très proches l’une de l’autre. Le critère d’information d’Akaiké est un peu moins bon pour le modèle de Richards que pour celui de Weibull, mais est tout juste meilleur que celui de Gompertz. En outre l’écart type pour le paramètre <code>x0</code> est plus conséquent en comparaison de sa valeur, ce qui démontre une certaine instabilité de la fonction par rapport à ce paramètre, et par conséquent, une incertitude dans son estimation. Pour toutes ces raisons, le modèle de Richards sera écarté dans notre cas, au benefice du modèle de Weibull, voire de celui de Gompertz plus simple.</p>
+<p>Le choix final entre Gompertz ou Weibull dépend de l’usage que l’on veut faire du modèle. Si la simplicité du modèle est primordiale, nous garderons Gompertz. Si la croissance des petits oursins est un aspect important de l’analyse, nous garderons Weibull qui semble mieux s’ajuster aux données à ce niveau.</p>
+</div>
+<div id="bibliographie-a-remanier" class="section level3">
+<h3><span class="header-section-number">4.2.3</span> Bibliographie (à remanier)</h3>
+<p>Brostaux, Y. Introduction à l’environnement de programmation statistique R. 22 pp. [en ligne : <a href="http://cran.r-project.org" class="uri">http://cran.r-project.org</a>].</p>
+<p>Chambers, J. M., 1998. Programming with data. A guide to the S language. Springer, New York. 469 pp.</p>
+<p>Dalgaard, P., 2002. Introductory statistics with R. Springer, New York. 267 pp.</p>
+<p>Fox, J., 2003. R Commander [en ligne : <a href="http://cran.r-project.org" class="uri">http://cran.r-project.org</a>]</p>
+<p>Grosjean, Ph., 2001. Growth model of the reared sea urchin Paracentrotus lividus (Lamarck, 1816). Thèse de doctorat en Sciences Agronomiques et Ingénierie Biologique, ULB, Bruxelles, 285pp (<a href="http://www.sciviews.org/_phgrosjean/These.pdf" class="uri">http://www.sciviews.org/_phgrosjean/These.pdf</a>).</p>
+<p>Ihaka R. &amp; R. Gentleman, 1996. R : a language for data analysis and graphics. J. Comput. Graphic. Stat., 5:299-314.</p>
+<p>Legendre, L. &amp; P. Legendre, 1984. Ecologie numérique. Tome 2: La structure des données écologiques. Masson, Paris. 335 pp.</p>
+<p>Paradis, E. R pour débutants. [en ligne : <a href="http://cran.r-project.org" class="uri">http://cran.r-project.org</a>]</p>
+<p>Pinhero, J. C. &amp; D. M. Bates, 2000. Mixed-effects models in S and S-PLUS. Srpinger, New York. 528 pp.</p>
+<p>Sen, A. &amp; M. Srivastava, 1990. Regression analysis. Theory, methods, and applications. Springer-Verlag, New York, 348pp.</p>
+<p>Sokal, R.R. &amp; F.J. Rohlf, 1981. Biometry. Freeman &amp; Co, San Francisco. 860 pp.</p>
+<p>Venables W.N. &amp; B.D. Ripley, 2000. S programming. Springer, New York, 264 pp.</p>
+<p>Venables W.N. &amp; B.D. Ripley, 2002. Modern applied statistics with S-PLUS (4th ed.). Springer, New York, 495 pp.</p>
+<p>Verzani, J., 2005. Using R for introductory statistics. Chapman &amp; Hall, London. 414 pp.</p>
+
+</div>
+</div>
+<!-- </div> -->
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://sddb.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="croissance-de.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="hierarchique.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/BioDataScience-Course/sdd-umons2/edit/master/04-reg-non-lineaire.Rmd",
+"text": "Editer"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

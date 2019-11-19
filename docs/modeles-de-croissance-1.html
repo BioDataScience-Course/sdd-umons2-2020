@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>6.2 Cartes auto adaptatives | Science des données biologiques 2</title>
+  <title>Module 9 Modèles de croissance | Science des données biologiques 2</title>
   <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="6.2 Cartes auto adaptatives | Science des données biologiques 2" />
+  <meta property="og:title" content="Module 9 Modèles de croissance | Science des données biologiques 2" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
   <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="6.2 Cartes auto adaptatives | Science des données biologiques 2" />
+  <meta name="twitter:title" content="Module 9 Modèles de croissance | Science des données biologiques 2" />
   
   <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
   <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="k-moyennes.html">
-<link rel="next" href="acp-afc.html">
+<link rel="prev" href="modeles-selfstart.html">
+<link rel="next" href="croissance-de-loursin-paracentrotus-lividus.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -61,72 +61,6 @@
 <script src="libs/rglWebGL-binding-0.100.19/rglWebGL.js"></script>
 
 
-<style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    background-color: #ffffff;
-    color: #a0a0a0;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
-div.sourceCode
-  { color: #1f1c1b; background-color: #ffffff; }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span. { color: #1f1c1b; } /* Normal */
-code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
-code span.an { color: #ca60ca; } /* Annotation */
-code span.at { color: #0057ae; } /* Attribute */
-code span.bn { color: #b08000; } /* BaseN */
-code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
-code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #924c9d; } /* Char */
-code span.cn { color: #aa5500; } /* Constant */
-code span.co { color: #898887; } /* Comment */
-code span.cv { color: #0095ff; } /* CommentVar */
-code span.do { color: #607880; } /* Documentation */
-code span.dt { color: #0057ae; } /* DataType */
-code span.dv { color: #b08000; } /* DecVal */
-code span.er { color: #bf0303; text-decoration: underline; } /* Error */
-code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
-code span.fl { color: #b08000; } /* Float */
-code span.fu { color: #644a9b; } /* Function */
-code span.im { color: #ff5500; } /* Import */
-code span.in { color: #b08000; } /* Information */
-code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
-code span.op { color: #1f1c1b; } /* Operator */
-code span.ot { color: #006e28; } /* Other */
-code span.pp { color: #006e28; } /* Preprocessor */
-code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
-code span.sc { color: #3daee9; } /* SpecialChar */
-code span.ss { color: #ff5500; } /* SpecialString */
-code span.st { color: #bf0303; } /* String */
-code span.va { color: #0057ae; } /* Variable */
-code span.vs { color: #bf0303; } /* VerbatimString */
-code span.wa { color: #bf0303; } /* Warning */
-</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -193,18 +127,43 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="3.5.1" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html#exemple"><i class="fa fa-check"></i><b>3.5.1</b> Exemple</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="reg-non-lin.html"><a href="reg-non-lin.html"><i class="fa fa-check"></i><b>4</b> Régression non linéaire</a></li>
-<li class="chapter" data-level="5" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>5</b> Classification hiérarchique</a></li>
-<li class="chapter" data-level="6" data-path="k-moyenne-som.html"><a href="k-moyenne-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne &amp; SOM</a><ul>
-<li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a></li>
-<li class="chapter" data-level="6.2" data-path="cartes-auto-adaptatives.html"><a href="cartes-auto-adaptatives.html"><i class="fa fa-check"></i><b>6.2</b> Cartes auto adaptatives</a></li>
+<li class="chapter" data-level="4" data-path="reg-non-lin.html"><a href="reg-non-lin.html"><i class="fa fa-check"></i><b>4</b> Régression non linéaire</a><ul>
+<li class="chapter" data-level="4.1" data-path="croissance-de.html"><a href="croissance-de.html"><i class="fa fa-check"></i><b>4.1</b> Croissance de …</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="croissance-de.html"><a href="croissance-de.html#quand-passer-a-la-regression-lineaire"><i class="fa fa-check"></i><b>4.1.1</b> Quand passer à la régression linéaire ?</a></li>
+<li class="chapter" data-level="4.1.2" data-path="croissance-de.html"><a href="croissance-de.html#principe-fonction-objective-et-calcul-iteratif"><i class="fa fa-check"></i><b>4.1.2</b> Principe : fonction objective et calcul itératif</a></li>
+<li class="chapter" data-level="4.1.3" data-path="croissance-de.html"><a href="croissance-de.html#algorithmes-de-convergence"><i class="fa fa-check"></i><b>4.1.3</b> Algorithmes de convergence</a></li>
+<li class="chapter" data-level="4.1.4" data-path="croissance-de.html"><a href="croissance-de.html#pieges-et-difficultes"><i class="fa fa-check"></i><b>4.1.4</b> Pièges et difficultés</a></li>
+<li class="chapter" data-level="4.1.5" data-path="croissance-de.html"><a href="croissance-de.html#les-fonctions-self-start"><i class="fa fa-check"></i><b>4.1.5</b> Les fonctions “self-start”</a></li>
+<li class="chapter" data-level="4.1.6" data-path="croissance-de.html"><a href="croissance-de.html#modeles-non-lineaires-courants-en-biologie"><i class="fa fa-check"></i><b>4.1.6</b> Modèles non linéaires courants en biologie</a></li>
+<li class="chapter" data-level="4.1.7" data-path="croissance-de.html"><a href="croissance-de.html#fonction-objective"><i class="fa fa-check"></i><b>4.1.7</b> Fonction objective</a></li>
+<li class="chapter" data-level="4.1.8" data-path="croissance-de.html"><a href="croissance-de.html#modeles-selfstart-dans-r"><i class="fa fa-check"></i><b>4.1.8</b> Modèles ‘selfStart’ dans R</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
-<li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a></li>
-<li class="chapter" data-level="7.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>7.2</b> Analyse factorielle des correspondances</a></li>
+<li class="chapter" data-level="4.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html"><i class="fa fa-check"></i><b>4.2</b> Modèles courants en biologie</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-croissance"><i class="fa fa-check"></i><b>4.2.1</b> Modèles de croissance</a></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM</a><ul>
-<li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="regression-non-lineaire-exemple-.html"><a href="regression-non-lineaire-exemple-.html"><i class="fa fa-check"></i><b>5</b> Régression non linéaire. Exemple.</a></li>
+<li class="chapter" data-level="6" data-path="utilisation-de-modeles-selfstart.html"><a href="utilisation-de-modeles-selfstart.html"><i class="fa fa-check"></i><b>6</b> Utilisation de modèles ‘SelfStart’</a></li>
+<li class="chapter" data-level="7" data-path="courbe-logistique-sslogisinput-asym-xmid-scal.html"><a href="courbe-logistique-sslogisinput-asym-xmid-scal.html"><i class="fa fa-check"></i><b>7</b> Courbe logistique: SSlogis(input, Asym, xmid, scal)</a></li>
+<li class="chapter" data-level="8" data-path="modeles-selfstart.html"><a href="modeles-selfstart.html"><i class="fa fa-check"></i><b>8</b> Modèles ‘SelfStart’?</a></li>
+<li class="chapter" data-level="9" data-path="modeles-de-croissance-1.html"><a href="modeles-de-croissance-1.html"><i class="fa fa-check"></i><b>9</b> Modèles de croissance</a></li>
+<li class="chapter" data-level="10" data-path="croissance-de-loursin-paracentrotus-lividus.html"><a href="croissance-de-loursin-paracentrotus-lividus.html"><i class="fa fa-check"></i><b>10</b> Croissance de l’oursin Paracentrotus lividus</a></li>
+<li class="chapter" data-level="11" data-path="gompertz.html"><a href="gompertz.html"><i class="fa fa-check"></i><b>11</b> Gompertz</a></li>
+<li class="chapter" data-level="12" data-path="courbe-logistique-1.html"><a href="courbe-logistique-1.html"><i class="fa fa-check"></i><b>12</b> Courbe logistique</a></li>
+<li class="chapter" data-level="13" data-path="weibull.html"><a href="weibull.html"><i class="fa fa-check"></i><b>13</b> Weibull</a></li>
+<li class="chapter" data-level="14" data-path="richards-pas-de-selfstart.html"><a href="richards-pas-de-selfstart.html"><i class="fa fa-check"></i><b>14</b> Richards (pas de ‘SelfStart’!)</a></li>
+<li class="chapter" data-level="15" data-path="legende.html"><a href="legende.html"><i class="fa fa-check"></i><b>15</b> Légende</a></li>
+<li class="chapter" data-level="16" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>16</b> Classification hiérarchique</a></li>
+<li class="chapter" data-level="17" data-path="k-moyenne-som.html"><a href="k-moyenne-som.html"><i class="fa fa-check"></i><b>17</b> K-moyenne &amp; SOM</a><ul>
+<li class="chapter" data-level="17.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>17.1</b> K-moyennes</a></li>
+<li class="chapter" data-level="17.2" data-path="cartes-auto-adaptatives.html"><a href="cartes-auto-adaptatives.html"><i class="fa fa-check"></i><b>17.2</b> Cartes auto adaptatives</a></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>18</b> ACP &amp; AFC</a><ul>
+<li class="chapter" data-level="18.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>18.1</b> Analyse en composantes principales</a></li>
+<li class="chapter" data-level="18.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>18.2</b> Analyse factorielle des correspondances</a></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>19</b> AFM</a><ul>
+<li class="chapter" data-level="19.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>19.1</b> Analyse factorielle multiple (AFM)</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="A" data-path="svbox.html"><a href="svbox.html"><i class="fa fa-check"></i><b>A</b> Installation de la SciViews Box</a><ul>
@@ -237,12 +196,9 @@ code span.wa { color: #bf0303; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="cartes-auto-adaptatives" class="section level2">
-<h2><span class="header-section-number">6.2</span> Cartes auto adaptatives</h2>
-<p>La méthode des cartes auto-adaptatives se nomme self-organizing map (SOM) en anglais.</p>
-
+<div id="modeles-de-croissance-1" class="section level1">
+<h1><span class="header-section-number">Module 9</span> Modèles de croissance</h1>
 </div>
-<!-- </div> -->
 <div id="disqus_thread"></div>
 <script>
 
@@ -268,8 +224,8 @@ s.setAttribute('data-timestamp', +new Date());
           </div>
         </div>
       </div>
-<a href="k-moyennes.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="acp-afc.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="modeles-selfstart.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="croissance-de-loursin-paracentrotus-lividus.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -299,7 +255,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/BioDataScience-Course/sdd-umons2/edit/master/06-k-moyenne-som.Rmd",
+"link": "https://github.com/BioDataScience-Course/sdd-umons2/edit/master/04-reg-non-lineaire.Rmd",
 "text": "Editer"
 },
 "history": {

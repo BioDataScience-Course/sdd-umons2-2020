@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2019-11-07">
+<meta name="date" content="2019-11-19">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -33,7 +33,7 @@
   
   
 <link rel="prev" href="modele-lineaire-generalise.html">
-<link rel="next" href="hierarchique.html">
+<link rel="next" href="croissance-de.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -193,7 +193,23 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="3.5.1" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html#exemple"><i class="fa fa-check"></i><b>3.5.1</b> Exemple</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="reg-non-lin.html"><a href="reg-non-lin.html"><i class="fa fa-check"></i><b>4</b> Régression non linéaire</a></li>
+<li class="chapter" data-level="4" data-path="reg-non-lin.html"><a href="reg-non-lin.html"><i class="fa fa-check"></i><b>4</b> Régression non linéaire</a><ul>
+<li class="chapter" data-level="4.1" data-path="croissance-de.html"><a href="croissance-de.html"><i class="fa fa-check"></i><b>4.1</b> Croissance de …</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="croissance-de.html"><a href="croissance-de.html#quand-passer-a-la-regression-lineaire"><i class="fa fa-check"></i><b>4.1.1</b> Quand passer à la régression linéaire ?</a></li>
+<li class="chapter" data-level="4.1.2" data-path="croissance-de.html"><a href="croissance-de.html#principe-fonction-objective-et-calcul-iteratif"><i class="fa fa-check"></i><b>4.1.2</b> Principe : fonction objective et calcul itératif</a></li>
+<li class="chapter" data-level="4.1.3" data-path="croissance-de.html"><a href="croissance-de.html#algorithmes-de-convergence"><i class="fa fa-check"></i><b>4.1.3</b> Algorithmes de convergence</a></li>
+<li class="chapter" data-level="4.1.4" data-path="croissance-de.html"><a href="croissance-de.html#pieges-et-difficultes"><i class="fa fa-check"></i><b>4.1.4</b> Pièges et difficultés</a></li>
+<li class="chapter" data-level="4.1.5" data-path="croissance-de.html"><a href="croissance-de.html#les-fonctions-self-start"><i class="fa fa-check"></i><b>4.1.5</b> Les fonctions “self-start”</a></li>
+<li class="chapter" data-level="4.1.6" data-path="croissance-de.html"><a href="croissance-de.html#modeles-non-lineaires-courants-en-biologie"><i class="fa fa-check"></i><b>4.1.6</b> Modèles non linéaires courants en biologie</a></li>
+<li class="chapter" data-level="4.1.7" data-path="croissance-de.html"><a href="croissance-de.html#fonction-objective"><i class="fa fa-check"></i><b>4.1.7</b> Fonction objective</a></li>
+<li class="chapter" data-level="4.1.8" data-path="croissance-de.html"><a href="croissance-de.html#modeles-selfstart-dans-r"><i class="fa fa-check"></i><b>4.1.8</b> Modèles ‘selfStart’ dans R</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html"><i class="fa fa-check"></i><b>4.2</b> Modèles courants en biologie</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-croissance"><i class="fa fa-check"></i><b>4.2.1</b> Modèles de croissance</a></li>
+<li class="chapter" data-level="4.2.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#exemple-dutilisation"><i class="fa fa-check"></i><b>4.2.2</b> Exemple d’utilisation</a></li>
+<li class="chapter" data-level="4.2.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#bibliographie-a-remanier"><i class="fa fa-check"></i><b>4.2.3</b> Bibliographie (à remanier)</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="5" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>5</b> Classification hiérarchique</a></li>
 <li class="chapter" data-level="6" data-path="k-moyenne-som.html"><a href="k-moyenne-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne &amp; SOM</a><ul>
 <li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a></li>
@@ -242,14 +258,18 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="objectifs-3" class="section level5 unnumbered">
 <h5>Objectifs</h5>
 <ul>
-<li>TODO</li>
+<li><p>Comprendre comment ajuster une courbe dans un nuage de points à l’aide de la régression non linéaire par les moindres carrés</p></li>
+<li><p>Apprendre à réaliser une régression non linéaire dans R, éventuellement en utilisant des modèles “self-start”</p></li>
+<li><p>Comparer les modèles à l’aide du coefficient d’Akaike</p></li>
+<li><p>Connaitre quelques unes des courbes mathématiques les plus utilisées en biologie</p></li>
 </ul>
 </div>
 <div id="prerequis-3" class="section level5 unnumbered">
 <h5>Prérequis</h5>
-<p>TODO</p>
-
-</div>
+<ul>
+<li>Les modules 1 &amp; 2 du présent cours concernant la régression linéaire sont une en trée en matière indispensable puisque la régression va être abordée ici comme une extension de ce qui a déjà été vu.</li>
+</ul>
+</div> 
 </div>
 <div id="disqus_thread"></div>
 <script>
@@ -277,7 +297,7 @@ s.setAttribute('data-timestamp', +new Date());
         </div>
       </div>
 <a href="modele-lineaire-generalise.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="hierarchique.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="croissance-de.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
