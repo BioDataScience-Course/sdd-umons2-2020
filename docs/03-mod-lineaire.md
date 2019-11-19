@@ -597,11 +597,11 @@ summary(anovaComp. <- confint(multcomp::glht(Babies_lm2,
 # 
 # Linear Hypotheses:
 #            Estimate Std. Error t value Pr(>|t|)    
-# 1 - 0 == 0 -0.23794    0.03182  -7.478  < 1e-05 ***
+# 1 - 0 == 0 -0.23794    0.03182  -7.478   <1e-04 ***
 # 2 - 0 == 0  0.02267    0.05651   0.401    0.977    
 # 3 - 0 == 0  0.03549    0.05407   0.656    0.908    
-# 2 - 1 == 0  0.26060    0.05704   4.568  2.4e-05 ***
-# 3 - 1 == 0  0.27342    0.05478   4.991  < 1e-05 ***
+# 2 - 1 == 0  0.26060    0.05704   4.568   <1e-04 ***
+# 3 - 1 == 0  0.27342    0.05478   4.991   <1e-04 ***
 # 3 - 2 == 0  0.01282    0.07199   0.178    0.998    
 # ---
 # Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
@@ -1111,4 +1111,18 @@ Vous avez à votre disposition une assignation GitHub Classroom :
 
 Lisez le README afin de prendre connaissance de l'exercice
 </div>\EndKnitrBlock{bdd}
+
+- Réalisez un rapport scientifique sur la biométrie humaine
+
+\BeginKnitrBlock{bdd}<div class="bdd">
+Vous avez à votre disposition une assignation GitHub Classroom : 
+  
+- <https://classroom.github.com/a/hS069etL>
+
+Lisez le README afin de prendre connaissance de l'exercice
+</div>\EndKnitrBlock{bdd}
+
+
+
+
 
