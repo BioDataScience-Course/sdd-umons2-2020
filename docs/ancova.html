@@ -5,25 +5,27 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>3.4 ANCOVA | sdd-umons2.utf8.md</title>
-  <meta name="description" content="">
+  <title>3.4 ANCOVA | Science des données biologiques 2</title>
+  <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="3.4 ANCOVA | sdd-umons2.utf8.md" />
+  <meta property="og:title" content="3.4 ANCOVA | Science des données biologiques 2" />
   <meta property="og:type" content="book" />
-  
-  
-  
-  
+  <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
+  <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+  <meta property="og:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3.4 ANCOVA | sdd-umons2.utf8.md" />
+  <meta name="twitter:title" content="3.4 ANCOVA | Science des données biologiques 2" />
   
-  
-  
+  <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+
+<meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-
+<meta name="date" content="2019-11-20">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -204,7 +206,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html"><i class="fa fa-check"></i><b>4.2</b> Modèles courants en biologie</a><ul>
 <li class="chapter" data-level="4.2.1" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-croissance"><i class="fa fa-check"></i><b>4.2.1</b> Modèles de croissance</a></li>
-<li class="chapter" data-level="4.2.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#exemple-dutilisation"><i class="fa fa-check"></i><b>4.2.2</b> Exemple d’utilisation</a></li>
+<li class="chapter" data-level="4.2.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#choix-du-modele"><i class="fa fa-check"></i><b>4.2.2</b> Choix du modèle</a></li>
 <li class="chapter" data-level="4.2.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#bibliographie-a-remanier"><i class="fa fa-check"></i><b>4.2.3</b> Bibliographie (à remanier)</a></li>
 </ul></li>
 </ul></li>
@@ -243,7 +245,7 @@ code span.wa { color: #bf0303; } /* Warning */
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Science des données biologiques 2</a>
           </h1>
         </div>
 
@@ -256,7 +258,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <p>Avant l’apparition du modèle linéaire, une version particulière d’un mélange de régression linéaire et d’une ANOVA avec une variable indépendante quantitative et une autre variable indépendante qualitative s’appelait une ANCOVA (ANalyse de la COVariance). Un tel modèle d’ANCOVA peut naturellement également se résoudre à l’aide de la fonction <code>lm()</code> qui, en outre, peut faire bien plus. Nous allons maintenant ajuster un tel modèle à titre de première application concrète de tout ce que nous venons de voir sur le modèle linéaire et sur les matrices de contrastes associées.</p>
 <div id="bebes-a-la-naissance" class="section level3">
 <h3><span class="header-section-number">3.4.1</span> Bébés à la naissance</h3>
-<p>Nous étudions la masse de nouveaux nés en fonction du poids de la mère et du fait qu’elle fume ou non. Cette analyse s’inspire de <span class="citation">@verzani2005</span>. Nous avons donc ici une variable dépendante <code>wt</code>, la masse des bébés qui est quantitative, et deux variables indépendantes ou prédictives <code>wt1</code>, la masse de la mère, et <code>smoke</code> le fait que la mère fume ou non. Or la première de ces variables explicatives est quantitative (<code>wt1</code>) et l’autre (<code>smoke</code>) est une variable facteur à quatre niveaux (0 = la mère n’a jamais fumé, 1 = elle fume y compris pendant la grossesse, 2 = elle fumait mais a arrêté à la grossesses, et 3 = la mère a fumé, mais a arrêté, et ce, bien avant la grossesse. Un dernier niveau 9 = inconnu encode de manière non orthodoxe les valeurs manquantes dans notre tableau de données (valeurs que nous éliminerons). De même les masses des nouveaux nés et des mères sont des des unités impériales (américaines) respectivement en “onces” et en “livres”. Enfin, nous devons prendre soin de bien encoder la variable <code>smoke</code> comme une variable <code>factor</code> (ici nous ne considèrerons pas qu’il s’agit d’un facteur ordonné et nous voulons faire un contraste de type traitement avec comparaison à des mères qui n’ont jamais fumé). <strong>Un reminement soigneux des données est donc nécessaire avant de pouvoir appliquer notre modèle !</strong></p>
+<p>Nous étudions la masse de nouveaux nés en fonction du poids de la mère et du fait qu’elle fume ou non. Cette analyse s’inspire de <span class="citation">Verzani (<a href="#ref-verzani2005">2005</a>)</span>. Nous avons donc ici une variable dépendante <code>wt</code>, la masse des bébés qui est quantitative, et deux variables indépendantes ou prédictives <code>wt1</code>, la masse de la mère, et <code>smoke</code> le fait que la mère fume ou non. Or la première de ces variables explicatives est quantitative (<code>wt1</code>) et l’autre (<code>smoke</code>) est une variable facteur à quatre niveaux (0 = la mère n’a jamais fumé, 1 = elle fume y compris pendant la grossesse, 2 = elle fumait mais a arrêté à la grossesses, et 3 = la mère a fumé, mais a arrêté, et ce, bien avant la grossesse. Un dernier niveau 9 = inconnu encode de manière non orthodoxe les valeurs manquantes dans notre tableau de données (valeurs que nous éliminerons). De même les masses des nouveaux nés et des mères sont des des unités impériales (américaines) respectivement en “onces” et en “livres”. Enfin, nous devons prendre soin de bien encoder la variable <code>smoke</code> comme une variable <code>factor</code> (ici nous ne considèrerons pas qu’il s’agit d’un facteur ordonné et nous voulons faire un contraste de type traitement avec comparaison à des mères qui n’ont jamais fumé). <strong>Un reminement soigneux des données est donc nécessaire avant de pouvoir appliquer notre modèle !</strong></p>
 <pre class="sourceCode r"><code class="sourceCode r">SciViews<span class="op">::</span>R
 babies &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="st">&quot;babies&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;UsingR&quot;</span>)
 knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">head</span>(babies))</code></pre>
@@ -501,13 +503,13 @@ knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">he
 #  n obs: 1190 
 #  n variables: 3 
 # 
-# ── Variable type:factor ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+# ── Variable type:factor ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #  variable missing complete    n n_unique                    top_counts
 #     smoke       0     1190 1190        4 0: 531, 1: 465, 3: 102, 2: 92
 #  ordered
 #    FALSE
 # 
-# ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+# ── Variable type:numeric ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #  variable missing complete    n  mean   sd    p0   p25  p50   p75   p100
 #        wt       0     1190 1190  3.39 0.52  1.56  3.06  3.4  3.71   4.99
 #       wt1       0     1190 1190 58.3  9.49 39.46 51.82 56.7 62.6  113.4 
@@ -527,7 +529,7 @@ knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">he
 <span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Masse de la mère [kg]&quot;</span>)</code></pre>
 <p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Visuellement, nous ne voyons pas d’effet marquant. Peut-être la condition 1 de <code>smoke</code> (mère qui fume pendant la grossesse) mène-t-il à des bébés moins gros, mais est-ce significatif ? Pour cela, ajustons notre modèle ANCOVA avec matrice traitement (choix par défaut pour une la variable <code>factor</code> <code>smoke</code>). Comme nous savons déjà utiliser <code>lm()</code>, c’est très simple. Cela fonctionne exactement comme avant<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p>
+<p>Visuellement, nous ne voyons pas d’effet marquant. Peut-être la condition 1 de <code>smoke</code> (mère qui fume pendant la grossesse) mène-t-il à des bébés moins gros, mais est-ce significatif ? Pour cela, ajustons notre modèle ANCOVA avec matrice traitement (choix par défaut pour une la variable <code>factor</code> <code>smoke</code>). Comme nous savons déjà utiliser <code>lm()</code>, c’est très simple. Cela fonctionne exactement comme avant<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ANCOVA</span>
 Babies_lm &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>smoke <span class="op">*</span><span class="st"> </span>wt1)
 <span class="kw">summary</span>(Babies_lm)</code></pre>
@@ -686,11 +688,11 @@ Babies_lm2 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class=
 # 
 # Linear Hypotheses:
 #            Estimate Std. Error t value Pr(&gt;|t|)    
-# 1 - 0 == 0 -0.23794    0.03182  -7.478   &lt;1e-04 ***
+# 1 - 0 == 0 -0.23794    0.03182  -7.478  &lt; 1e-05 ***
 # 2 - 0 == 0  0.02267    0.05651   0.401    0.977    
 # 3 - 0 == 0  0.03549    0.05407   0.656    0.908    
-# 2 - 1 == 0  0.26060    0.05704   4.568   &lt;1e-04 ***
-# 3 - 1 == 0  0.27342    0.05478   4.991   &lt;1e-04 ***
+# 2 - 1 == 0  0.26060    0.05704   4.568 2.41e-05 ***
+# 3 - 1 == 0  0.27342    0.05478   4.991  &lt; 1e-05 ***
 # 3 - 2 == 0  0.01282    0.07199   0.178    0.998    
 # ---
 # Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
@@ -907,12 +909,38 @@ N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la mai
 </div>
 </div>
 </div>
+<h3>Références</h3>
+<div id="refs" class="references">
+<div id="ref-verzani2005">
+<p>Verzani, John. 2005. <em>Using R for Introductory Statistics</em>. Boca Raton, Florida: Chapman; Hall/CRC. <a href="https://www.crcpress.com/Using-R-for-Introductory-Statistics/Verzani/p/book/9781466590731">https://www.crcpress.com/Using-R-for-Introductory-Statistics/Verzani/p/book/9781466590731</a>.</p>
+</div>
+</div>
 <div class="footnotes">
 <hr />
-<ol start="4">
-<li id="fn4"><p>Pour rappel, on utilise le signe <code>+</code> pour indiquer un modèle sans interactions et un signe <code>*</code>pour spécifier un modèle complet avec interactions entre les variables.<a href="ancova.html#fnref4" class="footnote-back">↩</a></p></li>
+<ol start="7">
+<li id="fn7"><p>Pour rappel, on utilise le signe <code>+</code> pour indiquer un modèle sans interactions et un signe <code>*</code>pour spécifier un modèle complet avec interactions entre les variables.<a href="ancova.html#fnref7" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://sddb.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
             </section>
 
           </div>

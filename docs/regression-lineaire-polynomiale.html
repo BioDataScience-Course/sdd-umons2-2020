@@ -5,25 +5,27 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>2.3 Régression linéaire polynomiale | sdd-umons2.utf8.md</title>
-  <meta name="description" content="">
+  <title>2.3 Régression linéaire polynomiale | Science des données biologiques 2</title>
+  <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="2.3 Régression linéaire polynomiale | sdd-umons2.utf8.md" />
+  <meta property="og:title" content="2.3 Régression linéaire polynomiale | Science des données biologiques 2" />
   <meta property="og:type" content="book" />
-  
-  
-  
-  
+  <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
+  <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+  <meta property="og:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.3 Régression linéaire polynomiale | sdd-umons2.utf8.md" />
+  <meta name="twitter:title" content="2.3 Régression linéaire polynomiale | Science des données biologiques 2" />
   
-  
-  
+  <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+
+<meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-
+<meta name="date" content="2019-11-20">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -204,7 +206,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html"><i class="fa fa-check"></i><b>4.2</b> Modèles courants en biologie</a><ul>
 <li class="chapter" data-level="4.2.1" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-croissance"><i class="fa fa-check"></i><b>4.2.1</b> Modèles de croissance</a></li>
-<li class="chapter" data-level="4.2.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#exemple-dutilisation"><i class="fa fa-check"></i><b>4.2.2</b> Exemple d’utilisation</a></li>
+<li class="chapter" data-level="4.2.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#choix-du-modele"><i class="fa fa-check"></i><b>4.2.2</b> Choix du modèle</a></li>
 <li class="chapter" data-level="4.2.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#bibliographie-a-remanier"><i class="fa fa-check"></i><b>4.2.3</b> Bibliographie (à remanier)</a></li>
 </ul></li>
 </ul></li>
@@ -243,7 +245,7 @@ code span.wa { color: #bf0303; } /* Warning */
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Science des données biologiques 2</a>
           </h1>
         </div>
 
@@ -432,6 +434,26 @@ lm3 <span class="op">%&gt;.%</span>
 # F-statistic: 382.8 on 3 and 27 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Ah ha, ceci est bizarre ! Le <em>R<sup>2</sup></em> ajusté nous indique que le modèle serait très bon puisqu’il grimpe à 0,975. Le terme en diamètre<sup>2</sup> reste très significatif, … mais la pente relative à la hauteur est maintenant elle aussi très significative alors que dans le modèle multiple <code>lm2</code> ce n’était pas le cas. De plus, la pente à l’origine en face du diamètre semble devenir un peu plus significative. Bienvenue dans les instabilités liées aux intercorrelations entre paramètres dans les modèles linéaires complexes.</p>
 </div>
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://sddb.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
             </section>
 
           </div>

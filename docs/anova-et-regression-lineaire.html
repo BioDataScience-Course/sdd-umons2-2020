@@ -5,25 +5,27 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>3.2 ANOVA et régression linéaire | sdd-umons2.utf8.md</title>
-  <meta name="description" content="">
+  <title>3.2 ANOVA et régression linéaire | Science des données biologiques 2</title>
+  <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="3.2 ANOVA et régression linéaire | sdd-umons2.utf8.md" />
+  <meta property="og:title" content="3.2 ANOVA et régression linéaire | Science des données biologiques 2" />
   <meta property="og:type" content="book" />
-  
-  
-  
-  
+  <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
+  <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+  <meta property="og:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3.2 ANOVA et régression linéaire | sdd-umons2.utf8.md" />
+  <meta name="twitter:title" content="3.2 ANOVA et régression linéaire | Science des données biologiques 2" />
   
-  
-  
+  <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+
+<meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-
+<meta name="date" content="2019-11-20">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -204,7 +206,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html"><i class="fa fa-check"></i><b>4.2</b> Modèles courants en biologie</a><ul>
 <li class="chapter" data-level="4.2.1" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-croissance"><i class="fa fa-check"></i><b>4.2.1</b> Modèles de croissance</a></li>
-<li class="chapter" data-level="4.2.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#exemple-dutilisation"><i class="fa fa-check"></i><b>4.2.2</b> Exemple d’utilisation</a></li>
+<li class="chapter" data-level="4.2.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#choix-du-modele"><i class="fa fa-check"></i><b>4.2.2</b> Choix du modèle</a></li>
 <li class="chapter" data-level="4.2.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#bibliographie-a-remanier"><i class="fa fa-check"></i><b>4.2.3</b> Bibliographie (à remanier)</a></li>
 </ul></li>
 </ul></li>
@@ -243,7 +245,7 @@ code span.wa { color: #bf0303; } /* Warning */
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Science des données biologiques 2</a>
           </h1>
         </div>
 
@@ -277,7 +279,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </div>
 <div id="reencodage-des-variables-de-lanova" class="section level3">
 <h3><span class="header-section-number">3.2.2</span> Réencodage des variables de l’ANOVA</h3>
-<p>Considérons dans un premier temps, un cas très simple : une ANOVA à un facteur avec une variable indépendante qualitative (<code>factor</code>) à deux niveaux<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Nous pouvons écrire :</p>
+<p>Considérons dans un premier temps, un cas très simple : une ANOVA à un facteur avec une variable indépendante qualitative (<code>factor</code>) à deux niveaux<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>. Nous pouvons écrire :</p>
 <p><span class="math display">\[
 y = \mu + \tau_1 I_1 + \tau_2 I_2 + \epsilon
 \]</span></p>
@@ -313,10 +315,30 @@ y = \beta_1 + \beta_2 x_1 + \beta_3 x_2 + ... + \beta_n I_1 + \beta_{n+1} I_2 ..
 </div>
 <div class="footnotes">
 <hr />
-<ol start="2">
-<li id="fn2"><p>Concrètement, un cas aussi simple se traite habituellement à l’aide d’un test <em>t</em> de Student, mais pour notre démonstration, nous allons considérer ici utiliser une ANOVA à un facteur plutôt.<a href="anova-et-regression-lineaire.html#fnref2" class="footnote-back">↩</a></p></li>
+<ol start="5">
+<li id="fn5"><p>Concrètement, un cas aussi simple se traite habituellement à l’aide d’un test <em>t</em> de Student, mais pour notre démonstration, nous allons considérer ici utiliser une ANOVA à un facteur plutôt.<a href="anova-et-regression-lineaire.html#fnref5" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://sddb.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
             </section>
 
           </div>

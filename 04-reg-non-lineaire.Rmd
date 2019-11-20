@@ -244,6 +244,7 @@ Von Bertalanffy (1938, 1957) a fixé $m$ à 1 ou à 3. Richards (1959) permet à
 
 TODO: graphique avec légende: Allure de différentes courbes de Richards en fonction de la valeur de $m$. De gauche à droite: $m$ = 0,5, 1, 3, 6 et 10; avec $k = 0,5$, $y_\infty = 0,95$ et $t_0 = 0$ pour toutes les courbes. La courbe en gras, avec $m = 1$, est équivalente au modèle de von Bertalanffy linéaire.
 
+
 #### Modèle de Weibull
 
 Depuis son introduction en 1951 par Weibull, ce modèle est présenté comme polyvalent. Il a été décrit à l'origine comme une distribution statistique. Il trouve de nombreuses applications en croissance de population (éventuellement négative), et il est utilisé également pour décrire la courbe de survie en cas de maladie ou dans des études de dynamique de populations. Il a parfois été utilisé comme un modèle de croissance. La forme la plus générale de ce modèle est \ :
@@ -286,6 +287,7 @@ $$y(t) = y_\infty - \frac{2 (y_\infty - d)}{e^{k1 \ (t - t_0)} + e^{k2 \ (t - t_
 
 TODO figure avec légende: Exemple d'une courbe Preece-Baines 1 avec $k1 = 0,19$, $k2 = 2,5$, $y_\infty = 0,95$, $d = 0,8$ et $t_0 = 6$.
 
+
 #### Modèle de Tanaka
 
 Tous les modèles précédents sont asymptotiques, à l'exception de la courbe exponentielle (mais cette dernière ne modélise valablement que la phase de croissance initiale). Tous ces modèles décrivent donc une **croissance déterminée** qui n'excédera jamais une taille maximale représentée par une asymptote horizontale en $y(t) = y_\infty$. Knight (1968) s'est demandé s'il s'agit d'une réalité biologique ou simplement d'un artefact mathématique. Dans le second cas, la croissance n'apparaîtrait déterminée que parce que les modèles choisis pour la représenter sont asymptotiques. Pour s'affranchir d'une telle contrainte, Tanaka (1982, 1988) a élaboré un nouveau modèle de croissance qui décrit une croissance non déterminée\ :
@@ -297,7 +299,9 @@ Ce modèle complexe à quatre paramètres a une période initiale de croissance 
 TODO figure avec légende: Exemple d'une courbe de Tanaka avec $a = 3$, $b = 2,5$, $d = -0,2$ et $t_0 = 2$.
 
 
-### Exemple d'utilisation
+### Choix du modèle
+
+Le choix d'un modèle non linéaire fait intervenir des critères identiques à ceux d'un modèle linéaire (qualité d'ajustement évaluée par l'AIC, inspection visuelle de l'ajustement dans le nuage de points), mais il fait aussi intervenir une dimension supplémentaire\ : le choix de la fonction marthématique à ajuster. Comme nous venons de le voir au travers de quelques modèles courants en biologie, le nombre de fonctions mathématiques résultat en des formes similaire, par exemple de type sigmoïde, est grand. Ainsi, le choix de la meilleure fonction à utiliser dans un cas particulier est rendu plus difficile.
 
 Nous allons illustrer l'ajustement d'une courbe non linéaire par le choix et l'ajustement d'un modèle de croissance dans un jeu de données en modélisant la croissance somatique de l'oursin *Paracentrotus lividus* (voir Grosjean 2001). Ce jeu de données est disponible dans le package `data.io`, sous le nom `urchin_growth`.
 
@@ -310,20 +314,22 @@ chart(data = urchins, diameter ~ age) +
 
 Comme vous pouvez le voir, différents oursins ont été mesurés via le diamètre à l'ambitus du test (zone la plus large) en mm à différents âges (en années). Les mesures ont été effectuées tous les 6 mois pendant 7 ans, ce qui donne un bon aperçu de la croissance de cet animal y compris la taille maximale asymptotique qui est atteinte vers les 4 à 5 ans (pour ce genre de modèle, il est très important de continuer à mesurer les animaux afin de bien quantifier cette taille maximale asymptotique). Pour les individus survivants, dès mesures ont également été réalisées jusqu'à 10,5 ans. Ainsi, l'examen du graphique nous permet d'emblée de choisir un modèle à croissance finie (pas le modèle de Tanaka, donc), et de forme sigmoïdale. Les modèles logistique, Weibull ou Gompertz pourraient convenir par exemple. Nous pouvons à ce stade, essayer différents modèles et choisir celui qui nous semble le plus adapté.
 
-Le choix du meilleur modèle se fait grâce à deux critères:
+Le choix du meilleur modèle se fait grâce à deux critères\ :
 
 1. Les connaissances théoriques et *a priori* du modèle que l'on ajuste. En effet, il n'existe qu'un seul modèle linéaire, mais une infinité de modèles curvilinéaires qui peuvent s'ajuster dans les données. Le choix du meilleur modèle se fait en fonction de considérations sur le phénomène sous-jacent qui doivent se refléter dans les propriétés mathématiques de la courbe choisie. Par exemple, si on sait que la croissance est asymptotique vers une taille maximale, nous devrons choisir une courbe mathématique qui présente une asymptote horizontale à son maximum pour représente au mieux le phénomène étudié.
 
 2. Le coefficient de détermination $R^2$ n'est pas calculé par R pour une régression non linéaire car sa validité est sujette à discussion entre les statisticiens (d'autres logiciels statistiques le calculent). Nous n'avons donc pas d'estimation de la qualité de l'ajustement par ce biais, comme dans le cas de la régression linéaire. Par contre, il est possible de calculer un autre critère plus fiable que nous avons déjà utilisé\ : le **critère d'Akaïke** (fonction `AIC()` dans R). Ce critère tient compte à la fois de la qualité d'ajustement et de la complexité du modèle, exprimée par le nombre de paramètres qu'il faut estimer. Plus le modèle est complexe, plus on peut s'attendre à ce qu'il s'ajuste bien aux données car il est plus flexible. Cependant, en ce domaine, la complexité n'est pas forcément un gage de qualité. On recherche plutôt un compromis entre meilleur ajustement et simplicité. Le critère d'information d'Akaiké quantifie précisément ce compromis, c'est-à-dire que le modèle qui a un AIC le plus faible est considéré comme le meilleur. Appliquons donc ce concept pour sélectionner le meilleur modèle de croissance pour décrire la croissance somatique de nos oursins après avoir sélectionné les modèles candidats les plus judicieux (modèle sigmoïdal avec asymptote horizontale au maximum).
 
-Notons toutefois que, comme les animaux sont mesurés aux mêmes âges, tous les six mois, certains points se superposent. Afin d'afficher tous les points, il est utile d'utiliser la fonction `geom_jitter()` à la place de `geom_point()` qui décale les points d'une valeur aléatoire pour éviter ces superpositions (l'argument `width =` indique le décalage maximum à appliquer). Voici ce que cela donne \ :
+Notons toutefois que, comme les animaux sont mesurés aux mêmes âges, tous les six mois, certains points se superposent. Afin d'afficher tous les points, il est utile d'utiliser la fonction `geom_jitter()` à la place de `geom_point()` qui décale les points d'une valeur aléatoire pour éviter ces superpositions (l'argument `width =` indique le décalage maximum à appliquer). Voici ce que cela donne (en ajoutant également un titre avec formattage correct du nom en latin) \ :
 
 ```{r}
-chart(data = urchins, diameter ~ age) +
-  geom_jitter(width = 0.1, alpha = 0.2)
+urchins_plot <- chart(data = urchins, diameter ~ age) +
+  geom_jitter(width = 0.1, alpha = 0.2, color = "darkgrey") +
+  ggtitle(expression(paste("Croissance de l'oursin ", italic("Paracentrotus lividus"))))
+urchins_plot
 ```
 
-Nous avons ici également représenté les poiints de manière semi-transparent avec `alpha = 0.2`(transparence de 20%) pour encore mieux mettre en évidence les points de mesures qui se superposent.
+Nous avons ici également représenté les points de manière semi-transparent avec `alpha = 0.2`(transparence de 20%) pour encore mieux mettre en évidence les points de mesures qui se superposent.
 
 Ajustons maintenant un modèle de Gompertz (modèle 'SelfStart')\ :
 
@@ -332,18 +338,23 @@ urchins_gomp <- nls(data = urchins, diameter ~ SSgompertz(age, Asym, b2, b3))
 summary(urchins_gomp)
 ```
 
-Pour ajouter cette courbe sur le graphique, il faut créer un vecteur de valeurs x (Age) espacé régulièrement et prédire les valeurs de size obtenues avec ce modèle:
+Pour ajouter cette courbe sur le graphique, nous allons utiliser une petite fonction personnalisée qui va transformer notre objet `nls` en une fonction utlisable par `stat_function()` pour aller tracer la courbe dans un graphique de type `ggplot2` obtenu à l'aide de `chart()`.
 
-> Pred <- list(age = seq(from = 0, to = 7, by = 0.1))
-> Pred
-$age
- [1] 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4
-[16] 1.5 1.6 1.7 1.8 1.9 2.0 2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9
-[31] 3.0 3.1 3.2 3.3 3.4 3.5 3.6 3.7 3.8 3.9 4.0 4.1 4.2 4.3 4.4
-[46] 4.5 4.6 4.7 4.8 4.9 5.0 5.1 5.2 5.3 5.4 5.5 5.6 5.7 5.8 5.9
-[61] 6.0 6.1 6.2 6.3 6.4 6.5 6.6 6.7 6.8 6.9 7.0
+```{r}
+as.function.nls <- function(x, ...) {
+  nls_model <- x
+  name_x <- names(nls_model$dataClasses)
+  stopifnot(length(name_x) == 1)
+  function(x) predict(nls_model, newdata = structure(list(x), names = name_x))
+}
+```
 
-> lines(Pred$age, predict(reg.gomp, newdata = Pred), col = "red")
+A présent, nous pouvons faire ceci\ :
+
+```{r}
+urchins_plot +
+  stat_function(fun = as.function(urchins_gomp), color = "red", size = 1)
+```
 
 L'ajustement de cette fonction semble très bon, à l'oeil. Voyons ce qu'il en est d'autres modèles\ :
 
@@ -352,9 +363,18 @@ urchins_logis <- nls(data = urchins, diameter ~ SSlogis(age, Asym, xmid, scal))
 summary(urchins_logis)
 ```
 
-Et voici le graphique avec les deux modèlmes superposés\ :
+Et voici le graphique avec les deux modèles superposés\ :
 
-> lines(Pred, predict(reg.logis, newdata = Pred), col = "blue")
+```{r}
+urchins_plot +
+  stat_function(fun = as.function(urchins_gomp), aes(color = "Gompertz"), size = 1) +
+  stat_function(fun = as.function(urchins_logis), aes(color = "logistique"), size = 1) +
+  labs(color = "Modèle")
+```
+
+Notez que ici, la couleur a été incluse dans le "mapping" (argument `mapping = `) de `stat_function()` en l'incluant dans `aes()`. Cela change fondamentalement la façon dont la couler est perçue par `ggplot2`. Dans ce cas-ci, la valeur est interprétée non comme une couleur à proprement parler, mais comme un niveau (une couche) à inclure dans le graphique et à reporter via une légende. Ensuite, à l'aide de `labs()` on chaznge le titre de la légende relatif à la couleur par un nom plus explicite\ : "Modèle".
+
+Nous pouvons comparer ces modèles à l'aide du critère d'Akaïke.
 
 ```{r}
 AIC(urchins_gomp, urchins_logis)
@@ -370,8 +390,15 @@ summary(urchins_weib)
 
 Ajoutons ce nouveau modèle sur le graphique\ :
 
+```{r}
+urchins_plot +
+  stat_function(fun = as.function(urchins_gomp), aes(color = "Gompertz"), size = 1) +
+  stat_function(fun = as.function(urchins_logis), aes(color = "logistique"), size = 1) +
+  stat_function(fun = as.function(urchins_weib), aes(color = "Weibull"), size = 1) +
+  labs(color = "Modèle")
+```
 
-> lines(Pred$age, predict(reg.weib, newdata = Pred), col = "green")
+... et comparons à l'aide du critère d'Akaïke\ :
 
 ```{r}
 AIC(urchins_gomp, urchins_logis, urchins_weib)
@@ -401,18 +428,25 @@ urchins_rich <- nls(data = urchins, diameter ~ richards(age, Asym, k, x0, m),
 summary(urchins_rich)
 ```
 
-Ajoutons ce dernière modèle sur notre graphique\ :
+Ajoutons ce dernière modèle sur notre graphique (avec des traits un peu plus fins pour mieux distinguer les modèles les uns des autres)\ :
 
-> lines(Pred$age, predict(reg.rich, newdata = Pred), col = "black")
-> legend(5, 20, c("Gompertz", "logistique", "Weibull", "Richards"),
-+	col =c("red", "blue", "green", "black"), lwd = 2)
+```{r}
+urchins_plot +
+  stat_function(fun = as.function(urchins_gomp), aes(color = "Gompertz"), size = 0.7) +
+  stat_function(fun = as.function(urchins_logis), aes(color = "logistique"), size = 0.7) +
+  stat_function(fun = as.function(urchins_weib), aes(color = "Weibull"), size = 0.7) +
+  stat_function(fun = as.function(urchins_rich), aes(color = "Richards"), size = 0.7) +
+  labs(color = "Modèle")
+```
+
+... et comparons à l'aide du critère d'Akaïke\ :
 
 ```{r}
 AIC(urchins_gomp, urchins_logis, urchins_weib, urchins_rich)
 ```
 
 
-La courbe est intermédiaire entre Gompertz et Weibull aux jeunes âges, mais l'asymptote maximale est légèrement plus haute que pour les deux autres modèles (58 mm au lieu de 57 mm). Les trois courbes sont très, très proches l'une de l'autre. Le critère d'information d'Akaiké est un peu moins bon pour le modèle de Richards que pour celui de Weibull, mais est tout juste meilleur que celui de Gompertz. En outre l'écart type pour le paramètre `x0` est plus conséquent en comparaison de sa valeur, ce qui démontre une certaine instabilité de la fonction par rapport à ce paramètre, et par conséquent, une incertitude dans son estimation. Pour toutes ces raisons, le modèle de Richards sera écarté dans notre cas, au benefice du modèle de Weibull, voire de celui de Gompertz plus simple.
+La courbe est très proche des modèles de Gompertz et Weibull aux jeunes âges, mais l'asymptote maximale est légèrement plus haute que pour les deux autres modèles (58 mm au lieu de 57 mm). Les trois courbes sont très, très proches l'une de l'autre. Le critère d'information d'Akaiké est un peu moins bon pour le modèle de Richards que pour celui de Weibull, mais est tout juste meilleur que celui de Gompertz. En outre l'écart type pour le paramètre `x0` est plus conséquent en comparaison de sa valeur, ce qui démontre une certaine instabilité de la fonction par rapport à ce paramètre, et par conséquent, une incertitude dans son estimation. Pour toutes ces raisons, le modèle de Richards sera écarté dans notre cas, au benefice du modèle de Weibull, voire de celui de Gompertz plus simple.
 
 Le choix final entre Gompertz ou Weibull dépend de l'usage que l'on veut faire du modèle. Si la simplicité du modèle est primordiale, nous garderons Gompertz. Si la croissance des petits oursins est un aspect important de l'analyse, nous garderons Weibull qui semble mieux s'ajuster aux données à ce niveau.
 

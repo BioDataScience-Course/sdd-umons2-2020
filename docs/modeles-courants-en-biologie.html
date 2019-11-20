@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2019-11-19">
+<meta name="date" content="2019-11-20">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -206,7 +206,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html"><i class="fa fa-check"></i><b>4.2</b> Modèles courants en biologie</a><ul>
 <li class="chapter" data-level="4.2.1" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-croissance"><i class="fa fa-check"></i><b>4.2.1</b> Modèles de croissance</a></li>
-<li class="chapter" data-level="4.2.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#exemple-dutilisation"><i class="fa fa-check"></i><b>4.2.2</b> Exemple d’utilisation</a></li>
+<li class="chapter" data-level="4.2.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#choix-du-modele"><i class="fa fa-check"></i><b>4.2.2</b> Choix du modèle</a></li>
 <li class="chapter" data-level="4.2.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#bibliographie-a-remanier"><i class="fa fa-check"></i><b>4.2.3</b> Bibliographie (à remanier)</a></li>
 </ul></li>
 </ul></li>
@@ -350,8 +350,9 @@ Il est possible de généraliser ce modèle en définissant une courbe logistiqu
 <p>TODO figure avec légende: Exemple d’une courbe de Tanaka avec <span class="math inline">\(a = 3\)</span>, <span class="math inline">\(b = 2,5\)</span>, <span class="math inline">\(d = -0,2\)</span> et <span class="math inline">\(t_0 = 2\)</span>.</p>
 </div>
 </div>
-<div id="exemple-dutilisation" class="section level3">
-<h3><span class="header-section-number">4.2.2</span> Exemple d’utilisation</h3>
+<div id="choix-du-modele" class="section level3">
+<h3><span class="header-section-number">4.2.2</span> Choix du modèle</h3>
+<p>Le choix d’un modèle non linéaire fait intervenir des critères identiques à ceux d’un modèle linéaire (qualité d’ajustement évaluée par l’AIC, inspection visuelle de l’ajustement dans le nuage de points), mais il fait aussi intervenir une dimension supplémentaire : le choix de la fonction marthématique à ajuster. Comme nous venons de le voir au travers de quelques modèles courants en biologie, le nombre de fonctions mathématiques résultat en des formes similaire, par exemple de type sigmoïde, est grand. Ainsi, le choix de la meilleure fonction à utiliser dans un cas particulier est rendu plus difficile.</p>
 <p>Nous allons illustrer l’ajustement d’une courbe non linéaire par le choix et l’ajustement d’un modèle de croissance dans un jeu de données en modélisant la croissance somatique de l’oursin <em>Paracentrotus lividus</em> (voir Grosjean 2001). Ce jeu de données est disponible dans le package <code>data.io</code>, sous le nom <code>urchin_growth</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">SciViews<span class="op">::</span>R
 urchins &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="st">&quot;urchin_growth&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;data.io&quot;</span>, <span class="dt">lang =</span> <span class="st">&quot;fr&quot;</span>)
@@ -359,16 +360,18 @@ urchins &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="
 <span class="st">  </span><span class="kw">geom_point</span>()</code></pre>
 <p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Comme vous pouvez le voir, différents oursins ont été mesurés via le diamètre à l’ambitus du test (zone la plus large) en mm à différents âges (en années). Les mesures ont été effectuées tous les 6 mois pendant 7 ans, ce qui donne un bon aperçu de la croissance de cet animal y compris la taille maximale asymptotique qui est atteinte vers les 4 à 5 ans (pour ce genre de modèle, il est très important de continuer à mesurer les animaux afin de bien quantifier cette taille maximale asymptotique). Pour les individus survivants, dès mesures ont également été réalisées jusqu’à 10,5 ans. Ainsi, l’examen du graphique nous permet d’emblée de choisir un modèle à croissance finie (pas le modèle de Tanaka, donc), et de forme sigmoïdale. Les modèles logistique, Weibull ou Gompertz pourraient convenir par exemple. Nous pouvons à ce stade, essayer différents modèles et choisir celui qui nous semble le plus adapté.</p>
-<p>Le choix du meilleur modèle se fait grâce à deux critères:</p>
+<p>Le choix du meilleur modèle se fait grâce à deux critères :</p>
 <ol style="list-style-type: decimal">
 <li><p>Les connaissances théoriques et <em>a priori</em> du modèle que l’on ajuste. En effet, il n’existe qu’un seul modèle linéaire, mais une infinité de modèles curvilinéaires qui peuvent s’ajuster dans les données. Le choix du meilleur modèle se fait en fonction de considérations sur le phénomène sous-jacent qui doivent se refléter dans les propriétés mathématiques de la courbe choisie. Par exemple, si on sait que la croissance est asymptotique vers une taille maximale, nous devrons choisir une courbe mathématique qui présente une asymptote horizontale à son maximum pour représente au mieux le phénomène étudié.</p></li>
 <li><p>Le coefficient de détermination <span class="math inline">\(R^2\)</span> n’est pas calculé par R pour une régression non linéaire car sa validité est sujette à discussion entre les statisticiens (d’autres logiciels statistiques le calculent). Nous n’avons donc pas d’estimation de la qualité de l’ajustement par ce biais, comme dans le cas de la régression linéaire. Par contre, il est possible de calculer un autre critère plus fiable que nous avons déjà utilisé : le <strong>critère d’Akaïke</strong> (fonction <code>AIC()</code> dans R). Ce critère tient compte à la fois de la qualité d’ajustement et de la complexité du modèle, exprimée par le nombre de paramètres qu’il faut estimer. Plus le modèle est complexe, plus on peut s’attendre à ce qu’il s’ajuste bien aux données car il est plus flexible. Cependant, en ce domaine, la complexité n’est pas forcément un gage de qualité. On recherche plutôt un compromis entre meilleur ajustement et simplicité. Le critère d’information d’Akaiké quantifie précisément ce compromis, c’est-à-dire que le modèle qui a un AIC le plus faible est considéré comme le meilleur. Appliquons donc ce concept pour sélectionner le meilleur modèle de croissance pour décrire la croissance somatique de nos oursins après avoir sélectionné les modèles candidats les plus judicieux (modèle sigmoïdal avec asymptote horizontale au maximum).</p></li>
 </ol>
-<p>Notons toutefois que, comme les animaux sont mesurés aux mêmes âges, tous les six mois, certains points se superposent. Afin d’afficher tous les points, il est utile d’utiliser la fonction <code>geom_jitter()</code> à la place de <code>geom_point()</code> qui décale les points d’une valeur aléatoire pour éviter ces superpositions (l’argument <code>width =</code> indique le décalage maximum à appliquer). Voici ce que cela donne  :</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(<span class="dt">data =</span> urchins, diameter <span class="op">~</span><span class="st"> </span>age) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">width =</span> <span class="fl">0.1</span>, <span class="dt">alpha =</span> <span class="fl">0.2</span>)</code></pre>
+<p>Notons toutefois que, comme les animaux sont mesurés aux mêmes âges, tous les six mois, certains points se superposent. Afin d’afficher tous les points, il est utile d’utiliser la fonction <code>geom_jitter()</code> à la place de <code>geom_point()</code> qui décale les points d’une valeur aléatoire pour éviter ces superpositions (l’argument <code>width =</code> indique le décalage maximum à appliquer). Voici ce que cela donne (en ajoutant également un titre avec formattage correct du nom en latin)  :</p>
+<pre class="sourceCode r"><code class="sourceCode r">urchins_plot &lt;-<span class="st"> </span><span class="kw">chart</span>(<span class="dt">data =</span> urchins, diameter <span class="op">~</span><span class="st"> </span>age) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">width =</span> <span class="fl">0.1</span>, <span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">color =</span> <span class="st">&quot;darkgrey&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">expression</span>(<span class="kw">paste</span>(<span class="st">&quot;Croissance de l&#39;oursin &quot;</span>, <span class="kw">italic</span>(<span class="st">&quot;Paracentrotus lividus&quot;</span>))))
+urchins_plot</code></pre>
 <p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Nous avons ici également représenté les poiints de manière semi-transparent avec <code>alpha = 0.2</code>(transparence de 20%) pour encore mieux mettre en évidence les points de mesures qui se superposent.</p>
+<p>Nous avons ici également représenté les points de manière semi-transparent avec <code>alpha = 0.2</code>(transparence de 20%) pour encore mieux mettre en évidence les points de mesures qui se superposent.</p>
 <p>Ajustons maintenant un modèle de Gompertz (modèle ‘SelfStart’) :</p>
 <pre class="sourceCode r"><code class="sourceCode r">urchins_gomp &lt;-<span class="st"> </span><span class="kw">nls</span>(<span class="dt">data =</span> urchins, diameter <span class="op">~</span><span class="st"> </span><span class="kw">SSgompertz</span>(age, Asym, b2, b3))
 <span class="kw">summary</span>(urchins_gomp)</code></pre>
@@ -387,20 +390,17 @@ urchins &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="
 # 
 # Number of iterations to convergence: 3 
 # Achieved convergence tolerance: 2.655e-06</code></pre>
-<p>Pour ajouter cette courbe sur le graphique, il faut créer un vecteur de valeurs x (Age) espacé régulièrement et prédire les valeurs de size obtenues avec ce modèle:</p>
-<blockquote>
-<p>Pred &lt;- list(age = seq(from = 0, to = 7, by = 0.1))
-Pred
-$age
-[1] 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4
-[16] 1.5 1.6 1.7 1.8 1.9 2.0 2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9
-[31] 3.0 3.1 3.2 3.3 3.4 3.5 3.6 3.7 3.8 3.9 4.0 4.1 4.2 4.3 4.4
-[46] 4.5 4.6 4.7 4.8 4.9 5.0 5.1 5.2 5.3 5.4 5.5 5.6 5.7 5.8 5.9
-[61] 6.0 6.1 6.2 6.3 6.4 6.5 6.6 6.7 6.8 6.9 7.0</p>
-</blockquote>
-<blockquote>
-<p>lines(Pred$age, predict(reg.gomp, newdata = Pred), col = “red”)</p>
-</blockquote>
+<p>Pour ajouter cette courbe sur le graphique, nous allons utiliser une petite fonction personnalisée qui va transformer notre objet <code>nls</code> en une fonction utlisable par <code>stat_function()</code> pour aller tracer la courbe dans un graphique de type <code>ggplot2</code> obtenu à l’aide de <code>chart()</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">as.function.nls &lt;-<span class="st"> </span><span class="cf">function</span>(x, ...) {
+  nls_model &lt;-<span class="st"> </span>x
+  name_x &lt;-<span class="st"> </span><span class="kw">names</span>(nls_model<span class="op">$</span>dataClasses)
+  <span class="kw">stopifnot</span>(<span class="kw">length</span>(name_x) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)
+  <span class="cf">function</span>(x) <span class="kw">predict</span>(nls_model, <span class="dt">newdata =</span> <span class="kw">structure</span>(<span class="kw">list</span>(x), <span class="dt">names =</span> name_x))
+}</code></pre>
+<p>A présent, nous pouvons faire ceci :</p>
+<pre class="sourceCode r"><code class="sourceCode r">urchins_plot <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_gomp), <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">size =</span> <span class="dv">1</span>)</code></pre>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>L’ajustement de cette fonction semble très bon, à l’oeil. Voyons ce qu’il en est d’autres modèles :</p>
 <pre class="sourceCode r"><code class="sourceCode r">urchins_logis &lt;-<span class="st"> </span><span class="kw">nls</span>(<span class="dt">data =</span> urchins, diameter <span class="op">~</span><span class="st"> </span><span class="kw">SSlogis</span>(age, Asym, xmid, scal))
 <span class="kw">summary</span>(urchins_logis)</code></pre>
@@ -419,10 +419,14 @@ $age
 # 
 # Number of iterations to convergence: 4 
 # Achieved convergence tolerance: 1.079e-06</code></pre>
-<p>Et voici le graphique avec les deux modèlmes superposés :</p>
-<blockquote>
-<p>lines(Pred, predict(reg.logis, newdata = Pred), col = “blue”)</p>
-</blockquote>
+<p>Et voici le graphique avec les deux modèles superposés :</p>
+<pre class="sourceCode r"><code class="sourceCode r">urchins_plot <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_gomp), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Gompertz&quot;</span>), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_logis), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;logistique&quot;</span>), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Modèle&quot;</span>)</code></pre>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Notez que ici, la couleur a été incluse dans le “mapping” (argument <code>mapping =</code>) de <code>stat_function()</code> en l’incluant dans <code>aes()</code>. Cela change fondamentalement la façon dont la couler est perçue par <code>ggplot2</code>. Dans ce cas-ci, la valeur est interprétée non comme une couleur à proprement parler, mais comme un niveau (une couche) à inclure dans le graphique et à reporter via une légende. Ensuite, à l’aide de <code>labs()</code> on chaznge le titre de la légende relatif à la couleur par un nom plus explicite : “Modèle”.</p>
+<p>Nous pouvons comparer ces modèles à l’aide du critère d’Akaïke.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(urchins_gomp, urchins_logis)</code></pre>
 <pre><code>#               df      AIC
 # urchins_gomp   4 43861.73
@@ -447,9 +451,13 @@ $age
 # Number of iterations to convergence: 3 
 # Achieved convergence tolerance: 2.532e-06</code></pre>
 <p>Ajoutons ce nouveau modèle sur le graphique :</p>
-<blockquote>
-<p>lines(Pred$age, predict(reg.weib, newdata = Pred), col = “green”)</p>
-</blockquote>
+<pre class="sourceCode r"><code class="sourceCode r">urchins_plot <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_gomp), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Gompertz&quot;</span>), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_logis), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;logistique&quot;</span>), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_weib), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Weibull&quot;</span>), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Modèle&quot;</span>)</code></pre>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>… et comparons à l’aide du critère d’Akaïke :</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(urchins_gomp, urchins_logis, urchins_weib)</code></pre>
 <pre><code>#               df      AIC
 # urchins_gomp   4 43861.73
@@ -483,19 +491,22 @@ $age
 # 
 # Number of iterations to convergence: 11 
 # Achieved convergence tolerance: 4.346e-06</code></pre>
-<p>Ajoutons ce dernière modèle sur notre graphique :</p>
-<blockquote>
-<p>lines(Pred$age, predict(reg.rich, newdata = Pred), col = “black”)
-legend(5, 20, c(“Gompertz”, “logistique”, “Weibull”, “Richards”),
-+ col =c(“red”, “blue”, “green”, “black”), lwd = 2)</p>
-</blockquote>
+<p>Ajoutons ce dernière modèle sur notre graphique (avec des traits un peu plus fins pour mieux distinguer les modèles les uns des autres) :</p>
+<pre class="sourceCode r"><code class="sourceCode r">urchins_plot <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_gomp), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Gompertz&quot;</span>), <span class="dt">size =</span> <span class="fl">0.7</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_logis), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;logistique&quot;</span>), <span class="dt">size =</span> <span class="fl">0.7</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_weib), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Weibull&quot;</span>), <span class="dt">size =</span> <span class="fl">0.7</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_rich), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Richards&quot;</span>), <span class="dt">size =</span> <span class="fl">0.7</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Modèle&quot;</span>)</code></pre>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>… et comparons à l’aide du critère d’Akaïke :</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(urchins_gomp, urchins_logis, urchins_weib, urchins_rich)</code></pre>
 <pre><code>#               df      AIC
 # urchins_gomp   4 43861.73
 # urchins_logis  4 44139.13
 # urchins_weib   5 43810.72
 # urchins_rich   5 43854.53</code></pre>
-<p>La courbe est intermédiaire entre Gompertz et Weibull aux jeunes âges, mais l’asymptote maximale est légèrement plus haute que pour les deux autres modèles (58 mm au lieu de 57 mm). Les trois courbes sont très, très proches l’une de l’autre. Le critère d’information d’Akaiké est un peu moins bon pour le modèle de Richards que pour celui de Weibull, mais est tout juste meilleur que celui de Gompertz. En outre l’écart type pour le paramètre <code>x0</code> est plus conséquent en comparaison de sa valeur, ce qui démontre une certaine instabilité de la fonction par rapport à ce paramètre, et par conséquent, une incertitude dans son estimation. Pour toutes ces raisons, le modèle de Richards sera écarté dans notre cas, au benefice du modèle de Weibull, voire de celui de Gompertz plus simple.</p>
+<p>La courbe est très proche des modèles de Gompertz et Weibull aux jeunes âges, mais l’asymptote maximale est légèrement plus haute que pour les deux autres modèles (58 mm au lieu de 57 mm). Les trois courbes sont très, très proches l’une de l’autre. Le critère d’information d’Akaiké est un peu moins bon pour le modèle de Richards que pour celui de Weibull, mais est tout juste meilleur que celui de Gompertz. En outre l’écart type pour le paramètre <code>x0</code> est plus conséquent en comparaison de sa valeur, ce qui démontre une certaine instabilité de la fonction par rapport à ce paramètre, et par conséquent, une incertitude dans son estimation. Pour toutes ces raisons, le modèle de Richards sera écarté dans notre cas, au benefice du modèle de Weibull, voire de celui de Gompertz plus simple.</p>
 <p>Le choix final entre Gompertz ou Weibull dépend de l’usage que l’on veut faire du modèle. Si la simplicité du modèle est primordiale, nous garderons Gompertz. Si la croissance des petits oursins est un aspect important de l’analyse, nous garderons Weibull qui semble mieux s’ajuster aux données à ce niveau.</p>
 </div>
 <div id="bibliographie-a-remanier" class="section level3">
