@@ -19,25 +19,151 @@
 - Les modules 1 & 2 du présent cours concernant la régression linéaire sont une en trée en matière indispensable puisque la régression va être abordée ici comme une extension de ce qui a déjà été vu.
 
 
-## Croissance de ...
+## Rendement photosynthétique
 
-On part d'un exemple concret, et on montre que ni la régression linéaire, ni une transformation ne fonctione bien ici.
+Afin d'avoir un premier aperçu de ce qu'est une régression non linéaire par les moindres carrés et comment on la calcule dans R, nous allons résoudre un exemple concret. La posidonie (*Posidonia oceanica*) est une plante à fleur marine qui forme des herbiers denses en mer Méditerranée. Ses feuilles sont particulièrement adaptées à l'utilisation de la lumière qui règne à quelques mètres en dessous de la surface où elle prospère en herbiers denses.
+
+TODO: image d'herbier
+
+Pour étudier le rendement de sa photosynthèse, c'est-à-dire la part du rayonnement lumineux reçu qui est effectivement utilisé pour initier la chaîne de transport d'électrons au sein de son photosystème II, nous pouvons utiliser un appareil spécialisé\ : le diving PAM.
+
+TODO: diving PAM
+
+Cet appareil est capable de déterminer le taux de transfert des électrons (ETR en µmol électrons/m^2^/s) par l'analyse de la fluorescence réémise par la plante lorsque ses photosites sont excités par une lumière monochromatique pulsée [TODO: ajouter une ref]. Une façon de déterminer la réponse de la plante en rendement photosynthétique en fonction de l'intensité de la lumière reçue est de mesurer successivement l'ETR pour différentes intensités de lumière. En anglais cela s'appelle la "Rapid Light Curve" ou RLC en abbrégé. Comme toutes les longueurs d'ondes lumineuses ne sont pas utilisables par la chlorophylle, l'intensité lumineuse est exprimé dans une unité particulière, le "PAR" ou "Photosynthetically Active Radiation" en µmol photons/m^2^/s. Une RLC represente donc la variation de l'ERT en fonction des PAR. Une RLC typique commence par une relation quasi-linéaire aux faibles intensités, pour s'infléchir et atteindre un plateau de rendement maximum. Au delà, si l'intensité lumineuse augmente encore, des phénomènes de photoinhibition appraissent et le rendement diminue dans une troisième phase. Voici une RLC mesurée à l'aide du diving PAM sur une feuille de *P. oceanica*.
 
 
-### Quand passer à la régression linéaire ?
+```r
+rlc <- tribble(
+  ~etr, ~par,
+  0.0,  0,
+  0.5,  2,
+  3.2,  11,
+  5.7,  27,
+  7.4,  50,
+  8.4,  84,
+  8.9,  170,
+  8.4,  265,
+  7.8,  399
+)
+rlc <- labelise(rlc, self = FALSE,
+  label = list(etr = "ETR", par = "PAR"),
+  units = list(etr = "µmol électrons/m^2/s", par = "µmol photons/m^2/s")
+)
+chart(data = rlc, etr ~ par) +
+  geom_point()
+```
+
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" />
+
+Les trois phases successives sobnt bien visibles ici. Naturellement, une régression linéaire dans ces données n'a pas de sens. Une régression polynomiale d'ordre trois donnerait ceci (code issu du snippet correspondant)\ :
+
+
+```r
+rlc_lm <- lm(data = rlc, etr ~  par + I(par^2) + I(par^3))
+rlc_lm %>.%
+  (function(lm, model = lm[["model"]], vars = names(model))
+    chart(model, aes_string(x = vars[2], y = vars[1])) +
+    geom_point() +
+    stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3)))(.)
+```
+
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" />
+
+La régression polynomiale tente maladroitement de s'ajuster dans les données mais est incapable de retranscrire les trois phases correctement. En particulier, la troisième est incorrecte puisque le modèle semble indiquer une reprise du rendement aux intensités les plus élevées. **Une représentation incorrecte est à craindre lorsque le modèle mathématique utilisé ne représente pas les différentes caractéristiques du phénomène étudié.** De plus ici, aucune transformation monotone croissante ou décroissante ne peut linéariser ce type de données puisque la courbe monte d'abord pour s'infléchir ensuite.
+
+Les spécialistes de la photosynthèse ont mis au point différents modèles pour représenter les RLC. Platt, Gallegos et Harrison (1980) [TODO: référence complète] ont proposé une formulation mathématique des phénomènes mis en jeu ici. Leur équation est la suivante\ :
+
+$$ETR = ETR_{max} \cdot (1 - e^{-PAR \cdot \alpha/ETR_{max}}) \cdot e^{-\beta \cdot PAR/ETR_{max}}$$
+
+avec $PAR$ la variable indépendante, $ETR$, la variable dépendante, et $ETR_{max}$, $\alpha$ et $\beta$, les trois paramètres du modèle. $ETR_{max}$ est le rendement maximum possible, $\alpha$ est le coefficient d'infléchissement avant le maximum et $\beta$ est le coefficient de photoinhibition.
+
+<div class="note">
+<p>En matière de régression non linéaire, il est tout aussi important de bien comprendre les propriétés mathématiques de la fonction utilisée que de faire un choix judicieux du modèle. En particulier, il faut s’attacher à bien comprendre la signification (biologique) des paramètres du modèle. Non seulement, cela aide à en définir des valeurs intiales plausibles, mais c’est aussi indispensable pour pouvoir ensuite bien interpréter les résultats obtenus.</p>
+</div>
+
+Nous pouvons facilement créer une fonction dans R qui représente ce modèle\ :
+
+
+```r
+pgh_model <- function(x, etr_max, alpha, beta)
+  etr_max * (1 - exp(-x * alpha/etr_max)) * (exp(-beta * x/etr_max))
+```
+
+Le premier argument de la fonction *doit* être la variable indépendante (notée de manière générique `x`, mais n'importe quel nom fait l'affaire ici) et les autres arguments correspondent aux paramètres du modèle, donc `etr_max`, `alpha` et `beta`. Ce modèle peut être ajusté dans R à l'aide de la fonction `nls()` pour "Nonlinear Least Squares" (regression). Par contre, nous devons fournir une information supplémentaire (l'explication sera détaillée plus loin)\ : des valeurs approximatives de départ pour les paramètres. Nous voyons sur le graphique que `etr_max = 9` est une estimation plausible, mais il est difficile de déterminer `alpha` et `beta` rien qu'en regardant le graphique. Nous allons fixer `alpha = 1` pour indiquer qu'il y a bien inflexion, et partir d'un modèle sans photoinhibition en utilisant `beta = 0`. Voici comment la régression non linéaire par les moindre carrés avec notre fonction `pgh_model` peut être calculée\ :
+
+
+```r
+rlc_nls <- nls(data = rlc, etr ~ pgh_model(par, etr_max, alpha, beta),
+  start = list(etr_max = 9, alpha = 1, beta = 0))
+summary(rlc_nls)
+```
+
+```
+# 
+# Formula: etr ~ pgh_model(par, etr_max, alpha, beta)
+# 
+# Parameters:
+#         Estimate Std. Error t value Pr(>|t|)    
+# etr_max 9.351064   0.261969  35.695 3.22e-08 ***
+# alpha   0.327385   0.013416  24.402 3.11e-07 ***
+# beta    0.003981   0.001084   3.673   0.0104 *  
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+# 
+# Residual standard error: 0.1729 on 6 degrees of freedom
+# 
+# Number of iterations to convergence: 7 
+# Achieved convergence tolerance: 3.619e-06
+```
+
+La dernière ligne, "achieved convergence" indique que le modèle a pu être calculé. Nous avons un tableau des paramètres qui ressemble très fort à celui de la régression linéaire, y compris les tests *t* de Student sur chacun des paramètres. Nous obtenons `etr_max = 9.3`, `alpha = 0.33` et `beta = 0.0040`, mais d'après le test de Student ce dernier paramètre n'est **pas** significativement différent de zéro. Pour l'instant, nous allons conserver ce modèle tel quel. Notre modèle paramétré donne donc\ :
+
+$$ETR = 9.3 \cdot (1 - e^{-PAR \cdot 0.33/9.3}) \cdot e^{-0.0040 \cdot PAR/9.3}$$
+
+Voyons ce que cela donne sur le graphique. Nous utiliserons pour ce faire une petite astuce qui consiste à transformer l'objet `nls` obtenu en une fonction utilisable par `stat_function()` pour le graphique `ggplot2` réalisé à l'aide de `chart()`^[Il est également possible de l'utiliser avec `curve()` pour une graphique de base dans R.].
+
+
+```r
+as.function.nls <- function(x, ...) {
+  nls_model <- x
+  name_x <- names(nls_model$dataClasses)
+  stopifnot(length(name_x) == 1)
+  function(x) predict(nls_model, newdata = structure(list(x), names = name_x))
+}
+```
+
+Maintenant, nous allons pouvoir ajouter la courbe correspondant à notre modèle comme ceci\ :
+
+
+```r
+chart(data = rlc, etr ~ par) +
+  geom_point() +
+  stat_function(fun = as.function(rlc_nls))
+```
+
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" />
+
+Ce modèle représente bien mieux le phénomène étudié, et il s'ajuste d'ailleurs beaucoup mieux également dans les données que notre polynome. Une comparaison sur base du critère d'Akaïke est également en faveur de ce dernier modèle non linéaire (pour rappel, plus la valeur est faible, mieux c'est)\ :
+
+
+```r
+AIC(rlc_lm, rlc_nls)
+```
+
+```
+#         df       AIC
+# rlc_lm   5 31.834047
+# rlc_nls  4 -1.699078
+```
+
+
+### Quand passer à la régression non linéaire ?
 
 Nous pouvons être amenés à utiliser une régression non linéaire pour l'une de ces deux raisons, voire les deux en même temps\ :
 
 - Lorsque le nuage de points est **curvilinéaire**, évidemment, mais après avoir tenté de le **linéariser** (et de résoudre un problème éventuel d’hétéroscédasticité ou de non-normalité des résidus) par **transformation** sans succès,
 
 - En fonction de nos connaissances _a priori_ du phénomène. Tout phénomène issu d'un mécanisme dont nous connaissons le mode de fonctionnement menant à une équation mathématique non linéaire. Cela se rencontre fréquemment en physique, en chimie, et même en biologie (courbes de croissance, effet de modifications environmentales, etc.)
-
-
-
-
-
-
-
 
 
 ### Principe : fonction objective et calcul itératif
@@ -102,7 +228,7 @@ Le choix des nouveaux paramètres à tester à chaque itération ne se fait natu
 
 
 
-
+## Principe
 
 La régression non linéaire consiste à modéliser la variation d'une variable (dite variable réponse ou dépendante) par rapport à la variation d'une ou plusieurs autres variables (dites explicatives ou indépendantes). Le modèle utilisé pour représenter cette relation est une fonction mathématique de forme quelconque. Ceci constitue une généralisation de la régression linéaire où la fonction mathématique était nécessaire une droite ($y = a x + b$ dans le cas de la régression linéaire simple). La fonction est, dans la technique la plus courante, ajustée en minimisant la somme des carrés des résidus (écart entre les observations $y_i$ et les valeurs prédites par la droite, notées $\hat{y_i}$).
 
@@ -157,6 +283,7 @@ Il existe un autre type de modèle de croissance\ : la croissance des population
 Il existe de nombreux modèles de croissance différents. Certains sont exclusivement des modèles de croissance individuelle, d'autres sont exclusivement des modèles de croissance de populations, mais beaucoup peuvent être utilisés indifféremment dans les deux cas. Tous ont comme particularité d'être l'une ou l'autre forme de modèle exponentiel, exprimant ainsi le fait que la croissance est fondamentalement un processus exponentiel (comprenez que l'augmentation de masse ou du nombre d'individus est proportionnelle à la masse ou au nombre préexistant à chaque incrément temporel).
 
 Nous allons décrire ci-dessous quelques un des modèles de croissance principaux. Ensuite, nous les utiliserons pour ajuster une courbe de croissance dans un jeu de donnée réel.
+
 
 ####  Courbe exponentielle
 
@@ -310,7 +437,7 @@ chart(data = urchins, diameter ~ age) +
   geom_point()
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" />
 
 Comme vous pouvez le voir, différents oursins ont été mesurés via le diamètre à l'ambitus du test (zone la plus large) en mm à différents âges (en années). Les mesures ont été effectuées tous les 6 mois pendant 7 ans, ce qui donne un bon aperçu de la croissance de cet animal y compris la taille maximale asymptotique qui est atteinte vers les 4 à 5 ans (pour ce genre de modèle, il est très important de continuer à mesurer les animaux afin de bien quantifier cette taille maximale asymptotique). Pour les individus survivants, dès mesures ont également été réalisées jusqu'à 10,5 ans. Ainsi, l'examen du graphique nous permet d'emblée de choisir un modèle à croissance finie (pas le modèle de Tanaka, donc), et de forme sigmoïdale. Les modèles logistique, Weibull ou Gompertz pourraient convenir par exemple. Nous pouvons à ce stade, essayer différents modèles et choisir celui qui nous semble le plus adapté.
 
@@ -330,7 +457,7 @@ urchins_plot <- chart(data = urchins, diameter ~ age) +
 urchins_plot
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" />
 
 Nous avons ici également représenté les points de manière semi-transparent avec `alpha = 0.2`(transparence de 20%) pour encore mieux mettre en évidence les points de mesures qui se superposent.
 
@@ -380,7 +507,7 @@ urchins_plot +
   stat_function(fun = as.function(urchins_gomp), color = "red", size = 1)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" />
 
 L'ajustement de cette fonction semble très bon, à l'oeil. Voyons ce qu'il en est d'autres modèles\ :
 
@@ -418,7 +545,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" />
 
 Notez que ici, la couleur a été incluse dans le "mapping" (argument `mapping = `) de `stat_function()` en l'incluant dans `aes()`. Cela change fondamentalement la façon dont la couler est perçue par `ggplot2`. Dans ce cas-ci, la valeur est interprétée non comme une couleur à proprement parler, mais comme un niveau (une couche) à inclure dans le graphique et à reporter via une légende. Ensuite, à l'aide de `labs()` on chaznge le titre de la légende relatif à la couleur par un nom plus explicite\ : "Modèle".
 
@@ -474,7 +601,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" />
 
 ... et comparons à l'aide du critère d'Akaïke\ :
 
@@ -552,7 +679,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" />
 
 ... et comparons à l'aide du critère d'Akaïke\ :
 

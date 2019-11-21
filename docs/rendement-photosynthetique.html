@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Module 4 Régression non linéaire | Science des données biologiques 2</title>
+  <title>4.1 Rendement photosynthétique | Science des données biologiques 2</title>
   <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Module 4 Régression non linéaire | Science des données biologiques 2" />
+  <meta property="og:title" content="4.1 Rendement photosynthétique | Science des données biologiques 2" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
   <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Module 4 Régression non linéaire | Science des données biologiques 2" />
+  <meta name="twitter:title" content="4.1 Rendement photosynthétique | Science des données biologiques 2" />
   
   <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
   <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="modele-lineaire-generalise.html">
-<link rel="next" href="rendement-photosynthetique.html">
+<link rel="prev" href="reg-non-lin.html">
+<link rel="next" href="principe.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -255,23 +255,161 @@ code span.wa { color: #bf0303; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="reg-non-lin" class="section level1">
-<h1><span class="header-section-number">Module 4</span> Régression non linéaire</h1>
-<div id="objectifs-3" class="section level5 unnumbered">
-<h5>Objectifs</h5>
+<div id="rendement-photosynthetique" class="section level2">
+<h2><span class="header-section-number">4.1</span> Rendement photosynthétique</h2>
+<p>Afin d’avoir un premier aperçu de ce qu’est une régression non linéaire par les moindres carrés et comment on la calcule dans R, nous allons résoudre un exemple concret. La posidonie (<em>Posidonia oceanica</em>) est une plante à fleur marine qui forme des herbiers denses en mer Méditerranée. Ses feuilles sont particulièrement adaptées à l’utilisation de la lumière qui règne à quelques mètres en dessous de la surface où elle prospère en herbiers denses.</p>
+<p>TODO: image d’herbier</p>
+<p>Pour étudier le rendement de sa photosynthèse, c’est-à-dire la part du rayonnement lumineux reçu qui est effectivement utilisé pour initier la chaîne de transport d’électrons au sein de son photosystème II, nous pouvons utiliser un appareil spécialisé : le diving PAM.</p>
+<p>TODO: diving PAM</p>
+<p>Cet appareil est capable de déterminer le taux de transfert des électrons (ETR en µmol électrons/m<sup>2</sup>/s) par l’analyse de la fluorescence réémise par la plante lorsque ses photosites sont excités par une lumière monochromatique pulsée [TODO: ajouter une ref]. Une façon de déterminer la réponse de la plante en rendement photosynthétique en fonction de l’intensité de la lumière reçue est de mesurer successivement l’ETR pour différentes intensités de lumière. En anglais cela s’appelle la “Rapid Light Curve” ou RLC en abbrégé. Comme toutes les longueurs d’ondes lumineuses ne sont pas utilisables par la chlorophylle, l’intensité lumineuse est exprimé dans une unité particulière, le “PAR” ou “Photosynthetically Active Radiation” en µmol photons/m<sup>2</sup>/s. Une RLC represente donc la variation de l’ERT en fonction des PAR. Une RLC typique commence par une relation quasi-linéaire aux faibles intensités, pour s’infléchir et atteindre un plateau de rendement maximum. Au delà, si l’intensité lumineuse augmente encore, des phénomènes de photoinhibition appraissent et le rendement diminue dans une troisième phase. Voici une RLC mesurée à l’aide du diving PAM sur une feuille de <em>P. oceanica</em>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">rlc &lt;-<span class="st"> </span><span class="kw">tribble</span>(
+  <span class="op">~</span>etr, <span class="op">~</span>par,
+  <span class="fl">0.0</span>,  <span class="dv">0</span>,
+  <span class="fl">0.5</span>,  <span class="dv">2</span>,
+  <span class="fl">3.2</span>,  <span class="dv">11</span>,
+  <span class="fl">5.7</span>,  <span class="dv">27</span>,
+  <span class="fl">7.4</span>,  <span class="dv">50</span>,
+  <span class="fl">8.4</span>,  <span class="dv">84</span>,
+  <span class="fl">8.9</span>,  <span class="dv">170</span>,
+  <span class="fl">8.4</span>,  <span class="dv">265</span>,
+  <span class="fl">7.8</span>,  <span class="dv">399</span>
+)
+rlc &lt;-<span class="st"> </span><span class="kw">labelise</span>(rlc, <span class="dt">self =</span> <span class="ot">FALSE</span>,
+  <span class="dt">label =</span> <span class="kw">list</span>(<span class="dt">etr =</span> <span class="st">&quot;ETR&quot;</span>, <span class="dt">par =</span> <span class="st">&quot;PAR&quot;</span>),
+  <span class="dt">units =</span> <span class="kw">list</span>(<span class="dt">etr =</span> <span class="st">&quot;µmol électrons/m^2/s&quot;</span>, <span class="dt">par =</span> <span class="st">&quot;µmol photons/m^2/s&quot;</span>)
+)
+<span class="kw">chart</span>(<span class="dt">data =</span> rlc, etr <span class="op">~</span><span class="st"> </span>par) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>()</code></pre>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Les trois phases successives sobnt bien visibles ici. Naturellement, une régression linéaire dans ces données n’a pas de sens. Une régression polynomiale d’ordre trois donnerait ceci (code issu du snippet correspondant) :</p>
+<pre class="sourceCode r"><code class="sourceCode r">rlc_lm &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> rlc, etr <span class="op">~</span><span class="st">  </span>par <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(par<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(par<span class="op">^</span><span class="dv">3</span>))
+rlc_lm <span class="op">%&gt;.%</span>
+<span class="st">  </span>(<span class="cf">function</span>(lm, <span class="dt">model =</span> lm[[<span class="st">&quot;model&quot;</span>]], <span class="dt">vars =</span> <span class="kw">names</span>(model))
+    <span class="kw">chart</span>(model, <span class="kw">aes_string</span>(<span class="dt">x =</span> vars[<span class="dv">2</span>], <span class="dt">y =</span> vars[<span class="dv">1</span>])) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">stat_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(x<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(x<span class="op">^</span><span class="dv">3</span>)))(.)</code></pre>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>La régression polynomiale tente maladroitement de s’ajuster dans les données mais est incapable de retranscrire les trois phases correctement. En particulier, la troisième est incorrecte puisque le modèle semble indiquer une reprise du rendement aux intensités les plus élevées. <strong>Une représentation incorrecte est à craindre lorsque le modèle mathématique utilisé ne représente pas les différentes caractéristiques du phénomène étudié.</strong> De plus ici, aucune transformation monotone croissante ou décroissante ne peut linéariser ce type de données puisque la courbe monte d’abord pour s’infléchir ensuite.</p>
+<p>Les spécialistes de la photosynthèse ont mis au point différents modèles pour représenter les RLC. Platt, Gallegos et Harrison (1980) [TODO: référence complète] ont proposé une formulation mathématique des phénomènes mis en jeu ici. Leur équation est la suivante :</p>
+<p><span class="math display">\[ETR = ETR_{max} \cdot (1 - e^{-PAR \cdot \alpha/ETR_{max}}) \cdot e^{-\beta \cdot PAR/ETR_{max}}\]</span></p>
+<p>avec <span class="math inline">\(PAR\)</span> la variable indépendante, <span class="math inline">\(ETR\)</span>, la variable dépendante, et <span class="math inline">\(ETR_{max}\)</span>, <span class="math inline">\(\alpha\)</span> et <span class="math inline">\(\beta\)</span>, les trois paramètres du modèle. <span class="math inline">\(ETR_{max}\)</span> est le rendement maximum possible, <span class="math inline">\(\alpha\)</span> est le coefficient d’infléchissement avant le maximum et <span class="math inline">\(\beta\)</span> est le coefficient de photoinhibition.</p>
+<div class="note">
+<p>
+En matière de régression non linéaire, il est tout aussi important de bien comprendre les propriétés mathématiques de la fonction utilisée que de faire un choix judicieux du modèle. En particulier, il faut s’attacher à bien comprendre la signification (biologique) des paramètres du modèle. Non seulement, cela aide à en définir des valeurs intiales plausibles, mais c’est aussi indispensable pour pouvoir ensuite bien interpréter les résultats obtenus.
+</p>
+</div>
+<p>Nous pouvons facilement créer une fonction dans R qui représente ce modèle :</p>
+<pre class="sourceCode r"><code class="sourceCode r">pgh_model &lt;-<span class="st"> </span><span class="cf">function</span>(x, etr_max, alpha, beta)
+  etr_max <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span>x <span class="op">*</span><span class="st"> </span>alpha<span class="op">/</span>etr_max)) <span class="op">*</span><span class="st"> </span>(<span class="kw">exp</span>(<span class="op">-</span>beta <span class="op">*</span><span class="st"> </span>x<span class="op">/</span>etr_max))</code></pre>
+<p>Le premier argument de la fonction <em>doit</em> être la variable indépendante (notée de manière générique <code>x</code>, mais n’importe quel nom fait l’affaire ici) et les autres arguments correspondent aux paramètres du modèle, donc <code>etr_max</code>, <code>alpha</code> et <code>beta</code>. Ce modèle peut être ajusté dans R à l’aide de la fonction <code>nls()</code> pour “Nonlinear Least Squares” (regression). Par contre, nous devons fournir une information supplémentaire (l’explication sera détaillée plus loin) : des valeurs approximatives de départ pour les paramètres. Nous voyons sur le graphique que <code>etr_max = 9</code> est une estimation plausible, mais il est difficile de déterminer <code>alpha</code> et <code>beta</code> rien qu’en regardant le graphique. Nous allons fixer <code>alpha = 1</code> pour indiquer qu’il y a bien inflexion, et partir d’un modèle sans photoinhibition en utilisant <code>beta = 0</code>. Voici comment la régression non linéaire par les moindre carrés avec notre fonction <code>pgh_model</code> peut être calculée :</p>
+<pre class="sourceCode r"><code class="sourceCode r">rlc_nls &lt;-<span class="st"> </span><span class="kw">nls</span>(<span class="dt">data =</span> rlc, etr <span class="op">~</span><span class="st"> </span><span class="kw">pgh_model</span>(par, etr_max, alpha, beta),
+  <span class="dt">start =</span> <span class="kw">list</span>(<span class="dt">etr_max =</span> <span class="dv">9</span>, <span class="dt">alpha =</span> <span class="dv">1</span>, <span class="dt">beta =</span> <span class="dv">0</span>))
+<span class="kw">summary</span>(rlc_nls)</code></pre>
+<pre><code># 
+# Formula: etr ~ pgh_model(par, etr_max, alpha, beta)
+# 
+# Parameters:
+#         Estimate Std. Error t value Pr(&gt;|t|)    
+# etr_max 9.351064   0.261969  35.695 3.22e-08 ***
+# alpha   0.327385   0.013416  24.402 3.11e-07 ***
+# beta    0.003981   0.001084   3.673   0.0104 *  
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.1729 on 6 degrees of freedom
+# 
+# Number of iterations to convergence: 7 
+# Achieved convergence tolerance: 3.619e-06</code></pre>
+<p>La dernière ligne, “achieved convergence” indique que le modèle a pu être calculé. Nous avons un tableau des paramètres qui ressemble très fort à celui de la régression linéaire, y compris les tests <em>t</em> de Student sur chacun des paramètres. Nous obtenons <code>etr_max = 9.3</code>, <code>alpha = 0.33</code> et <code>beta = 0.0040</code>, mais d’après le test de Student ce dernier paramètre n’est <strong>pas</strong> significativement différent de zéro. Pour l’instant, nous allons conserver ce modèle tel quel. Notre modèle paramétré donne donc :</p>
+<p><span class="math display">\[ETR = 9.3 \cdot (1 - e^{-PAR \cdot 0.33/9.3}) \cdot e^{-0.0040 \cdot PAR/9.3}\]</span></p>
+<p>Voyons ce que cela donne sur le graphique. Nous utiliserons pour ce faire une petite astuce qui consiste à transformer l’objet <code>nls</code> obtenu en une fonction utilisable par <code>stat_function()</code> pour le graphique <code>ggplot2</code> réalisé à l’aide de <code>chart()</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">as.function.nls &lt;-<span class="st"> </span><span class="cf">function</span>(x, ...) {
+  nls_model &lt;-<span class="st"> </span>x
+  name_x &lt;-<span class="st"> </span><span class="kw">names</span>(nls_model<span class="op">$</span>dataClasses)
+  <span class="kw">stopifnot</span>(<span class="kw">length</span>(name_x) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)
+  <span class="cf">function</span>(x) <span class="kw">predict</span>(nls_model, <span class="dt">newdata =</span> <span class="kw">structure</span>(<span class="kw">list</span>(x), <span class="dt">names =</span> name_x))
+}</code></pre>
+<p>Maintenant, nous allons pouvoir ajouter la courbe correspondant à notre modèle comme ceci :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(<span class="dt">data =</span> rlc, etr <span class="op">~</span><span class="st"> </span>par) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(rlc_nls))</code></pre>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ce modèle représente bien mieux le phénomène étudié, et il s’ajuste d’ailleurs beaucoup mieux également dans les données que notre polynome. Une comparaison sur base du critère d’Akaïke est également en faveur de ce dernier modèle non linéaire (pour rappel, plus la valeur est faible, mieux c’est) :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(rlc_lm, rlc_nls)</code></pre>
+<pre><code>#         df       AIC
+# rlc_lm   5 31.834047
+# rlc_nls  4 -1.699078</code></pre>
+<div id="quand-passer-a-la-regression-non-lineaire" class="section level3">
+<h3><span class="header-section-number">4.1.1</span> Quand passer à la régression non linéaire ?</h3>
+<p>Nous pouvons être amenés à utiliser une régression non linéaire pour l’une de ces deux raisons, voire les deux en même temps :</p>
 <ul>
-<li><p>Comprendre comment ajuster une courbe dans un nuage de points à l’aide de la régression non linéaire par les moindres carrés</p></li>
-<li><p>Apprendre à réaliser une régression non linéaire dans R, éventuellement en utilisant des modèles “self-start”</p></li>
-<li><p>Comparer les modèles à l’aide du coefficient d’Akaike</p></li>
-<li><p>Connaitre quelques unes des courbes mathématiques les plus utilisées en biologie</p></li>
+<li><p>Lorsque le nuage de points est <strong>curvilinéaire</strong>, évidemment, mais après avoir tenté de le <strong>linéariser</strong> (et de résoudre un problème éventuel d’hétéroscédasticité ou de non-normalité des résidus) par <strong>transformation</strong> sans succès,</p></li>
+<li><p>En fonction de nos connaissances <em>a priori</em> du phénomène. Tout phénomène issu d’un mécanisme dont nous connaissons le mode de fonctionnement menant à une équation mathématique non linéaire. Cela se rencontre fréquemment en physique, en chimie, et même en biologie (courbes de croissance, effet de modifications environmentales, etc.)</p></li>
 </ul>
 </div>
-<div id="prerequis-3" class="section level5 unnumbered">
-<h5>Prérequis</h5>
+<div id="principe-fonction-objective-et-calcul-iteratif" class="section level3">
+<h3><span class="header-section-number">4.1.2</span> Principe : fonction objective et calcul itératif</h3>
 <ul>
-<li>Les modules 1 &amp; 2 du présent cours concernant la régression linéaire sont une en trée en matière indispensable puisque la régression va être abordée ici comme une extension de ce qui a déjà été vu.</li>
+<li>Le principe général est toujours le même :</li>
 </ul>
-</div> 
+<ol style="list-style-type: decimal">
+<li>Choisir une fonction mathématique à ajuster dans les données</li>
+<li><p>Choisir une fonction objective à minimiser. Pour une régression par les moindres carrés des résidus :</p>
+<p><span class="math display">\[fo(p_{1},p_{2},...,p_{k})=\sum_{i=1}^{n}(y_{i}-f(x_{i,}p_{1},p_{2},...,p_{k}))^{2}=\sum_{i}(y_{i}-\hat{{y_{i}}})^{2}\]</span></p></li>
+<li>Choisir des valeurs de départ pour les paramètres</li>
+<li><p>Minimiser la fonction objective de manière itérative en changeant un ou plusieurs paramètres</p></li>
+</ol>
+</div>
+<div id="algorithmes-de-convergence" class="section level3">
+<h3><span class="header-section-number">4.1.3</span> Algorithmes de convergence</h3>
+<p>Le choix des nouveaux paramètres à tester à chaque itération ne se fait naturellement pas au hasard. Un algorithme d’optimisation est utilisé ici. Ceux disponibles dans R par défaut (fonction <code>nls()</code>) sont :</p>
+<ul>
+<li><strong>Gauss-Newton</strong> : utilise la dérivée de la courbe et son expansion en série de Taylor pour estimer les valeurs plausibles des paramètres sur une série de termes additifs (par régression linéaire)</li>
+<li><strong>Golub-Pereyra Plinear</strong> : sépare les paramètres linéaires des non linéaires, et n’itère que sur ces derniers. Les paramètres linéaires sont ensuite déterminés par régression linéaire classique</li>
+<li><strong>Port</strong> : cet algorithme, contrairement aux deux premiers, permet de définir des bornes inférieures et supérieures à ne pas dépasser pour l’estimation des paramètres</li>
+</ul>
+</div>
+<div id="pieges-et-difficultes" class="section level3">
+<h3><span class="header-section-number">4.1.4</span> Pièges et difficultés</h3>
+<ul>
+<li>Convergence lente</li>
+<li>Singularité de la fonction à ajuster, discontinuités, fonction non définie sur une partie du domaine, etc.</li>
+<li>Difficultés de calcul (division par zéro, courbe ou paramètre tendant vers l’infini, …)</li>
+<li>Minimum local</li>
+</ul>
+</div>
+<div id="les-fonctions-self-start" class="section level3">
+<h3><span class="header-section-number">4.1.5</span> Les fonctions “self-start”</h3>
+<ul>
+<li>Les fonctions “self-start” sont particulières à R</li>
+<li>Plus qu’une fonction, il s’agit en réalité d’un programme complet qui contient :
+<ul>
+<li>La fonction elle-même</li>
+<li>La résolution analytique de la dérivée première de la fonction en chaque point (utilisée par l’algorithme de convergence pour déterminer l’écart à apporter aux paramètres à l’itération suivante)</li>
+<li>Du code optimisé pour choisir les valeurs initiales idéales (proches du minimum global pour la <em>fo</em>) automatiquement</li>
+<li>Du code pour optimiser la convergence, éventuellement</li>
+</ul></li>
+</ul>
+</div>
+<div id="modeles-non-lineaires-courants-en-biologie" class="section level3">
+<h3><span class="header-section-number">4.1.6</span> Modèles non linéaires courants en biologie</h3>
+<ul>
+<li><p>Michaelis-Menten : <code>SSmicmen()</code></p></li>
+<li><p>Modèle de croissance exponentielle</p></li>
+<li><p>Fonction logistique : <code>SSlogis()</code> et <code>SSflp()</code></p></li>
+<li><p>Modèle de Gompertz : <code>SSgompertz()</code></p></li>
+<li><p>Modèles de von Bertalanffy : <code>SSasymp()</code>, <code>SSasympOff()</code> et <code>SSasympOrig()</code></p></li>
+<li><p>Modèle de Richards</p></li>
+<li><p>Modèle de Weibull : <code>SSweibull()</code></p></li>
+<li><p>Autres…</p></li>
+</ul>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>Il est également possible de l’utiliser avec <code>curve()</code> pour une graphique de base dans R.<a href="rendement-photosynthetique.html#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
 </div>
 <div id="disqus_thread"></div>
 <script>
@@ -298,8 +436,8 @@ s.setAttribute('data-timestamp', +new Date());
           </div>
         </div>
       </div>
-<a href="modele-lineaire-generalise.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="rendement-photosynthetique.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="reg-non-lin.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="principe.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

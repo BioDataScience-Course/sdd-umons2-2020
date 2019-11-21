@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Module 4 Régression non linéaire | Science des données biologiques 2</title>
+  <title>4.2 Principe | Science des données biologiques 2</title>
   <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Module 4 Régression non linéaire | Science des données biologiques 2" />
+  <meta property="og:title" content="4.2 Principe | Science des données biologiques 2" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
   <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Module 4 Régression non linéaire | Science des données biologiques 2" />
+  <meta name="twitter:title" content="4.2 Principe | Science des données biologiques 2" />
   
   <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
   <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="modele-lineaire-generalise.html">
-<link rel="next" href="rendement-photosynthetique.html">
+<link rel="prev" href="rendement-photosynthetique.html">
+<link rel="next" href="modeles-courants-en-biologie.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -255,23 +255,33 @@ code span.wa { color: #bf0303; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="reg-non-lin" class="section level1">
-<h1><span class="header-section-number">Module 4</span> Régression non linéaire</h1>
-<div id="objectifs-3" class="section level5 unnumbered">
-<h5>Objectifs</h5>
-<ul>
-<li><p>Comprendre comment ajuster une courbe dans un nuage de points à l’aide de la régression non linéaire par les moindres carrés</p></li>
-<li><p>Apprendre à réaliser une régression non linéaire dans R, éventuellement en utilisant des modèles “self-start”</p></li>
-<li><p>Comparer les modèles à l’aide du coefficient d’Akaike</p></li>
-<li><p>Connaitre quelques unes des courbes mathématiques les plus utilisées en biologie</p></li>
-</ul>
+<div id="principe" class="section level2">
+<h2><span class="header-section-number">4.2</span> Principe</h2>
+<p>La régression non linéaire consiste à modéliser la variation d’une variable (dite variable réponse ou dépendante) par rapport à la variation d’une ou plusieurs autres variables (dites explicatives ou indépendantes). Le modèle utilisé pour représenter cette relation est une fonction mathématique de forme quelconque. Ceci constitue une généralisation de la régression linéaire où la fonction mathématique était nécessaire une droite (<span class="math inline">\(y = a x + b\)</span> dans le cas de la régression linéaire simple). La fonction est, dans la technique la plus courante, ajustée en minimisant la somme des carrés des résidus (écart entre les observations <span class="math inline">\(y_i\)</span> et les valeurs prédites par la droite, notées <span class="math inline">\(\hat{y_i}\)</span>).</p>
+<p>Lorsque le nuage de point ne s’étire pas le long d’une droite, nous pouvons tenter de transformer les données afin de les linéariser. Malheureusement, il existe de nombreux cas où la relation n’est pas linéarisable. Nous allons étudier quelques uns de ces cas et nous verrons comment nous pouvons ajuster une fonction quelconque (non linéaire) sur ces données.</p>
+<div class="note">
+<p>
+Il existe, en réalité, une autre raison pour laquelle nous pourrions être amené à ne pas transformer les données pour les linéariser. Il s’agit du cas où les résidus ont une distribution correcte avec les données non transformées (distribution normale, et variance homogène -homoscédasticité-) lorsqu’on utilise un modèle non linéaire. Dans ce cas précis, une transformation pour linéariser les données devrait permettre d’utiliser une régression linéaire. Mais ce faisant, on rend alors les résidus non normaux et/ou on perd la propriété d’homoscédasticité, ce qui constitue une violation des conditions d’application de la régression par les moindres carrés que nous utilisons ici. Ainsi, dans ce cas-là, il vaut alors mieux ne pas transformer et utiliser plutôt une régression non linéaire à la place d’une régression linéaire pourtant plus simple d’emploi.
+</p>
 </div>
-<div id="prerequis-3" class="section level5 unnumbered">
-<h5>Prérequis</h5>
+<div id="fonction-objective" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Fonction objective</h3>
+<p>Nous appelons “fonction objective” la fonction qui quantifie la qualité de l’ajustement de sorte que plus le nombre renvoyé par cette fonction est petit, meilleur est l’ajustement. Cette fonction objective peut être définie librement, mais dans de nombreux cas, il s’agit du même critère que pour la régression linéaire par les moindres carrés, à savoir :</p>
+<p><span class="math display">\[f_{obj} = \sum_i{(y_i - \hat{y_i})^2}\]</span></p>
+<p>L’ajustement d’une courbe quelconque, notée <span class="math inline">\(y = f(x)\)</span> peut se faire de manière itérative, en testant différentes valeurs des paramètres de la fonction, et en retenant au final la combinaison qui minimise le mieux la fonction objective. Par exemple, si notre courbe à ajuster est: <span class="math inline">\(y = a x^b\)</span>, nous devrons estimer conjointement la valeur des deux paramètres (<span class="math inline">\(a\)</span> et <span class="math inline">\(b\)</span>) de la courbe. Bien qu’il s’agisse effectivement de la technique employée pour ajuster une courbe dans un nuage de point, il faut considérer divers problèmes potentiels.</p>
 <ul>
-<li>Les modules 1 &amp; 2 du présent cours concernant la régression linéaire sont une en trée en matière indispensable puisque la régression va être abordée ici comme une extension de ce qui a déjà été vu.</li>
+<li><p>Le premier de ces problèmes est l’optimisation de la recherche des valeurs idéales des paramètres. Une recherche en aveugle est très peu efficace, évidemment. Il existe donc différentes approches. Leurs descriptions et développements mathématiques sort du cadre de ce cours. Je renvoie le lecteur intéressé à l’annexe C de Sen &amp; Srivastava, (1990). Les algorithmes utilisés dans la fonction <code>nls()</code> de R qui effectue cette régression non linéaire, et que nous utiliserons ici sont : <strong>Gauss-Newton</strong>, (par défaut), un algorithme utilisant la différentiation de la courbe et une expansion en série de Taylor pour approximer cette courbe par une série de termes additifs dont la solution peut être trouvée par régression linéaire multiple. L’algorithme <strong>plinear</strong> de <strong>Golub-Pereyra</strong>, bien que peu répandu, est également implémenté. Il est utile en ce sens qu’il sépare les paramètres en deux sous-groupes : ceux qui sont linéaires dans la fonction (coefficients multiplicateurs de termes additifs) et ceux qui ne le sont pas. La recherche itérative ne se fait que sur les seconds. Les premiers étant estimés par régression linéaire. Ainsi, lorsque la fonction ne comporte que peu de paramètres non linéaires, l’algorithme converge beaucoup plus rapidement. Enfin, un troisième algorithme, nommé <strong>Port</strong> est également implémenté dans <code>nls()</code>. Il a la particularité, contrairement aux deux précédents, de permettre de définir des limites supérieures et inférieures acceptables pour chaque paramètres. Cela limite la recherche dans un domaine de validité, lorsque celui-ci peut être défini.</p></li>
+<li><p>La recherche de la solution optimale nécessite de partir de valeurs de départ plausibles pour les paramètres du modèle (c’est-à-dire, un ensemble de valeurs pour les paramètres telle que la courbe initiale est probablement proche de la solution recherchée). Définir les valeurs initiales n’est pas toujours chose aisée, et de plus, le résultat final peut dépendre fortement de ces valeurs initiales, à savoir que, si l’on choisi des valeurs initiales trop éloignées de la solution recherchée, on peut très bien se trouver enfermé dans une fausse solution (un minimum local de la fonction objective qui est moins bas que le minimum absolu que l’on recherche).</p></li>
+<li><p>Le troisième problème est éventuellement lié à la complexité de la fonction non linéaire que l’on cherche à ajuster. Les propriétés mathématique de la courbe choisie peut très bien faire que cette courbe ne soit pas définie pour certaines valeurs des paramètres, ou qu’elle ait un comportement spécial dans un certain domaine (par exemple, courbe tendant vers l’infini). Ces cas sont difficilement traités par la plupart des algorithmes de minimisation de la fonction objective, et des erreurs de calcul de type “division par zéro”, ou “résultat non défini” peuvent apparaître. Dans les meilleures implémentations (<code>nls()</code> en est une), des gardes-fous ont été ajoutés dans le code de la fonction pour éviter les erreurs dans pareils cas. Toutefois, il n’est pas possible de traiter tous les cas d’erreur passibles. Ainsi, il arrive parfois que le modèle choisi ne soit pas ajustable sur les données.</p></li>
+<li><p>Enfin, le dernier problème que l’on peut rencontrer, c’est une convergence trop lente, ou pas de convergence du tout vers la solution qui minimise la fonction objective. Ceci est fortement dépendant des trois autres points précédents : choix de l’algorithme, choix des valeurs de départ pour les paramètres, et choix de la courbe à ajuster. En cas de non convergence, il faut essayer d’autres combinaisons avant de conclure que la courbe ne peut pas être ajustée sur les données.</p></li>
 </ul>
-</div> 
+<p>Au final, l’ajustement d’un modèle non linéaire par les moindres carrés est une opération beaucoup plus délicate que l’ajustement par les moindres carrés d’un modèle linéaire sur les mêmes données. Dans le cas linéaire, la solution est trouvée de manière immédiate grâce à un petit calcul matriciel simple. Dans le cas non linéaire, il n’existe souvent pas de solution miracle, et le meilleur ajustement doit être recherché de manière itérative, et souvent à l’aveuglette. Nous verrons ci-dessous que R propose, pour certains modèles appelés ‘SelfStart’ une solution élégante pour calculer automatiquement les valeurs initiales et pour converger très rapidement vers la solution recherchée, mais la plupart du temps, il faut souvent tâtonner pour ajuster sa courbe.</p>
+</div>
+<div id="modeles-selfstart-dans-r" class="section level3">
+<h3><span class="header-section-number">4.2.2</span> Modèles ‘selfStart’ dans R</h3>
+<p>Dans certains cas, il existe des petites astuces de calcul pour converger directement vers la solution, ou du moins, pour calculer des valeurs de départ très proches de la solution recherchée de sorte que l’algorithme de recherche pourra converger très rapidement. Par exemple, lorsqu’il est possible de linéariser le modèle en transformant les données. Dans ce cas, une bonne estimation des valeurs de départ des paramètres peut être obtenue en linéarisant la relation et en calculant les paramètres par régression linéaire. Ensuite, les paramètres obtenus sont retransformés dans leur forme initiale, et ils sont utilisés comme valeurs de départ.</p>
+<p>Par exemple, si nous décidons d’ajuster un modèle allométrique de Huxley, de type <span class="math inline">\(y = a x^b\)</span>, nous pouvons linéariser la relation en transformant les deux variables en logarithmes. En effet, <span class="math inline">\(\log(y) = \log(a x^b)\)</span>, ce qui est équivalent à une droite en développant: <span class="math inline">\(\log(y) = b \log(x) + \log(a)\)</span>. Le paramètre <span class="math inline">\(b\)</span> devient donc la pente de la droite, et <span class="math inline">\(\log(a)\)</span> devient l’ordonnée à l’origine dans le modèle linéaire transformé. Une fois la droite ajustée, on a directement la valeur de <span class="math inline">\(b\)</span>, et il suffit de calculer l’exponentielle de l’ordonnée à l’origine pour obtenir <span class="math inline">\(a\)</span>. Toutefois, comme les résidus sont différents dans la relation non transformée initiale, il ne s’agit pas de la solution recherchée mais d’une bon point de départ très proche de cette solution. Ainsi, on prendra les valeurs de <span class="math inline">\(a\)</span> et de <span class="math inline">\(b\)</span> ainsi calculées par la droite en double log comme point de départ, et on laissera l’algorithme de recherche du minimum terminer le travail. En fait, c’est exactement de cette façon que les modèles dits ‘selfStart’ fonctionnent dans R.</p>
+</div>
 </div>
 <div id="disqus_thread"></div>
 <script>
@@ -298,8 +308,8 @@ s.setAttribute('data-timestamp', +new Date());
           </div>
         </div>
       </div>
-<a href="modele-lineaire-generalise.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="rendement-photosynthetique.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="rendement-photosynthetique.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="modeles-courants-en-biologie.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
