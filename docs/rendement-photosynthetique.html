@@ -208,8 +208,9 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 <li class="chapter" data-level="4.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html"><i class="fa fa-check"></i><b>4.3</b> Modèles courants en biologie</a><ul>
 <li class="chapter" data-level="4.3.1" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-croissance"><i class="fa fa-check"></i><b>4.3.1</b> Modèles de croissance</a></li>
-<li class="chapter" data-level="4.3.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#choix-du-modele"><i class="fa fa-check"></i><b>4.3.2</b> Choix du modèle</a></li>
-<li class="chapter" data-level="4.3.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#bibliographie-a-remanier"><i class="fa fa-check"></i><b>4.3.3</b> Bibliographie (à remanier)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="choix-du-modele.html"><a href="choix-du-modele.html"><i class="fa fa-check"></i><b>4.4</b> Choix du modèle</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="choix-du-modele.html"><a href="choix-du-modele.html#bibliographie-a-remanier"><i class="fa fa-check"></i><b>4.4.1</b> Bibliographie (à remanier)</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>5</b> Classification hiérarchique</a></li>
@@ -257,11 +258,14 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="rendement-photosynthetique" class="section level2">
 <h2><span class="header-section-number">4.1</span> Rendement photosynthétique</h2>
-<p>Afin d’avoir un premier aperçu de ce qu’est une régression non linéaire par les moindres carrés et comment on la calcule dans R, nous allons résoudre un exemple concret. La posidonie (<em>Posidonia oceanica</em>) est une plante à fleur marine qui forme des herbiers denses en mer Méditerranée. Ses feuilles sont particulièrement adaptées à l’utilisation de la lumière qui règne à quelques mètres en dessous de la surface où elle prospère en herbiers denses.</p>
-<p>TODO: image d’herbier</p>
+<p>Afin d’avoir un premier aperçu de ce qu’est une régression non linéaire par les moindres carrés et comment on la calcule dans R, nous allons résoudre un exemple concret. La posidonie (<em>Posidonia oceanica</em> (L.) Delile (1813)) est une plante à fleur marine qui forme des herbiers denses en mer Méditerranée. Ses feuilles sont particulièrement adaptées à l’utilisation de la lumière qui règne à quelques mètres en dessous de la surface où elle prospère en herbiers denses. (un mémoire sur la portant sur l’<a href="http://di.umons.ac.be/details.aspx?pub=82f7743a-4343-4aa3-84b1-ff92c6e4e4c3">étude du diméthylsulfoniopropionate et du diméthylsulfoxyde chez <em>Posidonia oceanica</em> (L.) Delile (1813)</a> a été réalisé au sein du service d’écologie numérique des milieux aquatiques)</p>
+<div class="figure">
+<img src="images/sdd2_04/posido.png" alt="Herbier de posidonies" />
+<p class="caption"><a href="http://www.futura-sciences.com/planete/dossiers/nature-posidonie-miracle-mediterranee-2006/">Herbier de posidonies</a></p>
+</div>
 <p>Pour étudier le rendement de sa photosynthèse, c’est-à-dire la part du rayonnement lumineux reçu qui est effectivement utilisé pour initier la chaîne de transport d’électrons au sein de son photosystème II, nous pouvons utiliser un appareil spécialisé : le diving PAM.</p>
 <p>TODO: diving PAM</p>
-<p>Cet appareil est capable de déterminer le taux de transfert des électrons (ETR en µmol électrons/m<sup>2</sup>/s) par l’analyse de la fluorescence réémise par la plante lorsque ses photosites sont excités par une lumière monochromatique pulsée [TODO: ajouter une ref]. Une façon de déterminer la réponse de la plante en rendement photosynthétique en fonction de l’intensité de la lumière reçue est de mesurer successivement l’ETR pour différentes intensités de lumière. En anglais cela s’appelle la “Rapid Light Curve” ou RLC en abbrégé. Comme toutes les longueurs d’ondes lumineuses ne sont pas utilisables par la chlorophylle, l’intensité lumineuse est exprimé dans une unité particulière, le “PAR” ou “Photosynthetically Active Radiation” en µmol photons/m<sup>2</sup>/s. Une RLC represente donc la variation de l’ERT en fonction des PAR. Une RLC typique commence par une relation quasi-linéaire aux faibles intensités, pour s’infléchir et atteindre un plateau de rendement maximum. Au delà, si l’intensité lumineuse augmente encore, des phénomènes de photoinhibition appraissent et le rendement diminue dans une troisième phase. Voici une RLC mesurée à l’aide du diving PAM sur une feuille de <em>P. oceanica</em>.</p>
+<p>Cet appareil est capable de déterminer le taux de transfert des électrons (ETR en µmol électrons/m<sup>2</sup>/s) par l’analyse de la fluorescence réémise par la plante lorsque ses photosites sont excités par une lumière monochromatique pulsée <span class="citation">(Walz <a href="#ref-diving_pam2018">2018</a>)</span>. Une façon de déterminer la réponse de la plante en rendement photosynthétique en fonction de l’intensité de la lumière reçue est de mesurer successivement l’ETR pour différentes intensités de lumière. En anglais cela s’appelle la “Rapid Light Curve” ou RLC en abbrégé. Comme toutes les longueurs d’ondes lumineuses ne sont pas utilisables par la chlorophylle, l’intensité lumineuse est exprimé dans une unité particulière, le “PAR” ou “Photosynthetically Active Radiation” en µmol photons/m<sup>2</sup>/s. Une RLC represente donc la variation de l’ERT en fonction des PAR. Une RLC typique commence par une relation quasi-linéaire aux faibles intensités, pour s’infléchir et atteindre un plateau de rendement maximum. Au delà, si l’intensité lumineuse augmente encore, des phénomènes de photoinhibition appraissent et le rendement diminue dans une troisième phase. Voici une RLC mesurée à l’aide du diving PAM sur une feuille de <em>P. oceanica</em>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">rlc &lt;-<span class="st"> </span><span class="kw">tribble</span>(
   <span class="op">~</span>etr, <span class="op">~</span>par,
   <span class="fl">0.0</span>,  <span class="dv">0</span>,
@@ -281,7 +285,7 @@ rlc &lt;-<span class="st"> </span><span class="kw">labelise</span>(rlc, <span cl
 <span class="kw">chart</span>(<span class="dt">data =</span> rlc, etr <span class="op">~</span><span class="st"> </span>par) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>()</code></pre>
 <p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Les trois phases successives sobnt bien visibles ici. Naturellement, une régression linéaire dans ces données n’a pas de sens. Une régression polynomiale d’ordre trois donnerait ceci (code issu du snippet correspondant) :</p>
+<p>Les trois phases successives sont bien visibles ici. Naturellement, une régression linéaire dans ces données n’a pas de sens. Une régression polynomiale d’ordre trois donnerait ceci (code issu du snippet correspondant) :</p>
 <pre class="sourceCode r"><code class="sourceCode r">rlc_lm &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> rlc, etr <span class="op">~</span><span class="st">  </span>par <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(par<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(par<span class="op">^</span><span class="dv">3</span>))
 rlc_lm <span class="op">%&gt;.%</span>
 <span class="st">  </span>(<span class="cf">function</span>(lm, <span class="dt">model =</span> lm[[<span class="st">&quot;model&quot;</span>]], <span class="dt">vars =</span> <span class="kw">names</span>(model))
@@ -403,6 +407,12 @@ En matière de régression non linéaire, il est tout aussi important de bien co
 <li><p>Modèle de Weibull : <code>SSweibull()</code></p></li>
 <li><p>Autres…</p></li>
 </ul>
+</div>
+</div>
+<h3>Références</h3>
+<div id="refs" class="references">
+<div id="ref-diving_pam2018">
+<p>Walz, Heinz. 2018. “Saturation Pulse Analysis.” In <em>DIVING-Pam-Ii : Underwater Chlorophyll Fluorometer Manual</em>, edited by Heinz Walz GmbH, 49:81–94. February. <a href="https://walz.com/downloads/manuals/diving-pam-II/DIVING_PAM_II_02.pdf">https://walz.com/downloads/manuals/diving-pam-II/DIVING_PAM_II_02.pdf</a>.</p>
 </div>
 </div>
 <div class="footnotes">

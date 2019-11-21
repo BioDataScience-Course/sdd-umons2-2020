@@ -21,15 +21,16 @@
 
 ## Rendement photosynthétique
 
-Afin d'avoir un premier aperçu de ce qu'est une régression non linéaire par les moindres carrés et comment on la calcule dans R, nous allons résoudre un exemple concret. La posidonie (*Posidonia oceanica*) est une plante à fleur marine qui forme des herbiers denses en mer Méditerranée. Ses feuilles sont particulièrement adaptées à l'utilisation de la lumière qui règne à quelques mètres en dessous de la surface où elle prospère en herbiers denses.
+Afin d'avoir un premier aperçu de ce qu'est une régression non linéaire par les moindres carrés et comment on la calcule dans R, nous allons résoudre un exemple concret. La posidonie (*Posidonia oceanica* (L.) Delile (1813)) est une plante à fleur marine qui forme des herbiers denses en mer Méditerranée. Ses feuilles sont particulièrement adaptées à l'utilisation de la lumière qui règne à quelques mètres en dessous de la surface où elle prospère en herbiers denses. (un mémoire sur la portant sur l'[étude du diméthylsulfoniopropionate et du diméthylsulfoxyde chez *Posidonia oceanica* (L.) Delile (1813)](http://di.umons.ac.be/details.aspx?pub=82f7743a-4343-4aa3-84b1-ff92c6e4e4c3) a été réalisé au sein du service d'écologie numérique des milieux aquatiques)
 
-TODO: image d'herbier
+![[Herbier de posidonies](http://www.futura-sciences.com/planete/dossiers/nature-posidonie-miracle-mediterranee-2006/)](images/sdd2_04/posido.png)
+
 
 Pour étudier le rendement de sa photosynthèse, c'est-à-dire la part du rayonnement lumineux reçu qui est effectivement utilisé pour initier la chaîne de transport d'électrons au sein de son photosystème II, nous pouvons utiliser un appareil spécialisé\ : le diving PAM.
 
 TODO: diving PAM
 
-Cet appareil est capable de déterminer le taux de transfert des électrons (ETR en µmol électrons/m^2^/s) par l'analyse de la fluorescence réémise par la plante lorsque ses photosites sont excités par une lumière monochromatique pulsée [TODO: ajouter une ref]. Une façon de déterminer la réponse de la plante en rendement photosynthétique en fonction de l'intensité de la lumière reçue est de mesurer successivement l'ETR pour différentes intensités de lumière. En anglais cela s'appelle la "Rapid Light Curve" ou RLC en abbrégé. Comme toutes les longueurs d'ondes lumineuses ne sont pas utilisables par la chlorophylle, l'intensité lumineuse est exprimé dans une unité particulière, le "PAR" ou "Photosynthetically Active Radiation" en µmol photons/m^2^/s. Une RLC represente donc la variation de l'ERT en fonction des PAR. Une RLC typique commence par une relation quasi-linéaire aux faibles intensités, pour s'infléchir et atteindre un plateau de rendement maximum. Au delà, si l'intensité lumineuse augmente encore, des phénomènes de photoinhibition appraissent et le rendement diminue dans une troisième phase. Voici une RLC mesurée à l'aide du diving PAM sur une feuille de *P. oceanica*.
+Cet appareil est capable de déterminer le taux de transfert des électrons (ETR en µmol électrons/m^2^/s) par l'analyse de la fluorescence réémise par la plante lorsque ses photosites sont excités par une lumière monochromatique pulsée [@diving_pam2018]. Une façon de déterminer la réponse de la plante en rendement photosynthétique en fonction de l'intensité de la lumière reçue est de mesurer successivement l'ETR pour différentes intensités de lumière. En anglais cela s'appelle la "Rapid Light Curve" ou RLC en abbrégé. Comme toutes les longueurs d'ondes lumineuses ne sont pas utilisables par la chlorophylle, l'intensité lumineuse est exprimé dans une unité particulière, le "PAR" ou "Photosynthetically Active Radiation" en µmol photons/m^2^/s. Une RLC represente donc la variation de l'ERT en fonction des PAR. Une RLC typique commence par une relation quasi-linéaire aux faibles intensités, pour s'infléchir et atteindre un plateau de rendement maximum. Au delà, si l'intensité lumineuse augmente encore, des phénomènes de photoinhibition appraissent et le rendement diminue dans une troisième phase. Voici une RLC mesurée à l'aide du diving PAM sur une feuille de *P. oceanica*.
 
 
 ```r
@@ -55,7 +56,7 @@ chart(data = rlc, etr ~ par) +
 
 <img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" />
 
-Les trois phases successives sobnt bien visibles ici. Naturellement, une régression linéaire dans ces données n'a pas de sens. Une régression polynomiale d'ordre trois donnerait ceci (code issu du snippet correspondant)\ :
+Les trois phases successives sont bien visibles ici. Naturellement, une régression linéaire dans ces données n'a pas de sens. Une régression polynomiale d'ordre trois donnerait ceci (code issu du snippet correspondant)\ :
 
 
 ```r
@@ -423,7 +424,7 @@ Ce modèle complexe à quatre paramètres a une période initiale de croissance 
 TODO figure avec légende: Exemple d'une courbe de Tanaka avec $a = 3$, $b = 2,5$, $d = -0,2$ et $t_0 = 2$.
 
 
-### Choix du modèle
+## Choix du modèle
 
 Le choix d'un modèle non linéaire fait intervenir des critères identiques à ceux d'un modèle linéaire (qualité d'ajustement évaluée par l'AIC, inspection visuelle de l'ajustement dans le nuage de points), mais il fait aussi intervenir une dimension supplémentaire\ : le choix de la fonction marthématique à ajuster. Comme nous venons de le voir au travers de quelques modèles courants en biologie, le nombre de fonctions mathématiques résultat en des formes similaire, par exemple de type sigmoïde, est grand. Ainsi, le choix de la meilleure fonction à utiliser dans un cas particulier est rendu plus difficile.
 
