@@ -302,7 +302,32 @@ $$y(t) = y_0 \ e^{k \ t}$$
 
 avec $y_0$, la taille initiale de la population au temps $t = 0$. Ce modèle à deux paramètres est également intéressant parce qu'il montre une bonne manière de construire un modèle de croissance. Il suffit de décrire la croissance pour un accroissement infinitésimal de temps par le biais d'une équation différentielle, et ensuite de la résoudre (modélisation dynamique). Presque tous les modèles de croissance existants ont été élaborés de cette manière. Ainsi, la quasi-totalité des modèles de croissance correspondent en fait à une équation différentielle relativement simple.
 
-TODO: figure modèle exponentiel, avec légende: Exemple d'un modèle de croissance exponentiel avec $y_0 = 1,5$ et $k = 0,9$.
+Dans R, nous pourrons utiliser la fonction suivante\ :
+
+
+```r
+exponent <- function(x, y0, k)
+  y0 * exp(k * x)
+```
+
+Voici un exemple d'un modèle de croissance exponentiel avec $y_0 = 1,5$ et $k = 0,9$. Le paramètre $y_0$ est indiqué sur le graphique.
+
+
+```r
+# Graphique avec y0 = 1.5 et k = 0.9
+exponent_data <- tibble(
+  t = seq(0, 3, by = 0.1),
+  y = exponent(t, y0 = 1.5, k = 0.9)
+)
+chart(data = exponent_data, y ~ t) +
+  geom_line() +
+  geom_vline(xintercept = 0, col = "darkgray") +
+  annotate("text", label = "y0", x = -0.05, y = 1.5)
+```
+
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" />
+
+TODO: exemple d'ajustement dans des données...
 
 
 #### Courbe logistique
@@ -315,14 +340,59 @@ Lorsque l'on résout et simplifie cette équation différentielle, on obtient \:
 
 $$y(t) = \frac{y_\infty}{1 + e^{-k \ (t - t_0)}}$$
 
-Ceci est une des formes de la courbe logistique. Cette fonction a deux asymptotes horizontales en $y(t) = 0$ et $y(t) = y_\infty$ (voir schéma ci-dessous) et c'est une sigmoïde symétrique autour du point d'inflexion (les deux courbes du S sont identiques). Le modèle 'selfStart' correspondant dans R s'appelle `SSlogis()`.
+Ceci est une des formes de la courbe logistique. Cette fonction a deux asymptotes horizontales en $y(t) = 0$ et $y(t) = y_\infty$ (voir schéma ci-dessous) et c'est une sigmoïde symétrique autour du point d'inflexion (les deux courbes du S sont identiques). Le modèle 'selfStart' correspondant dans R s'appelle `SSlogis()`. Ses paramètres sont `Asym` (= $y_\infty$), `xmid` (= $t_0$), et `scal` (= $k$).
 
-TODO: figure avec légende: Exemple d'une courbe logistique avec $k = 1$, $y_\infty = 0,95$, $t_0 = 5$. Cette courbe sigmoïdale est asymptotique en 0 et $y_\infty$, et elle est également symétrique autour de son point d'inflexion $i$ situé à ${t_0, y_\infty / 2}$.
+Voici le graphique d'une courbe logistique avec $y_\infty = 0,95$, $t_0 = 5$ et $k = 1$.
+
+
+```r
+logis_data <- tibble(
+  t = seq(0, 10, by = 0.1),
+  y = SSlogis(t, Asym = 0.95, xmid = 5, scal = 1)
+)
+chart(data = logis_data, y ~ t) +
+  geom_line() +
+  geom_vline(xintercept = 0, col = "darkgray") +
+  geom_hline(yintercept = c(0, 0.95/2, 0.95), col = "gray", linetype = "dashed") +
+  geom_vline(xintercept = 5, col = "gray", linetype = "dashed") +
+  annotate("text", label = "Asym", x = -0.4, y = 0.95) +
+  annotate("text", label = "Asym/2", x = -0.5, y = 0.95/2) +
+  annotate("text", label = "xmid", x = 5.4, y = 0.03) +
+  annotate("text", label = "point d'inflexion", x = 6, y = 0.45)
+```
+
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" />
+
+Cette courbe sigmoïdale est asymptotique en 0 et $y_\infty$, et elle est également symétrique autour de son point d'inflexion situé à ${t_0, y_\infty / 2}$.
+
 Il est possible de généraliser ce modèle en définissant une courbe logistique dont l'asymptote basse peut se situer n'importe où ailleurs qu'en 0. Si cette asymptote se situe en $y_0$, nous obtenons l'équation\ :
 
 $$y(t) = y_0 + \frac{y_\infty - y_0}{1 + e^{-k \ (t - t_0)}}$$
 
-Ceci est le modèle logistique généralisé à quatre paramètres (modèle 'selfSart' `SSfpl()` dans R, pour **f**our-**p**arameters **l**ogistic).
+Ceci est le modèle logistique généralisé à quatre paramètres (modèle 'selfSart' `SSfpl()` dans R, pour **f**our-**p**arameters **l**ogistic). Les arguments sont `A`, la première asymptote horizontale (= $y_0$), `B`, la seconde asymptote horizontale (= $y_\infty$), `xmid` (= $t_0$) et `scal` (= $k$).
+
+Le graphie ressemble très fort à celui de la fonction logistique, mais la première asymptote n'est plus nécessairement à 0 (ici, $y_0$ = 0.05).
+
+
+```r
+fpl_data <- tibble(
+  t = seq(0, 10, by = 0.1),
+  y = SSfpl(t, A = 0.05, B = 0.95, xmid = 5, scal = 1)
+)
+chart(data = fpl_data, y ~ t) +
+  geom_line() +
+  geom_vline(xintercept = 0, col = "darkgray") +
+  geom_hline(yintercept = c(0.05, 0.9/2 + 0.05, 0.95), col = "gray", linetype = "dashed") +
+  geom_vline(xintercept = 5, col = "gray", linetype = "dashed") +
+  annotate("text", label = "A", x = -0.4, y = 0.05) +
+  annotate("text", label = "B", x = -0.4, y = 0.95) +
+   annotate("text", label = "xmid", x = 5.4, y = 0.03) +
+  annotate("text", label = "point d'inflexion", x = 6, y = 0.47)
+```
+
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" />
+
+TODO: exemple d'application sur des données réelles dans R.
 
 
 #### Modèle de Gompertz
@@ -438,7 +508,7 @@ chart(data = urchins, diameter ~ age) +
   geom_point()
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" />
 
 Comme vous pouvez le voir, différents oursins ont été mesurés via le diamètre à l'ambitus du test (zone la plus large) en mm à différents âges (en années). Les mesures ont été effectuées tous les 6 mois pendant 7 ans, ce qui donne un bon aperçu de la croissance de cet animal y compris la taille maximale asymptotique qui est atteinte vers les 4 à 5 ans (pour ce genre de modèle, il est très important de continuer à mesurer les animaux afin de bien quantifier cette taille maximale asymptotique). Pour les individus survivants, dès mesures ont également été réalisées jusqu'à 10,5 ans. Ainsi, l'examen du graphique nous permet d'emblée de choisir un modèle à croissance finie (pas le modèle de Tanaka, donc), et de forme sigmoïdale. Les modèles logistique, Weibull ou Gompertz pourraient convenir par exemple. Nous pouvons à ce stade, essayer différents modèles et choisir celui qui nous semble le plus adapté.
 
@@ -458,7 +528,7 @@ urchins_plot <- chart(data = urchins, diameter ~ age) +
 urchins_plot
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" />
 
 Nous avons ici également représenté les points de manière semi-transparent avec `alpha = 0.2`(transparence de 20%) pour encore mieux mettre en évidence les points de mesures qui se superposent.
 
@@ -508,7 +578,7 @@ urchins_plot +
   stat_function(fun = as.function(urchins_gomp), color = "red", size = 1)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" />
 
 L'ajustement de cette fonction semble très bon, à l'oeil. Voyons ce qu'il en est d'autres modèles\ :
 
@@ -546,7 +616,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" />
 
 Notez que ici, la couleur a été incluse dans le "mapping" (argument `mapping = `) de `stat_function()` en l'incluant dans `aes()`. Cela change fondamentalement la façon dont la couler est perçue par `ggplot2`. Dans ce cas-ci, la valeur est interprétée non comme une couleur à proprement parler, mais comme un niveau (une couche) à inclure dans le graphique et à reporter via une légende. Ensuite, à l'aide de `labs()` on chaznge le titre de la légende relatif à la couleur par un nom plus explicite\ : "Modèle".
 
@@ -602,7 +672,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" />
 
 ... et comparons à l'aide du critère d'Akaïke\ :
 
@@ -680,7 +750,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" />
 
 ... et comparons à l'aide du critère d'Akaïke\ :
 

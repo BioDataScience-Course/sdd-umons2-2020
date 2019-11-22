@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2019-11-21">
+<meta name="date" content="2019-11-22">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -326,7 +326,7 @@ En matière de régression non linéaire, il est tout aussi important de bien co
 # Achieved convergence tolerance: 3.619e-06</code></pre>
 <p>La dernière ligne, “achieved convergence” indique que le modèle a pu être calculé. Nous avons un tableau des paramètres qui ressemble très fort à celui de la régression linéaire, y compris les tests <em>t</em> de Student sur chacun des paramètres. Nous obtenons <code>etr_max = 9.3</code>, <code>alpha = 0.33</code> et <code>beta = 0.0040</code>, mais d’après le test de Student ce dernier paramètre n’est <strong>pas</strong> significativement différent de zéro. Pour l’instant, nous allons conserver ce modèle tel quel. Notre modèle paramétré donne donc :</p>
 <p><span class="math display">\[ETR = 9.3 \cdot (1 - e^{-PAR \cdot 0.33/9.3}) \cdot e^{-0.0040 \cdot PAR/9.3}\]</span></p>
-<p>Voyons ce que cela donne sur le graphique. Nous utiliserons pour ce faire une petite astuce qui consiste à transformer l’objet <code>nls</code> obtenu en une fonction utilisable par <code>stat_function()</code> pour le graphique <code>ggplot2</code> réalisé à l’aide de <code>chart()</code><a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>.</p>
+<p>Voyons ce que cela donne sur le graphique. Nous utiliserons pour ce faire une petite astuce qui consiste à transformer l’objet <code>nls</code> obtenu en une fonction utilisable par <code>stat_function()</code> pour le graphique <code>ggplot2</code> réalisé à l’aide de <code>chart()</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">as.function.nls &lt;-<span class="st"> </span><span class="cf">function</span>(x, ...) {
   nls_model &lt;-<span class="st"> </span>x
   name_x &lt;-<span class="st"> </span><span class="kw">names</span>(nls_model<span class="op">$</span>dataClasses)
@@ -417,8 +417,8 @@ En matière de régression non linéaire, il est tout aussi important de bien co
 </div>
 <div class="footnotes">
 <hr />
-<ol start="8">
-<li id="fn8"><p>Il est également possible de l’utiliser avec <code>curve()</code> pour une graphique de base dans R.<a href="rendement-photosynthetique.html#fnref8" class="footnote-back">↩</a></p></li>
+<ol start="1">
+<li id="fn1"><p>Il est également possible de l’utiliser avec <code>curve()</code> pour une graphique de base dans R.<a href="rendement-photosynthetique.html#fnref1" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>

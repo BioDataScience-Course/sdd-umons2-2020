@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2019-11-21">
+<meta name="date" content="2019-11-22">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -264,7 +264,7 @@ code span.wa { color: #bf0303; } /* Warning */
 urchins &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="st">&quot;urchin_growth&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;data.io&quot;</span>, <span class="dt">lang =</span> <span class="st">&quot;fr&quot;</span>)
 <span class="kw">chart</span>(<span class="dt">data =</span> urchins, diameter <span class="op">~</span><span class="st"> </span>age) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>()</code></pre>
-<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Comme vous pouvez le voir, différents oursins ont été mesurés via le diamètre à l’ambitus du test (zone la plus large) en mm à différents âges (en années). Les mesures ont été effectuées tous les 6 mois pendant 7 ans, ce qui donne un bon aperçu de la croissance de cet animal y compris la taille maximale asymptotique qui est atteinte vers les 4 à 5 ans (pour ce genre de modèle, il est très important de continuer à mesurer les animaux afin de bien quantifier cette taille maximale asymptotique). Pour les individus survivants, dès mesures ont également été réalisées jusqu’à 10,5 ans. Ainsi, l’examen du graphique nous permet d’emblée de choisir un modèle à croissance finie (pas le modèle de Tanaka, donc), et de forme sigmoïdale. Les modèles logistique, Weibull ou Gompertz pourraient convenir par exemple. Nous pouvons à ce stade, essayer différents modèles et choisir celui qui nous semble le plus adapté.</p>
 <p>Le choix du meilleur modèle se fait grâce à deux critères :</p>
 <ol style="list-style-type: decimal">
@@ -276,7 +276,7 @@ urchins &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="
 <span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">width =</span> <span class="fl">0.1</span>, <span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">color =</span> <span class="st">&quot;darkgrey&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">expression</span>(<span class="kw">paste</span>(<span class="st">&quot;Croissance de l&#39;oursin &quot;</span>, <span class="kw">italic</span>(<span class="st">&quot;Paracentrotus lividus&quot;</span>))))
 urchins_plot</code></pre>
-<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Nous avons ici également représenté les points de manière semi-transparent avec <code>alpha = 0.2</code>(transparence de 20%) pour encore mieux mettre en évidence les points de mesures qui se superposent.</p>
 <p>Ajustons maintenant un modèle de Gompertz (modèle ‘SelfStart’) :</p>
 <pre class="sourceCode r"><code class="sourceCode r">urchins_gomp &lt;-<span class="st"> </span><span class="kw">nls</span>(<span class="dt">data =</span> urchins, diameter <span class="op">~</span><span class="st"> </span><span class="kw">SSgompertz</span>(age, Asym, b2, b3))
@@ -306,7 +306,7 @@ urchins_plot</code></pre>
 <p>A présent, nous pouvons faire ceci :</p>
 <pre class="sourceCode r"><code class="sourceCode r">urchins_plot <span class="op">+</span>
 <span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_gomp), <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">size =</span> <span class="dv">1</span>)</code></pre>
-<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>L’ajustement de cette fonction semble très bon, à l’oeil. Voyons ce qu’il en est d’autres modèles :</p>
 <pre class="sourceCode r"><code class="sourceCode r">urchins_logis &lt;-<span class="st"> </span><span class="kw">nls</span>(<span class="dt">data =</span> urchins, diameter <span class="op">~</span><span class="st"> </span><span class="kw">SSlogis</span>(age, Asym, xmid, scal))
 <span class="kw">summary</span>(urchins_logis)</code></pre>
@@ -330,7 +330,7 @@ urchins_plot</code></pre>
 <span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_gomp), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Gompertz&quot;</span>), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_logis), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;logistique&quot;</span>), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Modèle&quot;</span>)</code></pre>
-<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Notez que ici, la couleur a été incluse dans le “mapping” (argument <code>mapping =</code>) de <code>stat_function()</code> en l’incluant dans <code>aes()</code>. Cela change fondamentalement la façon dont la couler est perçue par <code>ggplot2</code>. Dans ce cas-ci, la valeur est interprétée non comme une couleur à proprement parler, mais comme un niveau (une couche) à inclure dans le graphique et à reporter via une légende. Ensuite, à l’aide de <code>labs()</code> on chaznge le titre de la légende relatif à la couleur par un nom plus explicite : “Modèle”.</p>
 <p>Nous pouvons comparer ces modèles à l’aide du critère d’Akaïke.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(urchins_gomp, urchins_logis)</code></pre>
@@ -362,7 +362,7 @@ urchins_plot</code></pre>
 <span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_logis), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;logistique&quot;</span>), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_weib), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Weibull&quot;</span>), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Modèle&quot;</span>)</code></pre>
-<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>… et comparons à l’aide du critère d’Akaïke :</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(urchins_gomp, urchins_logis, urchins_weib)</code></pre>
 <pre><code>#               df      AIC
@@ -404,7 +404,7 @@ urchins_plot</code></pre>
 <span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_weib), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Weibull&quot;</span>), <span class="dt">size =</span> <span class="fl">0.7</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="kw">as.function</span>(urchins_rich), <span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Richards&quot;</span>), <span class="dt">size =</span> <span class="fl">0.7</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Modèle&quot;</span>)</code></pre>
-<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>… et comparons à l’aide du critère d’Akaïke :</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AIC</span>(urchins_gomp, urchins_logis, urchins_weib, urchins_rich)</code></pre>
 <pre><code>#               df      AIC
