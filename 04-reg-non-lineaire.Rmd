@@ -167,6 +167,61 @@ La description détaillée et les développements mathématiques de ces algorith
 
 - **Port** est également disponible. Il a la particularité, contrairement aux deux précédents, de permettre de définir des limites supérieures et inférieures acceptables pour chaque paramètres. Cela limite la recherche dans un domaine de validité, lorsque celui-ci peut être défini.
 
+Reprenons le calcul de notre RLC pour *P. oceanica*. L'argument `trace = TRUE` peut être ajouté à l'appel de `nls()` pour visionner les différentes étapes du calcul itératif. Voici ce que cela donne\ :
+
+```{r}
+rlc_nls <- nls(data = rlc, etr ~ pgh_model(par, etr_max, alpha, beta),
+  start = list(etr_max = 9, alpha = 1, beta = 0),
+  trace = TRUE)
+```
+
+A gauche, nous avons la valeur de la fonction objective $f_{obj}$, et à droite des deux points, la valeur actuelle des trois paramètres dans l'ordre `etr_max`, `alpha` et `beta`. La première ligne indique l'étape 0. $f_{obj}$ vaut 24,3 avec les valeurs par défaut. Dès l'étape suivante (itération #1), cette valeur est divisée par 6 et vaut 4,2. A ce stade, `etr_max = 8,5`, `alpha = 0,29` et `beta = 0,0019`. Les étapes #2 et #3 font encore significativement diminuer $f_{obj}$, et puis nous grapillons des décimales.
+
+Voici une animation de ce processus\ :
+
+```{r, echo=FALSE, include=FALSE, eval=FALSE}
+params <- tribble(
+  ~iter,    ~f_obj,     ~etr_max,  ~alpha,              ~beta,
+      0,  24.34024,            9,            1,             0,
+      1,  4.236559, 8.4785637209, 0.5324097242, -0.0004037391,
+      2,  1.141967,  8.772552037,  0.289806296,   0.001855493,
+      3, 0.1807006,  9.361592818,  0.325563316,   0.003954183,
+      4, 0.1793698,  9.353620948,  0.327230129,   0.003990887,
+      5, 0.1793659,  9.351296953,  0.327369993,   0.003982181,
+      6, 0.1793658,   9.35108479,   0.32738331,    0.00398142,
+      7, 0.1793658,  9.351064462,  0.327384565,   0.003981347
+)
+
+library(gganimate)
+anim_plot <- chart(data = rlc, etr ~ par) +
+  geom_point() +
+  ggtitle("{next_layer}")
+for (i in 1:8) {
+  anim_plot <- anim_plot +
+    stat_function(fun = pgh_model, col = "red",
+      args = list(etr_max = params$etr_max[i],
+        alpha = params$alpha[i], beta = params$beta[i]))
+}
+anim_plot +
+  transition_layers(layer_length = 1, transition_length = 0.5,
+    from_blank = FALSE, keep_layers = c(Inf, 0, 0, 0, 0, 0, 0, 0, 0),
+    layer_names = c("",
+      paste("Iteration", 0:7, "- f_obj =", round(params$f_obj, 8))))
+anim_save("nls_anim.gif")
+```
+
+![](images/sdd2_04/nls_anim.gif)
+
+La convergence est considérée comme obtenue lorsque la différence de valeur de $f_{obj}$ d'une étape à l'autre tombe en dessous d'un **seuil de tolérance** que nous nous sommes fixés. C'est l'argument `control =` de `nls()` qui en reprend les détails, voir `?nls.control`. Les options sont\ :
+
+- `maxiter =` le nombre maximum d'itérations permises. Pour éviter de calculer à l'infini, nous arrêtons à cette valeur et décrétons que le calcul **n'a pas convergé**. La valeur pas défaut est de 50 itérations.
+
+- `tol = ` le niveau de tolérance pour décider que l'on a convergé. C'est lui notrte seuil de tolérance ci-dessus. Par défaut, il vaut `1e-05`, soit 0,00001. C'est une valeur *relative*. Cela siginifie que la variation de la fonction objective ne doit pas être plus grande que cela *en valeur relative*.
+
+- ... d'autres arguments moins importants ici.
+
+Comme nous pouvons le constater, le seuil de tolérance par défaut est très bas, de sorte que nous n'ayons besoin de le changer que très rarement.
+
 
 ### Pièges et difficultés
 
@@ -177,7 +232,20 @@ L'ajustement d'un modèle de manière itérative en utilisant un algorithme d'op
 
 La recherche de la solution optimale nécessite de partir de **valeurs de départ plausibles pour les paramètres du modèle** (c'est-à-dire, un ensemble de valeurs pour les paramètres telle que la courbe initiale est proche de la solution recherchée). Définir les valeurs initiales n'est pas toujours chose aisée, et de plus, le résultat final peut dépendre fortement de ces valeurs initiales, à savoir que, si l'on choisi des valeurs initiales trop éloignées de la solution recherchée, on peut très bien se trouver enfermé dans une fausse solution (un minimum local de la fonction objective qui est moins bas que le minimum absolu que l'on recherche).
 
-(TODO: détailler ceci)
+Considérons un cas fictif simple où la fonction à ajuster n'aurait qu'un seul paramètre $p$. Dans ce cas, nous pouvons visualiser la valeur de la fonction objective en fonction de la valeur choisie pour le paramètre $p$. Admettons que nous obtenons le graphique suivant pour cette représentation\ :
+
+```{r, echo=FALSE}
+chart(data = data.frame(p = c(-0.7, 1), f_obj = c(0, 20)), f_obj ~ p) +
+  stat_function(fun = function(x) 5*x^5 - 5*x^3 + 0.8*x + 0.5, col = "red") +
+  annotate("text", x = 0.75, y = 0.15, label = "minimum global") +
+  annotate("text", x = -0.25, y = 0.35, label = "minimum local") +
+  xlab("Paramètre p") +
+  ylab("Valeur de la fonction objective")
+```
+
+Nous observons que la fonction objective a un **minimum global** pour $p$ valant 0,72. Par contre, un **minimum local** est également présent pour $p$ valant -0,26. Dans ce cas, si nous prenons une valeur de départ pour $p$ supérieure à 0,25, nous atterrirons dans le minimum global. Mais si nous prenons une valeur plus faible, par exemple 0 ou -0.5 comme valeur de départ, nous nous ferons **piéger dans le minimum local**. Dans ce cas, `nls()` déclarera qu'elle a convergé et que la valeur de $p$ vaut -0,26.
+
+Si ce n'est toujours pas clair, imaginez que la courbe en rouge représente la forme d'un terrain sur lequel vous placer une balle à la position de départ. En fonction de l'endroit où vous la placer, la balle va glisser le long de la pente et finir par s'immobiliser dans une des deux cuvettes... mais celle de droite (minimum global) est plus profonde que celle de gauche (minimum local).
 
 ```{block, type='warning'}
 Il vaut toujours mieux tester différentes combinaisons de valeurs de départ pour vérifier si la convergence se fait correctement et pour démasquer les cas de minima locaux.
@@ -186,7 +254,7 @@ Il vaut toujours mieux tester différentes combinaisons de valeurs de départ po
 
 #### Complexité du modèle {-}
 
-Lorsque la convergence à du mal à se faire, ceci est éventuellement lié à la complexité de la fonction que l'on cherche à ajuster. Les propriétés mathématique de la courbe choisie peuvent très bien faire que cette courbe ne soit pas définie pour certaines valeurs des paramètres, ou qu'elle ait un comportement spécial dans un certain domaine (par exemple, courbe tendant vers l'infini). Ces cas sont difficilement traités par la plupart des algorithmes de minimisation de la fonction objective, et des erreurs de calcul de type "division par zéro", ou "résultat non défini" peuvent apparaître. Dans les meilleures implémentations (`nls()` en est une), des gardes-fous ont été ajoutés dans le code de la fonction pour éviter les erreurs dans pareils cas. Toutefois, il n'est pas possible de traiter tous les cas possibles. Ainsi, il arrive parfois que le modèle choisi ne soit pas ajustable sur les données.
+Lorsque la convergence a du mal à se faire, ceci est éventuellement lié à la complexité de la fonction que l'on cherche à ajuster. Les propriétés mathématique de la courbe choisie peuvent très bien faire que cette courbe ne soit pas définie pour certaines valeurs des paramètres, ou qu'elle ait un comportement spécial dans un certain domaine (par exemple, courbe tendant vers l'infini). Ces cas sont difficilement traités par la plupart des algorithmes de minimisation de la fonction objective, et des erreurs de calcul de type "division par zéro", ou "résultat non défini" peuvent apparaître. Dans les meilleures implémentations (`nls()` en est une), des gardes-fous ont été ajoutés dans le code de la fonction pour éviter les erreurs dans pareils cas. Toutefois, il n'est pas possible de traiter tous les cas possibles. Ainsi, il arrive parfois que le modèle choisi ne soit pas ajustable sur les données.
 
 Au final, l'ajustement d'un modèle non linéaire par les moindres carrés est une opération beaucoup plus délicate que l'ajustement par les moindres carrés d'un modèle linéaire. Dans le cas linéaire, la solution est trouvée de manière immédiate grâce à un calcul matriciel simple. Dans le cas non linéaire, il n'existe souvent pas de solution miracle et le meilleur ajustement doit être recherché de manière itérative. Nous verrons ci-dessous que R propose, pour certains modèles appelés 'SelfStart' une solution élégante pour calculer automatiquement les valeurs initiales et pour converger très rapidement vers la solution recherchée, mais la plupart du temps il faut tâtonner pour ajuster sa courbe.
 
@@ -213,11 +281,40 @@ Ensuite, nous recherchons l'aide relative à ces fonctions, par exemple via `?SS
 
 ## Modèles courants en biologie
 
-Les domaines les plus courants où des modèles non linéaires sont utilisés en biologie concernent les cinétiques de réactions (chimiques, biochimiques), les courbes de type dose-réponse, les courbes de survie et les modèles de croissance. Nous verrons principalement divers modèles de croissance dans la section suivante. Certains de ces modèles, comme le modèle exponentiel, celui de Gompertz ou de Weibull sont aussi utilisés comme courbes de survie. De plus, la courbe logistique est un modèle classique de type dose-réponse. Ainsi, les différentes courbes de croissances recouvrent également une majorité des modèles utilisés dans d'autres domaines des biostatistiques. Nous mentionnerons ici un autre modèle courant qui n'est pourtant pas utilisé comme modèle de croissance\ : le modèle de Michaelis-Menten, fréquemment utilisé pour modéliser la cinétique de réactions chimiques, enzymatiques, en particulier.
+Les domaines les plus courants où des modèles non linéaires sont utilisés en biologie concernent les cinétiques de réactions (chimiques, biochimiques), les courbes de type dose-réponse, les courbes de survie et les modèles de croissance. Nous verrons principalement divers modèles de croissance dans la section suivante. Certains de ces modèles, comme le modèle exponentiel, celui de Gompertz ou de Weibull sont aussi utilisés comme courbes de survie. De plus, la courbe logistique est un modèle classique de type dose-réponse. Ainsi, les différentes courbes de croissances recouvrent également une majorité des modèles utilisés dans d'autres domaines.
 
-TODO: grphique de la courbe Michaelis-Menten avec légende : Exemple de courbe cinétique de type Michaelis-Menten. La vitesse de la réaction augmente à un rythme donné par KM pour atteindre une vitesse maximale asymptotique Vmax.
+
+### Modèle de Michaelis-Menten
+
+La corube de Michaelis-Menten est bien connue pour modéliser des cinétiques chimiques simples, enzymatiques en particulier. Son équation est\ :
+
+$$V = \frac{V_{max} * conc}{K + conc}$$
+
+où $conc$ est la concentration des réactifs au début de la réaction, c'est-à-dire, en absence de produits de cette réaction en mol/L, $V$ est la vitesse de réaction en mol/min. Le modèle a deux paramètres $V_{max}$ la vitesse maximale asymptotique en mol/min et $K$ en mol/L correspondant à la concentration telle que la vitesse est la moitié de $V_{max}$. 
 
 Dans R, il existe un modèle 'selfStart' facile à utiliser pour ajuster une courbe de type Michaelis-Menten. Il s'agit de la fonction `SSmicmen()`.
+
+
+Exemple de courbe cinétique de type Michaelis-Menten. La vitesse de la réaction augmente à un rythme donné par KM pour atteindre une vitesse maximale asymptotique Vmax.
+
+Voici le graphique d'un modèle Michaelis-Menten avec $V_{max} = 1$ et $K = 0,4$.
+
+```{r}
+micmen_data <- tibble(
+  conc = seq(0, 10, by = 0.1),
+  v = SSmicmen(conc, Vm = 1, K = 0.5)
+)
+chart(data = micmen_data, v ~ conc) +
+  geom_line() +
+  xlab("Concentration [mol/L]") +
+  ylab("Vitesse [mol/min]") +
+  geom_vline(xintercept = 0, col = "darkgray") +
+  geom_hline(yintercept = c(0.5, 1), col = "gray", linetype = "dashed") +
+  geom_vline(xintercept = 0.4, col = "gray", linetype = "dashed") +
+  annotate("text", label = "Vm", x = -0.4, y = 1) +
+  annotate("text", label = "Vm/2", x = -0.5, y = 0.5) +
+  annotate("text", label = "K", x = 0.5, y = 0.03)
+```
 
 
 ### Modèles de croissance
@@ -226,7 +323,7 @@ Parmi les phénomènes biologiques courants qui sont essentiellement non linéai
 
 Il existe un autre type de modèle de croissance\ : la croissance des populations. Ce type de modèle décrit l'évolution du nombre d'individus dans une population au cours du temps. Dans ce cas particulier, il s'agit également du résultat de plusieurs processus\ : la natalité, la mortalité et, éventuellement, les migrations. Une courbe type de modèle de croissance de population est la courbe logistique. Un autre modèle couramment utilisé est celui de Weibull pour décrire un nombre décroissant d'individus suite à une mortalité prédominante dans celle-ci.
 
-Il existe de nombreux modèles de croissance différents. Certains sont exclusivement des modèles de croissance individuelle, d'autres sont exclusivement des modèles de croissance de populations, mais beaucoup peuvent être utilisés indifféremment dans les deux cas. Tous ont comme particularité d'être l'une ou l'autre forme de modèle exponentiel, exprimant ainsi le fait que la croissance est fondamentalement un processus exponentiel (comprenez que l'augmentation de masse ou du nombre d'individus est proportionnelle à la masse ou au nombre préexistant à chaque incrément temporel).
+De nombreux modèles de croissance différents sont disponibles. Certains sont exclusivement des modèles de croissance individuelle, d'autres sont exclusivement des modèles de croissance de populations, mais beaucoup peuvent être utilisés indifféremment dans les deux cas. Tous ont comme particularité d'être l'une ou l'autre forme de modèle exponentiel, exprimant ainsi le fait que la croissance est fondamentalement un processus exponentiel (comprenez que l'augmentation de masse ou du nombre d'individus est proportionnelle à la masse ou au nombre préexistant à chaque incrément temporel).
 
 Nous allons décrire ci-dessous quelques un des modèles de croissance principaux. Ensuite, nous les utiliserons pour ajuster une courbe de croissance dans un jeu de donnée réel.
 
@@ -268,8 +365,6 @@ chart(data = exponent_data, y ~ t) +
   annotate("text", label = "y0", x = -0.05, y = 1.5)
 ```
 
-TODO: exemple d'ajustement dans des données...
-
 
 ### Courbe logistique
 
@@ -309,25 +404,23 @@ $$y(t) = y_0 + \frac{y_\infty - y_0}{1 + e^{-k \ (t - t_0)}}$$
 
 Ceci est le modèle logistique généralisé à quatre paramètres (modèle 'selfSart' `SSfpl()` dans R, pour **f**our-**p**arameters **l**ogistic). Les arguments sont `A`, la première asymptote horizontale (= $y_0$), `B`, la seconde asymptote horizontale (= $y_\infty$), `xmid` (= $t_0$) et `scal` (= $k$).
 
-Le graphie ressemble très fort à celui de la fonction logistique, mais la première asymptote n'est plus nécessairement à 0 (ici, $y_0$ = 0.05).
+Le graphique ressemble très fort à celui de la fonction logistique, mais la première asymptote n'est plus nécessairement à 0 (ici, $y_0$ = 0,15).
 
 ```{r}
 fpl_data <- tibble(
   t = seq(0, 10, by = 0.1),
-  y = SSfpl(t, A = 0.05, B = 0.95, xmid = 5, scal = 1)
+  y = SSfpl(t, A = 0.15, B = 0.95, xmid = 5, scal = 1)
 )
 chart(data = fpl_data, y ~ t) +
   geom_line() +
   geom_vline(xintercept = 0, col = "darkgray") +
-  geom_hline(yintercept = c(0.05, 0.9/2 + 0.05, 0.95), col = "gray", linetype = "dashed") +
+  geom_hline(yintercept = c(0.15, 0.8/2 + 0.15, 0.95), col = "gray", linetype = "dashed") +
   geom_vline(xintercept = 5, col = "gray", linetype = "dashed") +
-  annotate("text", label = "A", x = -0.4, y = 0.05) +
+  annotate("text", label = "A", x = -0.4, y = 0.15) +
   annotate("text", label = "B", x = -0.4, y = 0.95) +
    annotate("text", label = "xmid", x = 5.4, y = 0.03) +
-  annotate("text", label = "point d'inflexion", x = 6, y = 0.47)
+  annotate("text", label = "point d'inflexion", x = 6.1, y = 0.53)
 ```
-
-TODO: exemple d'application sur des données réelles dans R.
 
 
 ### Modèle de Gompertz
@@ -338,11 +431,26 @@ $$\frac{dy(t)}{dt} = k \ [ \ln y_\infty - \ln y(t)] \ y(t)$$
 
 qui se résout et se simplifie en\ :
 
-$$y(t) = y_\infty \ e^{-k \ (t - t_0)} = y_\infty \ a^{e^{-k \ t}} = y_\infty \ a^{b^t}$$
+$$y(t) = y_\infty \ e^{-k \ (t - t_0)} = y_\infty \ e^{-a \cdot b^t} = y_\infty \ a^{e^{-k \ t}} = y_\infty \ a^{b^t}$$
 
-La dernière forme apparaît plus simple et est le plus souvent utilisée. La première forme est directement dérivée de l'équation différentielle et donne une meilleure comparaison avec la courbe logistique, puisque $t_0$ correspond aussi à l'abscisse du point d'inflexion, qui n'est plus en position symétrique ici (voir figure ci-dessous). Le modèle 'selfStart' correspondant dans R s'appelle `SSgompertz()`.
+La dernière forme apparaît plus simple et est le plus souvent utilisée. La première forme est directement dérivée de l'équation différentielle et donne une meilleure comparaison avec la courbe logistique, puisque $t_0$ correspond aussi à l'abscisse du point d'inflexion, qui n'est plus en position symétrique ici (voir figure ci-dessous). Le modèle 'selfStart' correspondant dans R s'appelle `SSgompertz()`. Sa paramétriqation correspond à la seconde forme, mais avec $a$ appelé `b2` et $b$ appelé `b3` ($y(t) = Asym \ e^{-b2 \cdot b3^t}$).
 
-TODO: figure de gompertz annotée avec légende: Exemple d'une courbe de Gompertz avec $k = 1$, $y_\infty = 0,95$, $t_0 = 1,5$. Le point d'inflexion $i$, à ${t_0, y_\infty / e}$, est plus bas que pour la courbe logistique.
+Voici le graphique d'une courbe de Gompertz avec $y_\infty = 0,95$, $a = 5$ et $b = 0,5$.
+
+```{r}
+gomp_data <- tibble(
+  t = seq(0, 10, by = 0.1),
+  y = SSgompertz(t, Asym = 0.95, b2 = 5, b3 = 0.5)
+)
+chart(data = gomp_data, y ~ t) +
+  geom_line() +
+  geom_vline(xintercept = 0, col = "darkgray") +
+  geom_hline(yintercept = c(0, 0.95/exp(1), 0.95), col = "gray", linetype = "dashed") +
+  geom_vline(xintercept = 2.3, col = "gray", linetype = "dashed") +
+  annotate("text", label = "Asym", x = -0.4, y = 0.95) +
+  annotate("text", label = "Asym/e", x = -0.5, y = 0.95/exp(1)) +
+  annotate("text", label = "point d'inflexion", x = 3.5, y = 0.32)
+```
 
 
 ### Modèles de von Bertalanffy
@@ -387,28 +495,6 @@ TODO: figure avec légende: Exemples de courbes de Weibull pour respectivement $
 $y_\infty = 0,95$ et $y_0= 0,05$. En gras, la courbe avec $m = 1$, équivalente à un modèle de von Bertalanffy linéaire. Toutes les courbes démarrent en $y_0$ et passent par $y_\infty - d \ e^{-k}$ qui est également le point d'inflexion pour les sigmoïdes lorsque $m > 1$.
 
 
-### Courbe de Jolicoeur
-
-Une autre courbe qui est tantôt sigmoïdale, tantôt non est le modèle de Jolicoeur (1985). Elle est dérivée d'une courbe logistique, mais en utilisant le logarithme du temps au lieu du temps lui-même dans l'équation différentielle de départ\ :
-
-$$y(t) = \frac{y_\infty}{1 + b \ t^{-m}}$$
-
-Comme la fonction de Weibull, elle est sigmoïdale lorsque $m > 1$, mais avec l'asymétrie entre les deux courbures de part et d'autre du point d'inflexion qui peuvent varier indépendamment l'une de l'autre, en fonction de la valeur du paramètre $b$. Lorsque $m \leq 1$, il n'y a aucun point d'inflexion (voir schéma ci-dessous).
-
-TODO figure avec légende: Exemples de courbes de Jolicoeur avec $m$ = 3, 1 (trait gras) et 0,5 respectivement depuis la courbe supérieure vers la courbe inférieure; $y_\infty = 0,95$ et $b = 0,9$. Lorsque $m > 1$, la courbe est sigmoïdale.
-
-
-### Modèle de Johnson
-
-La courbe de croissance de Johnson (voir Ricker, 1979) utilise $1/t$ à la place de $t$\ :
-
-$$y(t) = y_\infty \ e^{1/k \ (t - t_0)}$$
-
-TODO figure avec légende: Exemple d'une courbe de Johnson, avec $k = 0,7$, $y_\infty = 0,95$ et $t_0 = 0$.
-
-Ce modèle est sigmoïdal également mais une asymétrie tellement forte que le point d'inflexion est très bas, presque à 0 sur l'axe des ordonnées (il est donc difficilement visible sur le graphe). Cette courbe ressemble donc à une courbe de croissance non sigmoïdale, mais pour laquelle on observerait un petit temps de latence avant le début de la croissance sur l'axe temporel.
-
-
 ### Modèle Preece-Baines 1
 
 Preece et Baines (1978) ont décrit plusieurs modèles spécifiques à la croissance humaine. Ces modèles combinent deux phases de croissance exponentielle pour représenter la croissance graduelle d'enfants suivie par une courte phase de croissance accélérée à l'adolescence, mais qui atteint rapidement un plateau correspondant à la taille adulte définitive (voir graphique ci-dessous). Ce type de modèle est naturellement très utile pour tous les mammifères, mais certains, comme le modèle 1, ont aussi été utilisés dans d'autres circonstances, profitant de sa grande flexibilité. Son équation est\ :
@@ -433,7 +519,7 @@ TODO figure avec légende: Exemple d'une courbe de Tanaka avec $a = 3$, $b = 2,5
 
 Le choix d'un modèle non linéaire fait intervenir des critères identiques à ceux d'un modèle linéaire (qualité d'ajustement évaluée par l'AIC, inspection visuelle de l'ajustement dans le nuage de points), mais il fait aussi intervenir une dimension supplémentaire\ : le choix de la fonction marthématique à ajuster. Comme nous venons de le voir au travers de quelques modèles courants en biologie, le nombre de fonctions mathématiques résultant en des formes similaire, par exemple de type sigmoïde, est grand. Ainsi, le choix de la meilleure fonction à utiliser dans un cas particulier est rendu plus difficile.
 
-Nous allons illustrer l'ajustement d'une courbe non linéaire par le choix et l'ajustement d'un modèle de croissance dans un jeu de données en modélisant la croissance somatique de l'oursin *Paracentrotus lividus* (voir Grosjean 2001). Ce jeu de données est disponible dans le package `data.io`, sous le nom `urchin_growth`.
+Nous allons illustrer l'ajustement d'une courbe non linéaire par le choix et l'ajustement d'un modèle de croissance dans un jeu de données en modélisant la croissance somatique de l'oursin *Paracentrotus lividus* [@grosjean2001]. Ce jeu de données est disponible dans le package `data.io`, sous le nom `urchin_growth`.
 
 ```{r}
 SciViews::R
@@ -442,7 +528,7 @@ chart(data = urchins, diameter ~ age) +
   geom_point()
 ```
 
-Comme vous pouvez le voir, différents oursins ont été mesurés via le diamètre à l'ambitus du test (zone la plus large) en mm à différents âges (en années). Les mesures ont été effectuées tous les 6 mois pendant 7 ans, ce qui donne un bon aperçu de la croissance de cet animal y compris la taille maximale asymptotique qui est atteinte vers les 4 à 5 ans (pour ce genre de modèle, il est très important de continuer à mesurer les animaux afin de bien quantifier cette taille maximale asymptotique). Pour les individus survivants, dès mesures ont également été réalisées jusqu'à 10,5 ans. Ainsi, l'examen du graphique nous permet d'emblée de choisir un modèle à croissance finie (pas le modèle de Tanaka, donc), et de forme sigmoïdale. Les modèles logistique, Weibull ou Gompertz pourraient convenir par exemple. Nous pouvons à ce stade, essayer différents modèles et choisir celui qui nous semble le plus adapté.
+Comme vous pouvez le voir, différents oursins ont été mesurés via le diamètre à l'ambitus du test (zone la plus large) en mm à différents âges (en années). Les mesures ont été effectuées tous les 3 à 6 mois pendant plus de 10 ans, ce qui donne un bon aperçu de la croissance de cet animal y compris la taille maximale asymptotique qui est atteinte vers les 4 à 5 ans (pour ce genre de modèle, il est très important de continuer à mesurer les animaux afin de bien quantifier cette taille maximale asymptotique). Ainsi, l'examen du graphique nous permet d'emblée de choisir un modèle à croissance finie (pas le modèle de Tanaka, donc), et de forme sigmoïdale. Les modèles logistique, Weibull ou Gompertz pourraient convenir par exemple. Nous pouvons à ce stade, essayer différents modèles et choisir celui qui nous semble le plus adapté.
 
 Le choix du meilleur modèle se fait grâce à deux critères\ :
 
@@ -450,7 +536,7 @@ Le choix du meilleur modèle se fait grâce à deux critères\ :
 
 2. Le coefficient de détermination $R^2$ n'est pas calculé par R pour une régression non linéaire car sa validité est sujette à discussion entre les statisticiens (d'autres logiciels statistiques le calculent). Nous n'avons donc pas d'estimation de la qualité de l'ajustement par ce biais, comme dans le cas de la régression linéaire. Par contre, il est possible de calculer un autre critère plus fiable que nous avons déjà utilisé\ : le **critère d'Akaïke** (fonction `AIC()` dans R). Ce critère tient compte à la fois de la qualité d'ajustement et de la complexité du modèle, exprimée par le nombre de paramètres qu'il faut estimer. Plus le modèle est complexe, plus on peut s'attendre à ce qu'il s'ajuste bien aux données car il est plus flexible. Cependant, en ce domaine, la complexité n'est pas forcément un gage de qualité. On recherche plutôt un compromis entre meilleur ajustement et simplicité. Le critère d'information d'Akaiké quantifie précisément ce compromis, c'est-à-dire que le modèle qui a un AIC le plus faible est considéré comme le meilleur. Appliquons donc ce concept pour sélectionner le meilleur modèle de croissance pour décrire la croissance somatique de nos oursins après avoir sélectionné les modèles candidats les plus judicieux (modèle sigmoïdal avec asymptote horizontale au maximum).
 
-Notons toutefois que, comme les animaux sont mesurés aux mêmes âges, tous les six mois, certains points se superposent. Afin d'afficher tous les points, il est utile d'utiliser la fonction `geom_jitter()` à la place de `geom_point()` qui décale les points d'une valeur aléatoire pour éviter ces superpositions (l'argument `width =` indique le décalage maximum à appliquer). Voici ce que cela donne (en ajoutant également un titre avec formattage correct du nom en latin) \ :
+Notons toutefois que, comme les animaux sont mesurés aux mêmes âges, tous les 3 à 6 mois, certains points se superposent. Afin d'afficher tous les points, il est utile d'utiliser la fonction `geom_jitter()` à la place de `geom_point()` qui décale les points d'une valeur aléatoire pour éviter ces superpositions (l'argument `width =` indique le décalage maximum à appliquer). Voici ce que cela donne (en ajoutant également un titre avec formattage correct du nom en latin) \ :
 
 ```{r}
 urchins_plot <- chart(data = urchins, diameter ~ age) +
@@ -459,7 +545,7 @@ urchins_plot <- chart(data = urchins, diameter ~ age) +
 urchins_plot
 ```
 
-Nous avons ici également représenté les points de manière semi-transparent avec `alpha = 0.2`(transparence de 20%) pour encore mieux mettre en évidence les points de mesures qui se superposent.
+Nous avons ici également représenté les points de manière semi-transparente avec `alpha = 0.2`(transparence de 20%) pour encore mieux mettre en évidence les points de mesures qui se superposent.
 
 Ajustons maintenant un modèle de Gompertz (modèle 'SelfStart')\ :
 
@@ -468,7 +554,7 @@ urchins_gomp <- nls(data = urchins, diameter ~ SSgompertz(age, Asym, b2, b3))
 summary(urchins_gomp)
 ```
 
-Pour ajouter cette courbe sur le graphique, nous allons utiliser une petite fonction personnalisée qui va transformer notre objet `nls` en une fonction utlisable par `stat_function()` pour aller tracer la courbe dans un graphique de type `ggplot2` obtenu à l'aide de `chart()`.
+Utilisons maintenant notre fonction `as.function.nls()` pour ajouter la courbe sur le graphique.
 
 ```{r}
 as.function.nls <- function(x, ...) {
@@ -486,7 +572,7 @@ urchins_plot +
   stat_function(fun = as.function(urchins_gomp), color = "red", size = 1)
 ```
 
-L'ajustement de cette fonction semble très bon, à l'oeil. Voyons ce qu'il en est d'autres modèles\ :
+L'ajustement de cette fonction semble très bon, à l'oeil. Voyons ce qu'il en est d'autres modèles. Par exemple, une courbe logistique\ :
 
 ```{r}
 urchins_logis <- nls(data = urchins, diameter ~ SSlogis(age, Asym, xmid, scal))
@@ -502,7 +588,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-Notez que ici, la couleur a été incluse dans le "mapping" (argument `mapping = `) de `stat_function()` en l'incluant dans `aes()`. Cela change fondamentalement la façon dont la couler est perçue par `ggplot2`. Dans ce cas-ci, la valeur est interprétée non comme une couleur à proprement parler, mais comme un niveau (une couche) à inclure dans le graphique et à reporter via une légende. Ensuite, à l'aide de `labs()` on chaznge le titre de la légende relatif à la couleur par un nom plus explicite\ : "Modèle".
+Notez que ici, la couleur a été incluse dans le "mapping" (argument `mapping = `) de `stat_function()` en l'incluant dans `aes()`. Cela change fondamentalement la façon dont la couleur est perçue par `ggplot2`. Dans ce cas-ci, la valeur est interprétée non comme une couleur à proprement parler, mais comme un niveau (une couche) à inclure dans le graphique et à reporter via une légende. Ensuite, à l'aide de `labs()` on change le titre de la légende relatif à la couleur par un nom plus explicite\ : "Modèle".
 
 Nous pouvons comparer ces modèles à l'aide du critère d'Akaïke.
 
@@ -533,7 +619,8 @@ urchins_plot +
 ```{r}
 AIC(urchins_gomp, urchins_logis, urchins_weib)
 ```
-Ce modèle fait presque jeu égal avec le modèle de Gompertz en terme de critère d'Akaiké; juste un tout petit peu mieux. En fait, les deux courbes sont pratiquement superposées l'une à l'autre, mais le modèle de Weibull à un démarrage de croissance plus lent au début, ce qui se reflète dans les données. Par contre, il est pénalisé par le fait que c'est un modèle plus complexe qui possède un paramètre de plus. L'un dans l'autre, le critère d'information d'Akaiké considère donc les deux modèles sur pratiquement sur le même plan du point de vue de la qualité de leurs ajustements respectifs.
+
+Ce modèle fait presque jeu égal avec le modèle de Gompertz en terme de critère d'Akaiké\ ; juste un tout petit peu mieux. En fait, les deux courbes sont pratiquement superposées l'une à l'autre, mais le modèle de Weibull à un démarrage de croissance plus lent au début, ce qui se reflète dans les données. Par contre, il est pénalisé par le fait que c'est un modèle plus complexe qui possède un paramètre de plus. L'un dans l'autre, le critère d'information d'Akaiké considère donc les deux modèles sur pratiquement sur le même plan du point de vue de la qualité de leurs ajustements respectifs.
 
 A ce stade, nous voudrions également essayer un autre modèle flexible à quatre paramètres\ : le modèle de Richards. Malheureusement, il n'existe pas de fonction 'SelfStart' dans R pour ce modèle. Nous sommes donc réduit "à mettre les mains dans le cambouis", à définir la fonction nous même, à trouver de bonnes valeurs de départ, etc. Voici comment définir la fonction\ :
 
@@ -541,7 +628,7 @@ A ce stade, nous voudrions également essayer un autre modèle flexible à quatr
 richards <- function(x, Asym, k, x0, m) Asym*(1 - exp(-k * (x - x0)))^m
 ```
 
-Pour les valeurs de départ, là ce n'est pas facile. `Asym` est l' asymptote horizontale à la taille maximum. On voit qu'elle se situe aux environ de 55 mm sur le graphique. Pour les autres paramètres, c'est plus difficile à évaluer. Prenons par exemple 1 comme valeur de départ pour les trois autres paramètres, ce qui donne (les valeurs de départ sonty obligatoires ici puisque ce n'est pas un modèle 'SelfStart')\ :
+Pour les valeurs de départ, là ce n'est pas facile. `Asym` est l' asymptote horizontale à la taille maximum. On voit qu'elle se situe aux environ de 55 mm sur le graphique. Pour les autres paramètres, c'est plus difficile à évaluer. Prenons par exemple 1 comme valeur de départ pour les trois autres paramètres, ce qui donne (les valeurs de départ sont obligatoires ici puisque ce n'est pas un modèle 'SelfStart')\ :
 
 ```{r, error=TRUE}
 urchins_rich <- nls(data = urchins, diameter ~ richards(age, Asym, k, x0, m),
@@ -575,38 +662,6 @@ urchins_plot +
 AIC(urchins_gomp, urchins_logis, urchins_weib, urchins_rich)
 ```
 
-
-La courbe est très proche des modèles de Gompertz et Weibull aux jeunes âges, mais l'asymptote maximale est légèrement plus haute que pour les deux autres modèles (58 mm au lieu de 57 mm). Les trois courbes sont très, très proches l'une de l'autre. Le critère d'information d'Akaiké est un peu moins bon pour le modèle de Richards que pour celui de Weibull, mais est tout juste meilleur que celui de Gompertz. En outre l'écart type pour le paramètre `x0` est plus conséquent en comparaison de sa valeur, ce qui démontre une certaine instabilité de la fonction par rapport à ce paramètre, et par conséquent, une incertitude dans son estimation. Pour toutes ces raisons, le modèle de Richards sera écarté dans notre cas, au benefice du modèle de Weibull, voire de celui de Gompertz plus simple.
+La courbe est très proche des modèles de Gompertz et Weibull aux jeunes âges, mais l'asymptote maximale est légèrement plus haute que pour les deux autres modèles (58 mm au lieu de 57 mm). Les trois courbes sont très, très proches l'une de l'autre. Le critère d'information d'Akaiké est marginalement moins bon pour le modèle de Richards que pour celui de Weibull, mais est tout juste meilleur que celui de Gompertz. En outre l'écart type pour le paramètre `x0` est plus conséquent en comparaison de sa valeur, ce qui démontre une certaine instabilité de la fonction par rapport à ce paramètre, et par conséquent, une incertitude dans son estimation. Pour cette raison, det pour la difficulté à l'ajuster, le modèle de Richards sera écarté dans notre cas au benefice du modèle de Weibull, voire de celui de Gompertz plus simple.
 
 Le choix final entre Gompertz ou Weibull dépend de l'usage que l'on veut faire du modèle. Si la simplicité du modèle est primordiale, nous garderons Gompertz. Si la croissance des petits oursins est un aspect important de l'analyse, nous garderons Weibull qui semble mieux s'ajuster aux données à ce niveau.
-
-
-### Bibliographie (à remanier)
-
-Brostaux, Y. Introduction à l’environnement de programmation statistique R. 22 pp. [en ligne\ : http://cran.r-project.org].
-
-Chambers, J. M., 1998. Programming with data. A guide to the S language. Springer, New York. 469 pp.
-
-Dalgaard, P., 2002. Introductory statistics with R. Springer, New York. 267 pp.
-
-Fox, J., 2003. R Commander [en ligne\ : http://cran.r-project.org]
-
-Grosjean, Ph., 2001. Growth model of the reared sea urchin Paracentrotus lividus (Lamarck, 1816). Thèse de doctorat en Sciences Agronomiques et Ingénierie Biologique, ULB, Bruxelles, 285pp (http://www.sciviews.org/_phgrosjean/These.pdf).
-
-Ihaka R. & R. Gentleman, 1996. R\ : a language for data analysis and graphics. J. Comput. Graphic. Stat., 5:299-314.
-
-Legendre, L. & P. Legendre, 1984. Ecologie numérique. Tome 2: La structure des données écologiques. Masson, Paris. 335 pp.
-
-Paradis, E. R pour débutants. [en ligne\ : http://cran.r-project.org]
-
-Pinhero, J. C. & D. M. Bates, 2000. Mixed-effects models in S and S-PLUS. Srpinger,  New York. 528 pp.
-
-Sen, A. & M. Srivastava, 1990. Regression analysis. Theory, methods, and applications. Springer-Verlag, New York, 348pp.
-
-Sokal, R.R. & F.J. Rohlf, 1981. Biometry. Freeman & Co, San Francisco. 860 pp.
-
-Venables W.N. & B.D. Ripley, 2000. S programming. Springer, New York, 264 pp.
-
-Venables W.N. & B.D. Ripley, 2002. Modern applied statistics with S-PLUS (4th ed.). Springer, New York, 495 pp.
-
-Verzani, J., 2005. Using R for introductory statistics. Chapman & Hall, London. 414\ pp.
