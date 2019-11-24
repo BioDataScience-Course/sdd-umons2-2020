@@ -445,7 +445,7 @@ chart(data = fpl_data, y ~ t) +
   geom_vline(xintercept = 5, col = "gray", linetype = "dashed") +
   annotate("text", label = "A", x = -0.4, y = 0.15) +
   annotate("text", label = "B", x = -0.4, y = 0.95) +
-   annotate("text", label = "xmid", x = 5.4, y = 0.03) +
+   annotate("text", label = "xmid", x = 5.4, y = 0.13) +
   annotate("text", label = "point d'inflexion", x = 6.1, y = 0.53)
 ```
 
