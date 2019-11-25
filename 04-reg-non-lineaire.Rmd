@@ -297,7 +297,7 @@ Dans R, il existe un modèle 'selfStart' facile à utiliser pour ajuster une cou
 
 Exemple de courbe cinétique de type Michaelis-Menten. La vitesse de la réaction augmente à un rythme donné par KM pour atteindre une vitesse maximale asymptotique Vmax.
 
-Voici le graphique d'un modèle Michaelis-Menten avec $V_{max} = 1$ et $K = 0,4$.
+Voici le graphique d'un modèle Michaelis-Menten avec $V_{max} = 1$ et $K = 0,4$. Le trait horizontal en `Vm = 1` représente la vitesse maximale possible (asymptote horizontale du modèle). Nous voyons que cette vitesse maximale n'est atteinte que très lentement ici, et il faudrait considérablement distandre l'axe des X vers la droite pour le voir.
 
 ```{r}
 micmen_data <- tibble(
@@ -467,9 +467,39 @@ La forme la plus simple de ce modèle est obtenue lorsque nous mesurons des dime
 
 $$y(t) = y_\infty \ (1 - e^{-k \ (t - t_0)})$$
 
-Un graphique des deux modèles est présenté ci-dessous. Le modèle de von Bertalanffy pour mesures linéaire n'a pas de point d'inflexion. La croissance est la plus rapide à la naissance et ne fait que diminuer avec le temps pour finalement atteindre zéro lorsque la taille maximale asymptotique est atteinte. Avec ce modèle, la croissance est donc déterminée et elle ne peut dépasser cette asymptote horizontale située en $y(t)= y_\infty$. A cause de la puissance cubique de la forme pondérale du modèle von Bertalanffy, cette dernière est une sigmoïde asymétrique, comme l'est le modèle de Gompertz également. Trois modèles 'selfStart' existent dans R, selon que la courbe passe par 0 ou non sur l'un des deux axes, voire sur les deux\ : `SSasymp()`, `SSasympOff()` et `SSasympOrig()`.
+Un graphique des deux modèles est présenté ci-dessous. Le modèle de von Bertalanffy pour mesures linéaire n'a pas de point d'inflexion. La croissance est la plus rapide à la naissance et ne fait que diminuer avec le temps pour finalement atteindre zéro lorsque la taille maximale asymptotique est atteinte. Avec ce modèle, la croissance est donc déterminée et elle ne peut dépasser cette asymptote horizontale située en $y(t)= y_\infty$. A cause de la puissance cubique de la forme pondérale du modèle von Bertalanffy, cette dernière est une sigmoïde asymétrique, comme l'est le modèle de Gompertz également. Trois modèles 'selfStart' existent dans R\ : `SSasympOff()`, `SSasymp()` et `SSasympOrig()`.
 
-TODO: figure exemple £VB avec légende: Exemples de modèles de croissance de von Bertalanffy linéaire (courbe en gras) et pondérale (courbe en trait fin) avec $k = 1$, $y_\infty = 0,95$ et $t_0 = 0$. Les deux modèles décrivent une croissance asymptotique, mais la première courbe n'a pas de point d'inflexion alors que la seconde est sigmoïdale.
+- `SSAsympOff()` est définie comme $y(t) = y_\infty \ (1 - e^{-e^{lrc} \ (t - t_0)})$. Ici $k$ est remplacé par $e^{lrc}$. Cette astuce permet d'avoir un paramètre $k$ qui ne prend pas de valeur négatives, puisque l'exponentielle d'une valeur négative est un nombre compris entre 0 et 1. Donc, un $lrc$ négatif donne un $k$ compris entre 0 et 1. Cela permet de contraindre un paramètre du modèle sans nécessité de passer obligatoirement par l'algorithme "Port". A noter finalement que $y_\infty$ s'appelle `Asym` dans tous les modèles 'selfStart' dans R, y compris ici, et que $t_0$ s'appelle ici `c0`.
+
+- `SSAsymp()` est définie comme $y(t) = y_\infty + (R_0 - y_\infty) \ e^{-e^{lrc} \cdot t}$. Par rapport à la forme habituelle, outre l'astuce de $e^{lrc}$ à la place de $k$, $t_0$ est également reparamétré en $R_0$ qui représente la taille initiale au temps $t = 0$. Cela mets l'accent sur cette "taille à la naissance". 
+
+```{block, type='info'}
+**Reparamétriser un modèle** consiste à exprimer la fonction mathématique qui le représente d'une façon différente. Etant donné que l'interprétation biologique des paramètres fait partie des objectifs de la méthode. On parle d'approche **mécanistique**, qui vise à décrypter le mécanisme sous-jacent *versus* une approche purement **empirique** basée sur les données uniquement avec un modèle polynomial tout venant, par exemple.
+
+Ainsi, L'équation du modèle de von Bertalanffy présentée au début montre une paramétrisation "classique", implémentée dans `SSasympOff()` alors que `SSasymp()` mets la taille initiale en évidence via le paramètre $R_0$.
+```
+
+- `SSasympOrig()` force le modèle à passer par l'origine des axes {0, 0}. Il n'y a donc plus que deux paramètres `Asym` = $y_\infty$ et `lrc` tel que $k = e^{lrc}$. Ce modèle simplifié est souvent utile en pratique. Il a l'avantage d'être simple, avec seulement deux paramètres. Il est l'équivalent d'une droite forcée à zéro pour le modèle von Bertallanffy. Si `R0` dans `SSasymp()` ou `c0` dans `SSasympOff()` ne sont pas significativement différents de zéro (test *t* de Student dans le tableau des paramètres), vous pouvez envisager de simplifier le modèle vers `SSasympOrig()`. 
+
+Le modèle von Bertallanffy en poids n'est pas implémenté, mais il suffit de prendre la racine cubique de la masse, d'appliquer ensuite `SSasymp()` ou `SSasympOff()`, et de corriger `Asym` (et `R0` pour `SSasymp()`) en l'élevant au cube. Voici un exemple de courbes von Bertallanffy en taille et en poids générées à l'aise de `SSasympOff()`, donbc avec le traitement inverse pour la courbe en poids. Ce n'est tout de même pas très pratique, et de plus, nous tordons la réalité puisque les résdus (et leur distribution) sont également modifiés dans l'opération. Une autre approche est de construire vous-même le modèle en vous inspirant de la fonction proposée pour le modèle de Richards ci-dessous, mais en remplaçant le paramètre `m` par la constante `3`.
+
+
+```{r}
+vb_data <- tibble(
+  t = seq(0, 10, by = 0.1),
+  y = SSasympOff(t, Asym = 0.95, lrc = 0.1, c0 = 0),
+  y3 = SSasympOff(t, Asym = 0.95^(1/3), lrc = 0.1, c0 = 0)^3,
+)
+chart(data = vb_data, y ~ t %col=% "VB en taille") +
+  geom_line() +
+  geom_line(f_aes(y3 ~ t %col=% "VB en poids")) +
+  geom_vline(xintercept = 0, col = "darkgray") +
+  geom_hline(yintercept = 0.95, col = "gray", linetype = "dashed") +
+  annotate("text", label = "Asym", x = -0.4, y = 0.95) +
+  labs(color = "Modèle")
+```
+
+Dans les deux cas l'asymptote représentant la taille maximale possible vaut 0,95. Pour le modèle pondéral, c'est le cube de la valeur obtenue avec `SSasympOff()` appliquée sur la racine cubique des masses. Dans les deux cas, `lrc = 0,1` donc $k = e^{0,1} = 1,1$ et `c0 = 0`, la droite passe par l'origine (donc, nous aurions également pu utiliser `SSasympOrig()` pour générer ces données.
 
 
 ### Modèle de Richards
@@ -478,9 +508,37 @@ La forme généralisée du modèle de von Bertalanffy est\ :
 
 $$y(t) = y_\infty \ (1 - e^{-k \ (t - t_0)})^m$$
 
-Von Bertalanffy (1938, 1957) a fixé $m$ à 1 ou à 3. Richards (1959) permet à $m$ de varier librement, et donc son modèle a un paramètre de plus. Cette dernière courbe est très flexible (voir schéma ci-dessous) et il est possible de démontrer que plusieurs autres modèles de croissance ne sont que des cas particuliers de ce modèle généraliste avec différentes valeurs de $m$. Nous avons déjà observé que le modèle de Richards se réduit aux deux modèles de von Bertalanffy quand $m = 1$ et $m = 3$. Il se réduit aussi à une courbe logistique lorsque $m = -1$ et il est possible de montrer qu'il converge vers le modèle de Gompertz lorsque $|m| \rightarrow \infty$. Il n'existe aucun modèle 'selfStart' pour la courbe de Richards dans R. Par ailleurs, il s'agit d'un modèle particulièrement délicat à ajuster, comme nous le verrons dans un exemple concret plus loin.
+Von Bertalanffy (1938, 1957) a fixé $m$ à 1 ou à 3. Richards (1959) permet à $m$ de varier librement, et donc son modèle a un paramètre de plus. Cette dernière courbe est très flexible (voir schéma ci-dessous) et il est possible de démontrer que plusieurs autres modèles de croissance ne sont que des cas particuliers de ce modèle généraliste avec différentes valeurs de $m$. Nous avons déjà observé que le modèle de Richards se réduit aux deux modèles de von Bertalanffy quand $m = 1$ et $m = 3$. Il se réduit aussi à une courbe logistique lorsque $m = -1$ et il est possible de montrer qu'il converge vers le modèle de Gompertz lorsque $|m| \rightarrow \infty$. Il n'existe aucun modèle 'selfStart' pour la courbe de Richards dans R. Par ailleurs, il s'agit d'un modèle particulièrement délicat à ajuster, comme nous le verrons dans un exemple concret plus loin dans la section "choix du modèle".
 
-TODO: graphique avec légende: Allure de différentes courbes de Richards en fonction de la valeur de $m$. De gauche à droite: $m$ = 0,5, 1, 3, 6 et 10; avec $k = 0,5$, $y_\infty = 0,95$ et $t_0 = 0$ pour toutes les courbes. La courbe en gras, avec $m = 1$, est équivalente au modèle de von Bertalanffy linéaire.
+Avec une paramétrisation proche de celle de `SSasympOff()`, la fonction de Rcichards peut s'écrire comme ceci\ :
+
+```{r}
+richards <- function(x, Asym, lrc, c0, m) Asym*(1 - exp(-exp(lrc) * (x - c0)))^m
+```
+
+Voici l'allure de différentes courbes de Richards en fonction de la valeur de $m$ (0,5, 1, 3, 6 et 9) avec $lrc = 0,1$, $y_\infty = 0,95$ et $t_0 = 0$ pour toutes les courbes.
+
+
+```{r}
+rich_data <- tibble(
+  t = seq(0, 10, by = 0.1),
+  y = richards(t, Asym = 0.95, lrc = 0.1, c0 = 0, m = 1),
+  y05 = richards(t, Asym = 0.95, lrc = 0.1, c0 = 0, m = 0.5),
+  y3 = richards(t, Asym = 0.95, lrc = 0.1, c0 = 0, m = 3),
+  y6 = richards(t, Asym = 0.95, lrc = 0.1, c0 = 0, m = 6),
+  y9 = richards(t, Asym = 0.95, lrc = 0.1, c0 = 0, m = 9)
+)
+chart(data = rich_data, y ~ t %col=% "m = 1") +
+  geom_line() +
+  geom_line(f_aes(y05 ~ t %col=% "m = 0.5")) +
+  geom_line(f_aes(y3 ~ t %col=% "m = 3")) +
+  geom_line(f_aes(y6 ~ t %col=% "m = 6")) +
+  geom_line(f_aes(y9 ~ t %col=% "m = 9")) +
+  geom_vline(xintercept = 0, col = "darkgray") +
+  geom_hline(yintercept = 0.95, col = "gray", linetype = "dashed") +
+  annotate("text", label = "Asym", x = -0.4, y = 0.95) +
+  labs(color = "Richards avec :")
+```
 
 
 ### Modèle de Weibull
@@ -625,14 +683,14 @@ Ce modèle fait presque jeu égal avec le modèle de Gompertz en terme de critè
 A ce stade, nous voudrions également essayer un autre modèle flexible à quatre paramètres\ : le modèle de Richards. Malheureusement, il n'existe pas de fonction 'SelfStart' dans R pour ce modèle. Nous sommes donc réduit "à mettre les mains dans le cambouis", à définir la fonction nous même, à trouver de bonnes valeurs de départ, etc. Voici comment définir la fonction\ :
 
 ```{r}
-richards <- function(x, Asym, k, x0, m) Asym*(1 - exp(-k * (x - x0)))^m
+richards <- function(x, Asym, lrc, c0, m) Asym*(1 - exp(-exp(lrc) * (x - c0)))^m
 ```
 
 Pour les valeurs de départ, là ce n'est pas facile. `Asym` est l' asymptote horizontale à la taille maximum. On voit qu'elle se situe aux environ de 55 mm sur le graphique. Pour les autres paramètres, c'est plus difficile à évaluer. Prenons par exemple 1 comme valeur de départ pour les trois autres paramètres, ce qui donne (les valeurs de départ sont obligatoires ici puisque ce n'est pas un modèle 'SelfStart')\ :
 
 ```{r, error=TRUE}
-urchins_rich <- nls(data = urchins, diameter ~ richards(age, Asym, k, x0, m),
-  start = c(Asym = 55, k = 1, x0 = 1, m = 1))
+urchins_rich <- nls(data = urchins, diameter ~ richards(age, Asym, lrc, c0, m),
+  start = c(Asym = 55, lrc = 0.1, c0 = 1, m = 1))
 ```
 
 ... et voilà\ ! Un excellent exemple de plantage de l'algorithme de minimisation de la fonction objective suite à un comportement inadéquat de la fonction avec les valeurs testées. Ici, la fonction renvoie l'infini et l'algorithme ne peut donc effectuer la minimisation. La fonction de Richards est effectivement connue pour être difficile à ajuster pour cette raison.
@@ -640,8 +698,8 @@ urchins_rich <- nls(data = urchins, diameter ~ richards(age, Asym, k, x0, m),
 Il nous faut donc soit tester d'autres valeurs de départ, soit utiliser un autre algorithme de minimisation, soit les deux. Après différents essais il apparaît que le changement des valeurs de départ suffit dans le cas présent\ :
 
 ```{r, error=TRUE}
-urchins_rich <- nls(data = urchins, diameter ~ richards(age, Asym, k, x0, m),
-  start = c(Asym = 55, k = 0.5, x0 = 0, m = 1))
+urchins_rich <- nls(data = urchins, diameter ~ richards(age, Asym, lrc, c0, m),
+  start = c(Asym = 55, lrc = -0.7, c0 = 0, m = 1))
 summary(urchins_rich)
 ```
 
