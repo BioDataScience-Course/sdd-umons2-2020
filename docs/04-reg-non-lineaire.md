@@ -232,7 +232,7 @@ La convergence est considérée comme obtenue lorsque la différence de valeur d
 
 - `maxiter =` le nombre maximum d'itérations permises. Pour éviter de calculer à l'infini, nous arrêtons à cette valeur et décrétons que le calcul **n'a pas convergé**. La valeur pas défaut est de 50 itérations.
 
-- `tol = ` le niveau de tolérance pour décider que l'on a convergé. C'est lui notrte seuil de tolérance ci-dessus. Par défaut, il vaut `1e-05`, soit 0,00001. C'est une valeur *relative*. Cela siginifie que la variation de la fonction objective ne doit pas être plus grande que cela *en valeur relative*.
+- `tol = ` le niveau de tolérance pour décider que l'on a convergé. C'est lui notre seuil de tolérance ci-dessus. Par défaut, il vaut `1e-05`, soit 0,00001. C'est une valeur *relative*. Cela siginifie que la variation de la fonction objective ne doit pas être plus grande que cela *en valeur relative*, soit $|\frac{fobj_i - fobj_{i + 1}}{fobj_i}| < tol$.
 
 - ... d'autres arguments moins importants ici.
 
@@ -286,7 +286,7 @@ Lisez le README afin de prendre connaissance de l'exercice
 
 Dans certains cas, il existe des petites astuces de calcul pour converger directement vers la solution, ou du moins, pour calculer des valeurs de départ très proches de la solution recherchée de sorte que l'algorithme de recherche pourra converger très rapidement. Par exemple, lorsqu'il est possible de linéariser le modèle en transformant les données. Dans ce cas, une bonne estimation des valeurs de départ des paramètres peut être obtenue en linéarisant la relation et en calculant les paramètres par régression linéaire. Ensuite, les paramètres obtenus sont retransformés dans leur forme initiale, et ils sont utilisés comme valeurs de départ.
 
-Par exemple, si nous décidons d'ajuster un modèle allométrique de Huxley, de type $y = a x^b$, nous pouvons linéariser la relation en transformant les deux variables en logarithmes. En effet, $\log(y) = \log(a x^b)$, ce qui est équivalent à une droite en développant\: $\log(y) = b \log(x) + \log(a)$. Le paramètre $b$ devient donc la pente de la droite, et $\log(a)$ devient l'ordonnée à l'origine dans le modèle linéaire transformé. Une fois la droite ajustée, on a directement la valeur de $b$, et il suffit de calculer l'exponentielle de l'ordonnée à l'origine pour obtenir $a$. Toutefois, comme les résidus sont différents dans la relation non transformée initiale, il ne s'agit pas de la solution recherchée mais d'une bon point de départ très proche de cette solution. Ainsi, on prendra les valeurs de $a$ et de $b$ ainsi calculées par la droite en double log comme point de départ, et on laissera l'algorithme de recherche du minimum terminer le travail. En fait, c'est exactement de cette façon que les modèles dits 'selfStart' fonctionnent dans R. Plus qu’une fonction, il s’agit en réalité d’un programme complet qui contient\ :
+Par exemple, si nous décidons d'ajuster un modèle allométrique de Huxley, de type $y = a x^b$^[Un modèle 'selfStart' est disponible pour cette fonction dans le package `vegan`, voir `?vegan::SSarrhenius()`.], nous pouvons linéariser la relation en transformant les deux variables en logarithmes. En effet, $\log(y) = \log(a x^b)$, ce qui est équivalent à une droite en développant\: $\log(y) = b \log(x) + \log(a)$. Le paramètre $b$ devient donc la pente de la droite, et $\log(a)$ devient l'ordonnée à l'origine dans le modèle linéaire transformé. Une fois la droite ajustée, on a directement la valeur de $b$, et il suffit de calculer l'exponentielle de l'ordonnée à l'origine pour obtenir $a$. Toutefois, comme les résidus sont différents dans la relation non transformée initiale, il ne s'agit pas de la solution recherchée mais d'une bon point de départ très proche de cette solution. Ainsi, on prendra les valeurs de $a$ et de $b$ ainsi calculées par la droite en double log comme point de départ, et on laissera l'algorithme de recherche du minimum terminer le travail. En fait, c'est exactement de cette façon que les modèles dits 'selfStart' fonctionnent dans R. Plus qu’une fonction, il s’agit en réalité d’un programme complet qui contient\ :
 
 * la fonction elle-même,
 * la résolution analytique de la dérivée première de la fonction en chaque point (utilisée par l’algorithme de convergence pour déterminer l’écart à apporter aux paramètres à l’itération suivante),
@@ -318,16 +318,11 @@ Les domaines les plus courants où des modèles non linéaires sont utilisés en
 
 La corube de Michaelis-Menten est bien connue pour modéliser des cinétiques chimiques simples, enzymatiques en particulier. Son équation est\ :
 
-$$V = \frac{V_{max} * conc}{K + conc}$$
+$$V = \frac{V_{max} \cdot conc}{K + conc}$$
 
-où $conc$ est la concentration des réactifs au début de la réaction, c'est-à-dire, en absence de produits de cette réaction en mol/L, $V$ est la vitesse de réaction en mol/min. Le modèle a deux paramètres $V_{max}$ la vitesse maximale asymptotique en mol/min et $K$ en mol/L correspondant à la concentration telle que la vitesse est la moitié de $V_{max}$. 
+où $conc$ est la concentration des réactifs au début de la réaction, c'est-à-dire, en absence de produits de cette réaction en mol/L, $V$ est la vitesse de réaction en mol/min. Le modèle a deux paramètres $V_{max}$ la vitesse maximale asymptotique en mol/min et $K$ en mol/L correspondant à la concentration telle que la vitesse est la moitié de $V_{max}$. Dans R, il existe un modèle 'selfStart' facile à utiliser pour ajuster une courbe de type Michaelis-Menten. Il s'agit de la fonction `SSmicmen()`.
 
-Dans R, il existe un modèle 'selfStart' facile à utiliser pour ajuster une courbe de type Michaelis-Menten. Il s'agit de la fonction `SSmicmen()`.
-
-
-Exemple de courbe cinétique de type Michaelis-Menten. La vitesse de la réaction augmente à un rythme donné par KM pour atteindre une vitesse maximale asymptotique Vmax.
-
-Voici le graphique d'un modèle Michaelis-Menten avec $V_{max} = 1$ et $K = 0,4$. Le trait horizontal en `Vm = 1` représente la vitesse maximale possible (asymptote horizontale du modèle). Nous voyons que cette vitesse maximale n'est atteinte que très lentement ici, et il faudrait considérablement distandre l'axe des X vers la droite pour le voir.
+Voici le graphique d'un modèle Michaelis-Menten avec $V_{max} = 1$ et $K = 0,4$. Le trait horizontal en `Vm = 1` représente la vitesse maximale possible (asymptote horizontale du modèle). Nous voyons que cette vitesse maximale n'est atteinte que très lentement ici, et il faudrait que l'axe des X s'étende beaucoup plus sur la droite pour l'observer.
 
 
 ```r
@@ -348,6 +343,10 @@ chart(data = micmen_data, v ~ conc) +
 ```
 
 <img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" />
+
+
+
+Concernant les modèles utiles en chimie et biochimie, le modèle à compartiment de premier ordre permet de décrire la cinétique de transformation d'une substance au cours du temps. Voyez le modèle `?Ssfol`. Il peut servir par exemple pour déterminer la cinétique d'élimination d'une substance du sang après injection.
 
 
 ### Modèles de croissance
@@ -401,6 +400,8 @@ chart(data = exponent_data, y ~ t) +
 ```
 
 <img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" />
+
+Il existe aussi un modèle bi-exponentiel qui combine deux signaux exponentiels différents. Pour plus de détails, voyez `?SSbiexp`.
 
 
 ### Courbe logistique
@@ -524,9 +525,16 @@ Un graphique des deux modèles est présenté ci-dessous. Le modèle de von Bert
 <p>Ainsi, L’équation du modèle de von Bertalanffy présentée au début montre une paramétrisation “classique”, implémentée dans <code>SSasympOff()</code> alors que <code>SSasymp()</code> mets la taille initiale en évidence via le paramètre <span class="math inline">\(R_0\)</span>.</p>
 </div>
 
-- `SSasympOrig()` force le modèle à passer par l'origine des axes {0, 0}. Il n'y a donc plus que deux paramètres `Asym` = $y_\infty$ et `lrc` tel que $k = e^{lrc}$. Ce modèle simplifié est souvent utile en pratique. Il a l'avantage d'être simple, avec seulement deux paramètres. Il est l'équivalent d'une droite forcée à zéro pour le modèle von Bertallanffy. Si `R0` dans `SSasymp()` ou `c0` dans `SSasympOff()` ne sont pas significativement différents de zéro (test *t* de Student dans le tableau des paramètres), vous pouvez envisager de simplifier le modèle vers `SSasympOrig()`. 
+- `SSasympOrig()` force le modèle à passer par l'origine des axes {0, 0}. Il n'y a donc plus que deux paramètres `Asym` = $y_\infty$ et `lrc` tel que $k = e^{lrc}$. Ce modèle simplifié est souvent utile en pratique. Il a l'avantage d'être simple, avec seulement deux paramètres. Il est l'équivalent d'une droite forcée à zéro pour le modèle von Bertalanffy. Si `R0` dans `SSasymp()` ou `c0` dans `SSasympOff()` ne sont pas significativement différents de zéro (test *t* de Student dans le tableau des paramètres), vous pouvez envisager de simplifier le modèle vers `SSasympOrig()`. 
 
-Le modèle von Bertallanffy en poids n'est pas implémenté, mais il suffit de prendre la racine cubique de la masse, d'appliquer ensuite `SSasymp()` ou `SSasympOff()`, et de corriger `Asym` (et `R0` pour `SSasymp()`) en l'élevant au cube. Voici un exemple de courbes von Bertallanffy en taille et en poids générées à l'aise de `SSasympOff()`, donbc avec le traitement inverse pour la courbe en poids. Ce n'est tout de même pas très pratique, et de plus, nous tordons la réalité puisque les résdus (et leur distribution) sont également modifiés dans l'opération. Une autre approche est de construire vous-même le modèle en vous inspirant de la fonction proposée pour le modèle de Richards ci-dessous, mais en remplaçant le paramètre `m` par la constante `3`.
+Le modèle von Bertalanffy en poids n'est pas implémenté, nous devons utiliser une fonction personnalisée dans ce cas (avec une paramétrisation similaire à `SSasympOff()`\ : 
+
+
+```r
+asympOff3 <- function(x, Asym, lrc, c0, m) Asym*(1 - exp(-exp(lrc) * (x - c0)))^3
+```
+
+Voici les deux modèles de von Bertalanffy présentés sur le même graphique avec $y_\infty$ (alias `Asym`) = 0,95, `lrc` = 0,1 et $t_0$ (alias `c0`) = 0.
 
 
 
@@ -534,7 +542,7 @@ Le modèle von Bertallanffy en poids n'est pas implémenté, mais il suffit de p
 vb_data <- tibble(
   t = seq(0, 10, by = 0.1),
   y = SSasympOff(t, Asym = 0.95, lrc = 0.1, c0 = 0),
-  y3 = SSasympOff(t, Asym = 0.95^(1/3), lrc = 0.1, c0 = 0)^3,
+  y3 = asympOff3(t, Asym = 0.95, lrc = 0.1, c0 = 0),
 )
 chart(data = vb_data, y ~ t %col=% "VB en taille") +
   geom_line() +
@@ -545,7 +553,7 @@ chart(data = vb_data, y ~ t %col=% "VB en taille") +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" />
 
 Dans les deux cas l'asymptote représentant la taille maximale possible vaut 0,95. Pour le modèle pondéral, c'est le cube de la valeur obtenue avec `SSasympOff()` appliquée sur la racine cubique des masses. Dans les deux cas, `lrc = 0,1` donc $k = e^{0,1} = 1,1$ et `c0 = 0`, la droite passe par l'origine (donc, nous aurions également pu utiliser `SSasympOrig()` pour générer ces données.
 
@@ -590,7 +598,7 @@ chart(data = rich_data, y ~ t %col=% "m = 1") +
   labs(color = "Richards avec :")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ### Modèle de Weibull
@@ -599,7 +607,7 @@ Depuis son introduction en 1951 par Weibull, ce modèle est présenté comme pol
 
 $$y(t) = y_\infty - d \ e^{-k \ t^m}$$
 
-avec $d = y_\infty - y_0$. Un modèle à trois paramètres est également utilisé où $y_0 = 0$. La fonction est sigmoïdale lorsque $m > 1$, sinon elle ne possède pas de point d'inflexion (voir graphique ci-dessous). Dans R, le modèle 'selfStart' s'appelle `SSweibull()`. Comme pour le modèle von Bertallanffy, le paramètre $k$ est contraint à une valeur positive via l'astuce $k = e^{lrc}$. Comme d'habitude, $y_\infty$ se nomme `Asym`. $d$ est ici appelé `Drop` et $m$ est appelé `pwr`.
+avec $d = y_\infty - y_0$. Un modèle à trois paramètres est également utilisé où $y_0 = 0$. La fonction est sigmoïdale lorsque $m > 1$, sinon elle ne possède pas de point d'inflexion (voir graphique ci-dessous). Dans R, le modèle 'selfStart' s'appelle `SSweibull()`. Comme pour le modèle von Bertalanffy, le paramètre $k$ est contraint à une valeur positive via l'astuce $k = e^{lrc}$. Comme d'habitude, $y_\infty$ se nomme `Asym`. $d$ est ici appelé `Drop` et $m$ est appelé `pwr`.
 
 Voici l'allure de différentes courbes de Weibull pour respectivement $m$ (alias `pwr`) = 5, 2, 1 et 0,5, avec $lrc = -0,5$ (donc, $k = e^{-0,5}$ = 0,61), $y_\infty$ (alias `Asym`) = 0,95 et $y_0= 0,05$, ce qui donne $d$ (alias `Drop`) = 0,95 - 0,05 = 0,9. La courbe avec $m = 1$ est équivalente à un modèle de von Bertalanffy linéaire. Toutes les courbes démarrent en $y_0$ et passent par $y_\infty - d \ e^{-k}$ qui est également le point d'inflexion pour les sigmoïdes lorsque $m > 1$.
 
@@ -628,7 +636,7 @@ chart(data = weib_data, y ~ t %col=% "m = 1") +
   labs(color = "Weibull avec :")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ### Modèle Preece-Baines 1
@@ -662,7 +670,7 @@ chart(data = pb1_data, y ~ t) +
   annotate("text", label = "Asym", x = -0.4, y = 0.95)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ### Modèle de Tanaka
@@ -678,7 +686,7 @@ Dans R, nous pouvons utiliser la fonction suivante pour ajuster un modèle de Ta
 
 ```r
 tanaka <- function(x, a, b, c0, d)
-  1 / sqrt(b) * log(abs(2 * b * (x - c0) + 2 * sqrt(b^2 * (x - c0)^2 + a*b))) + d
+  1 / sqrt(b) * log(abs(2 * b * (x - c0) + 2 * sqrt(b^2 * (x - c0)^2 + a * b))) + d
 ```
 
 Ci-dessous, un exemple de courbe de Tanaka avec $a$ = 3, $b$ = 2,5, $d$ = -0,2 et $t_0$ (alias `c0`) = 2.
@@ -694,7 +702,7 @@ chart(data = tanaka_data, y ~ t) +
   geom_vline(xintercept = 0, col = "darkgray")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ## Choix du modèle
@@ -711,7 +719,7 @@ chart(data = urchins, diameter ~ age) +
   geom_point()
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" />
 
 Comme vous pouvez le voir, différents oursins ont été mesurés via le diamètre à l'ambitus du test (zone la plus large) en mm à différents âges (en années). Les mesures ont été effectuées tous les 3 à 6 mois pendant plus de 10 ans, ce qui donne un bon aperçu de la croissance de cet animal y compris la taille maximale asymptotique qui est atteinte vers les 4 à 5 ans (pour ce genre de modèle, il est très important de continuer à mesurer les animaux afin de bien quantifier cette taille maximale asymptotique). Ainsi, l'examen du graphique nous permet d'emblée de choisir un modèle à croissance finie (pas le modèle de Tanaka, donc), et de forme sigmoïdale. Les modèles logistique, Weibull ou Gompertz pourraient convenir par exemple. Nous pouvons à ce stade, essayer différents modèles et choisir celui qui nous semble le plus adapté.
 
@@ -731,7 +739,7 @@ urchins_plot <- chart(data = urchins, diameter ~ age) +
 urchins_plot
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" />
 
 Nous avons ici également représenté les points de manière semi-transparente avec `alpha = 0.2`(transparence de 20%) pour encore mieux mettre en évidence les points de mesures qui se superposent.
 
@@ -781,7 +789,7 @@ urchins_plot +
   stat_function(fun = as.function(urchins_gomp), color = "red", size = 1)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" />
 
 L'ajustement de cette fonction semble très bon, à l'oeil. Voyons ce qu'il en est d'autres modèles. Par exemple, une courbe logistique\ :
 
@@ -819,7 +827,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" />
 
 Notez que ici, la couleur a été incluse dans le "mapping" (argument `mapping = `) de `stat_function()` en l'incluant dans `aes()`. Cela change fondamentalement la façon dont la couleur est perçue par `ggplot2`. Dans ce cas-ci, la valeur est interprétée non comme une couleur à proprement parler, mais comme un niveau (une couche) à inclure dans le graphique et à reporter via une légende. Ensuite, à l'aide de `labs()` on change le titre de la légende relatif à la couleur par un nom plus explicite\ : "Modèle".
 
@@ -875,7 +883,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" />
 
 ... et comparons à l'aide du critère d'Akaïke\ :
 
@@ -954,7 +962,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" />
 
 ... et comparons à l'aide du critère d'Akaïke\ :
 
