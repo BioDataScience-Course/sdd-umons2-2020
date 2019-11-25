@@ -268,6 +268,20 @@ Lorsque la convergence a du mal à se faire, ceci est éventuellement lié à la
 Au final, l'ajustement d'un modèle non linéaire par les moindres carrés est une opération beaucoup plus délicate que l'ajustement par les moindres carrés d'un modèle linéaire. Dans le cas linéaire, la solution est trouvée de manière immédiate grâce à un calcul matriciel simple. Dans le cas non linéaire, il n'existe souvent pas de solution miracle et le meilleur ajustement doit être recherché de manière itérative. Nous verrons ci-dessous que R propose, pour certains modèles appelés 'SelfStart' une solution élégante pour calculer automatiquement les valeurs initiales et pour converger très rapidement vers la solution recherchée, mais la plupart du temps il faut tâtonner pour ajuster sa courbe.
 
 
+
+##### A vous de jouer ! {-}
+
+- Réalisez un rapport scientifique sur la vitesse d'une réaction chimique, en définissant un modèle non linéaire pertinent pour ces données.
+
+\BeginKnitrBlock{bdd}<div class="bdd">
+Vous avez à votre disposition une assignation GitHub Classroom : 
+  
+- <https://classroom.github.com/a/pa48JVSl>
+
+Lisez le README afin de prendre connaissance de l'exercice
+</div>\EndKnitrBlock{bdd}
+
+
 ### Modèles 'selfStart' dans R
 
 Dans certains cas, il existe des petites astuces de calcul pour converger directement vers la solution, ou du moins, pour calculer des valeurs de départ très proches de la solution recherchée de sorte que l'algorithme de recherche pourra converger très rapidement. Par exemple, lorsqu'il est possible de linéariser le modèle en transformant les données. Dans ce cas, une bonne estimation des valeurs de départ des paramètres peut être obtenue en linéarisant la relation et en calculant les paramètres par régression linéaire. Ensuite, les paramètres obtenus sont retransformés dans leur forme initiale, et ils sont utilisés comme valeurs de départ.
@@ -333,7 +347,7 @@ chart(data = micmen_data, v ~ conc) +
   annotate("text", label = "K", x = 0.5, y = 0.03)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ### Modèles de croissance
@@ -386,7 +400,7 @@ chart(data = exponent_data, y ~ t) +
   annotate("text", label = "y0", x = -0.05, y = 1.5)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ### Courbe logistique
@@ -420,7 +434,7 @@ chart(data = logis_data, y ~ t) +
   annotate("text", label = "point d'inflexion", x = 6, y = 0.45)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" />
 
 Cette courbe sigmoïdale est asymptotique en 0 et $y_\infty$, et elle est également symétrique autour de son point d'inflexion situé à ${t_0, y_\infty / 2}$.
 
@@ -449,7 +463,7 @@ chart(data = fpl_data, y ~ t) +
   annotate("text", label = "point d'inflexion", x = 6.1, y = 0.53)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ### Modèle de Gompertz
@@ -482,7 +496,7 @@ chart(data = gomp_data, y ~ t) +
   annotate("text", label = "point d'inflexion", x = 3.5, y = 0.32)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ### Modèles de von Bertalanffy
@@ -561,7 +575,7 @@ chart(data = urchins, diameter ~ age) +
   geom_point()
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" />
 
 Comme vous pouvez le voir, différents oursins ont été mesurés via le diamètre à l'ambitus du test (zone la plus large) en mm à différents âges (en années). Les mesures ont été effectuées tous les 3 à 6 mois pendant plus de 10 ans, ce qui donne un bon aperçu de la croissance de cet animal y compris la taille maximale asymptotique qui est atteinte vers les 4 à 5 ans (pour ce genre de modèle, il est très important de continuer à mesurer les animaux afin de bien quantifier cette taille maximale asymptotique). Ainsi, l'examen du graphique nous permet d'emblée de choisir un modèle à croissance finie (pas le modèle de Tanaka, donc), et de forme sigmoïdale. Les modèles logistique, Weibull ou Gompertz pourraient convenir par exemple. Nous pouvons à ce stade, essayer différents modèles et choisir celui qui nous semble le plus adapté.
 
@@ -581,7 +595,7 @@ urchins_plot <- chart(data = urchins, diameter ~ age) +
 urchins_plot
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" />
 
 Nous avons ici également représenté les points de manière semi-transparente avec `alpha = 0.2`(transparence de 20%) pour encore mieux mettre en évidence les points de mesures qui se superposent.
 
@@ -631,7 +645,7 @@ urchins_plot +
   stat_function(fun = as.function(urchins_gomp), color = "red", size = 1)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" />
 
 L'ajustement de cette fonction semble très bon, à l'oeil. Voyons ce qu'il en est d'autres modèles. Par exemple, une courbe logistique\ :
 
@@ -669,7 +683,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" />
 
 Notez que ici, la couleur a été incluse dans le "mapping" (argument `mapping = `) de `stat_function()` en l'incluant dans `aes()`. Cela change fondamentalement la façon dont la couleur est perçue par `ggplot2`. Dans ce cas-ci, la valeur est interprétée non comme une couleur à proprement parler, mais comme un niveau (une couche) à inclure dans le graphique et à reporter via une légende. Ensuite, à l'aide de `labs()` on change le titre de la légende relatif à la couleur par un nom plus explicite\ : "Modèle".
 
@@ -725,7 +739,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" />
 
 ... et comparons à l'aide du critère d'Akaïke\ :
 
@@ -804,7 +818,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" />
 
 ... et comparons à l'aide du critère d'Akaïke\ :
 

@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2019-11-24">
+<meta name="date" content="2019-11-25">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -325,6 +325,21 @@ Il vaut toujours mieux tester différentes combinaisons de valeurs de départ po
 <h4>Complexité du modèle</h4>
 <p>Lorsque la convergence a du mal à se faire, ceci est éventuellement lié à la complexité de la fonction que l’on cherche à ajuster. Les propriétés mathématique de la courbe choisie peuvent très bien faire que cette courbe ne soit pas définie pour certaines valeurs des paramètres, ou qu’elle ait un comportement spécial dans un certain domaine (par exemple, courbe tendant vers l’infini). Ces cas sont difficilement traités par la plupart des algorithmes de minimisation de la fonction objective, et des erreurs de calcul de type “division par zéro”, ou “résultat non défini” peuvent apparaître. Dans les meilleures implémentations (<code>nls()</code> en est une), des gardes-fous ont été ajoutés dans le code de la fonction pour éviter les erreurs dans pareils cas. Toutefois, il n’est pas possible de traiter tous les cas possibles. Ainsi, il arrive parfois que le modèle choisi ne soit pas ajustable sur les données.</p>
 <p>Au final, l’ajustement d’un modèle non linéaire par les moindres carrés est une opération beaucoup plus délicate que l’ajustement par les moindres carrés d’un modèle linéaire. Dans le cas linéaire, la solution est trouvée de manière immédiate grâce à un calcul matriciel simple. Dans le cas non linéaire, il n’existe souvent pas de solution miracle et le meilleur ajustement doit être recherché de manière itérative. Nous verrons ci-dessous que R propose, pour certains modèles appelés ‘SelfStart’ une solution élégante pour calculer automatiquement les valeurs initiales et pour converger très rapidement vers la solution recherchée, mais la plupart du temps il faut tâtonner pour ajuster sa courbe.</p>
+<div id="a-vous-de-jouer-7" class="section level5 unnumbered">
+<h5>A vous de jouer !</h5>
+<ul>
+<li>Réalisez un rapport scientifique sur la vitesse d’une réaction chimique, en définissant un modèle non linéaire pertinent pour ces données.</li>
+</ul>
+
+<div class="bdd">
+<p>Vous avez à votre disposition une assignation GitHub Classroom :</p>
+<ul>
+<li><a href="https://classroom.github.com/a/pa48JVSl" class="uri">https://classroom.github.com/a/pa48JVSl</a></li>
+</ul>
+<p>Lisez le README afin de prendre connaissance de l’exercice</p>
+</div>
+
+</div>
 </div>
 </div>
 <div id="modeles-selfstart-dans-r" class="section level3">
