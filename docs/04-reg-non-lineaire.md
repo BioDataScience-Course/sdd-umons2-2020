@@ -16,7 +16,7 @@
 
 ##### Prérequis {-}
 
-- Les modules 1 & 2 du présent cours concernant la régression linéaire sont une en trée en matière indispensable puisque la régression va être abordée ici comme une extension de ce qui a déjà été vu.
+- Les modules 1 & 2 du présent cours concernant la régression linéaire sont une entrée en matière indispensable puisque la régression va être abordée ici comme une extension de ce qui a déjà été vu.
 
 
 ## Rendement photosynthétique
@@ -599,19 +599,70 @@ Depuis son introduction en 1951 par Weibull, ce modèle est présenté comme pol
 
 $$y(t) = y_\infty - d \ e^{-k \ t^m}$$
 
-avec $d = y_\infty - y_0$. Un modèle à trois paramètres est également utilisé où $y_0 = 0$. La fonction est sigmoïdale lorsque $m > 1$, sinon elle ne possède pas de point d'inflexion (voir graphique ci-dessous). Dans R, le modèle 'selfStart' s'appelle `SSweibull()`.
+avec $d = y_\infty - y_0$. Un modèle à trois paramètres est également utilisé où $y_0 = 0$. La fonction est sigmoïdale lorsque $m > 1$, sinon elle ne possède pas de point d'inflexion (voir graphique ci-dessous). Dans R, le modèle 'selfStart' s'appelle `SSweibull()`. Comme pour le modèle von Bertallanffy, le paramètre $k$ est contraint à une valeur positive via l'astuce $k = e^{lrc}$. Comme d'habitude, $y_\infty$ se nomme `Asym`. $d$ est ici appelé `Drop` et $m$ est appelé `pwr`.
 
-TODO: figure avec légende: Exemples de courbes de Weibull pour respectivement $m$ = 5, 2, 1 et 0,5, avec $k = 0,6$,
-$y_\infty = 0,95$ et $y_0= 0,05$. En gras, la courbe avec $m = 1$, équivalente à un modèle de von Bertalanffy linéaire. Toutes les courbes démarrent en $y_0$ et passent par $y_\infty - d \ e^{-k}$ qui est également le point d'inflexion pour les sigmoïdes lorsque $m > 1$.
+Voici l'allure de différentes courbes de Weibull pour respectivement $m$ (alias `pwr`) = 5, 2, 1 et 0,5, avec $lrc = -0,5$ (donc, $k = e^{-0,5}$ = 0,61), $y_\infty$ (alias `Asym`) = 0,95 et $y_0= 0,05$, ce qui donne $d$ (alias `Drop`) = 0,95 - 0,05 = 0,9. La courbe avec $m = 1$ est équivalente à un modèle de von Bertalanffy linéaire. Toutes les courbes démarrent en $y_0$ et passent par $y_\infty - d \ e^{-k}$ qui est également le point d'inflexion pour les sigmoïdes lorsque $m > 1$.
+
+
+
+```r
+weib_data <- tibble(
+  t = seq(0, 10, by = 0.1),
+  y = SSweibull(t, Asym = 0.95, Drop = 0.9, lrc = -0.5, pwr = 1),
+  y05 = SSweibull(t, Asym = 0.95, Drop = 0.9, lrc = -0.5, pwr = 0.5),
+  y2 = SSweibull(t, Asym = 0.95, Drop = 0.9, lrc = -0.5, pwr = 2),
+  y5 = SSweibull(t, Asym = 0.95, Drop = 0.9, lrc = -0.5, pwr = 5)
+)
+chart(data = weib_data, y ~ t %col=% "m = 1") +
+  geom_line() +
+  geom_line(f_aes(y05 ~ t %col=% "m = 0.5")) +
+  geom_line(f_aes(y2 ~ t %col=% "m = 2")) +
+  geom_line(f_aes(y5 ~ t %col=% "m = 5")) +
+  geom_vline(xintercept = 0, col = "darkgray") +
+  geom_hline(yintercept = c(0.05, 0.95, 0.95 - 0.9 * exp(-exp(-0.5))),
+    col = "gray", linetype = "dashed") +
+  annotate("text", label = "Asym", x = -0.4, y = 0.95) +
+  annotate("text", label = "y0", x = -0.4, y = 0.05) +
+  annotate("text", label = "Asym-d*e^-k", x = 0, y = 0.95 - 0.9 * exp(-exp(-0.5))) +
+  annotate("text", label = "point d'inflexion si m > 1", x = 3, y = 0.43) +
+  labs(color = "Weibull avec :")
+```
+
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ### Modèle Preece-Baines 1
 
-Preece et Baines (1978) ont décrit plusieurs modèles spécifiques à la croissance humaine. Ces modèles combinent deux phases de croissance exponentielle pour représenter la croissance graduelle d'enfants suivie par une courte phase de croissance accélérée à l'adolescence, mais qui atteint rapidement un plateau correspondant à la taille adulte définitive (voir graphique ci-dessous). Ce type de modèle est naturellement très utile pour tous les mammifères, mais certains, comme le modèle 1, ont aussi été utilisés dans d'autres circonstances, profitant de sa grande flexibilité. Son équation est\ :
+Preece et Baines (1978) ont décrit plusieurs modèles spécifiques à la croissance humaine. Ces modèles combinent deux phases de croissance exponentielle pour représenter la croissance graduelle d'enfants suivie par une courte phase de croissance accélérée à l'adolescence, mais qui atteint rapidement un plateau correspondant à la taille adulte définitive (voir graphique ci-dessous). Ce type de modèle est naturellement très utile pour tous les mammifères, mais certains, comme le modèle 1 présenté ici, ont aussi été utilisés dans d'autres circonstances, profitant de sa grande flexibilité. Son équation est\ :
 
 $$y(t) = y_\infty - \frac{2 (y_\infty - d)}{e^{k1 \ (t - t_0)} + e^{k2 \ (t - t_0)}}$$
 
-TODO figure avec légende: Exemple d'une courbe Preece-Baines 1 avec $k1 = 0,19$, $k2 = 2,5$, $y_\infty = 0,95$, $d = 0,8$ et $t_0 = 6$.
+Dans R, la fonction à utiliser (avec une paramétrisation similaire à celle des autres modèles 'selfStart') est\ :
+
+
+```r
+preece_baines1 <- function(x, Asym, Drop, lrc1, lrc2, c0)
+  Asym - (2 * (Asym - Drop)) / (exp(exp(lrc1) * (x - c0)) + exp(exp(lrc2) * (x - c0)))
+```
+
+$k1$ et $k2$ sont forcés à des valeurs positives ou nulles grace à l'astuce de passer par `lrc1` et `lrc2`. $d$ est `Drop` et $t_0$ est `c0`.
+
+Ci-dessous un exemple de courbe Preece-Baines 1 avec $y_\infty$ (alias `Asym`) = 0,95, $d$ (alias `Drop`) = 0,8, $k1 = 0,19$ (alias `lrc1` = log(0,19) = -1,7), $k2 = 2,5$ (alias `lrc2`= log(2,5) = 0,92) et $t_0$ (alias `c0`) = 6.
+
+
+```r
+pb1_data <- tibble(
+  t = seq(0, 10, by = 0.1),
+  y = preece_baines1(t, Asym = 0.95, Drop = 0.8, lrc1 = -1.7, lrc2 = 0.92, c0 = 6)
+)
+chart(data = pb1_data, y ~ t) +
+  geom_line() +
+  geom_vline(xintercept = 0, col = "darkgray") +
+  geom_hline(yintercept = 0.95, col = "gray", linetype = "dashed") +
+  annotate("text", label = "Asym", x = -0.4, y = 0.95)
+```
+
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ### Modèle de Tanaka
@@ -622,7 +673,28 @@ $$y(t) = \frac{1}{\sqrt{b}} \ \ln |2 \ b \ (t - t_0) + 2 \ \sqrt{b^2 \ (t - t_0)
 
 Ce modèle complexe à quatre paramètres a une période initiale de croissance lente, suivie d'une période de croissance exponentielle qui se poursuit par une croissance continue mais plus faible tout au long de la vie de l'animal (voir graphique ci-dessous).
 
-TODO figure avec légende: Exemple d'une courbe de Tanaka avec $a = 3$, $b = 2,5$, $d = -0,2$ et $t_0 = 2$.
+Dans R, nous pouvons utiliser la fonction suivante pour ajuster un modèle de Tanaka\ :
+
+
+```r
+tanaka <- function(x, a, b, c0, d)
+  1 / sqrt(b) * log(abs(2 * b * (x - c0) + 2 * sqrt(b^2 * (x - c0)^2 + a*b))) + d
+```
+
+Ci-dessous, un exemple de courbe de Tanaka avec $a$ = 3, $b$ = 2,5, $d$ = -0,2 et $t_0$ (alias `c0`) = 2.
+
+
+```r
+tanaka_data <- tibble(
+  t = seq(0, 10, by = 0.1),
+  y = tanaka(t, a = 3, b = 2.5, c0 = 2, d = -0.2)
+)
+chart(data = tanaka_data, y ~ t) +
+  geom_line() +
+  geom_vline(xintercept = 0, col = "darkgray")
+```
+
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ## Choix du modèle
@@ -639,7 +711,7 @@ chart(data = urchins, diameter ~ age) +
   geom_point()
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" />
 
 Comme vous pouvez le voir, différents oursins ont été mesurés via le diamètre à l'ambitus du test (zone la plus large) en mm à différents âges (en années). Les mesures ont été effectuées tous les 3 à 6 mois pendant plus de 10 ans, ce qui donne un bon aperçu de la croissance de cet animal y compris la taille maximale asymptotique qui est atteinte vers les 4 à 5 ans (pour ce genre de modèle, il est très important de continuer à mesurer les animaux afin de bien quantifier cette taille maximale asymptotique). Ainsi, l'examen du graphique nous permet d'emblée de choisir un modèle à croissance finie (pas le modèle de Tanaka, donc), et de forme sigmoïdale. Les modèles logistique, Weibull ou Gompertz pourraient convenir par exemple. Nous pouvons à ce stade, essayer différents modèles et choisir celui qui nous semble le plus adapté.
 
@@ -659,7 +731,7 @@ urchins_plot <- chart(data = urchins, diameter ~ age) +
 urchins_plot
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" />
 
 Nous avons ici également représenté les points de manière semi-transparente avec `alpha = 0.2`(transparence de 20%) pour encore mieux mettre en évidence les points de mesures qui se superposent.
 
@@ -709,7 +781,7 @@ urchins_plot +
   stat_function(fun = as.function(urchins_gomp), color = "red", size = 1)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" />
 
 L'ajustement de cette fonction semble très bon, à l'oeil. Voyons ce qu'il en est d'autres modèles. Par exemple, une courbe logistique\ :
 
@@ -747,7 +819,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" />
 
 Notez que ici, la couleur a été incluse dans le "mapping" (argument `mapping = `) de `stat_function()` en l'incluant dans `aes()`. Cela change fondamentalement la façon dont la couleur est perçue par `ggplot2`. Dans ce cas-ci, la valeur est interprétée non comme une couleur à proprement parler, mais comme un niveau (une couche) à inclure dans le graphique et à reporter via une légende. Ensuite, à l'aide de `labs()` on change le titre de la légende relatif à la couleur par un nom plus explicite\ : "Modèle".
 
@@ -803,7 +875,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" />
 
 ... et comparons à l'aide du critère d'Akaïke\ :
 
@@ -882,7 +954,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" />
 
 ... et comparons à l'aide du critère d'Akaïke\ :
 
