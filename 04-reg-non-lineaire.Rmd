@@ -332,6 +332,21 @@ chart(data = micmen_data, v ~ conc) +
   annotate("text", label = "K", x = 0.5, y = 0.03)
 ```
 
+##### A vous de jouer ! {-}
+
+```{block2, type='bdd'}
+Ajuste les pramètres du modèles afin de trouver le meilleur modèle de Michaelis-Menten dans une application interactive "shiny". Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir l'application :
+  
+    BioDataScience2::app("04a_michaelis_menten") # TODO
+
+Méthode alternative\ :
+
+    shiny::runApp(system.file("shiny/04a_michaelis_menten", package = "BioDataScience2"))
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R lorsque vous aurez fini avec l'application shiny.
+```
+
+![04a_michaelis_menten](images/sdd2_04/micmen1.png)
 
 ### Modèles de croissance
 
