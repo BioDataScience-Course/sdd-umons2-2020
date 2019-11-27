@@ -396,6 +396,21 @@ chart(data = exponent_data, y ~ t) +
   annotate("text", label = "y0", x = -0.05, y = 1.5)
 ```
 
+##### A vous de jouer ! {-}
+
+```{block2, type='bdd'}
+Ajuste les pramètres du modèles afin de trouver la meilleure courbe exponentielle dans une application interactive "shiny". Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir l'application :
+  
+    BioDataScience2::app("04b_exponent") # TODO
+
+Méthode alternative\ :
+
+    shiny::runApp(system.file("shiny/04a_exponent", package = "BioDataScience2"))
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R lorsque vous aurez fini avec l'application shiny.
+```
+
+![04b_exponent](images/sdd2_04/expo.png)
 
 ### Courbe logistique
 
@@ -696,3 +711,21 @@ AIC(urchins_gomp, urchins_logis, urchins_weib, urchins_rich)
 La courbe est très proche des modèles de Gompertz et Weibull aux jeunes âges, mais l'asymptote maximale est légèrement plus haute que pour les deux autres modèles (58 mm au lieu de 57 mm). Les trois courbes sont très, très proches l'une de l'autre. Le critère d'information d'Akaiké est marginalement moins bon pour le modèle de Richards que pour celui de Weibull, mais est tout juste meilleur que celui de Gompertz. En outre l'écart type pour le paramètre `x0` est plus conséquent en comparaison de sa valeur, ce qui démontre une certaine instabilité de la fonction par rapport à ce paramètre, et par conséquent, une incertitude dans son estimation. Pour cette raison, det pour la difficulté à l'ajuster, le modèle de Richards sera écarté dans notre cas au benefice du modèle de Weibull, voire de celui de Gompertz plus simple.
 
 Le choix final entre Gompertz ou Weibull dépend de l'usage que l'on veut faire du modèle. Si la simplicité du modèle est primordiale, nous garderons Gompertz. Si la croissance des petits oursins est un aspect important de l'analyse, nous garderons Weibull qui semble mieux s'ajuster aux données à ce niveau.
+
+
+##### A vous de jouer ! {-}
+
+- Réalisez un cahier de laboratoire sur la croissance de bactérie en définissant un modèle non linéaire pertinent pour ces données.
+
+```{block2, type='bdd'}
+
+Vous avez à votre disposition une assignation GitHub Classroom : 
+  
+- <https://classroom.github.com/a/kSLMNWpw>
+
+Lisez le README afin de prendre connaissance de l'exercice
+
+```
+
+
+
