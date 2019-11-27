@@ -349,6 +349,19 @@ chart(data = micmen_data, v ~ conc) +
 
 <img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" />
 
+##### A vous de jouer ! {-}
+
+\BeginKnitrBlock{bdd}<div class="bdd">Ajuste les pramètres du modèles afin de trouver le meilleur modèle de Michaelis-Menten dans une application interactive "shiny". Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir l'application :
+  
+    BioDataScience2::app("04a_michaelis_menten") # TODO
+
+Méthode alternative\ :
+
+    shiny::runApp(system.file("shiny/04a_michaelis_menten", package = "BioDataScience2"))
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R lorsque vous aurez fini avec l'application shiny.</div>\EndKnitrBlock{bdd}
+
+![04a_michaelis_menten](images/sdd2_04/micmen1.png)
 
 ### Modèles de croissance
 
@@ -400,8 +413,21 @@ chart(data = exponent_data, y ~ t) +
   annotate("text", label = "y0", x = -0.05, y = 1.5)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" />
 
+##### A vous de jouer ! {-}
+
+\BeginKnitrBlock{bdd}<div class="bdd">Ajuste les pramètres du modèles afin de trouver la meilleure courbe exponentielle dans une application interactive "shiny". Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir l'application :
+  
+    BioDataScience2::app("04b_exponent") # TODO
+
+Méthode alternative\ :
+
+    shiny::runApp(system.file("shiny/04a_exponent", package = "BioDataScience2"))
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R lorsque vous aurez fini avec l'application shiny.</div>\EndKnitrBlock{bdd}
+
+![04b_exponent](images/sdd2_04/expo.png)
 
 ### Courbe logistique
 
@@ -434,7 +460,7 @@ chart(data = logis_data, y ~ t) +
   annotate("text", label = "point d'inflexion", x = 6, y = 0.45)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" />
 
 Cette courbe sigmoïdale est asymptotique en 0 et $y_\infty$, et elle est également symétrique autour de son point d'inflexion situé à ${t_0, y_\infty / 2}$.
 
@@ -463,7 +489,7 @@ chart(data = fpl_data, y ~ t) +
   annotate("text", label = "point d'inflexion", x = 6.1, y = 0.53)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ### Modèle de Gompertz
@@ -496,7 +522,7 @@ chart(data = gomp_data, y ~ t) +
   annotate("text", label = "point d'inflexion", x = 3.5, y = 0.32)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ### Modèles de von Bertalanffy
@@ -575,7 +601,7 @@ chart(data = urchins, diameter ~ age) +
   geom_point()
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" />
 
 Comme vous pouvez le voir, différents oursins ont été mesurés via le diamètre à l'ambitus du test (zone la plus large) en mm à différents âges (en années). Les mesures ont été effectuées tous les 3 à 6 mois pendant plus de 10 ans, ce qui donne un bon aperçu de la croissance de cet animal y compris la taille maximale asymptotique qui est atteinte vers les 4 à 5 ans (pour ce genre de modèle, il est très important de continuer à mesurer les animaux afin de bien quantifier cette taille maximale asymptotique). Ainsi, l'examen du graphique nous permet d'emblée de choisir un modèle à croissance finie (pas le modèle de Tanaka, donc), et de forme sigmoïdale. Les modèles logistique, Weibull ou Gompertz pourraient convenir par exemple. Nous pouvons à ce stade, essayer différents modèles et choisir celui qui nous semble le plus adapté.
 
@@ -595,7 +621,7 @@ urchins_plot <- chart(data = urchins, diameter ~ age) +
 urchins_plot
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" />
 
 Nous avons ici également représenté les points de manière semi-transparente avec `alpha = 0.2`(transparence de 20%) pour encore mieux mettre en évidence les points de mesures qui se superposent.
 
@@ -645,7 +671,7 @@ urchins_plot +
   stat_function(fun = as.function(urchins_gomp), color = "red", size = 1)
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" />
 
 L'ajustement de cette fonction semble très bon, à l'oeil. Voyons ce qu'il en est d'autres modèles. Par exemple, une courbe logistique\ :
 
@@ -683,7 +709,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" />
 
 Notez que ici, la couleur a été incluse dans le "mapping" (argument `mapping = `) de `stat_function()` en l'incluant dans `aes()`. Cela change fondamentalement la façon dont la couleur est perçue par `ggplot2`. Dans ce cas-ci, la valeur est interprétée non comme une couleur à proprement parler, mais comme un niveau (une couche) à inclure dans le graphique et à reporter via une légende. Ensuite, à l'aide de `labs()` on change le titre de la légende relatif à la couleur par un nom plus explicite\ : "Modèle".
 
@@ -739,7 +765,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" />
 
 ... et comparons à l'aide du critère d'Akaïke\ :
 
@@ -818,7 +844,7 @@ urchins_plot +
   labs(color = "Modèle")
 ```
 
-<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" />
+<img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" />
 
 ... et comparons à l'aide du critère d'Akaïke\ :
 
@@ -838,3 +864,19 @@ AIC(urchins_gomp, urchins_logis, urchins_weib, urchins_rich)
 La courbe est très proche des modèles de Gompertz et Weibull aux jeunes âges, mais l'asymptote maximale est légèrement plus haute que pour les deux autres modèles (58 mm au lieu de 57 mm). Les trois courbes sont très, très proches l'une de l'autre. Le critère d'information d'Akaiké est marginalement moins bon pour le modèle de Richards que pour celui de Weibull, mais est tout juste meilleur que celui de Gompertz. En outre l'écart type pour le paramètre `x0` est plus conséquent en comparaison de sa valeur, ce qui démontre une certaine instabilité de la fonction par rapport à ce paramètre, et par conséquent, une incertitude dans son estimation. Pour cette raison, det pour la difficulté à l'ajuster, le modèle de Richards sera écarté dans notre cas au benefice du modèle de Weibull, voire de celui de Gompertz plus simple.
 
 Le choix final entre Gompertz ou Weibull dépend de l'usage que l'on veut faire du modèle. Si la simplicité du modèle est primordiale, nous garderons Gompertz. Si la croissance des petits oursins est un aspect important de l'analyse, nous garderons Weibull qui semble mieux s'ajuster aux données à ce niveau.
+
+
+##### A vous de jouer ! {-}
+
+- Réalisez un cahier de laboratoire sur la croissance de bactérie en définissant un modèle non linéaire pertinent pour ces données.
+
+\BeginKnitrBlock{bdd}<div class="bdd">
+Vous avez à votre disposition une assignation GitHub Classroom : 
+  
+- <https://classroom.github.com/a/kSLMNWpw>
+
+Lisez le README afin de prendre connaissance de l'exercice
+</div>\EndKnitrBlock{bdd}
+
+
+
