@@ -406,7 +406,7 @@ Ajuste les pramètres du modèles afin de trouver la meilleure courbe exponentie
 
 Méthode alternative\ :
 
-    shiny::runApp(system.file("shiny/04a_exponent", package = "BioDataScience2"))
+    shiny::runApp(system.file("shiny/04b_exponent", package = "BioDataScience2"))
 
 N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R lorsque vous aurez fini avec l'application shiny.
 ```
@@ -445,6 +445,22 @@ chart(data = logis_data, y ~ t) +
 
 Cette courbe sigmoïdale est asymptotique en 0 et $y_\infty$, et elle est également symétrique autour de son point d'inflexion situé à ${t_0, y_\infty / 2}$.
 
+##### A vous de jouer ! {-}
+
+```{block2, type='bdd'}
+Ajuste les pramètres du modèles afin de trouver la meilleure courbe exponentielle dans une application interactive "shiny". Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir l'application :
+  
+    BioDataScience2::app("04c_logistique") # TODO
+
+Méthode alternative\ :
+
+    shiny::runApp(system.file("shiny/04c_logistique", package = "BioDataScience2"))
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R lorsque vous aurez fini avec l'application shiny.
+```
+
+![04c_logistique](images/sdd2_04/logis.png)
+
 Il est possible de généraliser ce modèle en définissant une courbe logistique dont l'asymptote basse peut se situer n'importe où ailleurs qu'en 0. Si cette asymptote se situe en $y_0$, nous obtenons l'équation\ :
 
 $$y(t) = y_0 + \frac{y_\infty - y_0}{1 + e^{-k \ (t - t_0)}}$$
@@ -469,6 +485,22 @@ chart(data = fpl_data, y ~ t) +
   annotate("text", label = "point d'inflexion", x = 6.1, y = 0.53)
 ```
 
+
+##### A vous de jouer ! {-}
+
+```{block2, type='bdd'}
+Ajuste les pramètres du modèles afin de trouver la meilleure courbe exponentielle dans une application interactive "shiny". Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir l'application :
+  
+    BioDataScience2::app("04d_logistique") # TODO
+
+Méthode alternative\ :
+
+    shiny::runApp(system.file("shiny/04d_logistique_gen", package = "BioDataScience2"))
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R lorsque vous aurez fini avec l'application shiny.
+```
+
+![04d_logistique_gen](images/sdd2_04/logis_gen.png)
 
 ### Modèle de Gompertz
 
@@ -499,6 +531,21 @@ chart(data = gomp_data, y ~ t) +
   annotate("text", label = "point d'inflexion", x = 3.5, y = 0.32)
 ```
 
+##### A vous de jouer ! {-}
+
+```{block2, type='bdd'}
+Ajuste les pramètres du modèles afin de trouver la meilleure courbe exponentielle dans une application interactive "shiny". Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir l'application :
+  
+    BioDataScience2::app("04e_gompertz") # TODO
+
+Méthode alternative\ :
+
+    shiny::runApp(system.file("shiny/04e_gompertz", package = "BioDataScience2"))
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R lorsque vous aurez fini avec l'application shiny.
+```
+
+![04e_gompertz](images/sdd2_04/gompertz.png)
 
 ### Modèles de von Bertalanffy
 

@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2019-11-27">
+<meta name="date" content="2019-11-28">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -338,7 +338,7 @@ exponent_data &lt;-<span class="st"> </span><span class="kw">tibble</span>(
 <p>Ajuste les pramètres du modèles afin de trouver la meilleure courbe exponentielle dans une application interactive “shiny”. Démarrez la SciViews Box et RStudio. Dans la fenêtre <strong>Console</strong> de RStudio, entrez l’instruction suivante suivie de la touche <code>Entrée</code> pour ouvrir l’application :</p>
 <pre><code>BioDataScience2::app(&quot;04b_exponent&quot;) # TODO</code></pre>
 <p>Méthode alternative :</p>
-<pre><code>shiny::runApp(system.file(&quot;shiny/04a_exponent&quot;, package = &quot;BioDataScience2&quot;))</code></pre>
+<pre><code>shiny::runApp(system.file(&quot;shiny/04b_exponent&quot;, package = &quot;BioDataScience2&quot;))</code></pre>
 N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la main dans R lorsque vous aurez fini avec l’application shiny.
 </div>
 
@@ -371,6 +371,21 @@ N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la mai
 <span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;point d&#39;inflexion&quot;</span>, <span class="dt">x =</span> <span class="dv">6</span>, <span class="dt">y =</span> <span class="fl">0.45</span>)</code></pre>
 <p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Cette courbe sigmoïdale est asymptotique en 0 et <span class="math inline">\(y_\infty\)</span>, et elle est également symétrique autour de son point d’inflexion situé à <span class="math inline">\({t_0, y_\infty / 2}\)</span>.</p>
+<div id="a-vous-de-jouer-10" class="section level5 unnumbered">
+<h5>A vous de jouer !</h5>
+
+<div class="bdd">
+<p>Ajuste les pramètres du modèles afin de trouver la meilleure courbe exponentielle dans une application interactive “shiny”. Démarrez la SciViews Box et RStudio. Dans la fenêtre <strong>Console</strong> de RStudio, entrez l’instruction suivante suivie de la touche <code>Entrée</code> pour ouvrir l’application :</p>
+<pre><code>BioDataScience2::app(&quot;04c_logistique&quot;) # TODO</code></pre>
+<p>Méthode alternative :</p>
+<pre><code>shiny::runApp(system.file(&quot;shiny/04c_logistique&quot;, package = &quot;BioDataScience2&quot;))</code></pre>
+N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la main dans R lorsque vous aurez fini avec l’application shiny.
+</div>
+
+<div class="figure">
+<img src="images/sdd2_04/logis.png" alt="04c_logistique" />
+<p class="caption">04c_logistique</p>
+</div>
 <p>Il est possible de généraliser ce modèle en définissant une courbe logistique dont l’asymptote basse peut se situer n’importe où ailleurs qu’en 0. Si cette asymptote se situe en <span class="math inline">\(y_0\)</span>, nous obtenons l’équation :</p>
 <p><span class="math display">\[y(t) = y_0 + \frac{y_\infty - y_0}{1 + e^{-k \ (t - t_0)}}\]</span></p>
 <p>Ceci est le modèle logistique généralisé à quatre paramètres (modèle ‘selfSart’ <code>SSfpl()</code> dans R, pour <strong>f</strong>our-<strong>p</strong>arameters <strong>l</strong>ogistic). Les arguments sont <code>A</code>, la première asymptote horizontale (= <span class="math inline">\(y_0\)</span>), <code>B</code>, la seconde asymptote horizontale (= <span class="math inline">\(y_\infty\)</span>), <code>xmid</code> (= <span class="math inline">\(t_0\)</span>) et <code>scal</code> (= <span class="math inline">\(k\)</span>).</p>
@@ -388,7 +403,24 @@ N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la mai
 <span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;B&quot;</span>, <span class="dt">x =</span> <span class="fl">-0.4</span>, <span class="dt">y =</span> <span class="fl">0.95</span>) <span class="op">+</span>
 <span class="st">   </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;xmid&quot;</span>, <span class="dt">x =</span> <span class="fl">5.4</span>, <span class="dt">y =</span> <span class="fl">0.13</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;point d&#39;inflexion&quot;</span>, <span class="dt">x =</span> <span class="fl">6.1</span>, <span class="dt">y =</span> <span class="fl">0.53</span>)</code></pre>
-<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="a-vous-de-jouer-11" class="section level5 unnumbered">
+<h5>A vous de jouer !</h5>
+
+<div class="bdd">
+<p>Ajuste les pramètres du modèles afin de trouver la meilleure courbe exponentielle dans une application interactive “shiny”. Démarrez la SciViews Box et RStudio. Dans la fenêtre <strong>Console</strong> de RStudio, entrez l’instruction suivante suivie de la touche <code>Entrée</code> pour ouvrir l’application :</p>
+<pre><code>BioDataScience2::app(&quot;04d_logistique&quot;) # TODO</code></pre>
+<p>Méthode alternative :</p>
+<pre><code>shiny::runApp(system.file(&quot;shiny/04d_logistique_gen&quot;, package = &quot;BioDataScience2&quot;))</code></pre>
+N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la main dans R lorsque vous aurez fini avec l’application shiny.
+</div>
+
+<div class="figure">
+<img src="images/sdd2_04/logis_gen.png" alt="04d_logistique_gen" />
+<p class="caption">04d_logistique_gen</p>
+</div>
+</div>
 </div>
 <div id="modele-de-gompertz" class="section level3">
 <h3><span class="header-section-number">4.3.5</span> Modèle de Gompertz</h3>
@@ -410,7 +442,23 @@ N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la mai
 <span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Asym&quot;</span>, <span class="dt">x =</span> <span class="fl">-0.4</span>, <span class="dt">y =</span> <span class="fl">0.95</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Asym/e&quot;</span>, <span class="dt">x =</span> <span class="fl">-0.5</span>, <span class="dt">y =</span> <span class="fl">0.95</span><span class="op">/</span><span class="kw">exp</span>(<span class="dv">1</span>)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;point d&#39;inflexion&quot;</span>, <span class="dt">x =</span> <span class="fl">3.5</span>, <span class="dt">y =</span> <span class="fl">0.32</span>)</code></pre>
-<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="a-vous-de-jouer-12" class="section level5 unnumbered">
+<h5>A vous de jouer !</h5>
+
+<div class="bdd">
+<p>Ajuste les pramètres du modèles afin de trouver la meilleure courbe exponentielle dans une application interactive “shiny”. Démarrez la SciViews Box et RStudio. Dans la fenêtre <strong>Console</strong> de RStudio, entrez l’instruction suivante suivie de la touche <code>Entrée</code> pour ouvrir l’application :</p>
+<pre><code>BioDataScience2::app(&quot;04e_gompertz&quot;) # TODO</code></pre>
+<p>Méthode alternative :</p>
+<pre><code>shiny::runApp(system.file(&quot;shiny/04e_gompertz&quot;, package = &quot;BioDataScience2&quot;))</code></pre>
+N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la main dans R lorsque vous aurez fini avec l’application shiny.
+</div>
+
+<div class="figure">
+<img src="images/sdd2_04/gompertz.png" alt="04e_gompertz" />
+<p class="caption">04e_gompertz</p>
+</div>
+</div>
 </div>
 <div id="modeles-de-von-bertalanffy" class="section level3">
 <h3><span class="header-section-number">4.3.6</span> Modèles de von Bertalanffy</h3>
@@ -451,7 +499,7 @@ Ainsi, L’équation du modèle de von Bertalanffy présentée au début montre 
 <span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="fl">0.95</span>, <span class="dt">col =</span> <span class="st">&quot;gray&quot;</span>, <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Asym&quot;</span>, <span class="dt">x =</span> <span class="fl">-0.4</span>, <span class="dt">y =</span> <span class="fl">0.95</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Modèle&quot;</span>)</code></pre>
-<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Dans les deux cas l’asymptote représentant la taille maximale possible vaut 0,95. Pour le modèle pondéral, c’est le cube de la valeur obtenue avec <code>SSasympOff()</code> appliquée sur la racine cubique des masses. Dans les deux cas, <code>lrc = 0,1</code> donc <span class="math inline">\(k = e^{0,1} = 1,1\)</span> et <code>c0 = 0</code>, la droite passe par l’origine (donc, nous aurions également pu utiliser <code>SSasympOrig()</code> pour générer ces données.</p>
 </div>
 <div id="modele-de-richards" class="section level3">
@@ -480,7 +528,7 @@ Ainsi, L’équation du modèle de von Bertalanffy présentée au début montre 
 <span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="fl">0.95</span>, <span class="dt">col =</span> <span class="st">&quot;gray&quot;</span>, <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Asym&quot;</span>, <span class="dt">x =</span> <span class="fl">-0.4</span>, <span class="dt">y =</span> <span class="fl">0.95</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Richards avec :&quot;</span>)</code></pre>
-<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="modele-de-weibull" class="section level3">
 <h3><span class="header-section-number">4.3.8</span> Modèle de Weibull</h3>
@@ -508,7 +556,7 @@ Ainsi, L’équation du modèle de von Bertalanffy présentée au début montre 
 <span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Asym-d*e^-k&quot;</span>, <span class="dt">x =</span> <span class="dv">0</span>, <span class="dt">y =</span> <span class="fl">0.95</span> <span class="op">-</span><span class="st"> </span><span class="fl">0.9</span> <span class="op">*</span><span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span><span class="kw">exp</span>(<span class="op">-</span><span class="fl">0.5</span>))) <span class="op">+</span>
 <span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;point d&#39;inflexion si m &gt; 1&quot;</span>, <span class="dt">x =</span> <span class="dv">3</span>, <span class="dt">y =</span> <span class="fl">0.43</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Weibull avec :&quot;</span>)</code></pre>
-<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="modele-preece-baines-1" class="section level3">
 <h3><span class="header-section-number">4.3.9</span> Modèle Preece-Baines 1</h3>
@@ -528,7 +576,7 @@ Ainsi, L’équation du modèle de von Bertalanffy présentée au début montre 
 <span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>, <span class="dt">col =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="fl">0.95</span>, <span class="dt">col =</span> <span class="st">&quot;gray&quot;</span>, <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Asym&quot;</span>, <span class="dt">x =</span> <span class="fl">-0.4</span>, <span class="dt">y =</span> <span class="fl">0.95</span>)</code></pre>
-<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="modele-de-tanaka" class="section level3">
 <h3><span class="header-section-number">4.3.10</span> Modèle de Tanaka</h3>
@@ -546,7 +594,7 @@ Ainsi, L’équation du modèle de von Bertalanffy présentée au début montre 
 <span class="kw">chart</span>(<span class="dt">data =</span> tanaka_data, y <span class="op">~</span><span class="st"> </span>t) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>, <span class="dt">col =</span> <span class="st">&quot;darkgray&quot;</span>)</code></pre>
-<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04-reg-non-lineaire_files/figure-html/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="disqus_thread"></div>
