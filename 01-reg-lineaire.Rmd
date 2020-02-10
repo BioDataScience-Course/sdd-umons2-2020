@@ -1,4 +1,4 @@
-# (PART) Cours II: analyse et modélisation {-}
+# (PART) Cours II: modélisation {-}
 
 # Régression linéaire I {#lm}
 
