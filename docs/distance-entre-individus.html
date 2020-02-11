@@ -295,7 +295,7 @@ zoo</code></pre>
 <p>C’est la racine carré de la somme dans les <em>n</em> dimensions des écarts entre les valeurs au carré pour toutes les variables <em>y<sub>i</sub></em>. Plus sa valeur est grande, plus les individus sont éloignés (différents). Pour cette raison, nous appelerons cette distance, une mesure de <strong>dissimilarité</strong>.</p>
 <div id="matrice-de-distances" class="section level3">
 <h3><span class="header-section-number">5.2.1</span> Matrice de distances</h3>
-<p>Nous avons maintenant la possibilité de quantifier la similitude entre nos organismes plactoniques… mais nous en avons un grand nombre. Cela va être impossible à gérer autant de mesures qu’il y a de paires possibles parmi 1262 individus<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. La <strong>matrice de distance</strong> est une matrice ici 1262 par 1262 qui rassemble toutes les valeurs possibles. Notez que sur la diagonale, nous comparons chaque individu avec lui-même. La distance euclidienne vaut donc systématiquement zéro sur la diagonale.</p>
+<p>Nous avons maintenant la possibilité de quantifier la similitude entre nos organismes plactoniques… mais nous en avons un grand nombre. Cela va être impossible à gérer autant de mesures qu’il y a de paires possibles parmi 1262 individus<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>. La <strong>matrice de distance</strong> est une matrice ici 1262 par 1262 qui rassemble toutes les valeurs possibles. Notez que sur la diagonale, nous comparons chaque individu avec lui-même. La distance euclidienne vaut donc systématiquement zéro sur la diagonale.</p>
 <p><span class="math display">\[\mathrm{D_{Euclidean}}_{j, j} = 0\]</span></p>
 <p>De plus, de part et d’autre de cette diagonale, nous trouvons les paires complémentaires (<em>j versus k</em> d’un côté et <em>k versus j</em> de l’autre). Or qu’elle soit mesurée dans un sens ou dans l’autre, la distance du segment de droite qui relie deux points dans l’espace est toujours la même.</p>
 <p><span class="math display">\[\mathrm{D_{Euclidean}}_{j, k} = \mathrm{D_{Euclidean}}_{k, j}\]</span></p>
@@ -425,14 +425,39 @@ zoo7_dist</code></pre>
 </tr>
 </tbody>
 </table>
+<div id="a-vous-de-jouer-14" class="section level5 unnumbered">
+<h5>A vous de jouer !</h5>
+<ul>
+<li>Réalisez le tutoriel afin de vérifier votre bonne compréhension des matrices de distance.</li>
+</ul>
 
+<div class="bdd">
+<p>Démarrez la SciViews Box et RStudio. Dans la fenêtre <strong>Console</strong> de RStudio, entrez l’instruction suivante suivie de la touche <code>Entrée</code> pour ouvrir le tutoriel concernant les bases de R :</p>
+<pre><code>BioDataScience2::run(&quot;05a_distance_matrix&quot;)</code></pre>
+N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
+</div>
+
+<ul>
+<li>Réalisez un carnet de note par binôme sur le transect entre Nice et Calvi. Lisez attentivement le README</li>
+</ul>
+
+<div class="bdd">
+<p>Vous avez à votre disposition une assignation GitHub Classroom :</p>
+<ul>
+<li><a href="https://classroom.github.com/g/R45egn-p" class="uri">https://classroom.github.com/g/R45egn-p</a></li>
+</ul>
+Lisez le README afin de prendre connaissance de l’exercice
+</div>
+
+
+</div>
 </div>
 </div>
 <!-- </div> -->
 <div class="footnotes">
 <hr />
-<ol start="1">
-<li id="fn1"><p>Le nombre de paires uniques et distinctes (pas <em>j</em>, <em>j</em> ou <em>k</em>, <em>k</em>) possibles parmi <em>n</em> items est <span class="math inline">\(n(n-1)/2\)</span>, soit ici pour 1262 éléments nous avons 795.691 paires.<a href="distance-entre-individus.html#fnref1" class="footnote-back">↩</a></p></li>
+<ol start="12">
+<li id="fn12"><p>Le nombre de paires uniques et distinctes (pas <em>j</em>, <em>j</em> ou <em>k</em>, <em>k</em>) possibles parmi <em>n</em> items est <span class="math inline">\(n(n-1)/2\)</span>, soit ici pour 1262 éléments nous avons 795.691 paires.<a href="distance-entre-individus.html#fnref12" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>

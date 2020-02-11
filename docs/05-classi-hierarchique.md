@@ -219,3 +219,21 @@ La dernière propriété d'inégalité triangulaire est la plus difficile à obt
 | (variance/covariance)  | (non métrique)
 
 
+##### A vous de jouer ! {-}
+
+- Réalisez le tutoriel afin de vérifier votre bonne compréhension des matrices de distance.
+
+\BeginKnitrBlock{bdd}<div class="bdd">Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
+
+    BioDataScience2::run("05a_distance_matrix")
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.</div>\EndKnitrBlock{bdd}
+
+- Réalisez un carnet de note par binôme sur le transect entre Nice et Calvi. Lisez attentivement le README
+
+\BeginKnitrBlock{bdd}<div class="bdd">
+Vous avez à votre disposition une assignation GitHub Classroom : 
+  
+- <https://classroom.github.com/g/R45egn-p>
+
+Lisez le README afin de prendre connaissance de l'exercice</div>\EndKnitrBlock{bdd}
