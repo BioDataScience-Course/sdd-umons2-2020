@@ -288,14 +288,14 @@ zoo</code></pre>
 # # … with 1,252 more rows, and 9 more variables: range &lt;dbl&gt;, size &lt;dbl&gt;,
 # #   aspect &lt;dbl&gt;, elongation &lt;dbl&gt;, compactness &lt;dbl&gt;, transparency &lt;dbl&gt;,
 # #   circularity &lt;dbl&gt;, density &lt;dbl&gt;, class &lt;fct&gt;</code></pre>
-<p>Vous voulez regrouper votre plancton en fonction de la ressemblance entre les organismes. En raison de la taille du tableau, il est évident que cela ne pourra pas se faire de manière manuelle. Nous pouvons raisonnablement considérer que plus les mesures sont similaires entre deux individus, plus ils ont des chances d’être semblables, c’est-à-dire, d’appartenir au même groupe taxonomique. <strong>Mais comment faire pour synthétiser l’information de similarité ou différence contenue dans 20 paires de valeurs</strong> (une paire par variable)  ? Nous avons besoin d’une <strong>mesure de distance</strong> qui quantifie la similarité (ou à l’inverse la dissimilarité) en un seul nombre. Celle qui vient naturellement à l’esprit est la <strong>distance euclidienne</strong>. Prenons un cas simplifié. Quelle est la distance qui sépare deux individus <em>A</em> et <em>B</em> par rapport à trois variables <em>x</em>, <em>y</em>, <em>z</em> ? Ici, nous pouvons représenter l’information graphiquement dans un espace à trois dimensions. La distance qui nous intéresse est la distance linéaire entre les deux points dans l’espace. Autrement dit, c’est la longueur du segment de droite qui relie les deux points dans l’espace. Cette distance, nous pouvons la calculer à l’aide de la formule suivante (problème de niveau lycée, voir par exemple <a href="http://www.mathematiques-lycee.com/geometrie/2nde-01-longueur-segment.html">ici</a> pour une résolution dans le plan) :</p>
+<p>Vous voulez regrouper votre plancton en fonction de la ressemblance entre les organismes, c’est-à-dire, en fonction des écarts entre les mesures effectuées pour les 19 varaibles quatitatives, à l’exclusion de la vingtième colonne <code>class</code>). En raison de la taille du tableau, il est évident que cela ne pourra pas se faire de manière manuelle. Nous pouvons raisonnablement considérer que plus les mesures sont similaires entre deux individus, plus ils ont des chances d’être semblables, c’est-à-dire, d’appartenir au même groupe taxonomique. <strong>Mais comment faire pour synthétiser l’information de similarité ou différence contenue dans 19 paires de valeurs</strong> (une paire par variable)  ? Nous avons besoin d’une <strong>mesure de distance</strong> qui quantifie la similarité (ou à l’inverse la dissimilarité) en un seul nombre. Celle qui vient naturellement à l’esprit est la <strong>distance euclidienne</strong>. Prenons un cas simplifié. Quelle est la distance qui sépare deux individus <em>A</em> et <em>B</em> par rapport à trois variables <em>x</em>, <em>y</em>, <em>z</em> ? Ici, nous pouvons représenter l’information graphiquement dans un espace à trois dimensions. La distance qui nous intéresse est la distance linéaire entre les deux points dans l’espace. Autrement dit, c’est la longueur du segment de droite qui relie les deux points dans l’espace. Cette distance, nous pouvons la calculer à l’aide de la formule suivante (problème de niveau lycée, voir par exemple <a href="http://www.mathematiques-lycee.com/geometrie/2nde-01-longueur-segment.html">ici</a> pour une résolution dans le plan) :</p>
 <p><span class="math display">\[\mathrm{D_{Euclidean}}_{A, B} = \sqrt{(x_A - x_B)^2 + (y_A - y_B)^2 + (z_A - z_B)^2}\]</span></p>
 <p>Notez que cette formule se généralise à <em>n</em> dimensions et s’écrit alors, pour n’importe quelle paire d’individus indicés <em>j</em> et <em>k</em> dans notre tableau et pour les différentes mesures de 1 à <em>i</em> notées <em>y<sub>i</sub></em> :</p>
 <p><span class="math display">\[\mathrm{D_{Euclidean}}_{j, k} = \sqrt{\sum_{i=1}^{n}(y_{ij}-y_{ik})^2}\]</span></p>
 <p>C’est la racine carré de la somme dans les <em>n</em> dimensions des écarts entre les valeurs au carré pour toutes les variables <em>y<sub>i</sub></em>. Plus sa valeur est grande, plus les individus sont éloignés (différents). Pour cette raison, nous appelerons cette distance, une mesure de <strong>dissimilarité</strong>.</p>
 <div id="matrice-de-distances" class="section level3">
 <h3><span class="header-section-number">5.2.1</span> Matrice de distances</h3>
-<p>Nous avons maintenant la possibilité de quantifier la similitude entre nos organismes plactoniques… mais nous en avons un grand nombre. Cela va être impossible à gérer autant de mesures qu’il y a de paires possibles parmi 1262 individus<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>. La <strong>matrice de distance</strong> est une matrice ici 1262 par 1262 qui rassemble toutes les valeurs possibles. Notez que sur la diagonale, nous comparons chaque individu avec lui-même. La distance euclidienne vaut donc systématiquement zéro sur la diagonale.</p>
+<p>Nous avons maintenant la possibilité de quantifier la similitude entre nos organismes plactoniques… mais nous en avons un grand nombre. Cela va être impossible à gérer autant de mesures qu’il y a de paires possibles parmi 1262 individus<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. La <strong>matrice de distance</strong> est une matrice ici 1262 par 1262 qui rassemble toutes les valeurs possibles. Notez que sur la diagonale, nous comparons chaque individu avec lui-même. La distance euclidienne vaut donc systématiquement zéro sur la diagonale.</p>
 <p><span class="math display">\[\mathrm{D_{Euclidean}}_{j, j} = 0\]</span></p>
 <p>De plus, de part et d’autre de cette diagonale, nous trouvons les paires complémentaires (<em>j versus k</em> d’un côté et <em>k versus j</em> de l’autre). Or qu’elle soit mesurée dans un sens ou dans l’autre, la distance du segment de droite qui relie deux points dans l’espace est toujours la même.</p>
 <p><span class="math display">\[\mathrm{D_{Euclidean}}_{j, k} = \mathrm{D_{Euclidean}}_{k, j}\]</span></p>
@@ -312,7 +312,8 @@ zoo7_dist</code></pre>
 # 5  4.8478629  4.2950067  3.0119468  4.6148173                      
 # 6  2.4269520 10.6197317  4.9228255  2.8477882  7.1766853           
 # 7 44.7380160 52.8886346 47.2461132 45.1582772 49.1782647 42.3442263</code></pre>
-<p>Nous voyons bien ici que R n’imprime que le <em>triangle inférieur</em> de notre matrice 7 par 7. <strong>Félicitations ! Vous venez de calculer votre première matrice de distances.</strong> Nous verrons à la page suivante comment nous pouvons utiliser l’information qu’elle contient pour regrouper les individus de manière pertinente. Mais avant cela, nous avons besoin d’un peu de théorie pour bien comprendre quelle <strong>métrique</strong> choisir pour calculer nos distances et pourquoi. On parle aussi d’<strong>indices</strong> de <strong>similarité</strong> ou <strong>dissimilarité</strong>.</p>
+<p>Nous voyons bien ici que R n’imprime que le <em>triangle inférieur</em> de notre matrice 7 par 7.</p>
+<p><strong>Félicitations ! Vous venez de calculer votre première matrice de distances.</strong> Nous verrons à la page suivante comment nous pouvons utiliser l’information qu’elle contient pour regrouper les individus de manière pertinente. Mais avant cela, nous avons besoin d’un peu de théorie pour bien comprendre quelle <strong>métrique</strong> choisir pour calculer nos distances et pourquoi. On parle aussi d’<strong>indices</strong> de <strong>similarité</strong> ou <strong>dissimilarité</strong>.</p>
 
 <div class="warning">
 <p>Attention : nous n’avons pas considéré ici les unités respectives de nos variables. Une surface (mm<sup>2</sup>) ou une longeur (mm) ne sont pas mesurées dans les mêmes unités. Nous risquons alors de donner plus de poids aux valeurs élevées. Nous aurions le même effet si nous décidions par exemple d’exprimer une mesure longitudinale en µm au leiu de l’exprimer en mm. Dans ce cas, il vaut mieux standardiser d’abord le tableau (moyenne de zéro et écart type de un) selon les colonnes avant d’effectuer le calcul. Ceci est laissé comme exercice !</p>
@@ -377,15 +378,15 @@ zoo7_dist</code></pre>
 </div>
 <div id="proprietes-des-indices" class="section level3">
 <h3><span class="header-section-number">5.2.4</span> Propriétés des indices</h3>
-<p>Les indices varient en 0 et 1 (0 et 100%), mais les distances sont utilisées aussi comme indices de dissimilarité et varient entre 0 et <span class="math inline">\(\infty\)</span>.</p>
-<p>Un indice est dit <strong>métrique</strong> si :
-* <strong>Minimum 0</strong> : <span class="math inline">\(I_{j, k} = 0\)</span> si <span class="math inline">\(j = k\)</span></p>
-<pre><code>* **Positif** : $I_{j, k}&gt;0$ si $j \neq k$
-
-* **Symétrique** : $I_{j, k}=I_{k, j}$
-
-* **Inégalité triangulaire** : $I_{j, k} + I_{k, l} &gt;= I_{j, l}$</code></pre>
-<p>La dernière propriété d’inégalité triangulaire est la plus difficile à obtenir, et n’est pazs toujours nécessaire. Nous pouvons montrer que certains indices qui ne respectent pas cette dernière propriété sont pourtant utiles dans le contexte. Nous dirons alos d’un indice que c’est une <strong>semi-métrique</strong> s’il répond à toutes les conditions sauf la quatrième. Enfin, un indice est dit **non métrique* dans tous les autres cas. Le tableau suivant reprend les métriques que nous avons vu jusqu’ici, et rajoute d’autres candidats potentiels (la distance Chi carré, l’indice de correlation ou de variance/covariance) en indiquant leur type :</p>
+<p>Les indices varient en 0 et 1 (0 et 100%), mais les distances sont utilisées aussi comme indices de dissimilarité et varient entre 0 et <span class="math inline">\(+\infty\)</span>.</p>
+<p>Un indice est dit <strong>métrique</strong> si :</p>
+<ul>
+<li><p><strong>Minimum 0</strong> : <span class="math inline">\(I_{j, k} = 0\)</span> si <span class="math inline">\(j = k\)</span></p></li>
+<li><p><strong>Positif</strong> : <span class="math inline">\(I_{j, k}&gt;0\)</span> si <span class="math inline">\(j \neq k\)</span></p></li>
+<li><p><strong>Symétrique</strong> : <span class="math inline">\(I_{j, k}=I_{k, j}\)</span></p></li>
+<li><p><strong>Inégalité triangulaire</strong> : <span class="math inline">\(I_{j, k} + I_{k, l} &gt;= I_{j, l}\)</span></p></li>
+</ul>
+<p>La dernière propriété d’inégalité triangulaire est la plus difficile à obtenir, et n’est pas toujours nécessaire. Nous pouvons montrer que certains indices qui ne respectent pas cette dernière propriété sont pourtant utiles dans le contexte. Nous dirons alors d’un indice que c’est une <strong>semi-métrique</strong> s’il répond à toutes les conditions sauf la quatrième. Enfin, un indice est dit <strong>non métrique</strong> dans tous les autres cas. Le tableau suivant reprend les métriques que nous avons vu jusqu’ici, et rajoute d’autres candidats potentiels (la distance Chi carré, l’indice de correlation ou de variance/covariance) en indiquant leur type :</p>
 <table>
 <thead>
 <tr class="header">
@@ -396,7 +397,7 @@ zoo7_dist</code></pre>
 <tbody>
 <tr class="odd">
 <td>Bray-Curtis</td>
-<td>semimétrique</td>
+<td>semi-métrique</td>
 </tr>
 <tr class="even">
 <td>Canberra</td>
@@ -430,8 +431,8 @@ zoo7_dist</code></pre>
 <!-- </div> -->
 <div class="footnotes">
 <hr />
-<ol start="12">
-<li id="fn12"><p>Le nombre de paires uniques et distinctes (pas <em>j</em>, <em>j</em> ou <em>k</em>, <em>k</em>) possibles parmi <em>n</em> items est <span class="math inline">\(n(n-1)/2\)</span>, soit ici pour 1262 éléments nous avons 795.691 paires.<a href="distance-entre-individus.html#fnref12" class="footnote-back">↩</a></p></li>
+<ol start="1">
+<li id="fn1"><p>Le nombre de paires uniques et distinctes (pas <em>j</em>, <em>j</em> ou <em>k</em>, <em>k</em>) possibles parmi <em>n</em> items est <span class="math inline">\(n(n-1)/2\)</span>, soit ici pour 1262 éléments nous avons 795.691 paires.<a href="distance-entre-individus.html#fnref1" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>

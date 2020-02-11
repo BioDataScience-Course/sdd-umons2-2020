@@ -67,7 +67,7 @@ zoo
 # #   circularity <dbl>, density <dbl>, class <fct>
 ```
 
-Vous voulez regrouper votre plancton en fonction de la ressemblance entre les organismes. En raison de la taille du tableau, il est évident que cela ne pourra pas se faire de manière manuelle. Nous pouvons raisonnablement considérer que plus les mesures sont similaires entre deux individus, plus ils ont des chances d'être semblables, c'est-à-dire, d'appartenir au même groupe taxonomique. **Mais comment faire pour synthétiser l'information de similarité ou différence contenue dans 20 paires de valeurs** (une paire par variable) \ ? Nous avons besoin d'une **mesure de distance** qui quantifie la similarité (ou à l'inverse la dissimilarité) en un seul nombre. Celle qui vient naturellement à l'esprit est la **distance euclidienne**. Prenons un cas simplifié. Quelle est la distance qui sépare deux individus *A* et *B* par rapport à trois variables *x*, *y*, *z*\ ? Ici, nous pouvons représenter l'information graphiquement dans un espace à trois dimensions. La distance qui nous intéresse est la distance linéaire entre les deux points dans l'espace. Autrement dit, c'est la longueur du segment de droite qui relie les deux points dans l'espace. Cette distance, nous pouvons la calculer à l'aide de la formule suivante (problème de niveau lycée, voir par exemple [ici](http://www.mathematiques-lycee.com/geometrie/2nde-01-longueur-segment.html) pour une résolution dans le plan)\ :
+Vous voulez regrouper votre plancton en fonction de la ressemblance entre les organismes, c'est-à-dire, en fonction des écarts entre les mesures effectuées pour les 19 varaibles quatitatives, à l'exclusion de la vingtième colonne `class`). En raison de la taille du tableau, il est évident que cela ne pourra pas se faire de manière manuelle. Nous pouvons raisonnablement considérer que plus les mesures sont similaires entre deux individus, plus ils ont des chances d'être semblables, c'est-à-dire, d'appartenir au même groupe taxonomique. **Mais comment faire pour synthétiser l'information de similarité ou différence contenue dans 19 paires de valeurs** (une paire par variable) \ ? Nous avons besoin d'une **mesure de distance** qui quantifie la similarité (ou à l'inverse la dissimilarité) en un seul nombre. Celle qui vient naturellement à l'esprit est la **distance euclidienne**. Prenons un cas simplifié. Quelle est la distance qui sépare deux individus *A* et *B* par rapport à trois variables *x*, *y*, *z*\ ? Ici, nous pouvons représenter l'information graphiquement dans un espace à trois dimensions. La distance qui nous intéresse est la distance linéaire entre les deux points dans l'espace. Autrement dit, c'est la longueur du segment de droite qui relie les deux points dans l'espace. Cette distance, nous pouvons la calculer à l'aide de la formule suivante (problème de niveau lycée, voir par exemple [ici](http://www.mathematiques-lycee.com/geometrie/2nde-01-longueur-segment.html) pour une résolution dans le plan)\ :
 
 $$\mathrm{D_{Euclidean}}_{A, B} = \sqrt{(x_A - x_B)^2 + (y_A - y_B)^2 + (z_A - z_B)^2}$$
 
@@ -109,7 +109,9 @@ zoo7_dist
 # 7 44.7380160 52.8886346 47.2461132 45.1582772 49.1782647 42.3442263
 ```
 
-Nous voyons bien ici que R n'imprime que le *triangle inférieur* de notre matrice 7 par 7. **Félicitations\ ! Vous venez de calculer votre première matrice de distances.** Nous verrons à la page suivante comment nous pouvons utiliser l'information qu'elle contient pour regrouper les individus de manière pertinente. Mais avant cela, nous avons besoin d'un peu de théorie pour bien comprendre quelle **métrique** choisir pour calculer nos distances et pourquoi. On parle aussi d'**indices** de **similarité** ou **dissimilarité**.
+Nous voyons bien ici que R n'imprime que le *triangle inférieur* de notre matrice 7 par 7.
+
+**Félicitations\ ! Vous venez de calculer votre première matrice de distances.** Nous verrons à la page suivante comment nous pouvons utiliser l'information qu'elle contient pour regrouper les individus de manière pertinente. Mais avant cela, nous avons besoin d'un peu de théorie pour bien comprendre quelle **métrique** choisir pour calculer nos distances et pourquoi. On parle aussi d'**indices** de **similarité** ou **dissimilarité**.
 
 \BeginKnitrBlock{warning}<div class="warning">
 Attention\ : nous n'avons pas considéré ici les unités respectives de nos variables. Une surface (mm^2^) ou une longeur (mm) ne sont pas mesurées dans les mêmes unités. Nous risquons alors de donner plus de poids aux valeurs élevées. Nous aurions le même effet si nous décidions par exemple d'exprimer une mesure longitudinale en µm au leiu de l'exprimer en mm. Dans ce cas, il vaut mieux standardiser d'abord le tableau (moyenne de zéro et écart type de un) selon les colonnes avant d'effectuer le calcul. Ceci est laissé comme exercice\ !
@@ -192,22 +194,23 @@ Ici aussi, seul l'indice de dissimilarité est défini. L'indice de similarité 
 
 ### Propriétés des indices
 
-Les indices varient en 0 et 1 (0 et 100%), mais les distances sont utilisées aussi comme indices de dissimilarité et varient entre 0 et $\infty$.
+Les indices varient en 0 et 1 (0 et 100%), mais les distances sont utilisées aussi comme indices de dissimilarité et varient entre 0 et $+\infty$.
 
 Un indice est dit **métrique** si\ :
-    * **Minimum 0** : $I_{j, k} = 0$ si $j = k$
 
-    * **Positif** : $I_{j, k}>0$ si $j \neq k$
+- **Minimum 0** : $I_{j, k} = 0$ si $j = k$
 
-    * **Symétrique** : $I_{j, k}=I_{k, j}$
+- **Positif** : $I_{j, k}>0$ si $j \neq k$
 
-    * **Inégalité triangulaire** : $I_{j, k} + I_{k, l} >= I_{j, l}$
+- **Symétrique** : $I_{j, k}=I_{k, j}$
 
-La dernière propriété d'inégalité triangulaire est la plus difficile à obtenir, et n'est pazs toujours nécessaire. Nous pouvons montrer que certains indices qui ne respectent pas cette dernière propriété sont pourtant utiles dans le contexte. Nous dirons alos d'un indice que c'est une **semi-métrique** s’il répond à toutes les conditions sauf la quatrième. Enfin, un indice est dit **non métrique* dans tous les autres cas. Le tableau suivant reprend les métriques que nous avons vu jusqu'ici, et rajoute d'autres candidats potentiels (la distance Chi carré, l'indice de correlation ou de variance/covariance) en indiquant leur type\ :
+- **Inégalité triangulaire** : $I_{j, k} + I_{k, l} >= I_{j, l}$
+
+La dernière propriété d'inégalité triangulaire est la plus difficile à obtenir, et n'est pas toujours nécessaire. Nous pouvons montrer que certains indices qui ne respectent pas cette dernière propriété sont pourtant utiles dans le contexte. Nous dirons alors d'un indice que c'est une **semi-métrique** s’il répond à toutes les conditions sauf la quatrième. Enfin, un indice est dit **non métrique** dans tous les autres cas. Le tableau suivant reprend les métriques que nous avons vu jusqu'ici, et rajoute d'autres candidats potentiels (la distance Chi carré, l'indice de correlation ou de variance/covariance) en indiquant leur type\ :
 
 | **Distance**           | **Type**
 |------------------------|---------------
-| Bray-Curtis            | semimétrique
+| Bray-Curtis            | semi-métrique
 | Canberra               | métrique
 | Euclidienne            | métrique
 | Manhattan              | métrique
