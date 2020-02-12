@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-02-11">
+<meta name="date" content="2020-02-12">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -295,15 +295,15 @@ zoo</code></pre>
 <p>C’est la racine carré de la somme dans les <em>n</em> dimensions des écarts entre les valeurs au carré pour toutes les variables <em>y<sub>i</sub></em>. Plus sa valeur est grande, plus les individus sont éloignés (différents). Pour cette raison, nous appelerons cette distance, une mesure de <strong>dissimilarité</strong>.</p>
 <div id="matrice-de-distances" class="section level3">
 <h3><span class="header-section-number">5.2.1</span> Matrice de distances</h3>
-<p>Nous avons maintenant la possibilité de quantifier la similitude entre nos organismes plactoniques… mais nous en avons un grand nombre. Cela va être impossible à gérer autant de mesures qu’il y a de paires possibles parmi 1262 individus<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>. La <strong>matrice de distance</strong> est une matrice ici 1262 par 1262 qui rassemble toutes les valeurs possibles. Notez que sur la diagonale, nous comparons chaque individu avec lui-même. La distance euclidienne vaut donc systématiquement zéro sur la diagonale.</p>
+<p>Nous avons maintenant la possibilité de quantifier la similitude entre nos organismes plactoniques… mais nous en avons un grand nombre. Cela va être impossible à gérer autant de mesures qu’il y a de paires possibles parmi 1262 individus<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. La <strong>matrice de distance</strong> est une matrice ici 1262 par 1262 qui rassemble toutes les valeurs possibles. Notez que sur la diagonale, nous comparons chaque individu avec lui-même. La distance euclidienne vaut donc systématiquement zéro sur la diagonale.</p>
 <p><span class="math display">\[\mathrm{D_{Euclidean}}_{j, j} = 0\]</span></p>
 <p>De plus, de part et d’autre de cette diagonale, nous trouvons les paires complémentaires (<em>j versus k</em> d’un côté et <em>k versus j</em> de l’autre). Or qu’elle soit mesurée dans un sens ou dans l’autre, la distance du segment de droite qui relie deux points dans l’espace est toujours la même.</p>
 <p><span class="math display">\[\mathrm{D_{Euclidean}}_{j, k} = \mathrm{D_{Euclidean}}_{k, j}\]</span></p>
-<p>Par conséquent, seulement une portion (soit le triangle inférieur, soit le triangle supérieur hors diagonale) est informative. La diagonale ne porte aucune informartion utile, et l’autre triangle est redondant. Nous avons donc pour habitude de ne calculer et représenter que le triangle inférieur de cette matrice. Maintenant que cela est clair, nous pouvons créer un objet <code>dist</code> qui contiendra notre matrice de distances enclidiennes. Il suffit d’utiliser la fonction <code>dist()</code>, ou mieux <code>vegan::vegdist()</code> qui offre plus de possibilités. Comme cela prendrait trop de place d’imprimer la matrice complète, nous allons réaliser le travail sur seulement les sept premiers individus de notre tableau (et nous devons aussi éliminer la colonne <code>class</code> qui ne contient pas de données numériques et qui ne nous intéresse pas pour le moment) :</p>
+<p>Par conséquent, seulement une portion (soit le triangle inférieur, soit le triangle supérieur hors diagonale) est informative. La diagonale ne porte aucune informartion utile, et l’autre triangle est redondant. Nous avons donc pour habitude de ne calculer et représenter que le triangle inférieur de cette matrice. Maintenant que cela est clair, nous pouvons créer un objet <code>dist</code> qui contiendra notre matrice de distances enclidiennes. Il suffit d’utiliser la fonction <code>dist()</code>, ou mieux <code>vegan::vegdist()</code> qui offre plus de possibilités<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Comme cela prendrait trop de place d’imprimer la matrice complète, nous allons réaliser le travail sur seulement les sept premiers individus de notre tableau (et nous devons aussi éliminer la colonne <code>class</code> qui ne contient pas de données numériques et qui ne nous intéresse pas pour le moment) :</p>
 <pre class="sourceCode r"><code class="sourceCode r">zoo <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">select</span>(., <span class="op">-</span>class) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Elimination de la colonne class</span>
 <span class="st">  </span><span class="kw">head</span>(., <span class="dt">n =</span> <span class="dv">7</span>) -&gt;<span class="st"> </span>zoo7 <span class="co"># Récupération des 7 premiers individus</span>
-zoo7_dist &lt;-<span class="st"> </span><span class="kw">dist</span>(zoo7, <span class="dt">method =</span> <span class="st">&quot;euclidean&quot;</span>)
+zoo7_dist &lt;-<span class="st"> </span>vegan<span class="op">::</span><span class="kw">vegdist</span>(zoo7, <span class="dt">method =</span> <span class="st">&quot;euclidean&quot;</span>)
 zoo7_dist</code></pre>
 <pre><code>#            1          2          3          4          5          6
 # 2  8.2185826                                                       
@@ -312,7 +312,7 @@ zoo7_dist</code></pre>
 # 5  4.8478629  4.2950067  3.0119468  4.6148173                      
 # 6  2.4269520 10.6197317  4.9228255  2.8477882  7.1766853           
 # 7 44.7380160 52.8886346 47.2461132 45.1582772 49.1782647 42.3442263</code></pre>
-<p>Nous voyons bien ici que R n’imprime que le <em>triangle inférieur</em> de notre matrice 7 par 7.</p>
+<p>Nous voyons bien ici que R n’imprime que le <em>triangle inférieur</em> de notre matrice 7 par 7. Notez aussi que mes objets <code>dist</code> de taille plus réaliste que vous génèrerez dans vos analyses ne sont <strong>prévue</strong> pour être imprimées et visualisées telles quelles. Il s’agit seulement de la <em>première étape</em> vers une représentation utile qui sera réalisée à la page suivante, à l’aide de la classification hiérarchisée.</p>
 <p><strong>Félicitations ! Vous venez de calculer votre première matrice de distances.</strong> Nous verrons à la page suivante comment nous pouvons utiliser l’information qu’elle contient pour regrouper les individus de manière pertinente. Mais avant cela, nous avons besoin d’un peu de théorie pour bien comprendre quelle <strong>métrique</strong> choisir pour calculer nos distances et pourquoi. On parle aussi d’<strong>indices</strong> de <strong>similarité</strong> ou <strong>dissimilarité</strong>.</p>
 
 <div class="warning">
@@ -333,16 +333,16 @@ zoo7_dist</code></pre>
 <h4><span class="header-section-number">5.2.2.1</span> Indice de Bray-Curtis</h4>
 <p>L’indice de dissimilarité de Bary-Curtis, aussi appelé coefficient de Czecanowski est calculé comme suit :</p>
 <p><span class="math display">\[\mathrm{D_{Bray-Curtis}}_{j,k}=\frac{\sum_{i=1}^{n}\left|y_{ij}-y_{ik}\right|}{\sum_{i=1}^{n}(y_{ij}+y_{ik})}\]</span></p>
-<p>Il s’utilise pour mesurer la similitude entre échantillon sur base du <strong>dénombrement d’espèces</strong>. Si le nombre d’individus est très variable (espèces dominantes <em>versus</em> espèces rares), nous devons transformer les données pour éviter de donner trop de poids aux espèces les plus abondantes (ex: <span class="math inline">\(log(x+1)\)</span>, double racine carrée, …).</p>
+<p>Dans R nous utiliserons <code>vegan::vegdist(DF, method = &quot;bray&quot;)</code>.Il s’utilise pour mesurer la similitude entre échantillon sur base du <strong>dénombrement d’espèces</strong>. Si le nombre d’individus est très variable (espèces dominantes <em>versus</em> espèces rares), nous devons transformer les données pour éviter de donner trop de poids aux espèces les plus abondantes (ex: <span class="math inline">\(log(x+1)\)</span>, double racine carrée, …).</p>
 <p>Une caractéristique essentielle de cet indice (contrairement à la distance euclidienne) est que toute double absence n’est pas prise en compte dans le calcul. C’est souvent pertinent dans le cadre de son utilisation comme le dénombrement d’espèces. En effet, quelle information utile retire-t-on de doubles zéros dans un tableau répertoriant la faune belge pour le crocodile du Nil et le tigre de Sibérie par exemple ? Aucune ! Ils sont tous deux systématiquement absents des dénombrements, mais cette double absence n’apporte aucune information utile pour caractériser la faune belge par ailleurs.</p>
 <p>L’indices de similarité de Bray-Curtis (<em>sim</em>) est complémentaire à l’indices de dssimilarité correspondant (<em>dis</em> tel que calculé ci-dessus) :</p>
-<p><span class="math display">\[dis = 1 – sim\]</span></p>
+<p><span class="math display">\[sim = 1 – dis\]</span></p>
 </div>
 <div id="indice-de-canberra" class="section level4">
 <h4><span class="header-section-number">5.2.2.2</span> Indice de Canberra</h4>
 <p>L’indice de dissimilarité de Canberra est similaire à l’indice de Bray-Curtis mais il pondère les espèces en fonction du nombre d’occurrences afin de donner le <em>même</em> poids à chacune dans le calcul. Il se calcule comme suit :</p>
 <p><span class="math display">\[\mathrm{D_{Canberra}}_{j,k}=\frac{1}{nz}\sum_{i&#39;=1}^{nz}\frac{\left|y_{i&#39;j}-y_{i&#39;k}\right|}{\left|y_{i&#39;j}\right|+\left|y_{i&#39;k}\right|}\]</span></p>
-<p>où <span class="math inline">\(nz\)</span> est le nombre de valeurs non nulles dans le tableau de départ. Toutes les espèces contribuent ici de manière égale. C’est un point positif, mais il faut faire attention à ce que cet indice a souvent tendnace à donner une surimportance aux espècces très rares observées une seule fois ou un petit nombre de fois !</p>
+<p>où <span class="math inline">\(nz\)</span> est le nombre de valeurs non nulles dans le tableau de départ. Toutes les espèces contribuent ici de manière égale. C’est un point positif, mais il faut faire attention à ce que cet indice a souvent tendnace à donner une surimportance aux espècces très rares observées une seule fois ou un petit nombre de fois ! Dans R, nous utiliserons <code>vegan::vegdist(DF, method = &quot;canberra&quot;)</code>.</p>
 <p>Toute double absence n’est pas prise en compte ici aussi. Seuls les indices ne dépendant pas des doubles zéros sont utilisables pour des dénombrements d’espèces ou des présence-absence. Ainsi pour ce type de données, notre choix se portera sur :</p>
 <ul>
 <li><p>Bray-Curtis si l’on souhaite que le résultat soit dominé par les espèces les plus abondantes.</p></li>
@@ -360,13 +360,13 @@ zoo7_dist</code></pre>
 <h4><span class="header-section-number">5.2.2.3</span> Distance Euclidienne</h4>
 <p>Nous savons déjà que c’est la distance géométrique entre les points dans un espace à <em>n</em> dimensions :</p>
 <p><span class="math display">\[\mathrm{D_{Euclidean}}_{j,k}=\sqrt{\sum_{i=1}^{n}(y_{ij}-y_{ik})^2}\]</span></p>
-<p>Cet indice de dissimilarité est utile pour des mesures quantitatives, pour des données environnmentales, etc. Il faut que les mesures soient toutes effectuées dans les mêmes unités. Si ce n’est pas le cas, penser alors à standardiser les mesures avant le calcul comme nous l’avons fait plus dans l’exemple sur le zooplancton. Il n’existe pas d’indice de similarité complémentaire.</p>
+<p>Dans R, cette distance peut être calculée avec <code>dist(DF)</code> ou <code>vegan::vegdist(DF, method = &quot;euclidean&quot;)</code>. Cet indice de dissimilarité est utile pour des mesures quantitatives, pour des données environnmentales, etc. Il faut que les mesures soient toutes effectuées dans les mêmes unités. Si ce n’est pas le cas, penser alors à standardiser les mesures avant le calcul comme nous l’avons fait plus dans l’exemple sur le zooplancton. Il n’existe pas d’indice de similarité complémentaire.</p>
 </div>
 <div id="distance-de-manhattan" class="section level4">
 <h4><span class="header-section-number">5.2.2.4</span> Distance de Manhattan</h4>
 <p>La distance de Manhattan, encore appelée “city-block distance” est un indice de dissimilarité qui, contrairement à la distance euclidienne ne mesure pas la distance géométrique entre les points en ligne droite, mais via un trajet qui suit les parallèmes aux axes. C’est comme si la distance euclidenne reliait les points à vol d’oiseau, alors qu’avec la distance de Manhattan, on devait contourner les blocs de maisons du quartier pour aller d’un point A à un point B (d’où le nom de cette métrique). Elle se calcule comme suit :</p>
 <p><span class="math display">\[\mathrm{D_{Manhattan}}_{j,k}=\sum_{i=1}^{n}|y_{ij}-y_{ik}|\]</span></p>
-<p>Ici aussi, seul l’indice de dissimilarité est défini. L’indice de similarité complémentaire n’existe pas car la valeur de l’indice de dissimlarité n’est pas borné à droite et peut varier de zéro (dissimilarité nulle, les deux individus soint identiques) à l’infini pour une différence maximale.</p>
+<p>Dans R, nous utiliserons <code>vegan::vegdist(DF, method = &quot;manhattan&quot;)</code>. Ici aussi, seul l’indice de dissimilarité est défini. L’indice de similarité complémentaire n’existe pas car la valeur de l’indice de dissimlarité n’est pas borné à droite et peut varier de zéro (dissimilarité nulle, les deux individus soint identiques) à l’infini pour une différence maximale.</p>
 </div>
 </div>
 <div id="utilisation-des-indices" class="section level3">
@@ -456,8 +456,9 @@ Lisez le README afin de prendre connaissance de l’exercice
 <!-- </div> -->
 <div class="footnotes">
 <hr />
-<ol start="12">
-<li id="fn12"><p>Le nombre de paires uniques et distinctes (pas <em>j</em>, <em>j</em> ou <em>k</em>, <em>k</em>) possibles parmi <em>n</em> items est <span class="math inline">\(n(n-1)/2\)</span>, soit ici pour 1262 éléments nous avons 795.691 paires.<a href="distance-entre-individus.html#fnref12" class="footnote-back">↩</a></p></li>
+<ol start="1">
+<li id="fn1"><p>Le nombre de paires uniques et distinctes (pas <em>j</em>, <em>j</em> ou <em>k</em>, <em>k</em>) possibles parmi <em>n</em> items est <span class="math inline">\(n(n-1)/2\)</span>, soit ici pour 1262 éléments nous avons 795.691 paires.<a href="distance-entre-individus.html#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>La fonction <code>dist()</code> ne propose par exemple pas la méthode de Bray-Curtis qui est fréquemment utilisée en biologie et en écologie, contrairement à <code>vegan::vegdist(method = &quot;bray&quot;)</code>.<a href="distance-entre-individus.html#fnref2" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>

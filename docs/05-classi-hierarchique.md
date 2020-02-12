@@ -88,14 +88,14 @@ De plus, de part et d'autre de cette diagonale, nous trouvons les paires complé
 
 $$\mathrm{D_{Euclidean}}_{j, k} = \mathrm{D_{Euclidean}}_{k, j}$$
 
-Par conséquent, seulement une portion (soit le triangle inférieur, soit le triangle supérieur hors diagonale) est informative. La diagonale ne porte aucune informartion utile, et l'autre triangle est redondant. Nous avons donc pour habitude de ne calculer et représenter que le triangle inférieur de cette matrice. Maintenant que cela est clair, nous pouvons créer un objet `dist` qui contiendra notre matrice de distances enclidiennes. Il suffit d'utiliser la fonction `dist()`, ou mieux `vegan::vegdist()` qui offre plus de possibilités. Comme cela prendrait trop de place d'imprimer la matrice complète, nous allons réaliser le travail sur seulement les sept premiers individus de notre tableau (et nous devons aussi éliminer la colonne `class` qui ne contient pas de données numériques et qui ne nous intéresse pas pour le moment)\ :
+Par conséquent, seulement une portion (soit le triangle inférieur, soit le triangle supérieur hors diagonale) est informative. La diagonale ne porte aucune informartion utile, et l'autre triangle est redondant. Nous avons donc pour habitude de ne calculer et représenter que le triangle inférieur de cette matrice. Maintenant que cela est clair, nous pouvons créer un objet `dist` qui contiendra notre matrice de distances enclidiennes. Il suffit d'utiliser la fonction `dist()`, ou mieux `vegan::vegdist()` qui offre plus de possibilités^[La fonction `dist()` ne propose par exemple pas la méthode de Bray-Curtis qui est fréquemment utilisée en biologie et en écologie, contrairement à `vegan::vegdist(method = "bray")`.]. Comme cela prendrait trop de place d'imprimer la matrice complète, nous allons réaliser le travail sur seulement les sept premiers individus de notre tableau (et nous devons aussi éliminer la colonne `class` qui ne contient pas de données numériques et qui ne nous intéresse pas pour le moment)\ :
 
 
 ```r
 zoo %>.%
   select(., -class) %>.% # Elimination de la colonne class
   head(., n = 7) -> zoo7 # Récupération des 7 premiers individus
-zoo7_dist <- dist(zoo7, method = "euclidean")
+zoo7_dist <- vegan::vegdist(zoo7, method = "euclidean")
 zoo7_dist
 ```
 
@@ -109,7 +109,7 @@ zoo7_dist
 # 7 44.7380160 52.8886346 47.2461132 45.1582772 49.1782647 42.3442263
 ```
 
-Nous voyons bien ici que R n'imprime que le *triangle inférieur* de notre matrice 7 par 7.
+Nous voyons bien ici que R n'imprime que le *triangle inférieur* de notre matrice 7 par 7. Notez aussi que mes objets `dist` de taille plus réaliste que vous génèrerez dans vos analyses ne sont **prévue** pour être imprimées et visualisées telles quelles. Il s'agit seulement de la *première étape* vers une représentation utile qui sera réalisée à la page suivante, à l'aide de la classification hiérarchisée.
 
 **Félicitations\ ! Vous venez de calculer votre première matrice de distances.** Nous verrons à la page suivante comment nous pouvons utiliser l'information qu'elle contient pour regrouper les individus de manière pertinente. Mais avant cela, nous avons besoin d'un peu de théorie pour bien comprendre quelle **métrique** choisir pour calculer nos distances et pourquoi. On parle aussi d'**indices** de **similarité** ou **dissimilarité**.
 
@@ -134,13 +134,13 @@ L'indice de dissimilarité de Bary-Curtis, aussi appelé coefficient de Czecanow
 
 $$\mathrm{D_{Bray-Curtis}}_{j,k}=\frac{\sum_{i=1}^{n}\left|y_{ij}-y_{ik}\right|}{\sum_{i=1}^{n}(y_{ij}+y_{ik})}$$
 
-Il s’utilise pour mesurer la similitude entre échantillon sur base du **dénombrement d’espèces**. Si le nombre d’individus est très variable (espèces dominantes _versus_ espèces rares), nous devons transformer les données pour éviter de donner trop de poids aux espèces les plus abondantes (ex: $log(x+1)$, double racine carrée, ...).
+Dans R nous utiliserons `vegan::vegdist(DF, method = "bray")`.Il s’utilise pour mesurer la similitude entre échantillon sur base du **dénombrement d’espèces**. Si le nombre d’individus est très variable (espèces dominantes _versus_ espèces rares), nous devons transformer les données pour éviter de donner trop de poids aux espèces les plus abondantes (ex: $log(x+1)$, double racine carrée, ...).
 
 Une caractéristique essentielle de cet indice (contrairement à la distance euclidienne) est que toute double absence n'est pas prise en compte dans le calcul. C'est souvent pertinent dans le cadre de son utilisation comme le dénombrement d'espèces. En effet, quelle information utile retire-t-on de doubles zéros dans un tableau répertoriant la faune belge pour le crocodile du Nil et le tigre de Sibérie par exemple\ ? Aucune\ ! Ils sont tous deux systématiquement absents des dénombrements, mais cette double absence n'apporte aucune information utile pour caractériser la faune belge par ailleurs.
 
 L'indices de similarité de Bray-Curtis (*sim*) est complémentaire à l'indices de dssimilarité correspondant (*dis* tel que calculé ci-dessus)\ : 
 
-$$dis = 1 – sim$$
+$$sim = 1 – dis$$
 
 
 
@@ -150,7 +150,7 @@ L'indice de dissimilarité de Canberra est similaire à l'indice de Bray-Curtis 
 
 $$\mathrm{D_{Canberra}}_{j,k}=\frac{1}{nz}\sum_{i'=1}^{nz}\frac{\left|y_{i'j}-y_{i'k}\right|}{\left|y_{i'j}\right|+\left|y_{i'k}\right|}$$
 
-où $nz$ est le nombre de valeurs non nulles dans le tableau de départ. Toutes les espèces contribuent ici de manière égale. C'est un point positif, mais il faut faire attention à ce que cet indice a souvent tendnace à donner une surimportance aux espècces très rares observées une seule fois ou un petit nombre de fois\ !
+où $nz$ est le nombre de valeurs non nulles dans le tableau de départ. Toutes les espèces contribuent ici de manière égale. C'est un point positif, mais il faut faire attention à ce que cet indice a souvent tendnace à donner une surimportance aux espècces très rares observées une seule fois ou un petit nombre de fois\ ! Dans R, nous utiliserons `vegan::vegdist(DF, method = "canberra")`.
 
 Toute double absence n’est pas prise en compte ici aussi. Seuls les indices ne dépendant pas des doubles zéros sont utilisables pour des dénombrements d’espèces ou des présence-absence. Ainsi pour ce type de données, notre choix se portera sur\ :
 
@@ -173,7 +173,7 @@ Nous savons déjà que c'est la distance géométrique entre les points dans un 
 
 $$\mathrm{D_{Euclidean}}_{j,k}=\sqrt{\sum_{i=1}^{n}(y_{ij}-y_{ik})^2}$$
 
-Cet indice de dissimilarité est utile pour des mesures quantitatives, pour des données environnmentales, etc. Il faut que les mesures soient toutes effectuées dans les mêmes unités. Si ce n'est pas le cas, penser alors à standardiser les mesures avant le calcul comme nous l'avons fait plus dans l'exemple sur le zooplancton. Il n'existe pas d'indice de similarité complémentaire.
+Dans R, cette distance peut être calculée avec `dist(DF)` ou `vegan::vegdist(DF, method = "euclidean")`. Cet indice de dissimilarité est utile pour des mesures quantitatives, pour des données environnmentales, etc. Il faut que les mesures soient toutes effectuées dans les mêmes unités. Si ce n'est pas le cas, penser alors à standardiser les mesures avant le calcul comme nous l'avons fait plus dans l'exemple sur le zooplancton. Il n'existe pas d'indice de similarité complémentaire.
 
 
 #### Distance de Manhattan
@@ -182,7 +182,7 @@ La distance de Manhattan, encore appelée "city-block distance" est un indice de
 
 $$\mathrm{D_{Manhattan}}_{j,k}=\sum_{i=1}^{n}|y_{ij}-y_{ik}|$$
 
-Ici aussi, seul l'indice de dissimilarité est défini. L'indice de similarité complémentaire n'existe pas car la valeur de l'indice de dissimlarité n'est pas borné à droite et peut varier de zéro (dissimilarité nulle, les deux individus soint identiques) à l'infini pour une différence maximale.
+Dans R, nous utiliserons `vegan::vegdist(DF, method = "manhattan")`. Ici aussi, seul l'indice de dissimilarité est défini. L'indice de similarité complémentaire n'existe pas car la valeur de l'indice de dissimlarité n'est pas borné à droite et peut varier de zéro (dissimilarité nulle, les deux individus soint identiques) à l'infini pour une différence maximale.
 
 
 ### Utilisation des indices
