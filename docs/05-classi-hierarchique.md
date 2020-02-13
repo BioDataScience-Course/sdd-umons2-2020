@@ -109,7 +109,7 @@ zoo7_dist
 # 7 44.7380160 52.8886346 47.2461132 45.1582772 49.1782647 42.3442263
 ```
 
-Nous voyons bien ici que R n'imprime que le *triangle inférieur* de notre matrice 7 par 7. Notez aussi que mes objets `dist` de taille plus réaliste que vous génèrerez dans vos analyses ne sont **prévue** pour être imprimées et visualisées telles quelles. Il s'agit seulement de la *première étape* vers une représentation utile qui sera réalisée à la page suivante, à l'aide de la classification hiérarchisée.
+Nous voyons bien ici que R n'imprime que le *triangle inférieur* de notre matrice 7 par 7. Notez aussi que les objets `dist` de tailles plus réalistes que vous génèrerez dans vos analyses ne sont **prévue** pour être imprimées et visualisées telles quelles. Il s'agit seulement de la *première étape* vers une représentation utile qui sera réalisée à la page suivante, à l'aide de la classification hiérarchisée.
 
 **Félicitations\ ! Vous venez de calculer votre première matrice de distances.** Nous verrons à la page suivante comment nous pouvons utiliser l'information qu'elle contient pour regrouper les individus de manière pertinente. Mais avant cela, nous avons besoin d'un peu de théorie pour bien comprendre quelle **métrique** choisir pour calculer nos distances et pourquoi. On parle aussi d'**indices** de **similarité** ou **dissimilarité**.
 

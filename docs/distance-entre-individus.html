@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-02-12">
+<meta name="date" content="2020-02-13">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -295,11 +295,11 @@ zoo</code></pre>
 <p>C’est la racine carré de la somme dans les <em>n</em> dimensions des écarts entre les valeurs au carré pour toutes les variables <em>y<sub>i</sub></em>. Plus sa valeur est grande, plus les individus sont éloignés (différents). Pour cette raison, nous appelerons cette distance, une mesure de <strong>dissimilarité</strong>.</p>
 <div id="matrice-de-distances" class="section level3">
 <h3><span class="header-section-number">5.2.1</span> Matrice de distances</h3>
-<p>Nous avons maintenant la possibilité de quantifier la similitude entre nos organismes plactoniques… mais nous en avons un grand nombre. Cela va être impossible à gérer autant de mesures qu’il y a de paires possibles parmi 1262 individus<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. La <strong>matrice de distance</strong> est une matrice ici 1262 par 1262 qui rassemble toutes les valeurs possibles. Notez que sur la diagonale, nous comparons chaque individu avec lui-même. La distance euclidienne vaut donc systématiquement zéro sur la diagonale.</p>
+<p>Nous avons maintenant la possibilité de quantifier la similitude entre nos organismes plactoniques… mais nous en avons un grand nombre. Cela va être impossible à gérer autant de mesures qu’il y a de paires possibles parmi 1262 individus<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>. La <strong>matrice de distance</strong> est une matrice ici 1262 par 1262 qui rassemble toutes les valeurs possibles. Notez que sur la diagonale, nous comparons chaque individu avec lui-même. La distance euclidienne vaut donc systématiquement zéro sur la diagonale.</p>
 <p><span class="math display">\[\mathrm{D_{Euclidean}}_{j, j} = 0\]</span></p>
 <p>De plus, de part et d’autre de cette diagonale, nous trouvons les paires complémentaires (<em>j versus k</em> d’un côté et <em>k versus j</em> de l’autre). Or qu’elle soit mesurée dans un sens ou dans l’autre, la distance du segment de droite qui relie deux points dans l’espace est toujours la même.</p>
 <p><span class="math display">\[\mathrm{D_{Euclidean}}_{j, k} = \mathrm{D_{Euclidean}}_{k, j}\]</span></p>
-<p>Par conséquent, seulement une portion (soit le triangle inférieur, soit le triangle supérieur hors diagonale) est informative. La diagonale ne porte aucune informartion utile, et l’autre triangle est redondant. Nous avons donc pour habitude de ne calculer et représenter que le triangle inférieur de cette matrice. Maintenant que cela est clair, nous pouvons créer un objet <code>dist</code> qui contiendra notre matrice de distances enclidiennes. Il suffit d’utiliser la fonction <code>dist()</code>, ou mieux <code>vegan::vegdist()</code> qui offre plus de possibilités<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Comme cela prendrait trop de place d’imprimer la matrice complète, nous allons réaliser le travail sur seulement les sept premiers individus de notre tableau (et nous devons aussi éliminer la colonne <code>class</code> qui ne contient pas de données numériques et qui ne nous intéresse pas pour le moment) :</p>
+<p>Par conséquent, seulement une portion (soit le triangle inférieur, soit le triangle supérieur hors diagonale) est informative. La diagonale ne porte aucune informartion utile, et l’autre triangle est redondant. Nous avons donc pour habitude de ne calculer et représenter que le triangle inférieur de cette matrice. Maintenant que cela est clair, nous pouvons créer un objet <code>dist</code> qui contiendra notre matrice de distances enclidiennes. Il suffit d’utiliser la fonction <code>dist()</code>, ou mieux <code>vegan::vegdist()</code> qui offre plus de possibilités<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>. Comme cela prendrait trop de place d’imprimer la matrice complète, nous allons réaliser le travail sur seulement les sept premiers individus de notre tableau (et nous devons aussi éliminer la colonne <code>class</code> qui ne contient pas de données numériques et qui ne nous intéresse pas pour le moment) :</p>
 <pre class="sourceCode r"><code class="sourceCode r">zoo <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">select</span>(., <span class="op">-</span>class) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Elimination de la colonne class</span>
 <span class="st">  </span><span class="kw">head</span>(., <span class="dt">n =</span> <span class="dv">7</span>) -&gt;<span class="st"> </span>zoo7 <span class="co"># Récupération des 7 premiers individus</span>
@@ -312,7 +312,7 @@ zoo7_dist</code></pre>
 # 5  4.8478629  4.2950067  3.0119468  4.6148173                      
 # 6  2.4269520 10.6197317  4.9228255  2.8477882  7.1766853           
 # 7 44.7380160 52.8886346 47.2461132 45.1582772 49.1782647 42.3442263</code></pre>
-<p>Nous voyons bien ici que R n’imprime que le <em>triangle inférieur</em> de notre matrice 7 par 7. Notez aussi que mes objets <code>dist</code> de taille plus réaliste que vous génèrerez dans vos analyses ne sont <strong>prévue</strong> pour être imprimées et visualisées telles quelles. Il s’agit seulement de la <em>première étape</em> vers une représentation utile qui sera réalisée à la page suivante, à l’aide de la classification hiérarchisée.</p>
+<p>Nous voyons bien ici que R n’imprime que le <em>triangle inférieur</em> de notre matrice 7 par 7. Notez aussi que les objets <code>dist</code> de tailles plus réalistes que vous génèrerez dans vos analyses ne sont <strong>prévue</strong> pour être imprimées et visualisées telles quelles. Il s’agit seulement de la <em>première étape</em> vers une représentation utile qui sera réalisée à la page suivante, à l’aide de la classification hiérarchisée.</p>
 <p><strong>Félicitations ! Vous venez de calculer votre première matrice de distances.</strong> Nous verrons à la page suivante comment nous pouvons utiliser l’information qu’elle contient pour regrouper les individus de manière pertinente. Mais avant cela, nous avons besoin d’un peu de théorie pour bien comprendre quelle <strong>métrique</strong> choisir pour calculer nos distances et pourquoi. On parle aussi d’<strong>indices</strong> de <strong>similarité</strong> ou <strong>dissimilarité</strong>.</p>
 
 <div class="warning">
@@ -456,9 +456,9 @@ Lisez le README afin de prendre connaissance de l’exercice
 <!-- </div> -->
 <div class="footnotes">
 <hr />
-<ol start="1">
-<li id="fn1"><p>Le nombre de paires uniques et distinctes (pas <em>j</em>, <em>j</em> ou <em>k</em>, <em>k</em>) possibles parmi <em>n</em> items est <span class="math inline">\(n(n-1)/2\)</span>, soit ici pour 1262 éléments nous avons 795.691 paires.<a href="distance-entre-individus.html#fnref1" class="footnote-back">↩</a></p></li>
-<li id="fn2"><p>La fonction <code>dist()</code> ne propose par exemple pas la méthode de Bray-Curtis qui est fréquemment utilisée en biologie et en écologie, contrairement à <code>vegan::vegdist(method = &quot;bray&quot;)</code>.<a href="distance-entre-individus.html#fnref2" class="footnote-back">↩</a></p></li>
+<ol start="12">
+<li id="fn12"><p>Le nombre de paires uniques et distinctes (pas <em>j</em>, <em>j</em> ou <em>k</em>, <em>k</em>) possibles parmi <em>n</em> items est <span class="math inline">\(n(n-1)/2\)</span>, soit ici pour 1262 éléments nous avons 795.691 paires.<a href="distance-entre-individus.html#fnref12" class="footnote-back">↩</a></p></li>
+<li id="fn13"><p>La fonction <code>dist()</code> ne propose par exemple pas la méthode de Bray-Curtis qui est fréquemment utilisée en biologie et en écologie, contrairement à <code>vegan::vegdist(method = &quot;bray&quot;)</code>.<a href="distance-entre-individus.html#fnref13" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>
