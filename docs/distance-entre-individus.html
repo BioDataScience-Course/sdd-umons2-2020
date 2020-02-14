@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-02-13">
+<meta name="date" content="2020-02-14">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -33,7 +33,7 @@
   
   
 <link rel="prev" href="analyse-de-donnees.html">
-<link rel="next" href="k-moyenne-som.html">
+<link rel="next" href="regroupement-avec-cah.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -224,6 +224,11 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="5.2.3" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#utilisation-des-indices"><i class="fa fa-check"></i><b>5.2.3</b> Utilisation des indices</a></li>
 <li class="chapter" data-level="5.2.4" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#proprietes-des-indices"><i class="fa fa-check"></i><b>5.2.4</b> Propriétés des indices</a></li>
 </ul></li>
+<li class="chapter" data-level="5.3" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html"><i class="fa fa-check"></i><b>5.3</b> Regroupement avec CAH</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#dendrogramme"><i class="fa fa-check"></i><b>5.3.1</b> Dendrogramme</a></li>
+<li class="chapter" data-level="5.3.2" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#separer-les-groupes"><i class="fa fa-check"></i><b>5.3.2</b> Séparer les groupes</a></li>
+<li class="chapter" data-level="5.3.3" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#etude-complete"><i class="fa fa-check"></i><b>5.3.3</b> Étude complète</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="k-moyenne-som.html"><a href="k-moyenne-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne &amp; SOM</a><ul>
 <li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a></li>
@@ -299,24 +304,23 @@ zoo</code></pre>
 <p><span class="math display">\[\mathrm{D_{Euclidean}}_{j, j} = 0\]</span></p>
 <p>De plus, de part et d’autre de cette diagonale, nous trouvons les paires complémentaires (<em>j versus k</em> d’un côté et <em>k versus j</em> de l’autre). Or qu’elle soit mesurée dans un sens ou dans l’autre, la distance du segment de droite qui relie deux points dans l’espace est toujours la même.</p>
 <p><span class="math display">\[\mathrm{D_{Euclidean}}_{j, k} = \mathrm{D_{Euclidean}}_{k, j}\]</span></p>
-<p>Par conséquent, seulement une portion (soit le triangle inférieur, soit le triangle supérieur hors diagonale) est informative. La diagonale ne porte aucune informartion utile, et l’autre triangle est redondant. Nous avons donc pour habitude de ne calculer et représenter que le triangle inférieur de cette matrice. Maintenant que cela est clair, nous pouvons créer un objet <code>dist</code> qui contiendra notre matrice de distances enclidiennes. Il suffit d’utiliser la fonction <code>dist()</code>, ou mieux <code>vegan::vegdist()</code> qui offre plus de possibilités<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>. Comme cela prendrait trop de place d’imprimer la matrice complète, nous allons réaliser le travail sur seulement les sept premiers individus de notre tableau (et nous devons aussi éliminer la colonne <code>class</code> qui ne contient pas de données numériques et qui ne nous intéresse pas pour le moment) :</p>
+<p>Par conséquent, seulement une portion (soit le triangle inférieur, soit le triangle supérieur hors diagonale) est informative. La diagonale ne porte aucune informartion utile, et l’autre triangle est redondant. Nous avons donc pour habitude de ne calculer et représenter que le triangle inférieur de cette matrice. Maintenant que cela est clair, nous pouvons créer un objet <code>dist</code> qui contiendra notre matrice de distances enclidiennes. Il suffit d’utiliser la fonction <code>dist()</code>, ou mieux <code>vegan::vegdist()</code> qui offre plus de possibilités<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>. Comme cela prendrait trop de place d’imprimer la matrice complète, nous allons réaliser le travail sur seulement les six premiers individus de notre tableau (et nous devons aussi éliminer la colonne <code>class</code> qui ne contient pas de données numériques et qui ne nous intéresse pas pour le moment) :</p>
 <pre class="sourceCode r"><code class="sourceCode r">zoo <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">select</span>(., <span class="op">-</span>class) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Elimination de la colonne class</span>
-<span class="st">  </span><span class="kw">head</span>(., <span class="dt">n =</span> <span class="dv">7</span>) -&gt;<span class="st"> </span>zoo7 <span class="co"># Récupération des 7 premiers individus</span>
-zoo7_dist &lt;-<span class="st"> </span>vegan<span class="op">::</span><span class="kw">vegdist</span>(zoo7, <span class="dt">method =</span> <span class="st">&quot;euclidean&quot;</span>)
-zoo7_dist</code></pre>
-<pre><code>#            1          2          3          4          5          6
-# 2  8.2185826                                                       
-# 3  2.5649705  5.7320911                                            
-# 4  0.8582142  7.8813537  2.2220079                                 
-# 5  4.8478629  4.2950067  3.0119468  4.6148173                      
-# 6  2.4269520 10.6197317  4.9228255  2.8477882  7.1766853           
-# 7 44.7380160 52.8886346 47.2461132 45.1582772 49.1782647 42.3442263</code></pre>
-<p>Nous voyons bien ici que R n’imprime que le <em>triangle inférieur</em> de notre matrice 7 par 7. Notez aussi que les objets <code>dist</code> de tailles plus réalistes que vous génèrerez dans vos analyses ne sont <strong>prévue</strong> pour être imprimées et visualisées telles quelles. Il s’agit seulement de la <em>première étape</em> vers une représentation utile qui sera réalisée à la page suivante, à l’aide de la classification hiérarchisée.</p>
+<span class="st">  </span><span class="kw">head</span>(., <span class="dt">n =</span> <span class="dv">6</span>) -&gt;<span class="st"> </span>zoo6 <span class="co"># Récupération des 6 premiers individus</span>
+zoo6_dist &lt;-<span class="st"> </span>vegan<span class="op">::</span><span class="kw">vegdist</span>(zoo6, <span class="dt">method =</span> <span class="st">&quot;euclidean&quot;</span>)
+zoo6_dist <span class="co"># En pratique, on n&#39;imprime généralement ce genre d&#39;objet !</span></code></pre>
+<pre><code>#            1          2          3          4          5
+# 2  8.2185826                                            
+# 3  2.5649705  5.7320911                                 
+# 4  0.8582142  7.8813537  2.2220079                      
+# 5  4.8478629  4.2950067  3.0119468  4.6148173           
+# 6  2.4269520 10.6197317  4.9228255  2.8477882  7.1766853</code></pre>
+<p>Nous voyons bien ici que R n’imprime que le <em>triangle inférieur</em> de notre matrice 6 par 6. Notez aussi que les objets <code>dist</code> de tailles plus réalistes que vous génèrerez dans vos analyses ne sont <strong>prévue</strong> pour être imprimées et visualisées telles quelles. Il s’agit seulement de la <em>première étape</em> vers une représentation utile qui sera réalisée à la page suivante, à l’aide de la classification hiérarchisée.</p>
 <p><strong>Félicitations ! Vous venez de calculer votre première matrice de distances.</strong> Nous verrons à la page suivante comment nous pouvons utiliser l’information qu’elle contient pour regrouper les individus de manière pertinente. Mais avant cela, nous avons besoin d’un peu de théorie pour bien comprendre quelle <strong>métrique</strong> choisir pour calculer nos distances et pourquoi. On parle aussi d’<strong>indices</strong> de <strong>similarité</strong> ou <strong>dissimilarité</strong>.</p>
 
 <div class="warning">
-<p>Attention : nous n’avons pas considéré ici les unités respectives de nos variables. Une surface (mm<sup>2</sup>) ou une longeur (mm) ne sont pas mesurées dans les mêmes unités. Nous risquons alors de donner plus de poids aux valeurs élevées. Nous aurions le même effet si nous décidions par exemple d’exprimer une mesure longitudinale en µm au leiu de l’exprimer en mm. Dans ce cas, il vaut mieux standardiser d’abord le tableau (moyenne de zéro et écart type de un) selon les colonnes avant d’effectuer le calcul. Ceci est laissé comme exercice !</p>
+<p>Attention : nous n’avons pas considéré ici les unités respectives de nos variables. Une surface (mm<sup>2</sup>) ou une longeur (mm) ne sont pas mesurées dans les mêmes unités. Nous risquons alors de donner plus de poids aux valeurs élevées. Nous aurions le même effet si nous décidions par exemple d’exprimer une mesure longitudinale en µm au leiu de l’exprimer en mm. Dans ce cas, il vaut mieux standardiser d’abord le tableau (moyenne de zéro et écart type de un) selon les colonnes avant d’effectuer le calcul. Ceci sera fait à la page suivante.</p>
 </div>
 
 </div>
@@ -342,7 +346,7 @@ zoo7_dist</code></pre>
 <h4><span class="header-section-number">5.2.2.2</span> Indice de Canberra</h4>
 <p>L’indice de dissimilarité de Canberra est similaire à l’indice de Bray-Curtis mais il pondère les espèces en fonction du nombre d’occurrences afin de donner le <em>même</em> poids à chacune dans le calcul. Il se calcule comme suit :</p>
 <p><span class="math display">\[\mathrm{D_{Canberra}}_{j,k}=\frac{1}{nz}\sum_{i&#39;=1}^{nz}\frac{\left|y_{i&#39;j}-y_{i&#39;k}\right|}{\left|y_{i&#39;j}\right|+\left|y_{i&#39;k}\right|}\]</span></p>
-<p>où <span class="math inline">\(nz\)</span> est le nombre de valeurs non nulles dans le tableau de départ. Toutes les espèces contribuent ici de manière égale. C’est un point positif, mais il faut faire attention à ce que cet indice a souvent tendnace à donner une surimportance aux espècces très rares observées une seule fois ou un petit nombre de fois ! Dans R, nous utiliserons <code>vegan::vegdist(DF, method = &quot;canberra&quot;)</code>.</p>
+<p>où <span class="math inline">\(nz\)</span> est le nombre de valeurs non nulles simultanément dans le tableau de départ. Toutes les espèces contribuent ici de manière égale. C’est un point positif, mais il faut faire attention à ce que cet indice a souvent tendnace à donner une surimportance aux espècces très rares observées une seule fois ou un petit nombre de fois ! Dans R, nous utiliserons <code>vegan::vegdist(DF, method = &quot;canberra&quot;)</code>.</p>
 <p>Toute double absence n’est pas prise en compte ici aussi. Seuls les indices ne dépendant pas des doubles zéros sont utilisables pour des dénombrements d’espèces ou des présence-absence. Ainsi pour ce type de données, notre choix se portera sur :</p>
 <ul>
 <li><p>Bray-Curtis si l’on souhaite que le résultat soit dominé par les espèces les plus abondantes.</p></li>
@@ -425,6 +429,78 @@ zoo7_dist</code></pre>
 </tr>
 </tbody>
 </table>
+<div id="pour-en-savoir-plus" class="section level5 unnumbered">
+<h5>Pour en savoir plus</h5>
+<ul>
+<li><p>Vous pouver aussi transposer le tableau pour calculer la distance entre les variables en utilisant la fonction <code>t()</code> dans R (<code>dist(t(DF))</code>). Par exemple, dans le cas d’un tableau “espèces - station” (dénombrement d’espèces en différentes stations), nous pouvons souhaiter comparer les stations du point de vue de la composition en espèces, mais nous pouvons aussi comparer les espèces du point de vue de leur répartition entre les stations. Pour passer d’un calcul à l’autre, nous transposerons donc le tableau (les colonnes deviennent les lignes et inversément) avant d’utiliser <code>dist()</code> ou <code>vegan::vegdist()</code>.</p></li>
+<li><p>Pour bien comprendre la logique derrière les indices, il est utile de comprendre les équations correspondantes. Si ces équations sont pour vous trop abstraites, une façon efficace de comprendre consiste à faire le calcul à la main. Par exemple dans le cas de l’indice de Canberra, la notion de nombre de données non nulles <span class="math inline">\(nz\)</span> n’est pas évident. Effectuons un calcul à la main détaillé sur le tableau fictif suivant concernant trois espèces A, B, et C dénombrées en trois stations Sta1, Sta2 et Sta3 dans le tableau nommé <code>ex1</code> :</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="left">A</th>
+<th align="left">B</th>
+<th align="left">C</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sta1</td>
+<td align="left">4</td>
+<td align="left">0</td>
+<td align="left">2</td>
+</tr>
+<tr class="even">
+<td>Sta2</td>
+<td align="left">3</td>
+<td align="left">0</td>
+<td align="left">10</td>
+</tr>
+<tr class="odd">
+<td>Sta3</td>
+<td align="left">1</td>
+<td align="left">8</td>
+<td align="left">0</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+<p>Pour rappel, la dissimilarité de Canberra se calcule comme suit:</p>
+<p><span class="math display">\[\mathrm{D_{Canberra}}_{j,k}=\frac{1}{nz}\sum_{i&#39;=1}^{nz}\frac{\left|y_{i&#39;j}-y_{i&#39;k}\right|}{y_{i&#39;j}+y_{i&#39;k}}\]</span></p>
+<p>où:</p>
+<ul>
+<li><em>nz</em> est le nombre d’observations non nulles simultanément dans les deux vecteurs comparés (les doubles zéros ne sont pas pris en compte)</li>
+<li><em>i’</em> est l’itérateur sur toutes les valeurs non double zéros</li>
+</ul>
+<p>Voici le détail du calcul (notez bien comment le double zéro pour l’espèce B entre les stations 1 et 2 est pris en compte dans le calcul) :</p>
+<pre class="sourceCode r"><code class="sourceCode r">Sta1_<span class="dv">2</span> &lt;-<span class="st"> </span>(<span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span>((<span class="kw">abs</span>(<span class="dv">4</span> <span class="op">-</span><span class="st"> </span><span class="dv">3</span>)) <span class="op">/</span><span class="st"> </span>(<span class="dv">4</span> <span class="op">+</span><span class="st"> </span><span class="dv">3</span>) <span class="op">+</span><span class="st"> </span>(<span class="kw">abs</span>(<span class="dv">2</span> <span class="op">-</span><span class="st"> </span><span class="dv">10</span>)) <span class="op">/</span><span class="st"> </span>(<span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">10</span>))
+<span class="kw">round</span>(Sta1_<span class="dv">2</span>, <span class="dv">2</span>)</code></pre>
+<pre><code># [1] 0.4</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Sta1_<span class="dv">3</span> &lt;-<span class="st"> </span>(<span class="dv">1</span><span class="op">/</span><span class="dv">3</span>) <span class="op">*</span><span class="st"> </span>(<span class="kw">abs</span>(<span class="dv">4</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">4</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span>) <span class="op">+</span><span class="st"> </span><span class="kw">abs</span>(<span class="dv">0</span> <span class="op">-</span><span class="st"> </span><span class="dv">8</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">0</span> <span class="op">+</span><span class="st"> </span><span class="dv">8</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">abs</span>(<span class="dv">2</span> <span class="op">-</span><span class="st"> </span><span class="dv">0</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">0</span>))
+<span class="kw">round</span>(Sta1_<span class="dv">3</span>, <span class="dv">2</span>)</code></pre>
+<pre><code># [1] 0.87</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Sta2_<span class="dv">3</span> &lt;-<span class="st"> </span>(<span class="dv">1</span><span class="op">/</span><span class="dv">3</span>) <span class="op">*</span><span class="st"> </span>(<span class="kw">abs</span>(<span class="dv">3</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">3</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span>) <span class="op">+</span><span class="st"> </span><span class="kw">abs</span>(<span class="dv">0</span> <span class="op">-</span><span class="st"> </span><span class="dv">8</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">0</span> <span class="op">+</span><span class="st"> </span><span class="dv">8</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">abs</span>(<span class="dv">10</span> <span class="op">-</span><span class="st"> </span><span class="dv">0</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">10</span> <span class="op">+</span><span class="st"> </span><span class="dv">0</span>))
+<span class="kw">round</span>(Sta2_<span class="dv">3</span>, <span class="dv">2</span>)</code></pre>
+<pre><code># [1] 0.83</code></pre>
+<p>La matrice finale est la suivante :</p>
+<pre><code>#      Sta1 Sta2
+# Sta2 0.40     
+# Sta3 0.87 0.83</code></pre>
+<p>Vérifions en laissant R faire le calcul :</p>
+<pre class="sourceCode r"><code class="sourceCode r">vegan<span class="op">::</span><span class="kw">vegdist</span>(ex1, <span class="dt">method =</span> <span class="st">&quot;canberra&quot;</span>) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">round</span>(., <span class="dv">2</span>)</code></pre>
+<pre><code>#      Sta1 Sta2
+# Sta2 0.40     
+# Sta3 0.87 0.83</code></pre>
+<p>Attention ! <code>dist(, method = &quot;canberra&quot;)</code> ne multiplie pas la somme par <span class="math inline">\(1/nz\)</span>, mais par <span class="math inline">\(n/nz\)</span> (variante). Ainsi, nous obtenons des distances trois fois plus grandes ici avec <code>dist()</code> qu’avec <code>vegan::vegdist()</code>, mais les deux calculs restent valables car les écarts relatifs au sein de la matrice de distance sont les mêmes.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dist</span>(ex1, <span class="dt">method =</span> <span class="st">&quot;canberra&quot;</span>) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">round</span>(., <span class="dv">2</span>)</code></pre>
+<pre><code>#      Sta1 Sta2
+# Sta2 1.21     
+# Sta3 2.60 2.50</code></pre>
+</div>
 <div id="a-vous-de-jouer-14" class="section level5 unnumbered">
 <h5>A vous de jouer !</h5>
 <ul>
@@ -449,11 +525,9 @@ N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la mai
 Lisez le README afin de prendre connaissance de l’exercice
 </div>
 
-
 </div>
 </div>
 </div>
-<!-- </div> -->
 <div class="footnotes">
 <hr />
 <ol start="12">
@@ -487,7 +561,7 @@ s.setAttribute('data-timestamp', +new Date());
         </div>
       </div>
 <a href="analyse-de-donnees.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="k-moyenne-som.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="regroupement-avec-cah.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

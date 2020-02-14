@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>5.3 Regroupement | Science des données biologiques 2</title>
+  <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="5.3 Regroupement | Science des données biologiques 2" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
+  <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+  <meta property="og:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5.3 Regroupement | Science des données biologiques 2" />
+  
+  <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+
+<meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
+
+
+<meta name="date" content="2020-02-13">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="distance-entre-individus.html">
+<link rel="next" href="k-moyenne-som.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.8.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.39.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.39.2/plotly-latest.min.js"></script>
+<link href="libs/rglwidgetClass-2/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-2/rglClass.src.js"></script>
+<script src="libs/CanvasMatrix4-2016/CanvasMatrix.src.js"></script>
+<script src="libs/rglWebGL-binding-0.100.19/rglWebGL.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Science des données biologiques 2</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Préambule</a><ul>
+<li class="chapter" data-level="" data-path="vue-generale-des-cours.html"><a href="vue-generale-des-cours.html"><i class="fa fa-check"></i>Vue générale des cours</a></li>
+<li class="chapter" data-level="" data-path="materiel-pedagogique.html"><a href="materiel-pedagogique.html"><i class="fa fa-check"></i>Matériel pédagogique</a></li>
+</ul></li>
+<li class="part"><span><b>I Cours II: modélisation</b></span></li>
+<li class="chapter" data-level="1" data-path="lm.html"><a href="lm.html"><i class="fa fa-check"></i><b>1</b> Régression linéaire I</a><ul>
+<li class="chapter" data-level="1.1" data-path="modele.html"><a href="modele.html"><i class="fa fa-check"></i><b>1.1</b> Modèle</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="modele.html"><a href="modele.html#pourquoi-modeliser"><i class="fa fa-check"></i><b>1.1.1</b> Pourquoi modéliser ?</a></li>
+<li class="chapter" data-level="1.1.2" data-path="modele.html"><a href="modele.html#quand-modeliser"><i class="fa fa-check"></i><b>1.1.2</b> Quand modéliser ?</a></li>
+<li class="chapter" data-level="1.1.3" data-path="modele.html"><a href="modele.html#entrainement-et-confirmation"><i class="fa fa-check"></i><b>1.1.3</b> Entraînement et confirmation</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html"><i class="fa fa-check"></i><b>1.2</b> Régression linéaire simple</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#quantifier-lajustement-dun-modele"><i class="fa fa-check"></i><b>1.2.1</b> Quantifier l’ajustement d’un modèle</a></li>
+<li class="chapter" data-level="1.2.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#trouver-la-meilleure-droite"><i class="fa fa-check"></i><b>1.2.2</b> Trouver la meilleure droite</a></li>
+<li class="chapter" data-level="1.2.3" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#la-fonction-lm"><i class="fa fa-check"></i><b>1.2.3</b> La fonction <code>lm()</code></a></li>
+<li class="chapter" data-level="1.2.4" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#resume-avec-summary"><i class="fa fa-check"></i><b>1.2.4</b> Résumé avec <code>summary()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html"><i class="fa fa-check"></i><b>1.3</b> Outils de diagnostic</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#analyse-des-residus"><i class="fa fa-check"></i><b>1.3.1</b> Analyse des résidus</a></li>
+<li class="chapter" data-level="1.3.2" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#enveloppe-de-confiance"><i class="fa fa-check"></i><b>1.3.2</b> Enveloppe de confiance</a></li>
+<li class="chapter" data-level="1.3.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#extraire-les-donnees-dun-modele"><i class="fa fa-check"></i><b>1.3.3</b> Extraire les données d’un modèle</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="lm2.html"><a href="lm2.html"><i class="fa fa-check"></i><b>2</b> Régression linéaire II</a><ul>
+<li class="chapter" data-level="2.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html"><i class="fa fa-check"></i><b>2.1</b> Outils de diagnostic (suite)</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#resume-avec-summarysuite"><i class="fa fa-check"></i><b>2.1.1</b> Résumé avec <code>summary()</code>(suite)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#comparaison-de-regressions"><i class="fa fa-check"></i><b>2.1.2</b> Comparaison de régressions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="regression-lineaire-multiple.html"><a href="regression-lineaire-multiple.html"><i class="fa fa-check"></i><b>2.2</b> Régression linéaire multiple</a></li>
+<li class="chapter" data-level="2.3" data-path="regression-lineaire-polynomiale.html"><a href="regression-lineaire-polynomiale.html"><i class="fa fa-check"></i><b>2.3</b> Régression linéaire polynomiale</a></li>
+<li class="chapter" data-level="2.4" data-path="rmse-critere-dakaike.html"><a href="rmse-critere-dakaike.html"><i class="fa fa-check"></i><b>2.4</b> RMSE &amp; critère d’Akaike</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="mod-lineaire.html"><a href="mod-lineaire.html"><i class="fa fa-check"></i><b>3</b> Modèle linéaire</a><ul>
+<li class="chapter" data-level="3.1" data-path="variables-numeriques-ou-facteurs.html"><a href="variables-numeriques-ou-facteurs.html"><i class="fa fa-check"></i><b>3.1</b> Variables numériques ou facteurs</a></li>
+<li class="chapter" data-level="3.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html"><i class="fa fa-check"></i><b>3.2</b> ANOVA et régression linéaire</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#modele-lineaire-commun"><i class="fa fa-check"></i><b>3.2.1</b> Modèle linéaire commun</a></li>
+<li class="chapter" data-level="3.2.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#reencodage-des-variables-de-lanova"><i class="fa fa-check"></i><b>3.2.2</b> Réencodage des variables de l’ANOVA</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html"><i class="fa fa-check"></i><b>3.3</b> Matrice de contraste</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#contraste-orthogonaux"><i class="fa fa-check"></i><b>3.3.1</b> Contraste orthogonaux</a></li>
+<li class="chapter" data-level="3.3.2" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#autres-matrices-de-contrastes-courantes"><i class="fa fa-check"></i><b>3.3.2</b> Autres matrices de contrastes courantes</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="ancova.html"><a href="ancova.html"><i class="fa fa-check"></i><b>3.4</b> ANCOVA</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="ancova.html"><a href="ancova.html#bebes-a-la-naissance"><i class="fa fa-check"></i><b>3.4.1</b> Bébés à la naissance</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html"><i class="fa fa-check"></i><b>3.5</b> Modèle linéaire généralisé</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html#exemple"><i class="fa fa-check"></i><b>3.5.1</b> Exemple</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="reg-non-lin.html"><a href="reg-non-lin.html"><i class="fa fa-check"></i><b>4</b> Régression non linéaire</a><ul>
+<li class="chapter" data-level="4.1" data-path="rendement-photosynthetique.html"><a href="rendement-photosynthetique.html"><i class="fa fa-check"></i><b>4.1</b> Rendement photosynthétique</a></li>
+<li class="chapter" data-level="4.2" data-path="principe.html"><a href="principe.html"><i class="fa fa-check"></i><b>4.2</b> Principe</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="principe.html"><a href="principe.html#fonction-objective"><i class="fa fa-check"></i><b>4.2.1</b> Fonction objective</a></li>
+<li class="chapter" data-level="4.2.2" data-path="principe.html"><a href="principe.html#calcul-iteratif"><i class="fa fa-check"></i><b>4.2.2</b> Calcul itératif</a></li>
+<li class="chapter" data-level="4.2.3" data-path="principe.html"><a href="principe.html#pieges-et-difficultes"><i class="fa fa-check"></i><b>4.2.3</b> Pièges et difficultés</a></li>
+<li class="chapter" data-level="4.2.4" data-path="principe.html"><a href="principe.html#modeles-selfstart-dans-r"><i class="fa fa-check"></i><b>4.2.4</b> Modèles ‘selfStart’ dans R</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html"><i class="fa fa-check"></i><b>4.3</b> Modèles courants en biologie</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-michaelis-menten"><i class="fa fa-check"></i><b>4.3.1</b> Modèle de Michaelis-Menten</a></li>
+<li class="chapter" data-level="4.3.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-croissance"><i class="fa fa-check"></i><b>4.3.2</b> Modèles de croissance</a></li>
+<li class="chapter" data-level="4.3.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#courbe-exponentielle"><i class="fa fa-check"></i><b>4.3.3</b> Courbe exponentielle</a></li>
+<li class="chapter" data-level="4.3.4" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#courbe-logistique"><i class="fa fa-check"></i><b>4.3.4</b> Courbe logistique</a></li>
+<li class="chapter" data-level="4.3.5" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-gompertz"><i class="fa fa-check"></i><b>4.3.5</b> Modèle de Gompertz</a></li>
+<li class="chapter" data-level="4.3.6" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-von-bertalanffy"><i class="fa fa-check"></i><b>4.3.6</b> Modèles de von Bertalanffy</a></li>
+<li class="chapter" data-level="4.3.7" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-richards"><i class="fa fa-check"></i><b>4.3.7</b> Modèle de Richards</a></li>
+<li class="chapter" data-level="4.3.8" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-weibull"><i class="fa fa-check"></i><b>4.3.8</b> Modèle de Weibull</a></li>
+<li class="chapter" data-level="4.3.9" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-preece-baines-1"><i class="fa fa-check"></i><b>4.3.9</b> Modèle Preece-Baines 1</a></li>
+<li class="chapter" data-level="4.3.10" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-tanaka"><i class="fa fa-check"></i><b>4.3.10</b> Modèle de Tanaka</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="choix-du-modele.html"><a href="choix-du-modele.html"><i class="fa fa-check"></i><b>4.4</b> Choix du modèle</a></li>
+</ul></li>
+<li class="part"><span><b>II Cours II: analyse</b></span></li>
+<li class="chapter" data-level="5" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>5</b> Classification hiérarchique</a><ul>
+<li class="chapter" data-level="5.1" data-path="analyse-de-donnees.html"><a href="analyse-de-donnees.html"><i class="fa fa-check"></i><b>5.1</b> Analyse de données</a></li>
+<li class="chapter" data-level="5.2" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html"><i class="fa fa-check"></i><b>5.2</b> Distance entre individus</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#matrice-de-distances"><i class="fa fa-check"></i><b>5.2.1</b> Matrice de distances</a></li>
+<li class="chapter" data-level="5.2.2" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#indices-de-dissimilarite"><i class="fa fa-check"></i><b>5.2.2</b> Indices de (dis)similarité</a></li>
+<li class="chapter" data-level="5.2.3" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#utilisation-des-indices"><i class="fa fa-check"></i><b>5.2.3</b> Utilisation des indices</a></li>
+<li class="chapter" data-level="5.2.4" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#proprietes-des-indices"><i class="fa fa-check"></i><b>5.2.4</b> Propriétés des indices</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="regroupement.html"><a href="regroupement.html"><i class="fa fa-check"></i><b>5.3</b> Regroupement</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="regroupement.html"><a href="regroupement.html#dendrogramme"><i class="fa fa-check"></i><b>5.3.1</b> Dendrogramme</a></li>
+<li class="chapter" data-level="5.3.2" data-path="regroupement.html"><a href="regroupement.html#separer-les-groupes"><i class="fa fa-check"></i><b>5.3.2</b> Séparer les groupes</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="k-moyenne-som.html"><a href="k-moyenne-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne &amp; SOM</a><ul>
+<li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a></li>
+<li class="chapter" data-level="6.2" data-path="cartes-auto-adaptatives.html"><a href="cartes-auto-adaptatives.html"><i class="fa fa-check"></i><b>6.2</b> Cartes auto adaptatives</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
+<li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a></li>
+<li class="chapter" data-level="7.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>7.2</b> Analyse factorielle des correspondances</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM</a><ul>
+<li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a></li>
+</ul></li>
+<li class="appendix"><span><b>Appendices</b></span></li>
+<li class="chapter" data-level="A" data-path="svbox.html"><a href="svbox.html"><i class="fa fa-check"></i><b>A</b> Installation de la SciViews Box</a><ul>
+<li class="chapter" data-level="A.1" data-path="migration-des-projets.html"><a href="migration-des-projets.html"><i class="fa fa-check"></i><b>A.1</b> Migration des projets</a></li>
+<li class="chapter" data-level="A.2" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html"><i class="fa fa-check"></i><b>A.2</b> Configuration Git et Github</a><ul>
+<li class="chapter" data-level="A.2.1" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html#compte-github-dans-rstudio"><i class="fa fa-check"></i><b>A.2.1</b> Compte Github dans RStudio</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>Références</a></li>
+<li class="divider"></li>
+<li><a href="http://biodatascience-course.sciviews.org">Site Web du cours</a></li>
+<li><a href="https://github.com/BioDataScience-Course">Site Github du cours</a></li>
+<br/>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Science des données biologiques 2</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="regroupement" class="section level2">
+<h2><span class="header-section-number">5.3</span> Regroupement</h2>
+<p>A partir du moment où nous avons une matrice de distances entre toutes les paires d’individus dans notre jeu de données, nous pouvons les regrouper en fonction de leur ressemblance. Deux approches radicalement différentes existent. Soit nous pouvons diviser l’échantillon progressivement jusqu’à obtenir des groupes homogènes (<strong>méthodes divisives, telle que les K-moyennes</strong> que nous aborderons dans le module suivant), soit nous pouvons regrouper les items semblables petit à petit jusqu’à avoir traité tout l’échantillon (<strong>méthodes agglomératives, telle que la classification ascendante hiérarchique</strong> étudiée ici).</p>
+<div id="dendrogramme" class="section level3">
+<h3><span class="header-section-number">5.3.1</span> Dendrogramme</h3>
+<p>Le <strong>dendrogramme</strong> est une manière très utile de représenter graphiquement un regroupement. Il s’agit de réaliser un arbre dichotomique ressemblant un peu à un arbre phylogénétique qui est familier aux biologistes (par exemple <a href="https://evolution.frama.wiki/la_theorie_de_l_evolution_ne_fait_pas_de_predictions">ici</a>) :</p>
+<p><img src="images/sdd2_05/arbre_ornithorynque1.png" /></p>
+<p>Dans l’arbre, nous représentons des divisions dichotomiques (division d’une branche en deux) matérialisant les divergences au cours de l’évolution. Dans l’arbre présenté ici, l’axe des ordonnées est utilisé pour représenter le temps et les branchements sont placées à une hauteur correspondante en face de l’axe. Le dendrogramme est une représentation similaire de la CAH avec l’axe des ordonnées indiquant <em>à quelle distance</em> le rassemblement se fait.</p>
+<p>Dans R, la réalisation du dendrogramme se fait en deux étapes :</p>
+<ol style="list-style-type: decimal">
+<li><p>Son calcul par CAH à l’aide de la fonction <code>hclust()</code></p></li>
+<li><p>Sa représentation sur un graphique en utilisant <code>plot()</code> (pour un graphique de base) ou <code>ggdendro::ggdendrogram()</code> (pour un graphique ggplot2).</p></li>
+</ol>
+<p>Partons, pour étayer notre raisonnement, d’une matrice de distances euclidiennes sur les données de zooplancton. Au passage, abordons quelques fonctions de R utiles dans le contexte pour préparer correctement nos données.</p>
+<ul>
+<li>A la section précédente, nous avons suggéré qu’il peut être utile de <em>standardiser</em> nos données préalablement si une distance de type euclidienne ou manhattan est ensuite calculée sur des données numériques mesurées dans des unités différentes comme ici. La fonction <code>scale()</code> se charge de cette standardisation.</li>
+<li>Comme nous avons 19 variables à retravailler, c’est laborieux de faire cette transfomration manuellement variable après variables dans un <code>mutate()</code>. Nous pouvons automatiser le travail à l’aide de <code>purrr::map_df()</code> qui va appliquer la fonction donnée en argument (<code>scale</code> ici) sur chaque colonne d’un tableau de type <code>data.frame</code> indépendamment. Ensuite <code>purrr::map_df()</code> va reconstituer un tableau de même taille avec le résultat des calculs. Au final, nous aurons substitué colonne par colonne les variables par leur version standardisée en une instruction très concise.</li>
+<li>Limitons, pour l’instant notre ambition à la comparaison de six individus. Afin d’observer tous les cas possibles dans le dendrogramme, nous ne prendrons pas les six premières lignes du tableau, mais les lignes 13 à 18 à l’aide de la fonction <code>slice()</code> que nous n’avons pas encore beaucoup utilisée jusqu’ici. Cette fonction permet de spécifier les numéros de lignes à conserver dans le tableau de départ.</li>
+</ul>
+<p>Voici donc notre matrice de distances euclidiennes sur les données ainsi traitées. Les individus initiaux 13 à 18 sont renumérotés 1 à 6. Nous n’imprimons plus ici la matrice de distance obtenue car ce n’est que la première étape du travail vers une représentation plus utile (le dendrogramme).</p>
+<pre class="sourceCode r"><code class="sourceCode r">zoo <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">select</span>(., <span class="op">-</span>class) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Elimination de la colonne class</span>
+<span class="st">  </span>purrr<span class="op">::</span><span class="kw">map_df</span>(., scale) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Standardisation des 19 colonnes</span>
+<span class="st">  </span><span class="kw">slice</span>(., <span class="dv">13</span><span class="op">:</span><span class="dv">18</span>) -&gt;<span class="st"> </span>zoo6      <span class="co"># Récupération des lignes 13 à 18</span>
+
+zoo6 <span class="op">%&gt;.%</span>
+<span class="st">  </span>vegan<span class="op">::</span><span class="kw">vegdist</span>(., <span class="dt">method =</span> <span class="st">&quot;euclidean&quot;</span>) -&gt;<span class="st"> </span>zoo6std_dist</code></pre>
+<p>Notre objet <code>zoo6std_dist</code> est ensuite utilisé pour calculer notre CAH à l’aide de <code>hclust()</code>. Enfin, <code>plot()</code> (ou <code>ggdendro::ggdendrogram()</code>) se charge de tracer le dendrogramme.</p>
+<pre class="sourceCode r"><code class="sourceCode r">zoo6std_dist <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">hclust</span>(.) -&gt;<span class="st"> </span>zoo6std_clust <span class="co"># Calcul du dendrogramme</span>
+  <span class="kw">plot</span>(zoo6std_clust) <span class="co"># ggdendro::ggdendrogram() peut aussi être utilisé ici</span></code></pre>
+<p><img src="05-classi-hierarchique_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Voici comment interpréter ce graphique. Les deux individus les plus semblables sont le 2 et le 5 (regroupepent effectué le plus bas, donc, avec la valeur de l’indice de dissimilarité le plus faible), également tous deux similaires au 3. Le 4 se rattache à ce groupe, mais bien plus haut sur l’axe, indiquant ainsi qu’il s’en différencie un peu plus, enfin, le 1 et le 6 sont rassemblés à un niveau à peu près équivalent. Finalement, le groupe de droite constitué des individus 2, 3, 4 et 5 et celui de gauche contenant le 1 et le 6 sont reliés encore plus haut suggérant ainsi la dissimilitude la plus forte entre ces deux groupes.</p>
+
+<div class="warning">
+<p>Attention : La position des individus selon l’axe horizontal n’est pas importante. Il faut voir le dendrogramme comme un mobile qui peut tourner librement. C’est-à-dire que le groupe constitué de 2, 3, 4 et 5 aurait très bien pu être placé à la gauche de celui constitué de 1 et 6. De même, le sous-groupe 2, 3 et 5 aurait très bien pu être à la gauche du regroupement avec 4 à la droite, etc.</p>
+</div>
+
+<p>Notez que nous n’avons <em>pas</em> utilisé l’information concernant les classes taxonomiques auxquelles les individus appartiennent (nous avons éliminé la variable <code>class</code> en tout début d’analyse). Pour cette raison, ce type de regroupement s’appelle une <strong>classification non supervisée</strong> parce que nous n’imposons pas les groupes que nous souhaitons réaliser<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. Nous pouvons néanmoins révéler ces classes maintenant pour vérifier si le dendrogramme réalisé est logique (étape bien sûr facultative et souvent pas possible en pratique lorsque cette information <em>n’est pas</em> disponible) :</p>
+<pre class="sourceCode r"><code class="sourceCode r">zoo<span class="op">$</span>class[<span class="dv">13</span><span class="op">:</span><span class="dv">18</span>]</code></pre>
+<pre><code># [1] Egg_round        Poecilostomatoid Poecilostomatoid Decapod         
+# [5] Calanoid         Appendicularian 
+# 17 Levels: Annelid Appendicularian Calanoid Chaetognath ... Protist</code></pre>
+<p>Les individus 2, 3 et 5 (“Poecilostomatoid” ou “Calanoid”) sont des <a href="http://www.obs-vlfr.fr/~gaspari/copepodes/cop_doc.htm">copépodes</a>, des crustacés particulièrement abondants dans le zooplancton. Leur forme est similaire. Leur regroupement est logique. L’individu 4 est une <a href="https://news.ecoledelamer.fr/plancton/observation/fiche/zoe-1">larve de décapode</a>, un autre crustacé. Ainsi le regroupement de 2, 3 et 5 avec 4 correspond aux crustacés ici. Enfin, les individus 1 et 6 sont très différents puisqu’il s’agit respectivement d’un <a href="http://grainesdexplorateurs.ens-lyon.fr/archives-1/2012-2013/projets/tara-2013/pouldreuzic-2013/plancton-de-beg-meil/copy_of_embryon-de-poisson/view">œuf</a> rond probablement de poisson et d’un <a href="https://scripps.ucsd.edu/zooplanktonguide/species/oikopleura-dioica">appendiculaire</a>.</p>
+</div>
+<div id="separer-les-groupes" class="section level3">
+<h3><span class="header-section-number">5.3.2</span> Séparer les groupes</h3>
+<p>Si notre dendrogramme est satisfaisant (nous le déterminons en l’étudiant et en vérifer que le regroupement obtenu a un sens biologique par rapport à l’objectif de notre étude), nous concrétiser le regroupement en coupant l’arbre à une certaine hauteur à l’aide de la fonction <code>cutree()</code>. Nous pouvons matérialiser ce niveau de coupure en traçant un trait horizontal rouge avec <code>abline(h = XXX, col = &quot;red&quot;)</code> pour le graphe de base, ou en ajoutant <code>+ geom_hline(yintercept = XXX, col = &quot;red&quot;)</code> au graphique ggplot2, avec ‘XXX’ la hauteur de coupure souhaitée. Par exemple, si nous voulons réaliser deux groupes, nous ferons :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(zoo6std_clust)
+<span class="kw">abline</span>(<span class="dt">h =</span> <span class="dv">8</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</code></pre>
+<p><img src="05-classi-hierarchique_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Pour réaliser 3 groupes, nous couperons plus bas (ici version ggplot2) :</p>
+<pre class="sourceCode r"><code class="sourceCode r">ggdendro<span class="op">::</span><span class="kw">ggdendrogram</span>(zoo6std_clust) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="fl">6.5</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</code></pre>
+<p><img src="05-classi-hierarchique_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Et ainsi de suite. A mesure que la hauteur de coupure descend, nous réaliserons quatre, puis cinq groupes. Quel est le meilleur niveau de coupure ? Il n’y en a pas un seul forcément car les différents niveaux correspondent à un point de vue de plus en plus détaillé du regroupement. Néanmoins, lorsque le saut sur l’axe d’un regroupement à l’autre est fort, nous pouvons considérer une séparation des groupes d’autant meilleure. Cela crédibilise d’autant le regroupement choisi. Ainsi la séparation en deux groupes apparait forte (entre 10,2 et 7,4, sur 2,8 unités donc). De même, la séparation de l’individu 4 par rapport au groupe 2, 3 et 5 se fait sur un intervalle de 4,7 unités (entre 7,4 et 2,7). En comparaison, la séparation de l’individu 3 du groupe 2 et 5 est moint nette puisqu’elle apparait aux hauteurs 2,7 à 2.4, soit seulement sur 0,3 unités. Les unités n’ont aucune valeur absolue. Il faut les considérer relatives les unes par rapport aux autres, et seulement au sein d’un même dendrogramme.</p>
+<p>Ici, deux niveaux de coupure se détachent. Nous utilisons aussi la fonction <code>rect.hclust()</code> pour matérialiser ces groupes sur le dendrogramme, et <code>cutree()</code> pour obtenir une nouvelle variable dans notre tableau de données qui concrétise le regroupement choisi :</p>
+<ul>
+<li>en deux groupes, nous avons les crustacés séparés des autres.</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(zoo6std_clust)
+<span class="kw">abline</span>(<span class="dt">h =</span> <span class="dv">8</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)
+<span class="kw">rect.hclust</span>(zoo6std_clust, <span class="dt">h =</span> <span class="dv">8</span>, <span class="dt">border =</span> <span class="kw">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;red&quot;</span>))</code></pre>
+<p><img src="05-classi-hierarchique_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r">(group2 &lt;-<span class="st"> </span><span class="kw">cutree</span>(zoo6std_clust, <span class="dt">h =</span> <span class="dv">8</span>))</code></pre>
+<pre><code># [1] 1 2 2 2 2 1</code></pre>
+<p>Les individus 1 et 6 sont dans le groupe 1, et les autres dans le groupe 2.</p>
+<ul>
+<li>en quatre groupes, nous avons les copépodes séparés des trois autres items chacun dans un groupe séparé.</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(zoo6std_clust, <span class="dt">hang =</span> <span class="dv">-1</span>) <span class="co"># Prolonger les tiges jusqu&#39;en bas</span>
+<span class="kw">abline</span>(<span class="dt">h =</span> <span class="dv">5</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)
+<span class="kw">rect.hclust</span>(zoo6std_clust, <span class="dt">h =</span> <span class="dv">5</span>, <span class="dt">border =</span> <span class="kw">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;red&quot;</span>))</code></pre>
+<p><img src="05-classi-hierarchique_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Le groupe des individus 2, 3 et 5 est encadré en rouge. Les trois autres groupes des individus uniques 1, 6 et 4 respectivement sont ici encadrés en bleu.</p>
+<pre class="sourceCode r"><code class="sourceCode r">(group4 &lt;-<span class="st"> </span><span class="kw">cutree</span>(zoo6std_clust, <span class="dt">h =</span> <span class="dv">5</span>))</code></pre>
+<pre><code># [1] 1 2 2 3 2 4</code></pre>
+<p>L’individu 1 est dans le groupe 1, les individus 2, 3 et 5 sont dans le groupe 2, l’individu 4 est dans le groupe 3 et enfin l’individu 6 est dans le groupe 4. Donc, <code>cutree()</code> numérote ses groupes en fonction du premier item présent dedans dans l’ordre du tableau de données.</p>
+<p>Nous pouvons rajouter ces regroupements dans le tableau de données, et utiliser cette information pour en faire d’autres choses utiles. Par exemple, nous représentons un nuage de point des données et colorons nos points en fonction du premier regroupement effectué comme suit :</p>
+<pre class="sourceCode r"><code class="sourceCode r">zoo6<span class="op">$</span>group2 &lt;-<span class="st"> </span><span class="kw">as.factor</span>(group2) <span class="co"># Utiliser une variable facteur ici</span>
+<span class="kw">chart</span>(zoo6, area <span class="op">~</span><span class="st"> </span>circularity <span class="op">%col=%</span><span class="st"> </span>group2) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>()</code></pre>
+<p><img src="05-classi-hierarchique_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Nous voyons que les copépodes (groupe 2 en turquoise) sont plus grands (<code>area</code>) et moins circulaires (<code>circularity</code>) que les deux autres particules du groupe 2. Nous pouvons ainsi réexplorer nos données en fonction du regroupement pour mieux le comprendre.</p>
+<div id="methodes-de-cah" class="section level4">
+<h4><span class="header-section-number">5.3.2.1</span> Méthodes de CAH</h4>
+<p>Tant que l’on comparer des individus isolés entre eux, il n’y a pas d’ambiguïté. Par contre, dès que nous comparons un groupe avec un individu isolé, ou deux groupes entre eux, nous avons plusieurs stratégies possible pour calculer leurs distances (argument <code>method =</code> de <code>hclust()</code> :</p>
+<ul>
+<li><strong>Liens simples</strong> (single linkages en anglais) <code>hclust(DIST, method = &quot;single&quot;)</code> : la distance entre les plus proches voisins au sein des groupes est utilisée.</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r">zoo6std_dist <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">hclust</span>(., <span class="dt">method =</span> <span class="st">&quot;single&quot;</span>) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">plot</span>(.)</code></pre>
+<p><img src="05-classi-hierarchique_files/figure-html/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Les données tendent à être aggrégées de proche en proche en montrant une gradation d’une extrême à l’autre. Dans le cas d’une variation progressive, par exemple lors d’un passage graduel d’une situation A vers une situation B le long d’un transect, le dendrogramme obtenu à l’aide de cette méthode représentera la situation au mieux.</p>
+<ul>
+<li><strong>Liens complets</strong> (complete linkages) <code>hclust(DIST, method = &quot;complete&quot;)</code>, méthode utilisée par défault si non précisée : la distance entre les plus lointains voisins est considérée. C’est le dendrogramme que nous avons obtenu au début.</li>
+</ul>
+<p>Le dendrogramme a tendance à effectuer des groupes séparés plus nettement les uns des autres qu’avec les liens simples.</p>
+<ul>
+<li><strong>Liens moyens</strong> (group-average) <code>hclust(DIST, method = &quot;average&quot;)</code> encore appelée méthode UPGMA : moyenne des liens entre toutes les paires possibles intergroupes.</li>
+</ul>
+<p>Nous obtenons une situation intermédiaire entre liens simples et leins moyens.</p>
+<pre class="sourceCode r"><code class="sourceCode r">zoo6std_dist <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">hclust</span>(., <span class="dt">method =</span> <span class="st">&quot;average&quot;</span>) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">plot</span>(.)</code></pre>
+<p><img src="05-classi-hierarchique_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Dans ce cas-ci, le résultat est similaire aux liens simples, mais ce n’est pas forcément le cas.</p>
+<ul>
+<li><strong>Méthode de Ward</strong> <code>hclust(DIST, method = &quot;ward.D2&quot;)</code>. Considérant le partitionnement de la variance totale du nuage de points (on parle aussi de l’<em>inertie</em> du nuage de points) entre variance interclasse et variance intraclasse, la méthode vise à maximiser la variance interclasse et minmiser la variance intraclasse, ce qui revient d’ailleurs au même. Cette technique fonctionne souvent très bien pour obtenir des groupes bien individualisés.</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r">zoo6std_dist <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">hclust</span>(., <span class="dt">method =</span> <span class="st">&quot;ward.D2&quot;</span>) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">plot</span>(.)</code></pre>
+<p><img src="05-classi-hierarchique_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ici nous obtenos un dendrogramme très proche des leins complets. Encore une fois, ce n’est pas forcément le cas dans toutes les situations.</p>
+<ul>
+<li>Liens <strong>médians</strong>, <strong>centroïdes</strong>, …, constituent encore d’autre méthodes possibles, mais moins utilisées. Elles ont l’inconvénient de produire parfois des <em>inversions</em> dans le dendrogramme, c’est-à-dire qu’une regroupe plus haut se fait parfois à une hauteur plus basse sur l’axe des ordonnées, ce qui rend le dendrogramme peu lisible et beaucoup moins esthétique. Dans notre exemple, la méthode centroïde crée une telle inversion à la hauteur de 5 environ entre l’individu 6 et l’individu 1. Alors, qui est regroupé en premier ? Pas facile à déterminer dans ce cas !</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r">zoo6std_dist <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">hclust</span>(., <span class="dt">method =</span> <span class="st">&quot;centroid&quot;</span>) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">plot</span>(.)</code></pre>
+<p><img src="05-classi-hierarchique_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="pour-en-savoir-plus" class="section level5 unnumbered">
+<h5>Pour en savoir plus</h5>
+<ul>
+<li>La vidéo suivante présente la matière que nous venons d’étudier de manière légèrement différente. Plus d’explications sont également apportées concernant la méthode de Ward.</li>
+</ul>
+<iframe src="https://www.youtube.com/embed/SE_4dLh5vXY?start=192&amp;end=1004" width="770" height="433" frameborder="0" allowfullscreen=""></iframe>
+<ul>
+<li><p>Une autre explication encore : <a href="http://larmarange.github.io/analyse-R/classification-ascendante-hierarchique.html" class="uri">http://larmarange.github.io/analyse-R/classification-ascendante-hierarchique.html</a></p></li>
+<li><p>Pour bien comprendre la façon dont une CAH est réalisée, il est utile de détailler le calcul étape par étape sur un exemple simple.</p></li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+<!-- </div> -->
+<div class="footnotes">
+<hr />
+<ol start="3">
+<li id="fn3"><p>Les techniques complémentaires de classification supervisées, recommandées dans le cas du jeu de données zooplancton seront abordées dans le cours de Science des Données Biologiques III l’an prochain.<a href="regroupement.html#fnref3" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://sddb.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="distance-entre-individus.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="k-moyenne-som.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/BioDataScience-Course/sdd-umons2/edit/master/05-classi-hierarchique.Rmd",
+"text": "Editer"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
