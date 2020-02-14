@@ -351,9 +351,8 @@ Dans R, la réalisation du dendrogramme se fait en deux étapes\ :
 
 Partons, pour étayer notre raisonnement, d'une matrice de distances euclidiennes sur les données de zooplancton. Au passage, abordons quelques fonctions de R utiles dans le contexte pour préparer correctement nos données.
 
-- A la section précédente, nous avons suggéré qu'il peut être utile de *standardiser* nos données préalablement si une distance de type euclidienne ou manhattan est ensuite calculée sur des données numériques mesurées dans des unités différentes comme ici. La fonction `scale()` se charge de cette standardisation. 
-- Comme nous avons 19 variables à retravailler, c'est laborieux de faire cette transfomration manuellement variable après variables dans un `mutate()`. Nous pouvons automatiser le travail à l'aide de `purrr::map_df()` qui va appliquer la fonction donnée en argument (`scale` ici) sur chaque colonne d'un tableau de type `data.frame` indépendamment. Ensuite `purrr::map_df()` va reconstituer un tableau de même taille avec le résultat des calculs. Au final, nous aurons substitué colonne par colonne les variables par leur version standardisée en une instruction très concise.
-- Limitons, pour l'instant notre ambition à la comparaison de six individus. Afin d'observer tous les cas possibles dans le dendrogramme, nous ne prendrons pas les six premières lignes du tableau, mais les lignes 13 à 18 à l'aide de la fonction `slice()` que nous n'avons pas encore beaucoup utilisée jusqu'ici. Cette fonction permet de spécifier les numéros de lignes à conserver dans le tableau de départ.
+- A la section précédente, nous avons suggéré qu'il peut être utile de *standardiser* nos données préalablement si une distance de type euclidienne ou manhattan est ensuite calculée et si les données numériques sont mesurées dans des unités différentes, comme c'est le cas ici. La fonction `scale()` se charge de cette standardisation colonne par colonne dans un tableau. Comme elle renvoie une matrice, nous devons ensuite retransformer le résultat en `data.frame` ou `tibble`. Nous choisissons ici d'utiliser la fonction `as_tibble()`.
+- Limitons, pour l'instant notre ambition à la comparaison de six individus. Afin d'observer tous les cas possibles dans le dendrogramme, nous ne prendrons pas les six premières lignes du tableau, mais les lignes 13 à 18. Cela peut se faire à l'aide de la fonction `slice()` que nous n'avons pas encore beaucoup utilisée jusqu'ici. Cette fonction permet de spécifier explicitement les numéros de lignes à conserver, contrairement à `filter()` qui applique un test de condition pour décider qulles ligne(s) converser.
 
 Voici donc notre matrice de distances euclidiennes sur les données ainsi traitées. Les individus initiaux 13 à 18 sont renumérotés 1 à 6. Nous n'imprimons plus ici la matrice de distance obtenue car ce n'est que la première étape du travail vers une représentation plus utile (le dendrogramme).
 
@@ -361,7 +360,8 @@ Voici donc notre matrice de distances euclidiennes sur les données ainsi trait�
 ```r
 zoo %>.%
   select(., -class) %>.% # Elimination de la colonne class
-  purrr::map_df(., scale) %>.% # Standardisation des 19 colonnes
+  scale(.) %>.% # Standardisation des 19 colonnes
+  as_tibble(.) %>.% # Conversion de la matrice en data.frame +tibble
   slice(., 13:18) -> zoo6      # Récupération des lignes 13 à 18
 
 zoo6 %>.%
@@ -563,7 +563,8 @@ Voici ce que cela donne si nous effectuons une CAH sur le jeu zooplancton comple
 ```r
 zoo %>.%
   select(., -class) %>.% # Elimination de la colonne class
-  purrr::map_df(., scale) %>.% # Standardisation des 19 colonnes
+  scale(.) %>.% # Standardisation des 19 colonnes
+  as_tibble(.) %>.% # Transformation en data.frame + tibble
   vegan::vegdist(., method = "euclidean") %>.% # Matrice de distances
   hclust(., method = "ward.D2") -> zoo_clust # CAH avec Ward
   
