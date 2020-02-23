@@ -1,4 +1,4 @@
-# K-moyenne & SOM {#k-moyenne-som}
+# K-moyenne, MDS & SOM {#k-moyenne-mds-som}
 
 
 
@@ -13,6 +13,22 @@ TODO
 
 ## K-moyennes
 
-## Cartes auto adaptatives
+Les k-moyennes (ou "k-means" en anglais) représentent une autre façon de regrouper les individus d'un tableau multivarié. Par rapport à la CAH, cette technique est généralement moins efficace, mais elle a l'avantage de permettre le regroupement d'un très grand nombre d'individus (gros jeu de données), là où la CAH nécessiterait trop de temps de calcul et de mémoire vive. Il est donc utile de connaire cette seconde technique à utiliser comme solution de secours lorsque le dendrogramme de la CAH devient illisible sur de très gros jeux de données.
 
-La méthode des cartes auto-adaptatives se nomme self-organizing map (SOM) en anglais. 
+
+## Positionnement multidimensionnel (MDS)
+
+Le positionnement multidimensionnel, ou "multidimensional scaling" en anglais, d'où son acronyme fréquemment utilisé en français également\ : le MDS, est une autre façon de représenter plus clairement l'information contenue dans une matrice de distances. Ici, l'objectif n'est pas de **regrouper** ou de **classifier** les individus du tableau, mais de les **ordonner** sur un graphique en nuage de points en 2 ou 3 dimensions. Ce graphique s'appelle une "carte", et la technique qui la réalise est une **méthode d'ordination**.
+
+Au départ, nous avons *n* colonnes et *m* lignes dans le tableau cas par variables, c'est-à-dire, *n* variables quantitatives mesurées sur *m* individus distincts. Nous voulons déterminer les similitudes ou différences de ces *m* individus en les visualisant sur une carte où la distance d'un individu à l'autre représente cette similitude. Plus deux individus sont proches, plus ils sont semblables. Plus les individus sont éloignés, plus ils diffèrent. Ces distances entre paires d'individus, nous les avons déjà calculées dans la matrice de distances. Mais comment les représenter\ ? En effet, une représentation exacte ne peut se faire que dans un espace à *n* dimensions (même nombre de dimensions que de variables initiales). Donc, afin de réduire les dimensions à seulement 2 ou 3, nous allons devoir "tordre" les données et accepter de perdre un peu d'information. Ce que nous allons faire avec la MDS correspond exactement à cela\ : nous allons littéralement "écraser" les données dans un plan (deux dimensions) ou dans un espace à trois dimensions, quitte à tordre un peu le tout. C'est donc ce qu'on appelle une technique de **réduction de dimensions**.
+
+![](images/sdd2_06/tenor.gif)
+
+
+## Cartes auto-adaptatives (SOM)
+
+La méthode des cartes auto-adaptatives, ou encore, cartes de Kohonen du nom de son auteur se désigne par "self-organizing map" en anglais. L'acronyme SOM est fréquemment utilisé, même en français. Cette technique va encore une fois exploiter une matrice de distances dans le but de représenter les individus sur une carte. Cette fois-ci, la carte contient un certain nombre de cellules qui forment une grille, ou mieux, une disposition en nid d'abeille (nous verrons plus loin pourquoi cette disposition particulière est intéressante). De manière similaire au MDS, nous allons faire en sorte que des individus similaires soient proches sur la carte, et des individus différents soient éloignés. La division de la carte en différentes cellules permet de regrouper les individus. Ceci permet une classification comme pour la CAH ou les k-moyennes. Les SOM apparaissent donc comme une technique hybride entre **ordination** (représentation sur des cartes) et **classification** (regroupement des individus).
+
+La théorie et les calculs derrière les SOM sont très complexes. Elles font appel aux **réseaux de neurones adaptatifs** et leur fonctionnement est inspiré de celui du cerveau humain. Tout comme notre cerveau, les SOM vont utiliser l'information en entrée pour aller assigner une zone de traitement de l'information (pour notre cerveau) ou une cellule dans la carte (pour les SOM). Etant donné la complexité du calcul, les développement mathématiques n'ont pas leur place dans ce cours. Ce qui importe, c'est de comprendre le concept, et d'être ensuite capable d'utiliser les SOM à bon escient. Uniquement pour ceux d'entre vous qui désirent comprendre les détails du calcul, vous pouvez visionner la vidéo suivante **(facultative et en anglais)**\ :
+
+<!--html_preserve--><iframe src="https://www.youtube.com/embed/0qtvb_Nx2tA?end=266" width="770" height="433" frameborder="0" allowfullscreen=""></iframe><!--/html_preserve-->

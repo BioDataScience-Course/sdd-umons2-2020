@@ -25,15 +25,15 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-02-14">
+<meta name="date" content="2020-02-23">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="k-moyenne-som.html">
-<link rel="next" href="cartes-auto-adaptatives.html">
+<link rel="prev" href="k-moyenne-mds-som.html">
+<link rel="next" href="positionnement-multidimensionnel-mds.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -61,72 +61,6 @@
 <script src="libs/rglWebGL-binding-0.100.19/rglWebGL.js"></script>
 
 
-<style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    background-color: #ffffff;
-    color: #a0a0a0;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
-div.sourceCode
-  { color: #1f1c1b; background-color: #ffffff; }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span. { color: #1f1c1b; } /* Normal */
-code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
-code span.an { color: #ca60ca; } /* Annotation */
-code span.at { color: #0057ae; } /* Attribute */
-code span.bn { color: #b08000; } /* BaseN */
-code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
-code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #924c9d; } /* Char */
-code span.cn { color: #aa5500; } /* Constant */
-code span.co { color: #898887; } /* Comment */
-code span.cv { color: #0095ff; } /* CommentVar */
-code span.do { color: #607880; } /* Documentation */
-code span.dt { color: #0057ae; } /* DataType */
-code span.dv { color: #b08000; } /* DecVal */
-code span.er { color: #bf0303; text-decoration: underline; } /* Error */
-code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
-code span.fl { color: #b08000; } /* Float */
-code span.fu { color: #644a9b; } /* Function */
-code span.im { color: #ff5500; } /* Import */
-code span.in { color: #b08000; } /* Information */
-code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
-code span.op { color: #1f1c1b; } /* Operator */
-code span.ot { color: #006e28; } /* Other */
-code span.pp { color: #006e28; } /* Preprocessor */
-code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
-code span.sc { color: #3daee9; } /* SpecialChar */
-code span.ss { color: #ff5500; } /* SpecialString */
-code span.st { color: #bf0303; } /* String */
-code span.va { color: #0057ae; } /* Variable */
-code span.vs { color: #bf0303; } /* VerbatimString */
-code span.wa { color: #bf0303; } /* Warning */
-</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -230,9 +164,10 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="5.3.3" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#etude-complete"><i class="fa fa-check"></i><b>5.3.3</b> Étude complète</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="k-moyenne-som.html"><a href="k-moyenne-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne &amp; SOM</a><ul>
+<li class="chapter" data-level="6" data-path="k-moyenne-mds-som.html"><a href="k-moyenne-mds-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne, MDS &amp; SOM</a><ul>
 <li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a></li>
-<li class="chapter" data-level="6.2" data-path="cartes-auto-adaptatives.html"><a href="cartes-auto-adaptatives.html"><i class="fa fa-check"></i><b>6.2</b> Cartes auto adaptatives</a></li>
+<li class="chapter" data-level="6.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html"><i class="fa fa-check"></i><b>6.2</b> Positionnement multidimensionnel (MDS)</a></li>
+<li class="chapter" data-level="6.3" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html"><i class="fa fa-check"></i><b>6.3</b> Cartes auto-adaptatives (SOM)</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
 <li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a></li>
@@ -274,6 +209,7 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="k-moyennes" class="section level2">
 <h2><span class="header-section-number">6.1</span> K-moyennes</h2>
+<p>Les k-moyennes (ou “k-means” en anglais) représentent une autre façon de regrouper les individus d’un tableau multivarié. Par rapport à la CAH, cette technique est généralement moins efficace, mais elle a l’avantage de permettre le regroupement d’un très grand nombre d’individus (gros jeu de données), là où la CAH nécessiterait trop de temps de calcul et de mémoire vive. Il est donc utile de connaire cette seconde technique à utiliser comme solution de secours lorsque le dendrogramme de la CAH devient illisible sur de très gros jeux de données.</p>
 </div>
 <div id="disqus_thread"></div>
 <script>
@@ -300,8 +236,8 @@ s.setAttribute('data-timestamp', +new Date());
           </div>
         </div>
       </div>
-<a href="k-moyenne-som.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="cartes-auto-adaptatives.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="k-moyenne-mds-som.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="positionnement-multidimensionnel-mds.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -346,19 +282,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
-    script.src = src;
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>
