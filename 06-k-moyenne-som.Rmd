@@ -8,15 +8,232 @@ SciViews::R
 
 ##### Objectifs {-}
 
-- TODO
+- Maîtriser la technique de classification par les k-moyennes comme alternative à la CAH pour les gros jeux de données.
+- Comprendre la représentation d'une matrice de distances sur un carte (ordination) et la réduction de dimensions via le positionnement multidimensionnel MDS.
+- Être capable de créer des cartes auto-adaptatives ou SOM, de les interpréter et de les utiliser comme autre technique de classification.
 
 ##### Prérequis {-}
 
-TODO
+Ces techniques étant basées sur des matrices de distances et complémentaires à la classification ascendante hiérarchique, le module \@ref(hierarchique) doit être assimilé avant de s'attaquer au présent module.
+
 
 ## K-moyennes
 
-Les k-moyennes (ou "k-means" en anglais) représentent une autre façon de regrouper les individus d'un tableau multivarié. Par rapport à la CAH, cette technique est généralement moins efficace, mais elle a l'avantage de permettre le regroupement d'un très grand nombre d'individus (gros jeu de données), là où la CAH nécessiterait trop de temps de calcul et de mémoire vive. Il est donc utile de connaire cette seconde technique à utiliser comme solution de secours lorsque le dendrogramme de la CAH devient illisible sur de très gros jeux de données.
+Les k-moyennes (ou "k-means" en anglais) représentent une autre façon de regrouper les individus d'un tableau multivarié. Par rapport à la CAH, cette technique est généralement moins efficace, mais elle a l'avantage de permettre le regroupement d'un très grand nombre d'individus (gros jeu de données), là où la CAH nécessiterait trop de temps de calcul et de mémoire vive. Il est donc utile de connaitre cette seconde technique à utiliser comme solution de secours lorsque le dendrogramme de la CAH devient illisible sur de très gros jeux de données.
+
+Le principe des k-moyennes est très simple\ :
+
+- L'utilisateur choisi le nombre de groupes *k* qu'il veut obtenir à l'avance.
+- La position des *k* centres est choisie au hasard au début.
+- Les individus sont attribués aux *k* groupes en fonction de leurs distances aux centres (attribution au groupe de centre le plus proche).
+- Les *k* centres sont replacés au centre de gravité des groupes ainsi obtenus.
+- Les individus sont réaffectés en fonction de leurs distances à ces nouveaux centres.
+- Si au moins un individu a changé de groupe, le calcul est réitéré. Sinon, nous considérons avoir atteint la configuration finale.
+
+La technique est superbement expliquée et illustrée dans la vidéo suivante\ :
+
+```{r, echo=FALSE}
+vembedr::embed_youtube("Aic2gHm9lt0", width = 770, height = 433)
+```
+
+
+### Exemple simple
+
+Afin de comparer la classification par k-moyennes à celle par CAH, nous reprendrons ici le même jeu de données `zooplankton`.
+
+```{r}
+zoo <- read("zooplankton", package = "data.io")
+zoo
+```
+
+Commençons par l'exemple simplissime de la réalisation de deux groupes à partir de six individus issus de ce jeu de données, comme nous l'avons fait avec la CAH\ :
+
+```{r, echo=FALSE}
+set.seed(38)
+```
+
+
+```{r}
+zoo %>.%
+  select(., -class) %>.% # Elimination de la colonne class
+  slice(., 13:18) -> zoo6      # Récupération des lignes 13 à 18
+
+zoo6_kmeans <- kmeans(zoo6, centers = 2)
+zoo6_kmeans
+```
+
+Nous voyons que la fonction `kmeans()` effectue notre classification. Nous lui fournissons le tableau de départ et spécifions le nombre *k* de groupes souhaités via l'argument `centers =`. Ne pas oublier d'assigner le résultat du calcul à une nouvelle variable, ici `zoo6_kmeans`, pour pouvoir l'inspecter et l'utiliser par la suite. L'impression du contenu de l'objet nous donne plein d'information dont\ :
+
+- le nombre d'individus dans chaque groupe (ici 3 et 3),
+- la position des centres pour les *k* groupes dans `Cluster means`,
+- l'appartenance aux groupes dans `Cluster vectors` (dans le même ordre que les lignes du tableau de départ),
+- La comparaison des sommes des carrés entre groupes (nous détaillerons ceci plus loin),
+- et enfin, la liste des composants accessibles via l'opérateur `$`\ ; par exemple, pour obtenir les groupes (opération similaire à `cutree()` pour la CAH), nous ferons\ :
+
+```{r}
+zoo6_kmeans$cluster
+```
+
+Voici quelques fonctions complémentaires qui nous seront utiles pour manipuler facilement le contenu de l'objet `kmeans` obtenu. Vous pouvez copier-coller ces fonctions dans votre rapport pour les utiliser. Il n'est pas nécessaire de comprendre le code de ces fonctions, mais ceux qui souhaitent progresser dans l'utilisation de R peuvent le faire naturellement.
+
+```{r}
+# Récupère un tableau localisant les centres
+get_centers <- function(x, name = "cluster", ...)
+  UseMethod("get_centers")
+get_centers.default <- function(x, name = "cluster", ...)
+  stop("Don't know how to extract centers from x")
+get_centers.kmeans <- function(x, name = "cluster", ...)
+  rownames_to_column(as_tibble(x$centers), var = name)
+
+# Rajoute une colonne d'appartenance aux groupes dans le tableau de données
+add_cluster <- function(x, data, name = "cluster", ...)
+  UseMethod("add_cluster")
+add_cluster.default <- function(x, data, name = "cluster", ...)
+  stop("Don't know how to add clusters from x")
+add_cluster.kmeans <- function(x, data, name = "cluster", ...) {
+  if (!inherits(data, "data.frame"))
+    stop("'data' must be a data frame")
+  if (length(x$cluster) != nrow(data))
+    stop("'data' number of rows does not match length of kmeans clusters")
+  data[[name]] <- factor(x$cluster)
+  data
+}
+
+# Crée un graphique qui suggère le nombre k optimal de groupes
+nb_clusters <- function(x, method = "wss",
+k.max = min(nrow(x) - 1, 10L), ...)
+  factoextra::fviz_nbclust(x, kmeans, method = method, 
+    k.max = k.max, ...)
+```
+
+- La fonction `get_centers()` retourne un `data.frame` avec la position des centres des différents groupes.
+
+- La fonction `add_cluster()` ajoute une colonne nommée par défaut "cluster" dans le tableau de données. Le nom de cette nouvelle colonne peut être changé via l'argument `name =`.
+
+- La fonction `nb_clusters()` propose un graphique qui aide au choix optimal de *k*. Il s'agit en fait de la fonction `fviz_nbclust()` du package `factoextra` légèrement reparamétrée pour fonctionner avec `kmeans()` sans devoir le spécifier à chaque fois.
+
+Utilisons cette dernière fonction.
+
+```{r}
+nb_clusters(zoo6)
+```
+
+Le graphique obtenu montre la décroissance de la somme des carrés des distances intra-groupes en fonction de *k*. Avec *k* = 1, nous considérons toutes les données dans leur ensemble et nous avons simplement la somme des carrés des distances euclidiennes entre tous les individus et le centre de gravité du nuage de points dont les coordonnées sont les moyennes de chaque variable. C'est le point de départ qui nous indique de combien les données sont dispersées (la valeur absolue de ce nombre n'est pas importante).
+
+Ensuite, avec *k* croissant, notre objectif est de faire des regroupement qui diminuent la variance intra-groupe autant que possible, ce que nous notons par la diminution de la somme des carrés intra-groupes (la variance du groupe est, en effet, la somme des carrés des distances enclidiennes entre les points et le centre du groupe, divisée par les degrés de liberté).
+
+Nous recherchons ici des sauts importants dans la décroissance de la somme des carrés, tout comme dans le dendrogramme obtenu par la CAH nous recherchions des sauts importants dans les regroupements (hauteur des barres verticales du dendrogramme). Nous observons ici un saut important pour *k* = 2, puis une diminution moins forte de *k* = 3 à *k* = 5. Ceci *suggère* que nous pourrions considérer deux groupes.
+
+```{block2, type='note'}
+Le nombre de groupes porposé par `nb_clusters()` n'est qu'indicatif\ ! Si vous avez par ailleurs d'autres informations qui vous suggèrent un regroupement différent, ou si vous voulez essayer un regroupement plus ou moins détaillé par rapport à ce qui est proposé, c'est tout aussi correct.
+
+La fonction `nb_clusters()` propose d'ailleurs deux autres méthodes pour déterminer le nombre optimal de groupes *k*, avec `method = "silhouette"` ou `method = "gap_stat"`. Voyez l'aide en ligne de la fonction de départ en faisant `?factoextra::fviz_nbclust`. Ces différentes méthodes peuvent d'ailleurs suggérer des regroupements différents pour les mêmes données... preuve qu'il n'y a pas *une et une seule* solution optimale\ !
+```
+
+A ce stade, nous pouvons collecter les groupes et les ajouter à notre tableau de données. Pour la CAH, vous avez déjà remarqué que rajouter ces groupes dans le *tableau de départ* peut mener à des effets surprenants si nous relançons ensuite l'analyse sur le tableau ainsi complété^[Nous vous avons proposé exprès de rajouter les groupes dans le tableau de départ pour que vous soyez confronté à ce problème. Ici, nous proposons donc une autre façon de travailler qui l'évite en assignant le résultat dans une *autre* variable.]. Donc, nous prendrons soin de placer les données ainsi complétées de la colonne `cluster` dans un tableau différent nommé `zoo6b`.
+
+```{r}
+zoo6b <- add_cluster(zoo6_kmeans, zoo6)
+names(zoo6b)
+```
+
+Comme vous pouvez le constater, une nouvelle colonne nommée `cluster` a été ajoutée au tableau en dernière position. Elle contient ceci\ :
+
+```{r}
+zoo6b$cluster
+```
+
+C'est le contenu de `zoo_kmeans$cluster`, mais transformé en variable `factor`.
+
+```{r}
+class(zoo6b$cluster)
+```
+
+Nous pouvons enfin utiliser `get_centers()` pour obtenir un tableau avec les coordonnées des *k* centres. Nous l'enregistrerons dans la variable `zoo6_centers`\ :
+
+```{r}
+zoo6_centers <- get_centers(zoo6_kmeans)
+zoo6_centers
+```
+
+La première colonne du tableau est également nommée `cluster`. C'est important de lui donner le même nom que lors de l'appel à `add_cluster()` (argument `name =` dans les deux cas) si le résultat est à utiliser dans un même graphique. En effet, nous avons maintenant tout ce qu'il faut pour représenter graphiquement les regroupements effectués par les k-moyennes en colorant les points en fonction de la nouvelle variable `cluster`.
+
+```{r}
+chart(data = zoo6b, area ~ circularity %col=% cluster) +
+  geom_point() + # Affiche les points représentant les individus
+  geom_point(data = zoo6_centers, size = 5, shape = 17) # Ajoute les centres
+```
+
+Comparez avec le graphique équivalent au module précédent consacré à la CAH. Outre que l'ordre des groupes est inversé et que les données n'ont pas été standardisées ici, un point est classé dans un groupe différent par les deux méthodes. Il s'agit du point ayant environ 0.25 de circularité et 0.5 de surface. Comme nous connaissons par ailleurs la classe à laquelle appartient chaque individu, nous pouvons la récupérer comme colonne supplémentaire du tableau `zoo6b` et ajouter cette information sur notre graphique.
+
+```{r}
+zoo6b$class <- zoo$class[13:18]
+zoo6_centers$class <- "" # Ceci est nécessaire pour éviter le label des centres
+chart(data = zoo6b, area ~ circularity %col=% cluster %label=% class) +
+  geom_point() +
+  ggrepel::geom_text_repel() + # Ajoute les labels intelligemment
+  geom_point(data = zoo6_centers, size = 5, shape = 17)
+```
+
+Nous constatons que le point classé différemment est un "Poecilostomatoïd". Or, l'autre groupe des k-moyennes contient aussi un individu de la même classe. Donc, CAH a mieux classé notre plancton que les k-moyennes dans le cas présent. Ce n'est pas forcément toujours le cas, mais souvent CAH est meilleure... surtout que nous avons plus de possibilités en choisissant la transformation ou non des données, la métrique de distances, et enfin la méthode pour agglomérer les groupes. Autant d'options utiles à la CAH que nous n'avons pas pour les k-moyennes.
+
+Un dernier point est important à mentionner. Comme les k-moyennes partent d'une position aléatoire des *k* centres, le résultat final peut varier et n'est pas forcément optimal. Pour éviter cela, nous pouvons indiquer à `kmeans()` d'essayer différentes situations de départ via l'argument `nstart =`. Par défaut, nous prenons une seule situation aléatoire de départ `nstart = 1`, mais en indiquant une valeur plus élevée pour cet argument, il est possible d'essayer plusieurs situations de départ et ne garder que le meilleur résultat final. Cela donne une analyse plus robuste et plus reproductible... mais le calcul est naturellement plus long.
+
+```{r, echo=FALSE}
+set.seed(9768)
+```
+
+
+```{r}
+kmeans(zoo6, centers = 2, nstart = 50) # 50 positions de départ différentes
+```
+
+Dans ce cas simple, cela ne change pas grand chose. Mais avec un plus gros jeu de données plus complexe, cela peut être important.
+
+
+### Classification du zooplancton
+
+Maintenant que nous savons utiliser `kmeans()` et les fonctions annexes, nous pouvons classer le jeu de données `zoo` tout entier.
+
+```{r}
+nb_clusters(select(zoo, -class))
+```
+
+Nous observons un saut maximal pour *k* = 2, mais le saut pour *k* = 3 est encore conséquent. Afin de comparer avec ce que nous avons fait par CAH, nous utiliserons donc *k* = 3. Enfin, comme un facteur aléatoire intervient, qui définira au final le numéro des groupes, nous utilisons `set.seed()` pour rendre l'analyse reproductible. Pensez à donner une valeur différente à cette fonction pour chaque utilisation\ ! Et pensez aussi à éliminer les colonnes non numériques à l'aide de `select()`.
+
+```{r}
+set.seed(562)
+zoo_kmeans <- kmeans(select(zoo, -class), centers = 3, nstart = 50)
+zoo_kmeans
+```
+
+Récupérons les clusters dans `zoob`
+
+```{r}
+zoob <- add_cluster(zoo_kmeans, zoo)
+```
+
+Et enfin, effectuons un graphique similaire à celui réalisé pour la CAH au module précédent. À noter que nous pouvons ici choisir n'importe quelle paire de variables quantitatives pour représenter le nuage de points. Nous ajoutons des ellipses pour matérialiser les groupes à l'aide de `stat_ellipse()`. Elles contiennent 95% des points du groupe à l'exclusion des extrêmes. Enfin, comme il y a beaucoup de points, nous choisissons de les rendre semi-transparents avec l'argument `alpha = 0.2` pour plus de lisibilité du graphique.
+
+```{r}
+chart(data = zoob, compactness ~ ecd %col=% cluster) +
+  geom_point(alpha = 0.2) +
+  stat_ellipse() +
+  geom_point(data = get_centers(zoo_kmeans), size = 5, shape = 17)
+```
+
+Nous observons ici un regroupement beaucoup plus simple qu'avec la CAH, essentiellement stratifié de bas en haut en fonction de la compacité des points (`Compactness`). La tabulation des clusters en fonction des classes connues par ailleurs montre aussi que les k-moyennes les séparent moins bien que ce qu'a pu faire la CAH\ :
+
+```{r}
+table(zoob$class, zoob$cluster)
+```
+
+Le cluster numéro 2 n'est pas vraiment défini en terme des classes de plancton car aucune classe ne s'y trouve de manière majoritaire. Le groupe numéro 1 contient la majorité des items de diverses classes, alors que le groupe 3 a une majorité de calanoïdes et d'harpacticoïdes (différents copépodes). Globalement, le classement a un sens, mais est moins bien corrélé avec les classes de plancton que ce que la CAH nous a fourni.
+
+
+##### Pour en savoir plus {-}
+
+Il existe une approche mixte qui mèle la CAH et les k-moyennes. Cette approche est intéressante pour les gros jeux de données. Le problématique est expliquée [ici](https://lovelyanalytics.com/2017/11/18/cah-methode-mixte/), et l'implémentation dans la fonction `factoextra::hkmeans()` est détaillée [ici (en anglais)](https://www.datanovia.com/en/lessons/hierarchical-k-means-clustering-optimize-clusters/).
 
 
 ## Positionnement multidimensionnel (MDS)

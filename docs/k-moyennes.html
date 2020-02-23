@@ -61,6 +61,72 @@
 <script src="libs/rglWebGL-binding-0.100.19/rglWebGL.js"></script>
 
 
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -165,7 +231,10 @@
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="k-moyenne-mds-som.html"><a href="k-moyenne-mds-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne, MDS &amp; SOM</a><ul>
-<li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a></li>
+<li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="k-moyennes.html"><a href="k-moyennes.html#exemple-simple"><i class="fa fa-check"></i><b>6.1.1</b> Exemple simple</a></li>
+<li class="chapter" data-level="6.1.2" data-path="k-moyennes.html"><a href="k-moyennes.html#classification-du-zooplancton"><i class="fa fa-check"></i><b>6.1.2</b> Classification du zooplancton</a></li>
+</ul></li>
 <li class="chapter" data-level="6.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html"><i class="fa fa-check"></i><b>6.2</b> Positionnement multidimensionnel (MDS)</a></li>
 <li class="chapter" data-level="6.3" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html"><i class="fa fa-check"></i><b>6.3</b> Cartes auto-adaptatives (SOM)</a></li>
 </ul></li>
@@ -209,7 +278,310 @@
             <section class="normal" id="section-">
 <div id="k-moyennes" class="section level2">
 <h2><span class="header-section-number">6.1</span> K-moyennes</h2>
-<p>Les k-moyennes (ou “k-means” en anglais) représentent une autre façon de regrouper les individus d’un tableau multivarié. Par rapport à la CAH, cette technique est généralement moins efficace, mais elle a l’avantage de permettre le regroupement d’un très grand nombre d’individus (gros jeu de données), là où la CAH nécessiterait trop de temps de calcul et de mémoire vive. Il est donc utile de connaire cette seconde technique à utiliser comme solution de secours lorsque le dendrogramme de la CAH devient illisible sur de très gros jeux de données.</p>
+<p>Les k-moyennes (ou “k-means” en anglais) représentent une autre façon de regrouper les individus d’un tableau multivarié. Par rapport à la CAH, cette technique est généralement moins efficace, mais elle a l’avantage de permettre le regroupement d’un très grand nombre d’individus (gros jeu de données), là où la CAH nécessiterait trop de temps de calcul et de mémoire vive. Il est donc utile de connaitre cette seconde technique à utiliser comme solution de secours lorsque le dendrogramme de la CAH devient illisible sur de très gros jeux de données.</p>
+<p>Le principe des k-moyennes est très simple :</p>
+<ul>
+<li>L’utilisateur choisi le nombre de groupes <em>k</em> qu’il veut obtenir à l’avance.</li>
+<li>La position des <em>k</em> centres est choisie au hasard au début.</li>
+<li>Les individus sont attribués aux <em>k</em> groupes en fonction de leurs distances aux centres (attribution au groupe de centre le plus proche).</li>
+<li>Les <em>k</em> centres sont replacés au centre de gravité des groupes ainsi obtenus.</li>
+<li>Les individus sont réaffectés en fonction de leurs distances à ces nouveaux centres.</li>
+<li>Si au moins un individu a changé de groupe, le calcul est réitéré. Sinon, nous considérons avoir atteint la configuration finale.</li>
+</ul>
+<p>La technique est superbement expliquée et illustrée dans la vidéo suivante :</p>
+<iframe src="https://www.youtube.com/embed/Aic2gHm9lt0" width="770" height="433" frameborder="0" allowfullscreen=""></iframe>
+<div id="exemple-simple" class="section level3">
+<h3><span class="header-section-number">6.1.1</span> Exemple simple</h3>
+<p>Afin de comparer la classification par k-moyennes à celle par CAH, nous reprendrons ici le même jeu de données <code>zooplankton</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">zoo &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="st">&quot;zooplankton&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;data.io&quot;</span>)
+zoo</code></pre>
+<pre><code># # A tibble: 1,262 x 20
+#      ecd  area perimeter feret major minor  mean  mode   min   max std_dev
+#    &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+#  1 0.770 0.465      4.45 1.32  1.16  0.509 0.363 0.036 0.004 0.908   0.231
+#  2 0.700 0.385      2.32 0.728 0.713 0.688 0.361 0.492 0.024 0.676   0.183
+#  3 0.815 0.521      4.15 1.33  1.11  0.598 0.308 0.032 0.008 0.696   0.204
+#  4 0.785 0.484      4.44 1.78  1.56  0.394 0.332 0.036 0.004 0.728   0.218
+#  5 0.361 0.103      1.71 0.739 0.694 0.188 0.153 0.016 0.008 0.452   0.110
+#  6 0.832 0.544      5.27 1.66  1.36  0.511 0.371 0.02  0.004 0.844   0.268
+#  7 1.23  1.20      15.7  3.92  1.37  1.11  0.217 0.012 0.004 0.784   0.214
+#  8 0.620 0.302      3.98 1.19  1.04  0.370 0.316 0.012 0.004 0.756   0.246
+#  9 1.19  1.12      15.3  3.85  1.34  1.06  0.176 0.012 0.004 0.728   0.172
+# 10 1.04  0.856      7.60 1.89  1.66  0.656 0.404 0.044 0.004 0.88    0.264
+# # … with 1,252 more rows, and 9 more variables: range &lt;dbl&gt;, size &lt;dbl&gt;,
+# #   aspect &lt;dbl&gt;, elongation &lt;dbl&gt;, compactness &lt;dbl&gt;, transparency &lt;dbl&gt;,
+# #   circularity &lt;dbl&gt;, density &lt;dbl&gt;, class &lt;fct&gt;</code></pre>
+<p>Commençons par l’exemple simplissime de la réalisation de deux groupes à partir de six individus issus de ce jeu de données, comme nous l’avons fait avec la CAH :</p>
+<pre class="sourceCode r"><code class="sourceCode r">zoo <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">select</span>(., <span class="op">-</span>class) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Elimination de la colonne class</span>
+<span class="st">  </span><span class="kw">slice</span>(., <span class="dv">13</span><span class="op">:</span><span class="dv">18</span>) -&gt;<span class="st"> </span>zoo6      <span class="co"># Récupération des lignes 13 à 18</span>
+
+zoo6_kmeans &lt;-<span class="st"> </span><span class="kw">kmeans</span>(zoo6, <span class="dt">centers =</span> <span class="dv">2</span>)
+zoo6_kmeans</code></pre>
+<pre><code># K-means clustering with 2 clusters of sizes 3, 3
+# 
+# Cluster means:
+#         ecd      area perimeter    feret    major     minor      mean
+# 1 1.1926500 1.1279667 10.346667 2.201133 1.677067 0.8596333 0.3217333
+# 2 0.6292647 0.3188667  3.224133 1.159200 1.096433 0.4023333 0.1871667
+#        mode        min       max   std_dev     range      size    aspect
+# 1 0.3533333 0.00400000 0.8986667 0.2620000 0.8946667 1.2683500 0.5149422
+# 2 0.1026667 0.01066667 0.5400000 0.1166667 0.5293333 0.7493833 0.4753843
+#   elongation compactness transparency circularity    density
+# 1  23.046713    7.987806   0.06173831   0.1357000 0.37630000
+# 2   6.333315    2.727708   0.14732060   0.4900333 0.06943333
+# 
+# Clustering vector:
+# [1] 2 1 2 1 1 2
+# 
+# Within cluster sum of squares by cluster:
+# [1] 200.03837  54.18647
+#  (between_SS / total_SS =  68.1 %)
+# 
+# Available components:
+# 
+# [1] &quot;cluster&quot;      &quot;centers&quot;      &quot;totss&quot;        &quot;withinss&quot;    
+# [5] &quot;tot.withinss&quot; &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;        
+# [9] &quot;ifault&quot;</code></pre>
+<p>Nous voyons que la fonction <code>kmeans()</code> effectue notre classification. Nous lui fournissons le tableau de départ et spécifions le nombre <em>k</em> de groupes souhaités via l’argument <code>centers =</code>. Ne pas oublier d’assigner le résultat du calcul à une nouvelle variable, ici <code>zoo6_kmeans</code>, pour pouvoir l’inspecter et l’utiliser par la suite. L’impression du contenu de l’objet nous donne plein d’information dont :</p>
+<ul>
+<li>le nombre d’individus dans chaque groupe (ici 3 et 3),</li>
+<li>la position des centres pour les <em>k</em> groupes dans <code>Cluster means</code>,</li>
+<li>l’appartenance aux groupes dans <code>Cluster vectors</code> (dans le même ordre que les lignes du tableau de départ),</li>
+<li>La comparaison des sommes des carrés entre groupes (nous détaillerons ceci plus loin),</li>
+<li>et enfin, la liste des composants accessibles via l’opérateur <code>$</code> ; par exemple, pour obtenir les groupes (opération similaire à <code>cutree()</code> pour la CAH), nous ferons :</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r">zoo6_kmeans<span class="op">$</span>cluster</code></pre>
+<pre><code># [1] 2 1 2 1 1 2</code></pre>
+<p>Voici quelques fonctions complémentaires qui nous seront utiles pour manipuler facilement le contenu de l’objet <code>kmeans</code> obtenu. Vous pouvez copier-coller ces fonctions dans votre rapport pour les utiliser. Il n’est pas nécessaire de comprendre le code de ces fonctions, mais ceux qui souhaitent progresser dans l’utilisation de R peuvent le faire naturellement.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Récupère un tableau localisant les centres</span>
+get_centers &lt;-<span class="st"> </span><span class="cf">function</span>(x, <span class="dt">name =</span> <span class="st">&quot;cluster&quot;</span>, ...)
+  <span class="kw">UseMethod</span>(<span class="st">&quot;get_centers&quot;</span>)
+get_centers.default &lt;-<span class="st"> </span><span class="cf">function</span>(x, <span class="dt">name =</span> <span class="st">&quot;cluster&quot;</span>, ...)
+  <span class="kw">stop</span>(<span class="st">&quot;Don&#39;t know how to extract centers from x&quot;</span>)
+get_centers.kmeans &lt;-<span class="st"> </span><span class="cf">function</span>(x, <span class="dt">name =</span> <span class="st">&quot;cluster&quot;</span>, ...)
+  <span class="kw">rownames_to_column</span>(<span class="kw">as_tibble</span>(x<span class="op">$</span>centers), <span class="dt">var =</span> name)
+
+<span class="co"># Rajoute une colonne d&#39;appartenance aux groupes dans le tableau de données</span>
+add_cluster &lt;-<span class="st"> </span><span class="cf">function</span>(x, data, <span class="dt">name =</span> <span class="st">&quot;cluster&quot;</span>, ...)
+  <span class="kw">UseMethod</span>(<span class="st">&quot;add_cluster&quot;</span>)
+add_cluster.default &lt;-<span class="st"> </span><span class="cf">function</span>(x, data, <span class="dt">name =</span> <span class="st">&quot;cluster&quot;</span>, ...)
+  <span class="kw">stop</span>(<span class="st">&quot;Don&#39;t know how to add clusters from x&quot;</span>)
+add_cluster.kmeans &lt;-<span class="st"> </span><span class="cf">function</span>(x, data, <span class="dt">name =</span> <span class="st">&quot;cluster&quot;</span>, ...) {
+  <span class="cf">if</span> (<span class="op">!</span><span class="kw">inherits</span>(data, <span class="st">&quot;data.frame&quot;</span>))
+    <span class="kw">stop</span>(<span class="st">&quot;&#39;data&#39; must be a data frame&quot;</span>)
+  <span class="cf">if</span> (<span class="kw">length</span>(x<span class="op">$</span>cluster) <span class="op">!=</span><span class="st"> </span><span class="kw">nrow</span>(data))
+    <span class="kw">stop</span>(<span class="st">&quot;&#39;data&#39; number of rows does not match length of kmeans clusters&quot;</span>)
+  data[[name]] &lt;-<span class="st"> </span><span class="kw">factor</span>(x<span class="op">$</span>cluster)
+  data
+}
+
+<span class="co"># Crée un graphique qui suggère le nombre k optimal de groupes</span>
+nb_clusters &lt;-<span class="st"> </span><span class="cf">function</span>(x, <span class="dt">method =</span> <span class="st">&quot;wss&quot;</span>,
+<span class="dt">k.max =</span> <span class="kw">min</span>(<span class="kw">nrow</span>(x) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, 10L), ...)
+  factoextra<span class="op">::</span><span class="kw">fviz_nbclust</span>(x, kmeans, <span class="dt">method =</span> method, 
+    <span class="dt">k.max =</span> k.max, ...)</code></pre>
+<ul>
+<li><p>La fonction <code>get_centers()</code> retourne un <code>data.frame</code> avec la position des centres des différents groupes.</p></li>
+<li><p>La fonction <code>add_cluster()</code> ajoute une colonne nommée par défaut “cluster” dans le tableau de données. Le nom de cette nouvelle colonne peut être changé via l’argument <code>name =</code>.</p></li>
+<li><p>La fonction <code>nb_clusters()</code> propose un graphique qui aide au choix optimal de <em>k</em>. Il s’agit en fait de la fonction <code>fviz_nbclust()</code> du package <code>factoextra</code> légèrement reparamétrée pour fonctionner avec <code>kmeans()</code> sans devoir le spécifier à chaque fois.</p></li>
+</ul>
+<p>Utilisons cette dernière fonction.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nb_clusters</span>(zoo6)</code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Le graphique obtenu montre la décroissance de la somme des carrés des distances intra-groupes en fonction de <em>k</em>. Avec <em>k</em> = 1, nous considérons toutes les données dans leur ensemble et nous avons simplement la somme des carrés des distances euclidiennes entre tous les individus et le centre de gravité du nuage de points dont les coordonnées sont les moyennes de chaque variable. C’est le point de départ qui nous indique de combien les données sont dispersées (la valeur absolue de ce nombre n’est pas importante).</p>
+<p>Ensuite, avec <em>k</em> croissant, notre objectif est de faire des regroupement qui diminuent la variance intra-groupe autant que possible, ce que nous notons par la diminution de la somme des carrés intra-groupes (la variance du groupe est, en effet, la somme des carrés des distances enclidiennes entre les points et le centre du groupe, divisée par les degrés de liberté).</p>
+<p>Nous recherchons ici des sauts importants dans la décroissance de la somme des carrés, tout comme dans le dendrogramme obtenu par la CAH nous recherchions des sauts importants dans les regroupements (hauteur des barres verticales du dendrogramme). Nous observons ici un saut important pour <em>k</em> = 2, puis une diminution moins forte de <em>k</em> = 3 à <em>k</em> = 5. Ceci <em>suggère</em> que nous pourrions considérer deux groupes.</p>
+
+<div class="note">
+<p>Le nombre de groupes porposé par <code>nb_clusters()</code> n’est qu’indicatif ! Si vous avez par ailleurs d’autres informations qui vous suggèrent un regroupement différent, ou si vous voulez essayer un regroupement plus ou moins détaillé par rapport à ce qui est proposé, c’est tout aussi correct.</p>
+La fonction <code>nb_clusters()</code> propose d’ailleurs deux autres méthodes pour déterminer le nombre optimal de groupes <em>k</em>, avec <code>method = &quot;silhouette&quot;</code> ou <code>method = &quot;gap_stat&quot;</code>. Voyez l’aide en ligne de la fonction de départ en faisant <code>?factoextra::fviz_nbclust</code>. Ces différentes méthodes peuvent d’ailleurs suggérer des regroupements différents pour les mêmes données… preuve qu’il n’y a pas <em>une et une seule</em> solution optimale !
+</div>
+
+<p>A ce stade, nous pouvons collecter les groupes et les ajouter à notre tableau de données. Pour la CAH, vous avez déjà remarqué que rajouter ces groupes dans le <em>tableau de départ</em> peut mener à des effets surprenants si nous relançons ensuite l’analyse sur le tableau ainsi complété<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a>. Donc, nous prendrons soin de placer les données ainsi complétées de la colonne <code>cluster</code> dans un tableau différent nommé <code>zoo6b</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">zoo6b &lt;-<span class="st"> </span><span class="kw">add_cluster</span>(zoo6_kmeans, zoo6)
+<span class="kw">names</span>(zoo6b)</code></pre>
+<pre><code>#  [1] &quot;ecd&quot;          &quot;area&quot;         &quot;perimeter&quot;    &quot;feret&quot;       
+#  [5] &quot;major&quot;        &quot;minor&quot;        &quot;mean&quot;         &quot;mode&quot;        
+#  [9] &quot;min&quot;          &quot;max&quot;          &quot;std_dev&quot;      &quot;range&quot;       
+# [13] &quot;size&quot;         &quot;aspect&quot;       &quot;elongation&quot;   &quot;compactness&quot; 
+# [17] &quot;transparency&quot; &quot;circularity&quot;  &quot;density&quot;      &quot;cluster&quot;</code></pre>
+<p>Comme vous pouvez le constater, une nouvelle colonne nommée <code>cluster</code> a été ajoutée au tableau en dernière position. Elle contient ceci :</p>
+<pre class="sourceCode r"><code class="sourceCode r">zoo6b<span class="op">$</span>cluster</code></pre>
+<pre><code># [1] 2 1 2 1 1 2
+# Levels: 1 2</code></pre>
+<p>C’est le contenu de <code>zoo_kmeans$cluster</code>, mais transformé en variable <code>factor</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(zoo6b<span class="op">$</span>cluster)</code></pre>
+<pre><code># [1] &quot;factor&quot;</code></pre>
+<p>Nous pouvons enfin utiliser <code>get_centers()</code> pour obtenir un tableau avec les coordonnées des <em>k</em> centres. Nous l’enregistrerons dans la variable <code>zoo6_centers</code> :</p>
+<pre class="sourceCode r"><code class="sourceCode r">zoo6_centers &lt;-<span class="st"> </span><span class="kw">get_centers</span>(zoo6_kmeans)
+zoo6_centers</code></pre>
+<pre><code># # A tibble: 2 x 20
+#   cluster   ecd  area perimeter feret major minor  mean  mode    min   max
+#   &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+# 1 1       1.19  1.13      10.3   2.20  1.68 0.860 0.322 0.353 0.004  0.899
+# 2 2       0.629 0.319      3.22  1.16  1.10 0.402 0.187 0.103 0.0107 0.540
+# # … with 9 more variables: std_dev &lt;dbl&gt;, range &lt;dbl&gt;, size &lt;dbl&gt;,
+# #   aspect &lt;dbl&gt;, elongation &lt;dbl&gt;, compactness &lt;dbl&gt;, transparency &lt;dbl&gt;,
+# #   circularity &lt;dbl&gt;, density &lt;dbl&gt;</code></pre>
+<p>La première colonne du tableau est également nommée <code>cluster</code>. C’est important de lui donner le même nom que lors de l’appel à <code>add_cluster()</code> (argument <code>name =</code> dans les deux cas) si le résultat est à utiliser dans un même graphique. En effet, nous avons maintenant tout ce qu’il faut pour représenter graphiquement les regroupements effectués par les k-moyennes en colorant les points en fonction de la nouvelle variable <code>cluster</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(<span class="dt">data =</span> zoo6b, area <span class="op">~</span><span class="st"> </span>circularity <span class="op">%col=%</span><span class="st"> </span>cluster) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="co"># Affiche les points représentant les individus</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> zoo6_centers, <span class="dt">size =</span> <span class="dv">5</span>, <span class="dt">shape =</span> <span class="dv">17</span>) <span class="co"># Ajoute les centres</span></code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Comparez avec le graphique équivalent au module précédent consacré à la CAH. Outre que l’ordre des groupes est inversé et que les données n’ont pas été standardisées ici, un point est classé dans un groupe différent par les deux méthodes. Il s’agit du point ayant environ 0.25 de circularité et 0.5 de surface. Comme nous connaissons par ailleurs la classe à laquelle appartient chaque individu, nous pouvons la récupérer comme colonne supplémentaire du tableau <code>zoo6b</code> et ajouter cette information sur notre graphique.</p>
+<pre class="sourceCode r"><code class="sourceCode r">zoo6b<span class="op">$</span>class &lt;-<span class="st"> </span>zoo<span class="op">$</span>class[<span class="dv">13</span><span class="op">:</span><span class="dv">18</span>]
+zoo6_centers<span class="op">$</span>class &lt;-<span class="st"> &quot;&quot;</span> <span class="co"># Ceci est nécessaire pour éviter le label des centres</span>
+<span class="kw">chart</span>(<span class="dt">data =</span> zoo6b, area <span class="op">~</span><span class="st"> </span>circularity <span class="op">%col=%</span><span class="st"> </span>cluster <span class="op">%label=%</span><span class="st"> </span>class) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span>ggrepel<span class="op">::</span><span class="kw">geom_text_repel</span>() <span class="op">+</span><span class="st"> </span><span class="co"># Ajoute les labels intelligemment</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> zoo6_centers, <span class="dt">size =</span> <span class="dv">5</span>, <span class="dt">shape =</span> <span class="dv">17</span>)</code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Nous constatons que le point classé différemment est un “Poecilostomatoïd”. Or, l’autre groupe des k-moyennes contient aussi un individu de la même classe. Donc, CAH a mieux classé notre plancton que les k-moyennes dans le cas présent. Ce n’est pas forcément toujours le cas, mais souvent CAH est meilleure… surtout que nous avons plus de possibilités en choisissant la transformation ou non des données, la métrique de distances, et enfin la méthode pour agglomérer les groupes. Autant d’options utiles à la CAH que nous n’avons pas pour les k-moyennes.</p>
+<p>Un dernier point est important à mentionner. Comme les k-moyennes partent d’une position aléatoire des <em>k</em> centres, le résultat final peut varier et n’est pas forcément optimal. Pour éviter cela, nous pouvons indiquer à <code>kmeans()</code> d’essayer différentes situations de départ via l’argument <code>nstart =</code>. Par défaut, nous prenons une seule situation aléatoire de départ <code>nstart = 1</code>, mais en indiquant une valeur plus élevée pour cet argument, il est possible d’essayer plusieurs situations de départ et ne garder que le meilleur résultat final. Cela donne une analyse plus robuste et plus reproductible… mais le calcul est naturellement plus long.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kmeans</span>(zoo6, <span class="dt">centers =</span> <span class="dv">2</span>, <span class="dt">nstart =</span> <span class="dv">50</span>) <span class="co"># 50 positions de départ différentes</span></code></pre>
+<pre><code># K-means clustering with 2 clusters of sizes 3, 3
+# 
+# Cluster means:
+#         ecd      area perimeter    feret    major     minor      mean
+# 1 0.6292647 0.3188667  3.224133 1.159200 1.096433 0.4023333 0.1871667
+# 2 1.1926500 1.1279667 10.346667 2.201133 1.677067 0.8596333 0.3217333
+#        mode        min       max   std_dev     range      size    aspect
+# 1 0.1026667 0.01066667 0.5400000 0.1166667 0.5293333 0.7493833 0.4753843
+# 2 0.3533333 0.00400000 0.8986667 0.2620000 0.8946667 1.2683500 0.5149422
+#   elongation compactness transparency circularity    density
+# 1   6.333315    2.727708   0.14732060   0.4900333 0.06943333
+# 2  23.046713    7.987806   0.06173831   0.1357000 0.37630000
+# 
+# Clustering vector:
+# [1] 1 2 1 2 2 1
+# 
+# Within cluster sum of squares by cluster:
+# [1]  54.18647 200.03837
+#  (between_SS / total_SS =  68.1 %)
+# 
+# Available components:
+# 
+# [1] &quot;cluster&quot;      &quot;centers&quot;      &quot;totss&quot;        &quot;withinss&quot;    
+# [5] &quot;tot.withinss&quot; &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;        
+# [9] &quot;ifault&quot;</code></pre>
+<p>Dans ce cas simple, cela ne change pas grand chose. Mais avec un plus gros jeu de données plus complexe, cela peut être important.</p>
+</div>
+<div id="classification-du-zooplancton" class="section level3">
+<h3><span class="header-section-number">6.1.2</span> Classification du zooplancton</h3>
+<p>Maintenant que nous savons utiliser <code>kmeans()</code> et les fonctions annexes, nous pouvons classer le jeu de données <code>zoo</code> tout entier.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nb_clusters</span>(<span class="kw">select</span>(zoo, <span class="op">-</span>class))</code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Nous observons un saut maximal pour <em>k</em> = 2, mais le saut pour <em>k</em> = 3 est encore conséquent. Afin de comparer avec ce que nous avons fait par CAH, nous utiliserons donc <em>k</em> = 3. Enfin, comme un facteur aléatoire intervient, qui définira au final le numéro des groupes, nous utilisons <code>set.seed()</code> pour rendre l’analyse reproductible. Pensez à donner une valeur différente à cette fonction pour chaque utilisation ! Et pensez aussi à éliminer les colonnes non numériques à l’aide de <code>select()</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">562</span>)
+zoo_kmeans &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">select</span>(zoo, <span class="op">-</span>class), <span class="dt">centers =</span> <span class="dv">3</span>, <span class="dt">nstart =</span> <span class="dv">50</span>)
+zoo_kmeans</code></pre>
+<pre><code># K-means clustering with 3 clusters of sizes 786, 91, 385
+# 
+# Cluster means:
+#         ecd     area perimeter    feret     major     minor      mean
+# 1 0.6664955 0.431915  3.575374 1.134705 0.9744768 0.4780780 0.2388065
+# 2 1.3774670 1.998097 19.653860 4.063837 2.1465758 0.9602846 0.1488495
+# 3 0.9715857 1.009902  9.197299 2.668022 1.8468984 0.6194652 0.1723774
+#         mode         min       max   std_dev     range      size    aspect
+# 1 0.09256997 0.007094148 0.7269109 0.1842660 0.7198168 0.7262774 0.5372808
+# 2 0.02470330 0.004000000 0.7013187 0.1472286 0.6973187 1.5534302 0.5362249
+# 3 0.04455065 0.004207792 0.6315844 0.1512922 0.6273766 1.2331818 0.5349924
+#   elongation compactness transparency circularity    density
+# 1   7.184451    3.002093   0.07385014  0.42917214 0.09349338
+# 2  61.837019   20.325398   0.09737903  0.05186813 0.31140879
+# 3  27.898079    9.529156   0.11719954  0.11197351 0.16938468
+# 
+# Clustering vector:
+#    [1] 1 1 1 1 1 1 2 1 2 1 1 3 1 3 1 3 3 1 2 1 1 1 1 3 3 1 1 3 1 1 1 1 1 1
+#   [35] 3 1 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 3 1 1 3 1 3 3 1
+#   [69] 3 1 1 1 1 2 1 1 1 1 1 3 1 1 1 1 1 2 1 1 3 1 1 3 1 2 1 1 1 1 1 1 1 1
+#  [103] 1 1 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 1 1
+#  [137] 1 1 1 1 1 3 1 1 2 3 2 3 1 1 1 1 1 3 3 3 3 3 1 2 1 1 1 1 1 1 1 3 1 1
+#  [171] 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 1 1 1 1 1 1 1 1 1 1
+#  [205] 1 3 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+#  [239] 1 1 1 1 1 3 1 1 1 1 1 1 1 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 3
+#  [273] 3 2 1 1 3 1 3 3 1 3 1 1 2 1 1 2 3 2 3 3 1 1 1 1 3 3 2 1 3 1 3 3 1 3
+#  [307] 3 3 2 1 3 3 2 1 3 2 2 1 2 3 3 3 1 1 3 1 1 3 1 1 1 1 1 3 1 2 1 1 1 3
+#  [341] 1 1 1 1 1 1 3 3 3 1 3 3 1 1 1 1 1 1 3 1 1 1 1 1 1 1 1 3 1 3 1 1 1 1
+#  [375] 3 1 1 1 1 1 1 3 3 1 1 1 1 1 3 3 1 1 3 1 3 3 1 3 3 1 1 1 1 1 1 1 1 3
+#  [409] 1 1 1 3 3 1 1 1 1 1 1 1 3 3 3 2 1 3 3 1 1 1 3 3 3 1 1 1 1 2 1 1 3 3
+#  [443] 2 1 3 1 3 1 3 1 3 1 1 3 1 3 1 3 3 1 1 1 1 1 3 1 1 3 1 1 1 3 1 1 3 1
+#  [477] 1 1 3 1 1 1 1 1 1 1 1 3 1 3 3 3 1 3 1 3 1 3 3 3 1 1 1 1 1 1 1 1 3 3
+#  [511] 1 3 2 3 1 2 1 1 3 3 3 1 3 1 1 1 2 1 2 2 3 1 3 1 1 1 3 1 1 1 1 3 3 1
+#  [545] 1 1 3 3 1 1 3 1 3 1 1 3 2 3 1 1 1 1 2 1 3 1 1 1 1 1 1 1 1 1 1 1 1 1
+#  [579] 1 2 3 3 3 2 1 2 3 3 2 1 3 3 3 1 1 3 3 2 1 1 1 1 1 1 1 1 1 3 1 3 3 1
+#  [613] 1 1 1 1 1 1 2 1 1 1 1 1 3 3 2 3 1 3 2 3 1 3 1 3 3 1 1 1 1 3 3 3 3 3
+#  [647] 3 3 1 1 3 1 1 1 1 1 1 1 3 3 3 3 3 3 1 2 3 3 3 3 1 1 3 3 1 1 1 1 3 3
+#  [681] 3 1 1 1 1 1 1 3 1 1 1 3 1 1 3 3 3 3 3 1 1 2 1 1 2 3 1 3 1 1 3 2 2 3
+#  [715] 1 1 2 3 1 2 3 3 3 2 3 1 3 2 1 3 1 1 2 3 1 2 1 2 3 3 3 1 2 1 3 3 2 3
+#  [749] 3 1 1 3 1 3 3 1 1 1 1 1 3 3 3 1 1 1 1 3 3 3 1 1 1 1 3 1 1 1 3 1 1 3
+#  [783] 1 3 1 1 1 3 1 1 3 1 1 3 1 1 3 1 1 1 3 1 3 2 3 1 1 3 3 2 1 3 1 1 3 3
+#  [817] 3 1 1 1 3 1 1 1 1 1 1 1 1 1 3 1 3 3 1 1 1 3 1 3 3 1 3 1 1 1 1 1 1 1
+#  [851] 3 3 3 1 1 3 3 3 1 1 1 1 1 1 3 1 3 2 3 1 3 1 3 1 1 2 1 2 1 3 3 3 3 3
+#  [885] 3 3 1 1 3 1 1 1 3 2 1 3 1 1 1 1 3 1 3 1 1 1 3 3 1 3 1 1 3 1 1 3 1 2
+#  [919] 1 3 3 1 1 3 3 1 1 1 2 3 2 3 2 3 3 3 2 1 3 2 3 3 3 1 3 3 3 3 3 3 2 3
+#  [953] 3 1 3 1 1 1 1 1 1 3 1 1 1 1 1 1 3 1 1 2 1 2 1 1 1 1 3 3 3 3 1 1 1 2
+#  [987] 2 1 3 3 1 2 1 3 3 2 3 3 3 3 1 3 2 3 2 3 2 1 3 1 1 1 1 3 3 1 3 1 2 3
+# [1021] 1 1 3 3 3 3 3 1 3 3 3 1 1 3 3 1 2 3 3 3 2 1 3 2 1 3 3 2 1 1 3 1 1 1
+# [1055] 3 1 1 1 1 1 1 1 1 3 3 3 3 3 2 3 3 3 3 1 3 3 3 1 3 2 1 3 3 3 2 3 1 1
+# [1089] 1 1 1 2 1 3 3 1 2 2 3 1 1 3 3 1 1 2 3 3 3 3 3 1 1 1 2 1 1 1 1 1 1 1
+# [1123] 3 1 1 1 3 1 3 3 1 1 3 1 1 1 1 1 1 3 3 1 3 3 3 3 2 1 1 1 1 3 1 1 1 1
+# [1157] 1 1 1 1 1 1 1 1 1 1 1 3 3 3 3 3 1 1 3 3 1 1 1 3 1 1 1 1 3 1 1 1 1 1
+# [1191] 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 1 1
+# [1225] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 3
+# [1259] 3 3 3 3
+# 
+# Within cluster sum of squares by cluster:
+# [1] 24356.96 43792.25 39813.31
+#  (between_SS / total_SS =  77.0 %)
+# 
+# Available components:
+# 
+# [1] &quot;cluster&quot;      &quot;centers&quot;      &quot;totss&quot;        &quot;withinss&quot;    
+# [5] &quot;tot.withinss&quot; &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;        
+# [9] &quot;ifault&quot;</code></pre>
+<p>Récupérons les clusters dans <code>zoob</code></p>
+<pre class="sourceCode r"><code class="sourceCode r">zoob &lt;-<span class="st"> </span><span class="kw">add_cluster</span>(zoo_kmeans, zoo)</code></pre>
+<p>Et enfin, effectuons un graphique similaire à celui réalisé pour la CAH au module précédent. À noter que nous pouvons ici choisir n’importe quelle paire de variables quantitatives pour représenter le nuage de points. Nous ajoutons des ellipses pour matérialiser les groupes à l’aide de <code>stat_ellipse()</code>. Elles contiennent 95% des points du groupe à l’exclusion des extrêmes. Enfin, comme il y a beaucoup de points, nous choisissons de les rendre semi-transparents avec l’argument <code>alpha = 0.2</code> pour plus de lisibilité du graphique.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(<span class="dt">data =</span> zoob, compactness <span class="op">~</span><span class="st"> </span>ecd <span class="op">%col=%</span><span class="st"> </span>cluster) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_ellipse</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> <span class="kw">get_centers</span>(zoo_kmeans), <span class="dt">size =</span> <span class="dv">5</span>, <span class="dt">shape =</span> <span class="dv">17</span>)</code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Nous observons ici un regroupement beaucoup plus simple qu’avec la CAH, essentiellement stratifié de bas en haut en fonction de la compacité des points (<code>Compactness</code>). La tabulation des clusters en fonction des classes connues par ailleurs montre aussi que les k-moyennes les séparent moins bien que ce qu’a pu faire la CAH :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(zoob<span class="op">$</span>class, zoob<span class="op">$</span>cluster)</code></pre>
+<pre><code>#                   
+#                      1   2   3
+#   Annelid           38   6   6
+#   Appendicularian   21   0  15
+#   Calanoid          82  41 165
+#   Chaetognath        6   0  45
+#   Cirriped          14   0   8
+#   Cladoceran        50   0   0
+#   Cnidarian         13   3   6
+#   Cyclopoid          5   5  40
+#   Decapod          117   0   9
+#   Egg_elongated     50   0   0
+#   Egg_round         49   0   0
+#   Fish              50   0   0
+#   Gastropod         50   0   0
+#   Harpacticoid       1   9  29
+#   Malacostracan     54  26  41
+#   Poecilostomatoid 143   1  14
+#   Protist           43   0   7</code></pre>
+<p>Le cluster numéro 2 n’est pas vraiment défini en terme des classes de plancton car aucune classe ne s’y trouve de manière majoritaire. Le groupe numéro 1 contient la majorité des items de diverses classes, alors que le groupe 3 a une majorité de calanoïdes et d’harpacticoïdes (différents copépodes). Globalement, le classement a un sens, mais est moins bien corrélé avec les classes de plancton que ce que la CAH nous a fourni.</p>
+<div id="pour-en-savoir-plus-2" class="section level5 unnumbered">
+<h5>Pour en savoir plus</h5>
+<p>Il existe une approche mixte qui mèle la CAH et les k-moyennes. Cette approche est intéressante pour les gros jeux de données. Le problématique est expliquée <a href="https://lovelyanalytics.com/2017/11/18/cah-methode-mixte/">ici</a>, et l’implémentation dans la fonction <code>factoextra::hkmeans()</code> est détaillée <a href="https://www.datanovia.com/en/lessons/hierarchical-k-means-clustering-optimize-clusters/">ici (en anglais)</a>.</p>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="15">
+<li id="fn15"><p>Nous vous avons proposé exprès de rajouter les groupes dans le tableau de départ pour que vous soyez confronté à ce problème. Ici, nous proposons donc une autre façon de travailler qui l’évite en assignant le résultat dans une <em>autre</em> variable.<a href="k-moyennes.html#fnref15" class="footnote-back">↩</a></p></li>
+</ol>
 </div>
 <div id="disqus_thread"></div>
 <script>
@@ -282,6 +654,19 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>
