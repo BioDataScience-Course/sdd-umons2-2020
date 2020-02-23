@@ -134,11 +134,11 @@ get_centers.kmeans <- function(x, name = "cluster", ...)
   rownames_to_column(as_tibble(x$centers), var = name)
 
 # Rajoute une colonne d'appartenance aux groupes dans le tableau de données
-add_cluster <- function(x, data, name = "cluster", ...)
-  UseMethod("add_cluster")
-add_cluster.default <- function(x, data, name = "cluster", ...)
+add_clusters <- function(x, data, name = "cluster", ...)
+  UseMethod("add_clusters")
+add_clusters.default <- function(x, data, name = "cluster", ...)
   stop("Don't know how to add clusters from x")
-add_cluster.kmeans <- function(x, data, name = "cluster", ...) {
+add_clusters.kmeans <- function(x, data, name = "cluster", ...) {
   if (!inherits(data, "data.frame"))
     stop("'data' must be a data frame")
   if (length(x$cluster) != nrow(data))
@@ -156,7 +156,7 @@ k.max = min(nrow(x) - 1, 10L), ...)
 
 - La fonction `get_centers()` retourne un `data.frame` avec la position des centres des différents groupes.
 
-- La fonction `add_cluster()` ajoute une colonne nommée par défaut "cluster" dans le tableau de données. Le nom de cette nouvelle colonne peut être changé via l'argument `name =`.
+- La fonction `add_clusters()` ajoute une colonne nommée par défaut "cluster" dans le tableau de données. Le nom de cette nouvelle colonne peut être changé via l'argument `name =`.
 
 - La fonction `nb_clusters()` propose un graphique qui aide au choix optimal de *k*. Il s'agit en fait de la fonction `fviz_nbclust()` du package `factoextra` légèrement reparamétrée pour fonctionner avec `kmeans()` sans devoir le spécifier à chaque fois.
 
@@ -183,7 +183,7 @@ A ce stade, nous pouvons collecter les groupes et les ajouter à notre tableau d
 
 
 ```r
-zoo6b <- add_cluster(zoo6_kmeans, zoo6)
+zoo6b <- add_clusters(zoo6_kmeans, zoo6)
 names(zoo6b)
 ```
 
@@ -237,7 +237,7 @@ zoo6_centers
 # #   circularity <dbl>, density <dbl>
 ```
 
-La première colonne du tableau est également nommée `cluster`. C'est important de lui donner le même nom que lors de l'appel à `add_cluster()` (argument `name =` dans les deux cas) si le résultat est à utiliser dans un même graphique. En effet, nous avons maintenant tout ce qu'il faut pour représenter graphiquement les regroupements effectués par les k-moyennes en colorant les points en fonction de la nouvelle variable `cluster`.
+La première colonne du tableau est également nommée `cluster`. C'est important de lui donner le même nom que lors de l'appel à `add_clusters()` (argument `name =` dans les deux cas) si le résultat est à utiliser dans un même graphique. En effet, nous avons maintenant tout ce qu'il faut pour représenter graphiquement les regroupements effectués par les k-moyennes en colorant les points en fonction de la nouvelle variable `cluster`.
 
 
 ```r
@@ -397,7 +397,7 @@ Récupérons les clusters dans `zoob`
 
 
 ```r
-zoob <- add_cluster(zoo_kmeans, zoo)
+zoob <- add_clusters(zoo_kmeans, zoo)
 ```
 
 Et enfin, effectuons un graphique similaire à celui réalisé pour la CAH au module précédent. À noter que nous pouvons ici choisir n'importe quelle paire de variables quantitatives pour représenter le nuage de points. Nous ajoutons des ellipses pour matérialiser les groupes à l'aide de `stat_ellipse()`. Elles contiennent 95% des points du groupe à l'exclusion des extrêmes. Enfin, comme il y a beaucoup de points, nous choisissons de les rendre semi-transparents avec l'argument `alpha = 0.2` pour plus de lisibilité du graphique.
@@ -447,6 +447,8 @@ Le cluster numéro 2 n'est pas vraiment défini en terme des classes de plancton
 ##### Pour en savoir plus {-}
 
 Il existe une approche mixte qui mèle la CAH et les k-moyennes. Cette approche est intéressante pour les gros jeux de données. Le problématique est expliquée [ici](https://lovelyanalytics.com/2017/11/18/cah-methode-mixte/), et l'implémentation dans la fonction `factoextra::hkmeans()` est détaillée [ici (en anglais)](https://www.datanovia.com/en/lessons/hierarchical-k-means-clustering-optimize-clusters/).
+
+Cet [article](https://www.r-bloggers.com/the-complete-guide-to-clustering-analysis-k-means-and-hierarchical-clustering-by-hand-and-in-r/) explique dans le détail `kmeans()` et `hclust()` dans R, et montre aussi comment on peut calculer les k-moyennes à la main pour bien en comprendre la logique (en anglais).
 
 
 ## Positionnement multidimensionnel (MDS)

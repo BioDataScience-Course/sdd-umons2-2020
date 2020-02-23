@@ -363,11 +363,11 @@ get_centers.kmeans &lt;-<span class="st"> </span><span class="cf">function</span
   <span class="kw">rownames_to_column</span>(<span class="kw">as_tibble</span>(x<span class="op">$</span>centers), <span class="dt">var =</span> name)
 
 <span class="co"># Rajoute une colonne d&#39;appartenance aux groupes dans le tableau de données</span>
-add_cluster &lt;-<span class="st"> </span><span class="cf">function</span>(x, data, <span class="dt">name =</span> <span class="st">&quot;cluster&quot;</span>, ...)
-  <span class="kw">UseMethod</span>(<span class="st">&quot;add_cluster&quot;</span>)
-add_cluster.default &lt;-<span class="st"> </span><span class="cf">function</span>(x, data, <span class="dt">name =</span> <span class="st">&quot;cluster&quot;</span>, ...)
+add_clusters &lt;-<span class="st"> </span><span class="cf">function</span>(x, data, <span class="dt">name =</span> <span class="st">&quot;cluster&quot;</span>, ...)
+  <span class="kw">UseMethod</span>(<span class="st">&quot;add_clusters&quot;</span>)
+add_clusters.default &lt;-<span class="st"> </span><span class="cf">function</span>(x, data, <span class="dt">name =</span> <span class="st">&quot;cluster&quot;</span>, ...)
   <span class="kw">stop</span>(<span class="st">&quot;Don&#39;t know how to add clusters from x&quot;</span>)
-add_cluster.kmeans &lt;-<span class="st"> </span><span class="cf">function</span>(x, data, <span class="dt">name =</span> <span class="st">&quot;cluster&quot;</span>, ...) {
+add_clusters.kmeans &lt;-<span class="st"> </span><span class="cf">function</span>(x, data, <span class="dt">name =</span> <span class="st">&quot;cluster&quot;</span>, ...) {
   <span class="cf">if</span> (<span class="op">!</span><span class="kw">inherits</span>(data, <span class="st">&quot;data.frame&quot;</span>))
     <span class="kw">stop</span>(<span class="st">&quot;&#39;data&#39; must be a data frame&quot;</span>)
   <span class="cf">if</span> (<span class="kw">length</span>(x<span class="op">$</span>cluster) <span class="op">!=</span><span class="st"> </span><span class="kw">nrow</span>(data))
@@ -383,7 +383,7 @@ nb_clusters &lt;-<span class="st"> </span><span class="cf">function</span>(x, <s
     <span class="dt">k.max =</span> k.max, ...)</code></pre>
 <ul>
 <li><p>La fonction <code>get_centers()</code> retourne un <code>data.frame</code> avec la position des centres des différents groupes.</p></li>
-<li><p>La fonction <code>add_cluster()</code> ajoute une colonne nommée par défaut “cluster” dans le tableau de données. Le nom de cette nouvelle colonne peut être changé via l’argument <code>name =</code>.</p></li>
+<li><p>La fonction <code>add_clusters()</code> ajoute une colonne nommée par défaut “cluster” dans le tableau de données. Le nom de cette nouvelle colonne peut être changé via l’argument <code>name =</code>.</p></li>
 <li><p>La fonction <code>nb_clusters()</code> propose un graphique qui aide au choix optimal de <em>k</em>. Il s’agit en fait de la fonction <code>fviz_nbclust()</code> du package <code>factoextra</code> légèrement reparamétrée pour fonctionner avec <code>kmeans()</code> sans devoir le spécifier à chaque fois.</p></li>
 </ul>
 <p>Utilisons cette dernière fonction.</p>
@@ -399,7 +399,7 @@ La fonction <code>nb_clusters()</code> propose d’ailleurs deux autres méthode
 </div>
 
 <p>A ce stade, nous pouvons collecter les groupes et les ajouter à notre tableau de données. Pour la CAH, vous avez déjà remarqué que rajouter ces groupes dans le <em>tableau de départ</em> peut mener à des effets surprenants si nous relançons ensuite l’analyse sur le tableau ainsi complété<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a>. Donc, nous prendrons soin de placer les données ainsi complétées de la colonne <code>cluster</code> dans un tableau différent nommé <code>zoo6b</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">zoo6b &lt;-<span class="st"> </span><span class="kw">add_cluster</span>(zoo6_kmeans, zoo6)
+<pre class="sourceCode r"><code class="sourceCode r">zoo6b &lt;-<span class="st"> </span><span class="kw">add_clusters</span>(zoo6_kmeans, zoo6)
 <span class="kw">names</span>(zoo6b)</code></pre>
 <pre><code>#  [1] &quot;ecd&quot;          &quot;area&quot;         &quot;perimeter&quot;    &quot;feret&quot;       
 #  [5] &quot;major&quot;        &quot;minor&quot;        &quot;mean&quot;         &quot;mode&quot;        
@@ -424,7 +424,7 @@ zoo6_centers</code></pre>
 # # … with 9 more variables: std_dev &lt;dbl&gt;, range &lt;dbl&gt;, size &lt;dbl&gt;,
 # #   aspect &lt;dbl&gt;, elongation &lt;dbl&gt;, compactness &lt;dbl&gt;, transparency &lt;dbl&gt;,
 # #   circularity &lt;dbl&gt;, density &lt;dbl&gt;</code></pre>
-<p>La première colonne du tableau est également nommée <code>cluster</code>. C’est important de lui donner le même nom que lors de l’appel à <code>add_cluster()</code> (argument <code>name =</code> dans les deux cas) si le résultat est à utiliser dans un même graphique. En effet, nous avons maintenant tout ce qu’il faut pour représenter graphiquement les regroupements effectués par les k-moyennes en colorant les points en fonction de la nouvelle variable <code>cluster</code>.</p>
+<p>La première colonne du tableau est également nommée <code>cluster</code>. C’est important de lui donner le même nom que lors de l’appel à <code>add_clusters()</code> (argument <code>name =</code> dans les deux cas) si le résultat est à utiliser dans un même graphique. En effet, nous avons maintenant tout ce qu’il faut pour représenter graphiquement les regroupements effectués par les k-moyennes en colorant les points en fonction de la nouvelle variable <code>cluster</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(<span class="dt">data =</span> zoo6b, area <span class="op">~</span><span class="st"> </span>circularity <span class="op">%col=%</span><span class="st"> </span>cluster) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="co"># Affiche les points représentant les individus</span>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> zoo6_centers, <span class="dt">size =</span> <span class="dv">5</span>, <span class="dt">shape =</span> <span class="dv">17</span>) <span class="co"># Ajoute les centres</span></code></pre>
@@ -542,7 +542,7 @@ zoo_kmeans</code></pre>
 # [5] &quot;tot.withinss&quot; &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;        
 # [9] &quot;ifault&quot;</code></pre>
 <p>Récupérons les clusters dans <code>zoob</code></p>
-<pre class="sourceCode r"><code class="sourceCode r">zoob &lt;-<span class="st"> </span><span class="kw">add_cluster</span>(zoo_kmeans, zoo)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">zoob &lt;-<span class="st"> </span><span class="kw">add_clusters</span>(zoo_kmeans, zoo)</code></pre>
 <p>Et enfin, effectuons un graphique similaire à celui réalisé pour la CAH au module précédent. À noter que nous pouvons ici choisir n’importe quelle paire de variables quantitatives pour représenter le nuage de points. Nous ajoutons des ellipses pour matérialiser les groupes à l’aide de <code>stat_ellipse()</code>. Elles contiennent 95% des points du groupe à l’exclusion des extrêmes. Enfin, comme il y a beaucoup de points, nous choisissons de les rendre semi-transparents avec l’argument <code>alpha = 0.2</code> pour plus de lisibilité du graphique.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(<span class="dt">data =</span> zoob, compactness <span class="op">~</span><span class="st"> </span>ecd <span class="op">%col=%</span><span class="st"> </span>cluster) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span>
@@ -574,6 +574,7 @@ zoo_kmeans</code></pre>
 <div id="pour-en-savoir-plus-2" class="section level5 unnumbered">
 <h5>Pour en savoir plus</h5>
 <p>Il existe une approche mixte qui mèle la CAH et les k-moyennes. Cette approche est intéressante pour les gros jeux de données. Le problématique est expliquée <a href="https://lovelyanalytics.com/2017/11/18/cah-methode-mixte/">ici</a>, et l’implémentation dans la fonction <code>factoextra::hkmeans()</code> est détaillée <a href="https://www.datanovia.com/en/lessons/hierarchical-k-means-clustering-optimize-clusters/">ici (en anglais)</a>.</p>
+<p>Cet <a href="https://www.r-bloggers.com/the-complete-guide-to-clustering-analysis-k-means-and-hierarchical-clustering-by-hand-and-in-r/">article</a> explique dans le détail <code>kmeans()</code> et <code>hclust()</code> dans R, et montre aussi comment on peut calculer les k-moyennes à la main pour bien en comprendre la logique (en anglais).</p>
 </div>
 </div>
 </div>
