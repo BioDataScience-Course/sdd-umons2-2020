@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-02-14">
+<meta name="date" content="2020-02-23">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -33,7 +33,7 @@
   
   
 <link rel="prev" href="distance-entre-individus.html">
-<link rel="next" href="k-moyenne-som.html">
+<link rel="next" href="k-moyenne-mds-som.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -230,9 +230,13 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="5.3.3" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#etude-complete"><i class="fa fa-check"></i><b>5.3.3</b> Étude complète</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="k-moyenne-som.html"><a href="k-moyenne-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne &amp; SOM</a><ul>
-<li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a></li>
-<li class="chapter" data-level="6.2" data-path="cartes-auto-adaptatives.html"><a href="cartes-auto-adaptatives.html"><i class="fa fa-check"></i><b>6.2</b> Cartes auto adaptatives</a></li>
+<li class="chapter" data-level="6" data-path="k-moyenne-mds-som.html"><a href="k-moyenne-mds-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne, MDS &amp; SOM</a><ul>
+<li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="k-moyennes.html"><a href="k-moyennes.html#exemple-simple"><i class="fa fa-check"></i><b>6.1.1</b> Exemple simple</a></li>
+<li class="chapter" data-level="6.1.2" data-path="k-moyennes.html"><a href="k-moyennes.html#classification-du-zooplancton"><i class="fa fa-check"></i><b>6.1.2</b> Classification du zooplancton</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html"><i class="fa fa-check"></i><b>6.2</b> Positionnement multidimensionnel (MDS)</a></li>
+<li class="chapter" data-level="6.3" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html"><i class="fa fa-check"></i><b>6.3</b> Cartes auto-adaptatives (SOM)</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
 <li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a></li>
@@ -287,14 +291,14 @@ code span.wa { color: #bf0303; } /* Warning */
 </ol>
 <p>Partons, pour étayer notre raisonnement, d’une matrice de distances euclidiennes sur les données de zooplancton. Au passage, abordons quelques fonctions de R utiles dans le contexte pour préparer correctement nos données.</p>
 <ul>
-<li>A la section précédente, nous avons suggéré qu’il peut être utile de <em>standardiser</em> nos données préalablement si une distance de type euclidienne ou manhattan est ensuite calculée sur des données numériques mesurées dans des unités différentes comme ici. La fonction <code>scale()</code> se charge de cette standardisation.</li>
-<li>Comme nous avons 19 variables à retravailler, c’est laborieux de faire cette transfomration manuellement variable après variables dans un <code>mutate()</code>. Nous pouvons automatiser le travail à l’aide de <code>purrr::map_df()</code> qui va appliquer la fonction donnée en argument (<code>scale</code> ici) sur chaque colonne d’un tableau de type <code>data.frame</code> indépendamment. Ensuite <code>purrr::map_df()</code> va reconstituer un tableau de même taille avec le résultat des calculs. Au final, nous aurons substitué colonne par colonne les variables par leur version standardisée en une instruction très concise.</li>
-<li>Limitons, pour l’instant notre ambition à la comparaison de six individus. Afin d’observer tous les cas possibles dans le dendrogramme, nous ne prendrons pas les six premières lignes du tableau, mais les lignes 13 à 18 à l’aide de la fonction <code>slice()</code> que nous n’avons pas encore beaucoup utilisée jusqu’ici. Cette fonction permet de spécifier les numéros de lignes à conserver dans le tableau de départ.</li>
+<li>A la section précédente, nous avons suggéré qu’il peut être utile de <em>standardiser</em> nos données préalablement si une distance de type euclidienne ou manhattan est ensuite calculée et si les données numériques sont mesurées dans des unités différentes, comme c’est le cas ici. La fonction <code>scale()</code> se charge de cette standardisation colonne par colonne dans un tableau. Comme elle renvoie une matrice, nous devons ensuite retransformer le résultat en <code>data.frame</code> ou <code>tibble</code>. Nous choisissons ici d’utiliser la fonction <code>as_tibble()</code>.</li>
+<li>Limitons, pour l’instant notre ambition à la comparaison de six individus. Afin d’observer tous les cas possibles dans le dendrogramme, nous ne prendrons pas les six premières lignes du tableau, mais les lignes 13 à 18. Cela peut se faire à l’aide de la fonction <code>slice()</code> que nous n’avons pas encore beaucoup utilisée jusqu’ici. Cette fonction permet de spécifier explicitement les numéros de lignes à conserver, contrairement à <code>filter()</code> qui applique un test de condition pour décider qulles ligne(s) converser.</li>
 </ul>
 <p>Voici donc notre matrice de distances euclidiennes sur les données ainsi traitées. Les individus initiaux 13 à 18 sont renumérotés 1 à 6. Nous n’imprimons plus ici la matrice de distance obtenue car ce n’est que la première étape du travail vers une représentation plus utile (le dendrogramme).</p>
 <pre class="sourceCode r"><code class="sourceCode r">zoo <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">select</span>(., <span class="op">-</span>class) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Elimination de la colonne class</span>
-<span class="st">  </span>purrr<span class="op">::</span><span class="kw">map_df</span>(., scale) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Standardisation des 19 colonnes</span>
+<span class="st">  </span><span class="kw">scale</span>(.) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Standardisation des 19 colonnes</span>
+<span class="st">  </span><span class="kw">as_tibble</span>(.) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Conversion de la matrice en data.frame +tibble</span>
 <span class="st">  </span><span class="kw">slice</span>(., <span class="dv">13</span><span class="op">:</span><span class="dv">18</span>) -&gt;<span class="st"> </span>zoo6      <span class="co"># Récupération des lignes 13 à 18</span>
 
 zoo6 <span class="op">%&gt;.%</span>
@@ -405,7 +409,8 @@ zoo6 <span class="op">%&gt;.%</span>
 <p>Voici ce que cela donne si nous effectuons une CAH sur le jeu zooplancton complet avec ses 1262 lignes.</p>
 <pre class="sourceCode r"><code class="sourceCode r">zoo <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">select</span>(., <span class="op">-</span>class) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Elimination de la colonne class</span>
-<span class="st">  </span>purrr<span class="op">::</span><span class="kw">map_df</span>(., scale) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Standardisation des 19 colonnes</span>
+<span class="st">  </span><span class="kw">scale</span>(.) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Standardisation des 19 colonnes</span>
+<span class="st">  </span><span class="kw">as_tibble</span>(.) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Transformation en data.frame + tibble</span>
 <span class="st">  </span>vegan<span class="op">::</span><span class="kw">vegdist</span>(., <span class="dt">method =</span> <span class="st">&quot;euclidean&quot;</span>) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Matrice de distances</span>
 <span class="st">  </span><span class="kw">hclust</span>(., <span class="dt">method =</span> <span class="st">&quot;ward.D2&quot;</span>) -&gt;<span class="st"> </span>zoo_clust <span class="co"># CAH avec Ward</span>
   
@@ -675,7 +680,7 @@ s.setAttribute('data-timestamp', +new Date());
         </div>
       </div>
 <a href="distance-entre-individus.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="k-moyenne-som.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="k-moyenne-mds-som.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
