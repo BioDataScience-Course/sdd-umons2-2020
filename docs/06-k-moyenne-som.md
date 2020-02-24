@@ -18,7 +18,7 @@ Ces techniques étant basées sur des matrices de distances et complémentaires 
 
 Les k-moyennes (ou "k-means" en anglais) représentent une autre façon de regrouper les individus d'un tableau multivarié. Par rapport à la CAH, cette technique est généralement moins efficace, mais elle a l'avantage de permettre le regroupement d'un très grand nombre d'individus (gros jeu de données), là où la CAH nécessiterait trop de temps de calcul et de mémoire vive. Il est donc utile de connaitre cette seconde technique à utiliser comme solution de secours lorsque le dendrogramme de la CAH devient illisible sur de très gros jeux de données.
 
-Le principe des k-moyennes est très simple\ :
+Le principe des k-moyennes est très simple^[En pratique, différents algorithmes avec diverses optimisations existent. Le plus récent et le plus sophistiqué est celui de Hartigan-Wong. Il est utilisé par défaut par la fonction `kmeans()`. En pratique, il y a peu de raison d'en changer.]\ :
 
 - L'utilisateur choisi le nombre de groupes *k* qu'il veut obtenir à l'avance.
 - La position des *k* centres est choisie au hasard au début.
@@ -31,36 +31,7 @@ La technique est superbement expliquée et illustrée dans la vidéo suivante\ :
 
 <!--html_preserve--><iframe src="https://www.youtube.com/embed/Aic2gHm9lt0" width="770" height="433" frameborder="0" allowfullscreen=""></iframe><!--/html_preserve-->
 
-Essayez par vous même en utilisant la Shiny apps ci-dessous qui utilise le célèbre jeu de données `iris`. 
-
-
-```r
-is <- read("iris", package = "datasets", lang = "fr")
-summary(is)
-```
-
-```
-#   sepal_length    sepal_width     petal_length    petal_width   
-#  Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100  
-#  1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300  
-#  Median :5.800   Median :3.000   Median :4.350   Median :1.300  
-#  Mean   :5.843   Mean   :3.057   Mean   :3.758   Mean   :1.199  
-#  3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800  
-#  Max.   :7.900   Max.   :4.400   Max.   :6.900   Max.   :2.500  
-#        species  
-#  setosa    :50  
-#  versicolor:50  
-#  virginica :50  
-#                 
-#                 
-# 
-```
-
-
-
-```r
-knitr::include_app("https://jjallaire.shinyapps.io/shiny-kmeans/", height = "600px")
-```
+Essayez par vous même via l'application ci-dessous qui utilise le célèbre jeu de données `iris`. Notez que vous devez utiliser des variables **numériques**. Par exemple, `Species` étant une variable qualitative, vous verrez que cela ne fonctionne pas dans ce cas.
 
 <iframe src="https://jjallaire.shinyapps.io/shiny-kmeans/?showcase=0" width="100%" height="600px" style="border: none;"></iframe>
 
@@ -141,7 +112,7 @@ Nous voyons que la fonction `kmeans()` effectue notre classification. Nous lui f
 - le nombre d'individus dans chaque groupe (ici 3 et 3),
 - la position des centres pour les *k* groupes dans `Cluster means`,
 - l'appartenance aux groupes dans `Cluster vectors` (dans le même ordre que les lignes du tableau de départ),
-- La comparaison des sommes des carrés entre groupes (nous détaillerons ceci plus loin),
+- la sommes des carrés des distances entre les individus et la moyenne au sein de chaque groupe dans `Within cluster sum of squares`\ ; le calcul `between_SS / total_SS` est à mettre en parallèle avec le $R^2$ de la régression linéaire\ : c'est une mesure de la qualité de regroupement des données (plus la valeur est proche de 100% mieux c'est, mais attention que cette valeur augmente d'office en même temps que *k*),
 - et enfin, la liste des composants accessibles via l'opérateur `$`\ ; par exemple, pour obtenir les groupes (opération similaire à `cutree()` pour la CAH), nous ferons\ :
 
 
@@ -153,53 +124,28 @@ zoo6_kmeans$cluster
 # [1] 2 1 2 1 1 2
 ```
 
-Voici quelques fonctions complémentaires qui nous seront utiles pour manipuler facilement le contenu de l'objet `kmeans` obtenu. Vous pouvez copier-coller ces fonctions dans votre rapport pour les utiliser. Il n'est pas nécessaire de comprendre le code de ces fonctions, mais ceux qui souhaitent progresser dans l'utilisation de R peuvent le faire naturellement.
+Le package `broom` contient trois fonctions complémentaires qui nous seront utiles\ : `tidy()`, `augment()` et `glance()`. `broom::glance()` retourne un `data.frame` avec les statistiques permettant d'évaluer la qualité de la classification obtenue\ :
 
 
 ```r
-# Récupère un tableau localisant les centres
-get_centers <- function(x, name = "cluster", ...)
-  UseMethod("get_centers")
-get_centers.default <- function(x, name = "cluster", ...)
-  stop("Don't know how to extract centers from x")
-get_centers.kmeans <- function(x, name = "cluster", ...)
-  rownames_to_column(as_tibble(x$centers), var = name)
-
-# Rajoute une colonne d'appartenance aux groupes dans le tableau de données
-add_clusters <- function(x, data, name = "cluster", ...)
-  UseMethod("add_clusters")
-add_clusters.default <- function(x, data, name = "cluster", ...)
-  stop("Don't know how to add clusters from x")
-add_clusters.kmeans <- function(x, data, name = "cluster", ...) {
-  if (!inherits(data, "data.frame"))
-    stop("'data' must be a data frame")
-  if (length(x$cluster) != nrow(data))
-    stop("'data' number of rows does not match length of kmeans clusters")
-  data[[name]] <- factor(x$cluster)
-  data
-}
-
-# Crée un graphique qui suggère le nombre k optimal de groupes
-nb_clusters <- function(x, method = "wss",
-k.max = min(nrow(x) - 1, 10L), ...)
-  factoextra::fviz_nbclust(x, kmeans, method = method, 
-    k.max = k.max, ...)
+broom::glance(zoo6_kmeans)
 ```
 
-- La fonction `get_centers()` retourne un `data.frame` avec la position des centres des différents groupes.
+```
+# # A tibble: 1 x 4
+#   totss tot.withinss betweenss  iter
+#   <dbl>        <dbl>     <dbl> <int>
+# 1  796.         254.      542.     1
+```
 
-- La fonction `add_clusters()` ajoute une colonne nommée par défaut "cluster" dans le tableau de données. Le nom de cette nouvelle colonne peut être changé via l'argument `name =`.
-
-- La fonction `nb_clusters()` propose un graphique qui aide au choix optimal de *k*. Il s'agit en fait de la fonction `fviz_nbclust()` du package `factoextra` légèrement reparamétrée pour fonctionner avec `kmeans()` sans devoir le spécifier à chaque fois.
-
-Utilisons cette dernière fonction.
+De plus, le package `factoextra` propose une fonction `fviz_nbclust()` qui réalise un graphique pour aider au choix optimal de *k*\ :
 
 
 ```r
-nb_clusters(zoo6)
+factoextra::fviz_nbclust(zoo6, kmeans, method = "wss", k.max = 5)
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" />
 
 Le graphique obtenu montre la décroissance de la somme des carrés des distances intra-groupes en fonction de *k*. Avec *k* = 1, nous considérons toutes les données dans leur ensemble et nous avons simplement la somme des carrés des distances euclidiennes entre tous les individus et le centre de gravité du nuage de points dont les coordonnées sont les moyennes de chaque variable. C'est le point de départ qui nous indique de combien les données sont dispersées (la valeur absolue de ce nombre n'est pas importante).
 
@@ -207,15 +153,16 @@ Ensuite, avec *k* croissant, notre objectif est de faire des regroupement qui di
 
 Nous recherchons ici des sauts importants dans la décroissance de la somme des carrés, tout comme dans le dendrogramme obtenu par la CAH nous recherchions des sauts importants dans les regroupements (hauteur des barres verticales du dendrogramme). Nous observons ici un saut important pour *k* = 2, puis une diminution moins forte de *k* = 3 à *k* = 5. Ceci *suggère* que nous pourrions considérer deux groupes.
 
-\BeginKnitrBlock{note}<div class="note">Le nombre de groupes porposé par `nb_clusters()` n'est qu'indicatif\ ! Si vous avez par ailleurs d'autres informations qui vous suggèrent un regroupement différent, ou si vous voulez essayer un regroupement plus ou moins détaillé par rapport à ce qui est proposé, c'est tout aussi correct.
+\BeginKnitrBlock{note}<div class="note">Le nombre de groupes proposé par `factoextra::fviz_nbclust()` n'est qu'indicatif\ ! Si vous avez par ailleurs d'autres informations qui vous suggèrent un regroupement différent, ou si vous voulez essayer un regroupement plus ou moins détaillé par rapport à ce qui est proposé, c'est tout aussi correct.
 
-La fonction `nb_clusters()` propose d'ailleurs deux autres méthodes pour déterminer le nombre optimal de groupes *k*, avec `method = "silhouette"` ou `method = "gap_stat"`. Voyez l'aide en ligne de la fonction de départ en faisant `?factoextra::fviz_nbclust`. Ces différentes méthodes peuvent d'ailleurs suggérer des regroupements différents pour les mêmes données... preuve qu'il n'y a pas *une et une seule* solution optimale\ !</div>\EndKnitrBlock{note}
+La fonction `factoextra::fviz_nbclust()` propose d'ailleurs deux autres méthodes pour déterminer le nombre optimal de groupes *k*, avec `method = "silhouette"` ou `method = "gap_stat"`. Voyez l'aide en ligne de cette fonction `?factoextra::fviz_nbclust`. Ces différentes méthodes peuvent d'ailleurs suggérer des regroupements différents pour les mêmes données... preuve qu'il n'y a pas *une et une seule* solution optimale\ !</div>\EndKnitrBlock{note}
 
-A ce stade, nous pouvons collecter les groupes et les ajouter à notre tableau de données. Pour la CAH, vous avez déjà remarqué que rajouter ces groupes dans le *tableau de départ* peut mener à des effets surprenants si nous relançons ensuite l'analyse sur le tableau ainsi complété^[Nous vous avons proposé exprès de rajouter les groupes dans le tableau de départ pour que vous soyez confronté à ce problème. Ici, nous proposons donc une autre façon de travailler qui l'évite en assignant le résultat dans une *autre* variable.]. Donc, nous prendrons soin de placer les données ainsi complétées de la colonne `cluster` dans un tableau différent nommé `zoo6b`.
+A ce stade, nous pouvons collecter les groupes et les ajouter à notre tableau de données. Pour la CAH, vous avez déjà remarqué que rajouter ces groupes dans le *tableau de départ* peut mener à des effets surprenants si nous relançons ensuite l'analyse sur le tableau ainsi complété^[Nous vous avons proposé exprès de rajouter les groupes dans le tableau de départ pour que vous soyez confronté à ce problème. Ici, nous proposons donc une autre façon de travailler qui l'évite en assignant le résultat dans une *autre* variable.]. Donc, nous prendrons soin de placer les données ainsi complétées de la colonne `cluster` dans un tableau différent nommé `zoo6b`. Pour se faire, nous pouvons utiliser `broom::augment()`.
 
 
 ```r
-zoo6b <- add_clusters(zoo6_kmeans, zoo6)
+broom::augment(zoo6_kmeans, zoo6) %>.%
+  rename(., cluster = .cluster) -> zoo6b
 names(zoo6b)
 ```
 
@@ -227,9 +174,7 @@ names(zoo6b)
 # [17] "transparency" "circularity"  "density"      "cluster"
 ```
 
-
-
-Comme vous pouvez le constater, une nouvelle colonne nommée `cluster` a été ajoutée au tableau en dernière position. Elle contient ceci\ :
+Comme vous pouvez le constater, une nouvelle colonne nommée `.cluster` a été ajoutée au tableau en dernière position, que nous avons renommée immédiatement en `cluster` ensuite (c'est important pour le graphique plus loin). Elle contient ceci\ :
 
 
 ```r
@@ -241,7 +186,7 @@ zoo6b$cluster
 # Levels: 1 2
 ```
 
-C'est le contenu de `zoo_kmeans$cluster`, mais transformé en variable `factor`.
+C'est le contenu de `zoo6_kmeans$cluster`, mais transformé en variable `factor`.
 
 
 ```r
@@ -252,28 +197,26 @@ class(zoo6b$cluster)
 # [1] "factor"
 ```
 
-Nous pouvons enfin utiliser `get_centers()` pour obtenir un tableau avec les coordonnées des *k* centres. Nous l'enregistrerons dans la variable `zoo6_centers`\ :
+Nous pouvons enfin utiliser `broom::tidy()` pour obtenir un tableau avec les coordonnées des *k* centres. Nous l'enregistrerons dans la variable `zoo6_centers`, en ayant bien pris soin de nommer les variables du même nom que dans le tableau original `zoo6` (argument `col.names = names(zoo6)`, cela sera important pour le graphique ci-dessous)\ :
 
 
 ```r
-zoo6_centers <- get_centers(zoo6_kmeans)
+zoo6_centers <- broom::tidy(zoo6_kmeans, col.names = names(zoo6))
 zoo6_centers
 ```
 
 ```
-# # A tibble: 2 x 20
-#   cluster   ecd  area perimeter feret major minor  mean  mode    min   max
-#   <chr>   <dbl> <dbl>     <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl>
-# 1 1       1.19  1.13      10.3   2.20  1.68 0.860 0.322 0.353 0.004  0.899
-# 2 2       0.629 0.319      3.22  1.16  1.10 0.402 0.187 0.103 0.0107 0.540
-# # … with 9 more variables: std_dev <dbl>, range <dbl>, size <dbl>,
-# #   aspect <dbl>, elongation <dbl>, compactness <dbl>, transparency <dbl>,
-# #   circularity <dbl>, density <dbl>
+# # A tibble: 2 x 21
+#     ecd  area perimeter feret major minor  mean  mode    min   max std_dev
+#   <dbl> <dbl>     <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl>   <dbl>
+# 1 1.19  1.13      10.3   2.20  1.68 0.860 0.322 0.353 0.004  0.899   0.262
+# 2 0.629 0.319      3.22  1.16  1.10 0.402 0.187 0.103 0.0107 0.540   0.117
+# # … with 10 more variables: range <dbl>, size <int>, aspect <dbl>,
+# #   elongation <dbl>, compactness <dbl>, transparency <dbl>,
+# #   circularity <dbl>, density <dbl>, withinss <dbl>, cluster <fct>
 ```
 
-
-
-La première colonne du tableau est également nommée `cluster`. C'est important de lui donner le même nom que lors de l'appel à `add_clusters()` (argument `name =` dans les deux cas) si le résultat est à utiliser dans un même graphique. En effet, nous avons maintenant tout ce qu'il faut pour représenter graphiquement les regroupements effectués par les k-moyennes en colorant les points en fonction de la nouvelle variable `cluster`.
+La dernière colonne de ce tableau est également nommée `cluster`. C'est le lien entre le tableau `zoo6b` augmenté et `zoo6_centers`. Nous avons maintenant tout ce qu'il faut pour représenter graphiquement les regroupements effectués par les k-moyennes en colorant les points en fonction de la nouvelle variable `cluster`.
 
 
 ```r
@@ -282,7 +225,7 @@ chart(data = zoo6b, area ~ circularity %col=% cluster) +
   geom_point(data = zoo6_centers, size = 5, shape = 17) # Ajoute les centres
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" />
 
 Comparez avec le graphique équivalent au module précédent consacré à la CAH. Outre que l'ordre des groupes est inversé et que les données n'ont pas été standardisées ici, un point est classé dans un groupe différent par les deux méthodes. Il s'agit du point ayant environ 0.25 de circularité et 0.5 de surface. Comme nous connaissons par ailleurs la classe à laquelle appartient chaque individu, nous pouvons la récupérer comme colonne supplémentaire du tableau `zoo6b` et ajouter cette information sur notre graphique.
 
@@ -296,9 +239,9 @@ chart(data = zoo6b, area ~ circularity %col=% cluster %label=% class) +
   geom_point(data = zoo6_centers, size = 5, shape = 17)
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" />
 
-Nous constatons que le point classé différemment est un "Poecilostomatoïd". Or, l'autre groupe des k-moyennes contient aussi un individu de la même classe. Donc, CAH a mieux classé notre plancton que les k-moyennes dans le cas présent. Ce n'est pas forcément toujours le cas, mais souvent CAH est meilleure... surtout que nous avons plus de possibilités en choisissant la transformation ou non des données, la métrique de distances, et enfin la méthode pour agglomérer les groupes. Autant d'options utiles à la CAH que nous n'avons pas pour les k-moyennes.
+Nous constatons que le point classé différemment est un "Poecilostomatoïd". Or, l'autre groupe des k-moyennes contient aussi un individu de la même classe. Donc, CAH a mieux classé notre plancton que les k-moyennes dans le cas présent. Ce n'est pas forcément toujours le cas, mais souvent.
 
 Un dernier point est important à mentionner. Comme les k-moyennes partent d'une position aléatoire des *k* centres, le résultat final peut varier et n'est pas forcément optimal. Pour éviter cela, nous pouvons indiquer à `kmeans()` d'essayer différentes situations de départ via l'argument `nstart =`. Par défaut, nous prenons une seule situation aléatoire de départ `nstart = 1`, mais en indiquant une valeur plus élevée pour cet argument, il est possible d'essayer plusieurs situations de départ et ne garder que le meilleur résultat final. Cela donne une analyse plus robuste et plus reproductible... mais le calcul est naturellement plus long.
 
@@ -347,10 +290,12 @@ Maintenant que nous savons utiliser `kmeans()` et les fonctions annexes, nous po
 
 
 ```r
-nb_clusters(select(zoo, -class))
+zoo %>.%
+  select(., -class) %>.%
+  factoextra::fviz_nbclust(., kmeans, method = "wss", k.max = 10)
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" />
 
 Nous observons un saut maximal pour *k* = 2, mais le saut pour *k* = 3 est encore conséquent. Afin de comparer avec ce que nous avons fait par CAH, nous utiliserons donc *k* = 3. Enfin, comme un facteur aléatoire intervient, qui définira au final le numéro des groupes, nous utilisons `set.seed()` pour rendre l'analyse reproductible. Pensez à donner une valeur différente à cette fonction pour chaque utilisation\ ! Et pensez aussi à éliminer les colonnes non numériques à l'aide de `select()`.
 
@@ -433,10 +378,9 @@ Récupérons les clusters dans `zoob`
 
 
 ```r
-zoob <- add_clusters(zoo_kmeans, zoo)
+broom::augment(zoo_kmeans, zoo) %>.%
+  rename(., cluster = .cluster) -> zoob
 ```
-
-
 
 Et enfin, effectuons un graphique similaire à celui réalisé pour la CAH au module précédent. À noter que nous pouvons ici choisir n'importe quelle paire de variables quantitatives pour représenter le nuage de points. Nous ajoutons des ellipses pour matérialiser les groupes à l'aide de `stat_ellipse()`. Elles contiennent 95% des points du groupe à l'exclusion des extrêmes. Enfin, comme il y a beaucoup de points, nous choisissons de les rendre semi-transparents avec l'argument `alpha = 0.2` pour plus de lisibilité du graphique.
 
@@ -445,12 +389,10 @@ Et enfin, effectuons un graphique similaire à celui réalisé pour la CAH au mo
 chart(data = zoob, compactness ~ ecd %col=% cluster) +
   geom_point(alpha = 0.2) +
   stat_ellipse() +
-  geom_point(data = get_centers(zoo_kmeans), size = 5, shape = 17)
+  geom_point(data = broom::tidy(zoo_kmeans, col.names = names(zoo6)), size = 5, shape = 17)
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" />
-
-
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" />
 
 Nous observons ici un regroupement beaucoup plus simple qu'avec la CAH, essentiellement stratifié de bas en haut en fonction de la compacité des points (`Compactness`). La tabulation des clusters en fonction des classes connues par ailleurs montre aussi que les k-moyennes les séparent moins bien que ce qu'a pu faire la CAH\ :
 
@@ -481,16 +423,16 @@ table(zoob$class, zoob$cluster)
 #   Protist           43   0   7
 ```
 
-Le cluster numéro 2 n'est pas vraiment défini en terme des classes de plancton car aucune classe ne s'y trouve de manière majoritaire. Le groupe numéro 1 contient la majorité des items de diverses classes, alors que le groupe 3 a une majorité de calanoïdes et d'harpacticoïdes (différents copépodes). Globalement, le classement a un sens, mais est moins bien corrélé avec les classes de plancton que ce que la CAH nous a fourni.
+Le cluster numéro 2 n'est pas vraiment défini en terme des classes de plancton car aucune classe ne s'y trouve de manière majoritaire. Le groupe numéro 1 contient la majorité des items de diverses classes, alors que le groupe 3 a une majorité de calanoïdes et d'harpacticoïdes (différents copépodes). Globalement, le classement a un sens, mais est moins bien corrélé avec les classes de plancton que ce que la CAH nous a fourni. Notez que, si nous avions standardisé les données avant d'effectuer les k-moyennes comme nous l'avons fait pour la CAH, nous aurions obtenu d'autres résultats. **La transformation des variables préalablement à l'analyse reste une approche intéressante pour moduler l'importance des différentes variables entre elles dans leur impact sur le calcul des distances, et donc, des regroupements réalisés**. Nous vous laissons réaliser les k-moyennes sur les données `zoo` standardisées à l'aide de la fonction `scale()` comme pour la CAH comme exercice.
 
 
 ##### A vous de jouer ! {-}
 
-- Réalisez le tutoriel afin de vérifier votre bonne compréhension de la méthode des K-moyennes.
+- Réalisez le tutoriel afin de vérifier votre bonne compréhension de la méthode des k-moyennes.
 
 \BeginKnitrBlock{bdd}<div class="bdd">Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
 
-    BioDataScience2::run("06a_kmeans") # TODO
+    BioDataScience2::run("06a_kmeans")
 
 N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.</div>\EndKnitrBlock{bdd}
 
@@ -499,10 +441,9 @@ N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à
 \BeginKnitrBlock{bdd}<div class="bdd">
 Completez votre projet. Lisez attentivement le README.
 
-La dernière version du README est disponible via le lien suivant :
+La dernière version du README est disponible via le lien suivant\ :
   
 - <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea></div>\EndKnitrBlock{bdd}
-
 
 
 ##### Pour en savoir plus {-}
