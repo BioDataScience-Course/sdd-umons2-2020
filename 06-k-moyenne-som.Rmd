@@ -36,6 +36,17 @@ La technique est superbement expliquée et illustrée dans la vidéo suivante\ :
 vembedr::embed_youtube("Aic2gHm9lt0", width = 770, height = 433)
 ```
 
+Essayez par vous même en utilisant la Shiny apps ci-dessous qui utilise le célèbre jeu de données `iris`. 
+
+```{r}
+is <- read("iris", package = "datasets", lang = "fr")
+summary(is)
+```
+
+
+```{r, include=TRUE, out.extra='style="border: none;"', out.width='100%'}
+knitr::include_app("https://jjallaire.shinyapps.io/shiny-kmeans/", height = "600px")
+```
 
 ### Exemple simple
 
@@ -137,6 +148,13 @@ zoo6b <- add_clusters(zoo6_kmeans, zoo6)
 names(zoo6b)
 ```
 
+```{r, eval=FALSE, include=FALSE}
+# version avec broom
+zoo6b <- broom::augment(zoo6_kmeans, zoo6) %>.%
+  rename(., "cluster" = ".cluster")
+names(zoo6b)
+```
+
 Comme vous pouvez le constater, une nouvelle colonne nommée `cluster` a été ajoutée au tableau en dernière position. Elle contient ceci\ :
 
 ```{r}
@@ -153,6 +171,12 @@ Nous pouvons enfin utiliser `get_centers()` pour obtenir un tableau avec les coo
 
 ```{r}
 zoo6_centers <- get_centers(zoo6_kmeans)
+zoo6_centers
+```
+
+```{r, eval=FALSE, include=FALSE}
+## center broom::tidy
+zoo6_centers <- broom::tidy(zoo6_kmeans, col.names = names(zoo6))
 zoo6_centers
 ```
 
@@ -213,6 +237,12 @@ Récupérons les clusters dans `zoob`
 zoob <- add_clusters(zoo_kmeans, zoo)
 ```
 
+```{r, eval=FALSE, include=FALSE}
+# version avec broom
+zoob <- broom::augment(zoo_kmeans, zoo) %>.%
+  rename(., "cluster" = ".cluster")
+```
+
 Et enfin, effectuons un graphique similaire à celui réalisé pour la CAH au module précédent. À noter que nous pouvons ici choisir n'importe quelle paire de variables quantitatives pour représenter le nuage de points. Nous ajoutons des ellipses pour matérialiser les groupes à l'aide de `stat_ellipse()`. Elles contiennent 95% des points du groupe à l'exclusion des extrêmes. Enfin, comme il y a beaucoup de points, nous choisissons de les rendre semi-transparents avec l'argument `alpha = 0.2` pour plus de lisibilité du graphique.
 
 ```{r}
@@ -220,6 +250,13 @@ chart(data = zoob, compactness ~ ecd %col=% cluster) +
   geom_point(alpha = 0.2) +
   stat_ellipse() +
   geom_point(data = get_centers(zoo_kmeans), size = 5, shape = 17)
+```
+
+```{r, eval=FALSE, include=FALSE}
+chart(data = zoob, compactness ~ ecd %col=% cluster) +
+  geom_point(alpha = 0.2) +
+  stat_ellipse() +
+  geom_point(data = broom::tidy(zoo_kmeans, col.names = names(zoo6)), size = 5, shape = 17)
 ```
 
 Nous observons ici un regroupement beaucoup plus simple qu'avec la CAH, essentiellement stratifié de bas en haut en fonction de la compacité des points (`Compactness`). La tabulation des clusters en fonction des classes connues par ailleurs montre aussi que les k-moyennes les séparent moins bien que ce qu'a pu faire la CAH\ :

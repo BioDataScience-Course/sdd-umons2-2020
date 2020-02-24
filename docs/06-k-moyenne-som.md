@@ -31,6 +31,38 @@ La technique est superbement expliquée et illustrée dans la vidéo suivante\ :
 
 <!--html_preserve--><iframe src="https://www.youtube.com/embed/Aic2gHm9lt0" width="770" height="433" frameborder="0" allowfullscreen=""></iframe><!--/html_preserve-->
 
+Essayez par vous même en utilisant la Shiny apps ci-dessous qui utilise le célèbre jeu de données `iris`. 
+
+
+```r
+is <- read("iris", package = "datasets", lang = "fr")
+summary(is)
+```
+
+```
+#   sepal_length    sepal_width     petal_length    petal_width   
+#  Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100  
+#  1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300  
+#  Median :5.800   Median :3.000   Median :4.350   Median :1.300  
+#  Mean   :5.843   Mean   :3.057   Mean   :3.758   Mean   :1.199  
+#  3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800  
+#  Max.   :7.900   Max.   :4.400   Max.   :6.900   Max.   :2.500  
+#        species  
+#  setosa    :50  
+#  versicolor:50  
+#  virginica :50  
+#                 
+#                 
+# 
+```
+
+
+
+```r
+knitr::include_app("https://jjallaire.shinyapps.io/shiny-kmeans/", height = "600px")
+```
+
+<iframe src="https://jjallaire.shinyapps.io/shiny-kmeans/?showcase=0" width="100%" height="600px" style="border: none;"></iframe>
 
 ### Exemple simple
 
@@ -167,7 +199,7 @@ Utilisons cette dernière fonction.
 nb_clusters(zoo6)
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" />
 
 Le graphique obtenu montre la décroissance de la somme des carrés des distances intra-groupes en fonction de *k*. Avec *k* = 1, nous considérons toutes les données dans leur ensemble et nous avons simplement la somme des carrés des distances euclidiennes entre tous les individus et le centre de gravité du nuage de points dont les coordonnées sont les moyennes de chaque variable. C'est le point de départ qui nous indique de combien les données sont dispersées (la valeur absolue de ce nombre n'est pas importante).
 
@@ -194,6 +226,8 @@ names(zoo6b)
 # [13] "size"         "aspect"       "elongation"   "compactness" 
 # [17] "transparency" "circularity"  "density"      "cluster"
 ```
+
+
 
 Comme vous pouvez le constater, une nouvelle colonne nommée `cluster` a été ajoutée au tableau en dernière position. Elle contient ceci\ :
 
@@ -237,6 +271,8 @@ zoo6_centers
 # #   circularity <dbl>, density <dbl>
 ```
 
+
+
 La première colonne du tableau est également nommée `cluster`. C'est important de lui donner le même nom que lors de l'appel à `add_clusters()` (argument `name =` dans les deux cas) si le résultat est à utiliser dans un même graphique. En effet, nous avons maintenant tout ce qu'il faut pour représenter graphiquement les regroupements effectués par les k-moyennes en colorant les points en fonction de la nouvelle variable `cluster`.
 
 
@@ -246,7 +282,7 @@ chart(data = zoo6b, area ~ circularity %col=% cluster) +
   geom_point(data = zoo6_centers, size = 5, shape = 17) # Ajoute les centres
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" />
 
 Comparez avec le graphique équivalent au module précédent consacré à la CAH. Outre que l'ordre des groupes est inversé et que les données n'ont pas été standardisées ici, un point est classé dans un groupe différent par les deux méthodes. Il s'agit du point ayant environ 0.25 de circularité et 0.5 de surface. Comme nous connaissons par ailleurs la classe à laquelle appartient chaque individu, nous pouvons la récupérer comme colonne supplémentaire du tableau `zoo6b` et ajouter cette information sur notre graphique.
 
@@ -260,7 +296,7 @@ chart(data = zoo6b, area ~ circularity %col=% cluster %label=% class) +
   geom_point(data = zoo6_centers, size = 5, shape = 17)
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" />
 
 Nous constatons que le point classé différemment est un "Poecilostomatoïd". Or, l'autre groupe des k-moyennes contient aussi un individu de la même classe. Donc, CAH a mieux classé notre plancton que les k-moyennes dans le cas présent. Ce n'est pas forcément toujours le cas, mais souvent CAH est meilleure... surtout que nous avons plus de possibilités en choisissant la transformation ou non des données, la métrique de distances, et enfin la méthode pour agglomérer les groupes. Autant d'options utiles à la CAH que nous n'avons pas pour les k-moyennes.
 
@@ -314,7 +350,7 @@ Maintenant que nous savons utiliser `kmeans()` et les fonctions annexes, nous po
 nb_clusters(select(zoo, -class))
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" />
 
 Nous observons un saut maximal pour *k* = 2, mais le saut pour *k* = 3 est encore conséquent. Afin de comparer avec ce que nous avons fait par CAH, nous utiliserons donc *k* = 3. Enfin, comme un facteur aléatoire intervient, qui définira au final le numéro des groupes, nous utilisons `set.seed()` pour rendre l'analyse reproductible. Pensez à donner une valeur différente à cette fonction pour chaque utilisation\ ! Et pensez aussi à éliminer les colonnes non numériques à l'aide de `select()`.
 
@@ -400,6 +436,8 @@ Récupérons les clusters dans `zoob`
 zoob <- add_clusters(zoo_kmeans, zoo)
 ```
 
+
+
 Et enfin, effectuons un graphique similaire à celui réalisé pour la CAH au module précédent. À noter que nous pouvons ici choisir n'importe quelle paire de variables quantitatives pour représenter le nuage de points. Nous ajoutons des ellipses pour matérialiser les groupes à l'aide de `stat_ellipse()`. Elles contiennent 95% des points du groupe à l'exclusion des extrêmes. Enfin, comme il y a beaucoup de points, nous choisissons de les rendre semi-transparents avec l'argument `alpha = 0.2` pour plus de lisibilité du graphique.
 
 
@@ -410,7 +448,9 @@ chart(data = zoob, compactness ~ ecd %col=% cluster) +
   geom_point(data = get_centers(zoo_kmeans), size = 5, shape = 17)
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" />
+
+
 
 Nous observons ici un regroupement beaucoup plus simple qu'avec la CAH, essentiellement stratifié de bas en haut en fonction de la compacité des points (`Compactness`). La tabulation des clusters en fonction des classes connues par ailleurs montre aussi que les k-moyennes les séparent moins bien que ce qu'a pu faire la CAH\ :
 
