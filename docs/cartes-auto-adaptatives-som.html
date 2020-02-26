@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-02-24">
+<meta name="date" content="2020-02-26">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -235,7 +235,11 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="6.1.1" data-path="k-moyennes.html"><a href="k-moyennes.html#exemple-simple"><i class="fa fa-check"></i><b>6.1.1</b> Exemple simple</a></li>
 <li class="chapter" data-level="6.1.2" data-path="k-moyennes.html"><a href="k-moyennes.html#classification-du-zooplancton"><i class="fa fa-check"></i><b>6.1.2</b> Classification du zooplancton</a></li>
 </ul></li>
-<li class="chapter" data-level="6.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html"><i class="fa fa-check"></i><b>6.2</b> Positionnement multidimensionnel (MDS)</a></li>
+<li class="chapter" data-level="6.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html"><i class="fa fa-check"></i><b>6.2</b> Positionnement multidimensionnel (MDS)</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-classique-ou-pcoa"><i class="fa fa-check"></i><b>6.2.1</b> MDS classique ou PCoA</a></li>
+<li class="chapter" data-level="6.2.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-metrique"><i class="fa fa-check"></i><b>6.2.2</b> MDS métrique</a></li>
+<li class="chapter" data-level="6.2.3" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-non-metrique"><i class="fa fa-check"></i><b>6.2.3</b> MDS non métrique</a></li>
+</ul></li>
 <li class="chapter" data-level="6.3" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html"><i class="fa fa-check"></i><b>6.3</b> Cartes auto-adaptatives (SOM)</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
@@ -278,7 +282,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="cartes-auto-adaptatives-som" class="section level2">
 <h2><span class="header-section-number">6.3</span> Cartes auto-adaptatives (SOM)</h2>
-<p>La méthode des cartes auto-adaptatives, ou encore, cartes de Kohonen du nom de son auteur se désigne par “self-organizing map” en anglais. L’acronyme SOM est fréquemment utilisé, même en français. Cette technique va encore une fois exploiter une matrice de distances dans le but de représenter les individus sur une carte. Cette fois-ci, la carte contient un certain nombre de cellules qui forment une grille, ou mieux, une disposition en nid d’abeille (nous verrons plus loin pourquoi cette disposition particulière est intéressante). De manière similaire au MDS, nous allons faire en sorte que des individus similaires soient proches sur la carte, et des individus différents soient éloignés. La division de la carte en différentes cellules permet de regrouper les individus. Ceci permet une classification comme pour la CAH ou les k-moyennes. Les SOM apparaissent donc comme une technique hybride entre <strong>ordination</strong> (représentation sur des cartes) et <strong>classification</strong> (regroupement des individus).</p>
+<p>Le positionnement multidimensionnel faisant appel à une matrice de distances entre tous les individus, les calculs deviennent vite pénalisants au fur et à mesure que le eju de données augmente en taille. En général, les calculs sont assez lents. Nous verrons au module suivant que l’<strong>analyse en composantes principales</strong> apporte une réponse intéressante à ce problème, mais nous contraint à étudier des corrélations linéaires et des distances de typer euclidiennes.</p>
+<p>Une approche radicalement différente est la méthode des cartes auto-adaptatives, ou encore, cartes de Kohonen du nom de son auteur se désigne par “self-organizing map” en anglais. L’acronyme SOM est fréquemment utilisé, même en français. Cette technique va encore une fois exploiter une matrice de distances dans le but de représenter les individus sur une carte. Cette fois-ci, la carte contient un certain nombre de cellules qui forment une grille, ou mieux, une disposition en nid d’abeille (nous verrons plus loin pourquoi cette disposition particulière est intéressante). De manière similaire au MDS, nous allons faire en sorte que des individus similaires soient proches sur la carte, et des individus différents soient éloignés. La division de la carte en différentes cellules permet de regrouper les individus. Ceci permet une classification comme pour la CAH ou les k-moyennes. Les SOM apparaissent donc comme une technique hybride entre <strong>ordination</strong> (représentation sur des cartes) et <strong>classification</strong> (regroupement des individus).</p>
 <p>La théorie et les calculs derrière les SOM sont très complexes. Elles font appel aux <strong>réseaux de neurones adaptatifs</strong> et leur fonctionnement est inspiré de celui du cerveau humain. Tout comme notre cerveau, les SOM vont utiliser l’information en entrée pour aller assigner une zone de traitement de l’information (pour notre cerveau) ou une cellule dans la carte (pour les SOM). Etant donné la complexité du calcul, les développement mathématiques n’ont pas leur place dans ce cours. Ce qui importe, c’est de comprendre le concept, et d’être ensuite capable d’utiliser les SOM à bon escient. Uniquement pour ceux d’entre vous qui désirent comprendre les détails du calcul, vous pouvez visionner la vidéo suivante <strong>(facultative et en anglais)</strong> :</p>
 <iframe src="https://www.youtube.com/embed/0qtvb_Nx2tA?end=266" width="770" height="433" frameborder="0" allowfullscreen=""></iframe>
 

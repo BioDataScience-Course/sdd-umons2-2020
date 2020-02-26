@@ -205,7 +205,7 @@ Nous observons ici un regroupement beaucoup plus simple qu'avec la CAH, essentie
 table(zoob$class, zoob$cluster)
 ```
 
-Le cluster numéro 2 n'est pas vraiment défini en terme des classes de plancton car aucune classe ne s'y trouve de manière majoritaire. Le groupe numéro 1 contient la majorité des items de diverses classes, alors que le groupe 3 a une majorité de calanoïdes et d'harpacticoïdes (différents copépodes). Globalement, le classement a un sens, mais est moins bien corrélé avec les classes de plancton que ce que la CAH nous a fourni. Notez que, si nous avions standardisé les données avant d'effectuer les k-moyennes comme nous l'avons fait pour la CAH, nous aurions obtenu d'autres résultats. **La transformation des variables préalablement à l'analyse reste une approche intéressante pour moduler l'importance des différentes variables entre elles dans leur impact sur le calcul des distances, et donc, des regroupements réalisés**. Nous vous laissons réaliser les k-moyennes sur les données `zoo` standardisées à l'aide de la fonction `scale()` comme pour la CAH comme exercice.
+Le cluster numéro 2 n'est pas vraiment défini en terme des classes de plancton car aucune classe ne s'y trouve de manière majoritaire. Le groupe numéro 1 contient la majorité des items de diverses classes, alors que le groupe 3 a une majorité de calanoïdes et d'harpacticoïdes (différents copépodes). Globalement, le classement a un sens, mais est moins bien corrélé avec les classes de plancton que ce que la CAH nous a fourni. Notez que, si nous avions standardisé les données avant d'effectuer les k-moyennes comme nous l'avons fait pour la CAH, nous aurions obtenu d'autres résultats. **La transformation des variables préalablement à l'analyse reste une approche intéressante pour moduler l'importance des différentes variables entre elles dans leur impact sur le calcul des distances, et donc, des regroupements réalisés**. Nous vous laissons réaliser les k-moyennes sur les données `zoo standardisées à l'aide de la fonction `scale()` comme pour la CAH comme exercice.
 
 
 ##### A vous de jouer ! {-}
@@ -241,16 +241,129 @@ Cet [article](https://www.r-bloggers.com/the-complete-guide-to-clustering-analys
 
 ## Positionnement multidimensionnel (MDS)
 
-Le positionnement multidimensionnel, ou "multidimensional scaling" en anglais, d'où son acronyme fréquemment utilisé en français également\ : le MDS, est une autre façon de représenter plus clairement l'information contenue dans une matrice de distances. Ici, l'objectif n'est pas de **regrouper** ou de **classifier** les individus du tableau, mais de les **ordonner** sur un graphique en nuage de points en 2 ou 3 dimensions. Ce graphique s'appelle une "carte", et la technique qui la réalise est une **méthode d'ordination**.
+Le positionnement multidimensionnel, ou "multidimensional scaling" en anglais, d'où son acronyme fréquemment utilisé en français également\ : le MDS, est une autre façon de représenter clairement l'information contenue dans une matrice de distances. Ici, l'objectif n'est pas de **regrouper** ou de **classifier** les individus du tableau, mais de les **ordonner** sur un graphique en nuage de points en deux ou trois dimensions. Ce graphique s'appelle une "carte", et la technique qui la réalise est une **méthode d'ordination**.
 
-Au départ, nous avons *n* colonnes et *m* lignes dans le tableau cas par variables, c'est-à-dire, *n* variables quantitatives mesurées sur *m* individus distincts. Nous voulons déterminer les similitudes ou différences de ces *m* individus en les visualisant sur une carte où la distance d'un individu à l'autre représente cette similitude. Plus deux individus sont proches, plus ils sont semblables. Plus les individus sont éloignés, plus ils diffèrent. Ces distances entre paires d'individus, nous les avons déjà calculées dans la matrice de distances. Mais comment les représenter\ ? En effet, une représentation exacte ne peut se faire que dans un espace à *n* dimensions (même nombre de dimensions que de variables initiales). Donc, afin de réduire les dimensions à seulement 2 ou 3, nous allons devoir "tordre" les données et accepter de perdre un peu d'information. Ce que nous allons faire avec la MDS correspond exactement à cela\ : nous allons littéralement "écraser" les données dans un plan (deux dimensions) ou dans un espace à trois dimensions, quitte à tordre un peu le tout. C'est donc ce qu'on appelle une technique de **réduction de dimensions**.
+Au départ, nous avons *p* colonnes et *n* lignes dans le tableau cas par variables, c'est-à-dire, *p* variables quantitatives mesurées sur *n* individus distincts. Nous voulons déterminer les similitudes ou différences de ces *n* individus en les visualisant sur une carte où la distance d'un individu à l'autre représente cette similitude. Plus deux individus sont proches, plus ils sont semblables. Plus les individus sont éloignés, plus ils diffèrent. Ces distances entre paires d'individus, nous les avons déjà calculées dans la matrice de distances. Mais comment les représenter\ ? En effet, une représentation exacte ne peut se faire que dans un espace à *p* dimensions (même nombre de dimensions que de variables initiales). Donc, afin de réduire les dimensions à seulement 2 ou 3, nous allons devoir "tordre" les données et accepter de perdre un peu d'information. Ce que nous allons faire avec la MDS correspond exactement à cela\ : nous allons littéralement "écraser" les données dans un plan (deux dimensions) ou dans un espace à trois dimensions. C'est donc ce qu'on appelle une technique de **réduction de dimensions**.
 
 ![](images/sdd2_06/tenor.gif)
+
+Il existe, en réalité, plusieurs techniques de MDS. Elle répondent toutes au schéma suivant\ :
+
+- A partir d'un tableau multivarié de *n* lignes et *p* colonnes, nous calculons une matrice de distances (le choix de la transformation initiale éventuelle et de la métrique de distance utilisée sont totalement libres ici^[Chaque métrique de distance offre un éclairage différent sur les données. Elles agissent comme autant de filtres différents à votre disposition pour explorer vos données multivariées.]).
+- Nous souhaitons représenter une carte (nuage de points) à *m* dimensions (*m* = 2, éventuellement *m* = 3) où les *n* individus seront placés de telle façon que les proximités exprimées par des valeurs faibles dans la matrice de dissimilarité soient respectées *autant que possible* entre tous les points.
+- Pour y arriver les points sont placés successivement sur la carte et réajustés afin de minimiser une **fonction de coût**, encore appelée **fonction de stress** qui quantifie de combien nous avons dû "tordre" le réseau à *p* dimensions initial représentant les distances entre toutes les paires. C'est en adoptant différentes fonctions de stress que nous aboutissons aux différentes variantes de MDS. La fonction de stress est représentée graphiquement (voir ci-dessous) pour diagnostiquer le traitement réaliser et décider si la représentation est utilisable (pas trop tordue) ou non.
+- Le positionnement des points faisant intervenir un facteur aléatoire (choix des points à placer en premier, réorganisation ensuite pour minimiser la fonction de stress), le résutat final peut varier d'une fois à l'autre sur les mêmes données. Il faut en être conscient.
+
+Nous vous épargnons ici les développements mathématiques qui mènent à la définition de la fonction de stress. Nous nous concentrerons sur les principales techniques et sur leurs propriétés utiles en pratique.
+
+
+### MDS classique ou PCoA
+
+La forme classique, aussi appelée **analyse en coordonnées principales** (Principal Coordinates Analysis en anglais ou PCoA), va *projetter* le nuage de points à *p* dimensions dans un espace réduit à *k* = 2 dimensions (voire éventuellement à 3 dimensions). Cette projection est comme l'ombre chinoise projettée d'un objet tridimensionnel sur une surface place en deux dimensions.
+
+![Ombre chinoise\ : un placement astucieux des mains dans le faisceau lumineux permet de projetter l'ombre d'un animal ou d'un objet sur une surface plane. La PCoA fait de même avec vos données.](images/sdd2_06/shadow.jpg)
+
+Partant d'une matrice de distance, élaborée à l'aide de la métrique de votre choix (euclidienne, Manhattan, Bray-Curtis, Canberra, ...) la projection est calculée à l'aide de la fonction `cmdscale()`. Appliqué aux données `iris`, cela donne\ :
+
+Considérons un relevé de couverture végétale en 24 stations concernant 44 plantes répertoriées sur le site de l'étude, par exemple, `Callvulg` est *[Calluna vulgaris](https://www.tela-botanica.org/bdtfx-nn-12262-synthese)*, `Empenigr` est *[Empetrum nigrum](https://www.tela-botanica.org/bdtfx-nn-23935-synthese)*, etc. Les valeurs sont les couvertures végétales observées pour chaque plante sur le site, expérimées en pourcents. La première colonne nommée `rownames` contient les identifiants des stations. Nous allons les enlever du tableau après les avoir transférés dans la variable `stations`.
+
+```{r}
+veg <- read("varespec", package = "vegan")
+veg
+# La première colonne nommée 'rownames' est l'identifiant des stations
+# Enregistrons ces données dans 'stations' et éliminons-là de 'veg'
+stations <- veg$rownames
+veg <- select(veg, -rownames)
+```
+
+Typiquement ce genre de données ne contient pas d'information constructive lorsque deux plantes sont simultanément absentes (double zéros). Donc, les métriques de type euclidienne ou Manhazttan ne conviennent pas ici. Nous devons choisir entre distance de Bray-Curtis ou Canberra en fonction de l'importance que nous souhaitons donner aux plantes les plus rares (avec couverture végétale faible et/ou absentes de la majorité des stations). Résumons d'abord les donnes selon ces deux points de vue pour déterminer si notre jeu de données contient beeaucoup d'espères rares ou non.
+
+```{r}
+boxplot(veg)
+```
+
+```{r, fig.height=8}
+veg %>.%
+  gather(., key = "espèce", value = "couverture") %>.% # Tableau en format long nécessaire
+  chart(., couverture ~ espèce) +
+    geom_boxplot() + # Boite de dispersion
+    labs(x = "Espèce", y = "Couverture [%]") +
+    coord_flip() # Labels plus lisibles si sur l'axe Y
+```
+
+Comme nous pouvions nous y attendre, 7 ou 8 espèces dominent la couverture végétales et les autres données sont complètement écrasées à zéro sur l'axe.
+
+
+```{r, fig.height=8}
+veg %>.%
+  gather(., key = "espèce", value = "couverture") %>.%
+  chart(., log1p(couverture) ~ espèce) + # Transformation log(courveture + 1)
+    geom_boxplot() +
+    labs(x = "Espèce", y = "Couverture [%]") +
+    coord_flip()
+```
+
+
+Ensuite, le but étant de visualiser le résultat, nous effectons immédiatement un graphique comme suit\ :
+
+A noter que la PCoA sur matrice euclidienne après stadardisation ou non est équivalement à une **Analyse en Composantes Principales** (ACP) que nous étudierons dans le module suivante, ... mais avec un calcul nettement moins efficace. Dans ce contexte, la PCoA n'a donc pas grand intérêt. Elle est surtout utile lorsque vous voulez représenter des métriques de distances *différentes* de la distance euclidienne.
+
+Restez toujours attentif à la taille du jeu de données que vous utilisez pour réaliser une MDS. Quelques centaines de lignes, ça dois passer, plusieurs dizaines de milleirs, voire plus, ça ne passera pas\ ! La limite dépend bien sûr de la puissance de votre ordinateur, et notamment de la quantité de méoire vive disponible.
+
+
+```{r}
+veg_dist <- vegan::vegdist(log1p(veg))
+veg_mds <- vegan::monoMDS(veg_dist)
+plot(veg_mds)
+chart(as_tibble(veg_mds$points), MDS2 ~ MDS1) +
+  geom_point()
+```
+
+```{r}
+vegan::stressplot(veg_mds)
+```
+
+```{r}
+veg_sh <- Shepard(veg_dist, veg_mds$points)
+nmR2 <- 1 - sum(vegan::goodness(veg_mds)^2)
+mR2 <- cor(veg_sh$y, veg_sh$yf)^2
+chart(as_tibble(veg_sh), y ~ x) +
+  geom_point(alpha = 0.5) +
+  geom_step(f_aes(yf ~ x), direction = "vh", col = "red", lwd = 1) +
+  labs(x = "Dissimilarités observées", y = "Distances sur la carte",
+    caption = glue::glue("R² métrique = {round(mR2, 3)}, R² non métrique = {round(nmR2, 3)}"))
+```
+
+```{r}
+cor(veg_sh$y, veg_sh$yf)^2
+```
+
+```{r}
+1- sum(vegan::goodness(veg_mds)^2)
+```
+
+
+
+```{r}
+lm(data = as_tibble(veg_sh), yf ~ x) %>.% 
+  summary(.)
+```
+
+
+### MDS métrique
+
+
+### MDS non métrique
+
+La version non métrique a été proposée par Kruskal (on parle aussi du positionnement multidimensionnel de Kruskal) considère les rangs des distances et non les distances elle-mêmes. Il faut comprendre qu'ici seul l'*ordre* des points sur la carte est prise en compte, mais pas la valeur de la distance elle-même. Cette méthode est utile lorsque des points extrêmes exhibent des dissimilarités particulièrement dilatées par rapport à l'ensemble des autres individus.
 
 
 ## Cartes auto-adaptatives (SOM)
 
-La méthode des cartes auto-adaptatives, ou encore, cartes de Kohonen du nom de son auteur se désigne par "self-organizing map" en anglais. L'acronyme SOM est fréquemment utilisé, même en français. Cette technique va encore une fois exploiter une matrice de distances dans le but de représenter les individus sur une carte. Cette fois-ci, la carte contient un certain nombre de cellules qui forment une grille, ou mieux, une disposition en nid d'abeille (nous verrons plus loin pourquoi cette disposition particulière est intéressante). De manière similaire au MDS, nous allons faire en sorte que des individus similaires soient proches sur la carte, et des individus différents soient éloignés. La division de la carte en différentes cellules permet de regrouper les individus. Ceci permet une classification comme pour la CAH ou les k-moyennes. Les SOM apparaissent donc comme une technique hybride entre **ordination** (représentation sur des cartes) et **classification** (regroupement des individus).
+Le positionnement multidimensionnel faisant appel à une matrice de distances entre tous les individus, les calculs deviennent vite pénalisants au fur et à mesure que le eju de données augmente en taille. En général, les calculs sont assez lents. Nous verrons au module suivant que l'**analyse en composantes principales** apporte une réponse intéressante à ce problème, mais nous contraint à étudier des corrélations linéaires et des distances de typer euclidiennes.
+
+
+Une approche radicalement différente est la méthode des cartes auto-adaptatives, ou encore, cartes de Kohonen du nom de son auteur se désigne par "self-organizing map" en anglais. L'acronyme SOM est fréquemment utilisé, même en français. Cette technique va encore une fois exploiter une matrice de distances dans le but de représenter les individus sur une carte. Cette fois-ci, la carte contient un certain nombre de cellules qui forment une grille, ou mieux, une disposition en nid d'abeille (nous verrons plus loin pourquoi cette disposition particulière est intéressante). De manière similaire au MDS, nous allons faire en sorte que des individus similaires soient proches sur la carte, et des individus différents soient éloignés. La division de la carte en différentes cellules permet de regrouper les individus. Ceci permet une classification comme pour la CAH ou les k-moyennes. Les SOM apparaissent donc comme une technique hybride entre **ordination** (représentation sur des cartes) et **classification** (regroupement des individus).
 
 La théorie et les calculs derrière les SOM sont très complexes. Elles font appel aux **réseaux de neurones adaptatifs** et leur fonctionnement est inspiré de celui du cerveau humain. Tout comme notre cerveau, les SOM vont utiliser l'information en entrée pour aller assigner une zone de traitement de l'information (pour notre cerveau) ou une cellule dans la carte (pour les SOM). Etant donné la complexité du calcul, les développement mathématiques n'ont pas leur place dans ce cours. Ce qui importe, c'est de comprendre le concept, et d'être ensuite capable d'utiliser les SOM à bon escient. Uniquement pour ceux d'entre vous qui désirent comprendre les détails du calcul, vous pouvez visionner la vidéo suivante **(facultative et en anglais)**\ :
 
