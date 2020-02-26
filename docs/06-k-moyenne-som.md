@@ -470,6 +470,91 @@ Il existe, en réalité, plusieurs techniques de MDS. Elle répondent toutes au 
 
 Nous vous épargnons ici les développements mathématiques qui mènent à la définition de la fonction de stress. Nous nous concentrerons sur les principales techniques et sur leurs propriétés utiles en pratique.
 
+Afin d'exécuter de réaliser les analyses dans la section suivante, vous devez avoir au préalable exécuté les fonctions ci-dessous : 
+
+
+```r
+SciViews::R()
+library(broom)
+
+# function mds for several multidimensionnal scaling functions ------
+mds <- function(d, k = 2, fun = c("cmdscale", "isoMDS", "monoMDS", "sammon"), ...) {
+  
+  fun <- match.arg(fun)
+  
+  if (fun == "cmdscale") {
+    mds. <- stats::cmdscale(d = d, k = k, eig = TRUE, ...)
+    class(mds.) <- c("cmdscale", "mds", "list")
+  }
+  
+  if (fun == "isoMDS") {
+    mds. <- MASS::isoMDS(d = d, k = k,...)
+    class(mds.) <- c("isoMDS", "mds", "list")
+  }
+  
+  if (fun == "sammon") {
+    mds. <- MASS::sammon(d = d, k = k,...)
+    class(mds.) <- c("sammon", "mds", "list")
+  }
+  
+  if (fun == "monoMDS") {
+    mds. <- vegan::monoMDS(dist = d, k = k,...)
+    class(mds.) <- c("monoMDS", "mds", "list")
+  }
+  
+  mds.
+}
+
+# plot.mds : MDS2 ~ MDS1 --------------------------------
+plot.mds <- function(x,...){
+  points <- tibble::as_tibble(x$points, .name_repair = "minimal")
+  colnames(points) <- paste0("mds", 1:ncol(points))
+  
+  plot(data = points, mds2 ~ mds1,...)
+}
+
+autoplot.mds <- function(x, ...){
+  
+  points <- tibble::as_tibble(x$points, .name_repair = "minimal")
+  colnames(points) <- paste0("mds", 1:ncol(points))
+  
+  chart(points, mds2 ~ mds1, ...) +
+    geom_point()
+}
+
+shepard <- function(d = d, x = x, p=2) {
+  she <- MASS::Shepard(d = d, x = x$points, p = p)
+  class(she) <- c("shepard", "list")
+  she
+}
+
+plot.shepard <- function(x, ylab = "Ordination Distance", xlab = "Observed Dissimilarity", ...){
+  she <- tibble::as_tibble(x, .name_repair = "minimal")
+  
+  plot(data = she, y~x, ...)
+  lines(data = she, yf ~ x, type = "S", col = "red", lwd = 3)
+}
+
+autoplot.shepard <- function(x) {
+  she <- as_tibble(x)
+  
+  chart(data = she, y~x) +
+    geom_point(alpha = 0.5) +
+    geom_step(f_aes(yf ~ x), direction = "vh", col = "red", lwd = 1) +
+    labs(y = "Ordination Distance", x = "Observed Dissimilarity")
+}
+
+# augment.mds -------------------------------------------
+augment.mds <- function(x, data,...){
+  points <- as_tibble(x$points)
+  colnames(points) <- paste0(".mds", 1:ncol(points))
+  
+  data <- bind_cols(data, points)
+  data
+}
+```
+
+
 
 ### MDS classique ou PCoA
 
@@ -523,12 +608,6 @@ veg <- select(veg, -rownames)
 Typiquement ce genre de données ne contient pas d'information constructive lorsque deux plantes sont simultanément absentes (double zéros). Donc, les métriques de type euclidienne ou Manhazttan ne conviennent pas ici. Nous devons choisir entre distance de Bray-Curtis ou Canberra en fonction de l'importance que nous souhaitons donner aux plantes les plus rares (avec couverture végétale faible et/ou absentes de la majorité des stations). Résumons d'abord les donnes selon ces deux points de vue pour déterminer si notre jeu de données contient beeaucoup d'espères rares ou non.
 
 
-```r
-boxplot(veg)
-```
-
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" />
-
 
 ```r
 veg %>.%
@@ -556,7 +635,6 @@ veg %>.%
 
 <img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" />
 
-
 Ensuite, le but étant de visualiser le résultat, nous effectons immédiatement un graphique comme suit\ :
 
 A noter que la PCoA sur matrice euclidienne après stadardisation ou non est équivalement à une **Analyse en Composantes Principales** (ACP) que nous étudierons dans le module suivante, ... mais avec un calcul nettement moins efficace. Dans ce contexte, la PCoA n'a donc pas grand intérêt. Elle est surtout utile lorsque vous voulez représenter des métriques de distances *différentes* de la distance euclidienne.
@@ -567,94 +645,90 @@ Restez toujours attentif à la taille du jeu de données que vous utilisez pour 
 
 ```r
 veg_dist <- vegan::vegdist(log1p(veg))
-veg_mds <- vegan::monoMDS(veg_dist)
-plot(veg_mds)
+
+mds. <- mds(veg_dist, fun = "cmdscale") 
 ```
-
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" />
-
-```r
-chart(as_tibble(veg_mds$points), MDS2 ~ MDS1) +
-  geom_point()
-```
-
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-29-2.png" width="672" style="display: block; margin: auto;" />
 
 
 ```r
-vegan::stressplot(veg_mds)
+autoplot(mds.)
 ```
 
 <img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" />
 
 
+
 ```r
-veg_sh <- Shepard(veg_dist, veg_mds$points)
-nmR2 <- 1 - sum(vegan::goodness(veg_mds)^2)
-mR2 <- cor(veg_sh$y, veg_sh$yf)^2
-chart(as_tibble(veg_sh), y ~ x) +
-  geom_point(alpha = 0.5) +
-  geom_step(f_aes(yf ~ x), direction = "vh", col = "red", lwd = 1) +
-  labs(x = "Dissimilarités observées", y = "Distances sur la carte",
-    caption = glue::glue("R² métrique = {round(mR2, 3)}, R² non métrique = {round(nmR2, 3)}"))
+veg_mds <- augment(mds., veg)
+```
+
+```
+# Warning: `as_tibble.matrix()` requires a matrix with column names or a `.name_repair` argument. Using compatibility `.name_repair`.
+# This warning is displayed once per session.
+```
+
+```r
+veg_mds$stations <- stations
+
+chart(veg_mds, .mds2 ~ .mds1 %label=% stations) +
+  geom_point() +
+  ggrepel::geom_text_repel()
 ```
 
 <img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" />
 
 
-```r
-cor(veg_sh$y, veg_sh$yf)^2
-```
 
-```
-# [1] 0.9179788
-```
-
-
-```r
-1- sum(vegan::goodness(veg_mds)^2)
-```
-
-```
-# [1] 0.9840648
-```
-
-
-
-
-```r
-lm(data = as_tibble(veg_sh), yf ~ x) %>.% 
-  summary(.)
-```
-
-```
-# 
-# Call:
-# lm(formula = yf ~ x, data = as_tibble(veg_sh))
-# 
-# Residuals:
-#      Min       1Q   Median       3Q      Max 
-# -0.20320 -0.05639 -0.01554  0.04667  0.50675 
-# 
-# Coefficients:
-#             Estimate Std. Error t value Pr(>|t|)    
-# (Intercept) -0.91292    0.02238  -40.79   <2e-16 ***
-# x            5.01374    0.04900  102.33   <2e-16 ***
-# ---
-# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-# 
-# Residual standard error: 0.09778 on 274 degrees of freedom
-# Multiple R-squared:  0.9745,	Adjusted R-squared:  0.9744 
-# F-statistic: 1.047e+04 on 1 and 274 DF,  p-value: < 2.2e-16
-```
 
 
 ### MDS métrique
 
 
+```r
+mds. <- mds(veg_dist, fun = "sammon")
+```
+
+```
+# Initial stress        : 0.11666
+# stress after  10 iters: 0.05079, magic = 0.461
+# stress after  20 iters: 0.04885, magic = 0.500
+# stress after  30 iters: 0.04883, magic = 0.500
+```
+
+
+```r
+autoplot(mds.)
+```
+
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" />
+
+
+```r
+sh. <- shepard(veg_dist, mds.)
+autoplot(sh.)
+```
+
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" />
+
 ### MDS non métrique
 
 La version non métrique a été proposée par Kruskal (on parle aussi du positionnement multidimensionnel de Kruskal) considère les rangs des distances et non les distances elle-mêmes. Il faut comprendre qu'ici seul l'*ordre* des points sur la carte est prise en compte, mais pas la valeur de la distance elle-même. Cette méthode est utile lorsque des points extrêmes exhibent des dissimilarités particulièrement dilatées par rapport à l'ensemble des autres individus.
+
+
+```r
+mds. <- mds(veg_dist, fun = "monoMDS")
+autoplot(mds.)
+```
+
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" />
+
+
+```r
+sh. <- shepard(veg_dist, mds.)
+autoplot(sh.)
+```
+
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ## Cartes auto-adaptatives (SOM)
