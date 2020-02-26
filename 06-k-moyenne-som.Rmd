@@ -256,6 +256,87 @@ Il existe, en réalité, plusieurs techniques de MDS. Elle répondent toutes au 
 
 Nous vous épargnons ici les développements mathématiques qui mènent à la définition de la fonction de stress. Nous nous concentrerons sur les principales techniques et sur leurs propriétés utiles en pratique.
 
+Afin d'exécuter de réaliser les analyses dans la section suivante, vous devez avoir au préalable exécuté les fonctions ci-dessous : 
+
+```{r}
+# function mds for several multidimensionnal scaling functions ------
+mds <- function(d, k = 2, fun = c("cmdscale", "isoMDS", "monoMDS", "sammon"), ...) {
+  
+  fun <- match.arg(fun)
+  
+  if (fun == "cmdscale") {
+    mds. <- stats::cmdscale(d = d, k = k, eig = TRUE, ...)
+    class(mds.) <- c("cmdscale", "mds", "list")
+  }
+  
+  if (fun == "isoMDS") {
+    mds. <- MASS::isoMDS(d = d, k = k,...)
+    class(mds.) <- c("isoMDS", "mds", "list")
+  }
+  
+  if (fun == "sammon") {
+    mds. <- MASS::sammon(d = d, k = k,...)
+    class(mds.) <- c("sammon", "mds", "list")
+  }
+  
+  if (fun == "monoMDS") {
+    mds. <- vegan::monoMDS(dist = d, k = k,...)
+    class(mds.) <- c("monoMDS", "mds", "list")
+  }
+  
+  mds.
+}
+
+# plot.mds : MDS2 ~ MDS1 --------------------------------
+plot.mds <- function(x,...){
+  points <- tibble::as_tibble(x$points, .name_repair = "minimal")
+  colnames(points) <- paste0("mds", 1:ncol(points))
+  
+  plot(data = points, mds2 ~ mds1,...)
+}
+
+autoplot.mds <- function(x, ...){
+  
+  points <- tibble::as_tibble(x$points, .name_repair = "minimal")
+  colnames(points) <- paste0("mds", 1:ncol(points))
+  
+  chart(points, mds2 ~ mds1, ...) +
+    geom_point()
+}
+
+shepard <- function(d = d, x = x, p=2) {
+  she <- MASS::Shepard(d = d, x = x$points, p = p)
+  class(she) <- c("shepard", "list")
+  she
+}
+
+plot.shepard <- function(x, ylab = "Ordination Distance", xlab = "Observed Dissimilarity", ...){
+  she <- tibble::as_tibble(x, .name_repair = "minimal")
+  
+  plot(data = she, y~x, ...)
+  lines(data = she, yf ~ x, type = "S", col = "red", lwd = 3)
+}
+
+autoplot.shepard <- function(x) {
+  she <- as_tibble(x)
+  
+  chart(data = she, y~x) +
+    geom_point(alpha = 0.5) +
+    geom_step(f_aes(yf ~ x), direction = "vh", col = "red", lwd = 1) +
+    labs(y = "Ordination Distance", x = "Observed Dissimilarity")
+}
+
+# augment.mds -------------------------------------------
+augment.mds <- function(x, data,...){
+  points <- as_tibble(x$points)
+  colnames(points) <- paste0(".mds", 1:ncol(points))
+  
+  data <- bind_cols(data, points)
+  data
+}
+```
+
+
 
 ### MDS classique ou PCoA
 
