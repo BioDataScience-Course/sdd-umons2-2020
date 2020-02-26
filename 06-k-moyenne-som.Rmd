@@ -256,6 +256,90 @@ Il existe, en réalité, plusieurs techniques de MDS. Elle répondent toutes au 
 
 Nous vous épargnons ici les développements mathématiques qui mènent à la définition de la fonction de stress. Nous nous concentrerons sur les principales techniques et sur leurs propriétés utiles en pratique.
 
+Afin d'exécuter de réaliser les analyses dans la section suivante, vous devez avoir au préalable exécuté les fonctions ci-dessous : 
+
+```{r}
+SciViews::R()
+library(broom)
+
+# function mds for several multidimensionnal scaling functions ------
+mds <- function(d, k = 2, fun = c("cmdscale", "isoMDS", "monoMDS", "sammon"), ...) {
+  
+  fun <- match.arg(fun)
+  
+  if (fun == "cmdscale") {
+    mds. <- stats::cmdscale(d = d, k = k, eig = TRUE, ...)
+    class(mds.) <- c("cmdscale", "mds", "list")
+  }
+  
+  if (fun == "isoMDS") {
+    mds. <- MASS::isoMDS(d = d, k = k,...)
+    class(mds.) <- c("isoMDS", "mds", "list")
+  }
+  
+  if (fun == "sammon") {
+    mds. <- MASS::sammon(d = d, k = k,...)
+    class(mds.) <- c("sammon", "mds", "list")
+  }
+  
+  if (fun == "monoMDS") {
+    mds. <- vegan::monoMDS(dist = d, k = k,...)
+    class(mds.) <- c("monoMDS", "mds", "list")
+  }
+  
+  mds.
+}
+
+# plot.mds : MDS2 ~ MDS1 --------------------------------
+plot.mds <- function(x,...){
+  points <- tibble::as_tibble(x$points, .name_repair = "minimal")
+  colnames(points) <- paste0("mds", 1:ncol(points))
+  
+  plot(data = points, mds2 ~ mds1,...)
+}
+
+autoplot.mds <- function(x, ...){
+  
+  points <- tibble::as_tibble(x$points, .name_repair = "minimal")
+  colnames(points) <- paste0("mds", 1:ncol(points))
+  
+  chart(points, mds2 ~ mds1, ...) +
+    geom_point()
+}
+
+shepard <- function(d = d, x = x, p=2) {
+  she <- MASS::Shepard(d = d, x = x$points, p = p)
+  class(she) <- c("shepard", "list")
+  she
+}
+
+plot.shepard <- function(x, ylab = "Ordination Distance", xlab = "Observed Dissimilarity", ...){
+  she <- tibble::as_tibble(x, .name_repair = "minimal")
+  
+  plot(data = she, y~x, ...)
+  lines(data = she, yf ~ x, type = "S", col = "red", lwd = 3)
+}
+
+autoplot.shepard <- function(x) {
+  she <- as_tibble(x)
+  
+  chart(data = she, y~x) +
+    geom_point(alpha = 0.5) +
+    geom_step(f_aes(yf ~ x), direction = "vh", col = "red", lwd = 1) +
+    labs(y = "Ordination Distance", x = "Observed Dissimilarity")
+}
+
+# augment.mds -------------------------------------------
+augment.mds <- function(x, data,...){
+  points <- as_tibble(x$points)
+  colnames(points) <- paste0(".mds", 1:ncol(points))
+  
+  data <- bind_cols(data, points)
+  data
+}
+```
+
+
 
 ### MDS classique ou PCoA
 
@@ -278,9 +362,6 @@ veg <- select(veg, -rownames)
 
 Typiquement ce genre de données ne contient pas d'information constructive lorsque deux plantes sont simultanément absentes (double zéros). Donc, les métriques de type euclidienne ou Manhazttan ne conviennent pas ici. Nous devons choisir entre distance de Bray-Curtis ou Canberra en fonction de l'importance que nous souhaitons donner aux plantes les plus rares (avec couverture végétale faible et/ou absentes de la majorité des stations). Résumons d'abord les donnes selon ces deux points de vue pour déterminer si notre jeu de données contient beeaucoup d'espères rares ou non.
 
-```{r}
-boxplot(veg)
-```
 
 ```{r, fig.height=8}
 veg %>.%
@@ -303,7 +384,6 @@ veg %>.%
     coord_flip()
 ```
 
-
 Ensuite, le but étant de visualiser le résultat, nous effectons immédiatement un graphique comme suit\ :
 
 A noter que la PCoA sur matrice euclidienne après stadardisation ou non est équivalement à une **Analyse en Composantes Principales** (ACP) que nous étudierons dans le module suivante, ... mais avec un calcul nettement moins efficace. Dans ce contexte, la PCoA n'a donc pas grand intérêt. Elle est surtout utile lorsque vous voulez représenter des métriques de distances *différentes* de la distance euclidienne.
@@ -313,17 +393,31 @@ Restez toujours attentif à la taille du jeu de données que vous utilisez pour 
 
 ```{r}
 veg_dist <- vegan::vegdist(log1p(veg))
+
+mds. <- mds(veg_dist, fun = "cmdscale") 
+```
+
+```{r}
+autoplot(mds.)
+```
+
+
+```{r}
+veg_mds <- augment(mds., veg)
+veg_mds$stations <- stations
+
+chart(veg_mds, .mds2 ~ .mds1 %label=% stations) +
+  geom_point() +
+  ggrepel::geom_text_repel()
+```
+
+
+```{r, eval = FALSE, include = FALSE}
 veg_mds <- vegan::monoMDS(veg_dist)
 plot(veg_mds)
 chart(as_tibble(veg_mds$points), MDS2 ~ MDS1) +
   geom_point()
-```
-
-```{r}
 vegan::stressplot(veg_mds)
-```
-
-```{r}
 veg_sh <- Shepard(veg_dist, veg_mds$points)
 nmR2 <- 1 - sum(vegan::goodness(veg_mds)^2)
 mR2 <- cor(veg_sh$y, veg_sh$yf)^2
@@ -334,28 +428,35 @@ chart(as_tibble(veg_sh), y ~ x) +
     caption = glue::glue("R² métrique = {round(mR2, 3)}, R² non métrique = {round(nmR2, 3)}"))
 ```
 
-```{r}
-cor(veg_sh$y, veg_sh$yf)^2
-```
-
-```{r}
-1- sum(vegan::goodness(veg_mds)^2)
-```
-
-
-
-```{r}
-lm(data = as_tibble(veg_sh), yf ~ x) %>.% 
-  summary(.)
-```
-
 
 ### MDS métrique
 
+```{r}
+mds. <- mds(veg_dist, fun = "sammon")
+```
+
+```{r}
+autoplot(mds.)
+```
+
+```{r}
+sh. <- shepard(veg_dist, mds.)
+autoplot(sh.)
+```
 
 ### MDS non métrique
 
 La version non métrique a été proposée par Kruskal (on parle aussi du positionnement multidimensionnel de Kruskal) considère les rangs des distances et non les distances elle-mêmes. Il faut comprendre qu'ici seul l'*ordre* des points sur la carte est prise en compte, mais pas la valeur de la distance elle-même. Cette méthode est utile lorsque des points extrêmes exhibent des dissimilarités particulièrement dilatées par rapport à l'ensemble des autres individus.
+
+```{r}
+mds. <- mds(veg_dist, fun = "monoMDS")
+autoplot(mds.)
+```
+
+```{r}
+sh. <- shepard(veg_dist, mds.)
+autoplot(sh.)
+```
 
 
 ## Cartes auto-adaptatives (SOM)

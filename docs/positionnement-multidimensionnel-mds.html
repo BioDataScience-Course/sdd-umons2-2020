@@ -287,12 +287,91 @@ code span.wa { color: #bf0303; } /* Warning */
 <p><img src="images/sdd2_06/tenor.gif" /></p>
 <p>Il existe, en réalité, plusieurs techniques de MDS. Elle répondent toutes au schéma suivant :</p>
 <ul>
-<li>A partir d’un tableau multivarié de <em>n</em> lignes et <em>p</em> colonnes, nous calculons une matrice de distances (le choix de la transformation initiale éventuelle et de la métrique de distance utilisée sont totalement libres ici<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>).</li>
+<li>A partir d’un tableau multivarié de <em>n</em> lignes et <em>p</em> colonnes, nous calculons une matrice de distances (le choix de la transformation initiale éventuelle et de la métrique de distance utilisée sont totalement libres ici<a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a>).</li>
 <li>Nous souhaitons représenter une carte (nuage de points) à <em>m</em> dimensions (<em>m</em> = 2, éventuellement <em>m</em> = 3) où les <em>n</em> individus seront placés de telle façon que les proximités exprimées par des valeurs faibles dans la matrice de dissimilarité soient respectées <em>autant que possible</em> entre tous les points.</li>
 <li>Pour y arriver les points sont placés successivement sur la carte et réajustés afin de minimiser une <strong>fonction de coût</strong>, encore appelée <strong>fonction de stress</strong> qui quantifie de combien nous avons dû “tordre” le réseau à <em>p</em> dimensions initial représentant les distances entre toutes les paires. C’est en adoptant différentes fonctions de stress que nous aboutissons aux différentes variantes de MDS. La fonction de stress est représentée graphiquement (voir ci-dessous) pour diagnostiquer le traitement réaliser et décider si la représentation est utilisable (pas trop tordue) ou non.</li>
 <li>Le positionnement des points faisant intervenir un facteur aléatoire (choix des points à placer en premier, réorganisation ensuite pour minimiser la fonction de stress), le résutat final peut varier d’une fois à l’autre sur les mêmes données. Il faut en être conscient.</li>
 </ul>
 <p>Nous vous épargnons ici les développements mathématiques qui mènent à la définition de la fonction de stress. Nous nous concentrerons sur les principales techniques et sur leurs propriétés utiles en pratique.</p>
+<p>Afin d’exécuter de réaliser les analyses dans la section suivante, vous devez avoir au préalable exécuté les fonctions ci-dessous :</p>
+<pre class="sourceCode r"><code class="sourceCode r">SciViews<span class="op">::</span><span class="kw">R</span>()
+<span class="kw">library</span>(broom)
+
+<span class="co"># function mds for several multidimensionnal scaling functions ------</span>
+mds &lt;-<span class="st"> </span><span class="cf">function</span>(d, <span class="dt">k =</span> <span class="dv">2</span>, <span class="dt">fun =</span> <span class="kw">c</span>(<span class="st">&quot;cmdscale&quot;</span>, <span class="st">&quot;isoMDS&quot;</span>, <span class="st">&quot;monoMDS&quot;</span>, <span class="st">&quot;sammon&quot;</span>), ...) {
+  
+  fun &lt;-<span class="st"> </span><span class="kw">match.arg</span>(fun)
+  
+  <span class="cf">if</span> (fun <span class="op">==</span><span class="st"> &quot;cmdscale&quot;</span>) {
+    mds. &lt;-<span class="st"> </span>stats<span class="op">::</span><span class="kw">cmdscale</span>(<span class="dt">d =</span> d, <span class="dt">k =</span> k, <span class="dt">eig =</span> <span class="ot">TRUE</span>, ...)
+    <span class="kw">class</span>(mds.) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cmdscale&quot;</span>, <span class="st">&quot;mds&quot;</span>, <span class="st">&quot;list&quot;</span>)
+  }
+  
+  <span class="cf">if</span> (fun <span class="op">==</span><span class="st"> &quot;isoMDS&quot;</span>) {
+    mds. &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">isoMDS</span>(<span class="dt">d =</span> d, <span class="dt">k =</span> k,...)
+    <span class="kw">class</span>(mds.) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;isoMDS&quot;</span>, <span class="st">&quot;mds&quot;</span>, <span class="st">&quot;list&quot;</span>)
+  }
+  
+  <span class="cf">if</span> (fun <span class="op">==</span><span class="st"> &quot;sammon&quot;</span>) {
+    mds. &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">sammon</span>(<span class="dt">d =</span> d, <span class="dt">k =</span> k,...)
+    <span class="kw">class</span>(mds.) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;sammon&quot;</span>, <span class="st">&quot;mds&quot;</span>, <span class="st">&quot;list&quot;</span>)
+  }
+  
+  <span class="cf">if</span> (fun <span class="op">==</span><span class="st"> &quot;monoMDS&quot;</span>) {
+    mds. &lt;-<span class="st"> </span>vegan<span class="op">::</span><span class="kw">monoMDS</span>(<span class="dt">dist =</span> d, <span class="dt">k =</span> k,...)
+    <span class="kw">class</span>(mds.) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;monoMDS&quot;</span>, <span class="st">&quot;mds&quot;</span>, <span class="st">&quot;list&quot;</span>)
+  }
+  
+  mds.
+}
+
+<span class="co"># plot.mds : MDS2 ~ MDS1 --------------------------------</span>
+plot.mds &lt;-<span class="st"> </span><span class="cf">function</span>(x,...){
+  points &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">as_tibble</span>(x<span class="op">$</span>points, <span class="dt">.name_repair =</span> <span class="st">&quot;minimal&quot;</span>)
+  <span class="kw">colnames</span>(points) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;mds&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="kw">ncol</span>(points))
+  
+  <span class="kw">plot</span>(<span class="dt">data =</span> points, mds2 <span class="op">~</span><span class="st"> </span>mds1,...)
+}
+
+autoplot.mds &lt;-<span class="st"> </span><span class="cf">function</span>(x, ...){
+  
+  points &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">as_tibble</span>(x<span class="op">$</span>points, <span class="dt">.name_repair =</span> <span class="st">&quot;minimal&quot;</span>)
+  <span class="kw">colnames</span>(points) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;mds&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="kw">ncol</span>(points))
+  
+  <span class="kw">chart</span>(points, mds2 <span class="op">~</span><span class="st"> </span>mds1, ...) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_point</span>()
+}
+
+shepard &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">d =</span> d, <span class="dt">x =</span> x, <span class="dt">p=</span><span class="dv">2</span>) {
+  she &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">Shepard</span>(<span class="dt">d =</span> d, <span class="dt">x =</span> x<span class="op">$</span>points, <span class="dt">p =</span> p)
+  <span class="kw">class</span>(she) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;shepard&quot;</span>, <span class="st">&quot;list&quot;</span>)
+  she
+}
+
+plot.shepard &lt;-<span class="st"> </span><span class="cf">function</span>(x, <span class="dt">ylab =</span> <span class="st">&quot;Ordination Distance&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;Observed Dissimilarity&quot;</span>, ...){
+  she &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">as_tibble</span>(x, <span class="dt">.name_repair =</span> <span class="st">&quot;minimal&quot;</span>)
+  
+  <span class="kw">plot</span>(<span class="dt">data =</span> she, y<span class="op">~</span>x, ...)
+  <span class="kw">lines</span>(<span class="dt">data =</span> she, yf <span class="op">~</span><span class="st"> </span>x, <span class="dt">type =</span> <span class="st">&quot;S&quot;</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">lwd =</span> <span class="dv">3</span>)
+}
+
+autoplot.shepard &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
+  she &lt;-<span class="st"> </span><span class="kw">as_tibble</span>(x)
+  
+  <span class="kw">chart</span>(<span class="dt">data =</span> she, y<span class="op">~</span>x) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_step</span>(<span class="kw">f_aes</span>(yf <span class="op">~</span><span class="st"> </span>x), <span class="dt">direction =</span> <span class="st">&quot;vh&quot;</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">lwd =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;Ordination Distance&quot;</span>, <span class="dt">x =</span> <span class="st">&quot;Observed Dissimilarity&quot;</span>)
+}
+
+<span class="co"># augment.mds -------------------------------------------</span>
+augment.mds &lt;-<span class="st"> </span><span class="cf">function</span>(x, data,...){
+  points &lt;-<span class="st"> </span><span class="kw">as_tibble</span>(x<span class="op">$</span>points)
+  <span class="kw">colnames</span>(points) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;.mds&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="kw">ncol</span>(points))
+  
+  data &lt;-<span class="st"> </span><span class="kw">bind_cols</span>(data, points)
+  data
+}</code></pre>
 <div id="mds-classique-ou-pcoa" class="section level3">
 <h3><span class="header-section-number">6.2.1</span> MDS classique ou PCoA</h3>
 <p>La forme classique, aussi appelée <strong>analyse en coordonnées principales</strong> (Principal Coordinates Analysis en anglais ou PCoA), va <em>projetter</em> le nuage de points à <em>p</em> dimensions dans un espace réduit à <em>k</em> = 2 dimensions (voire éventuellement à 3 dimensions). Cette projection est comme l’ombre chinoise projettée d’un objet tridimensionnel sur une surface place en deux dimensions.</p>
@@ -332,8 +411,6 @@ veg</code></pre>
 stations &lt;-<span class="st"> </span>veg<span class="op">$</span>rownames
 veg &lt;-<span class="st"> </span><span class="kw">select</span>(veg, <span class="op">-</span>rownames)</code></pre>
 <p>Typiquement ce genre de données ne contient pas d’information constructive lorsque deux plantes sont simultanément absentes (double zéros). Donc, les métriques de type euclidienne ou Manhazttan ne conviennent pas ici. Nous devons choisir entre distance de Bray-Curtis ou Canberra en fonction de l’importance que nous souhaitons donner aux plantes les plus rares (avec couverture végétale faible et/ou absentes de la majorité des stations). Résumons d’abord les donnes selon ces deux points de vue pour déterminer si notre jeu de données contient beeaucoup d’espères rares ou non.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">boxplot</span>(veg)</code></pre>
-<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="sourceCode r"><code class="sourceCode r">veg <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">gather</span>(., <span class="dt">key =</span> <span class="st">&quot;espèce&quot;</span>, <span class="dt">value =</span> <span class="st">&quot;couverture&quot;</span>) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Tableau en format long nécessaire</span>
 <span class="st">  </span><span class="kw">chart</span>(., couverture <span class="op">~</span><span class="st"> </span>espèce) <span class="op">+</span>
@@ -353,60 +430,48 @@ veg &lt;-<span class="st"> </span><span class="kw">select</span>(veg, <span clas
 <p>A noter que la PCoA sur matrice euclidienne après stadardisation ou non est équivalement à une <strong>Analyse en Composantes Principales</strong> (ACP) que nous étudierons dans le module suivante, … mais avec un calcul nettement moins efficace. Dans ce contexte, la PCoA n’a donc pas grand intérêt. Elle est surtout utile lorsque vous voulez représenter des métriques de distances <em>différentes</em> de la distance euclidienne.</p>
 <p>Restez toujours attentif à la taille du jeu de données que vous utilisez pour réaliser une MDS. Quelques centaines de lignes, ça dois passer, plusieurs dizaines de milleirs, voire plus, ça ne passera pas ! La limite dépend bien sûr de la puissance de votre ordinateur, et notamment de la quantité de méoire vive disponible.</p>
 <pre class="sourceCode r"><code class="sourceCode r">veg_dist &lt;-<span class="st"> </span>vegan<span class="op">::</span><span class="kw">vegdist</span>(<span class="kw">log1p</span>(veg))
-veg_mds &lt;-<span class="st"> </span>vegan<span class="op">::</span><span class="kw">monoMDS</span>(veg_dist)
-<span class="kw">plot</span>(veg_mds)</code></pre>
-<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(<span class="kw">as_tibble</span>(veg_mds<span class="op">$</span>points), MDS2 <span class="op">~</span><span class="st"> </span>MDS1) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>()</code></pre>
-<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-29-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">vegan<span class="op">::</span><span class="kw">stressplot</span>(veg_mds)</code></pre>
+
+mds. &lt;-<span class="st"> </span><span class="kw">mds</span>(veg_dist, <span class="dt">fun =</span> <span class="st">&quot;cmdscale&quot;</span>) </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">autoplot</span>(mds.)</code></pre>
 <p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">veg_sh &lt;-<span class="st"> </span><span class="kw">Shepard</span>(veg_dist, veg_mds<span class="op">$</span>points)
-nmR2 &lt;-<span class="st"> </span><span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">sum</span>(vegan<span class="op">::</span><span class="kw">goodness</span>(veg_mds)<span class="op">^</span><span class="dv">2</span>)
-mR2 &lt;-<span class="st"> </span><span class="kw">cor</span>(veg_sh<span class="op">$</span>y, veg_sh<span class="op">$</span>yf)<span class="op">^</span><span class="dv">2</span>
-<span class="kw">chart</span>(<span class="kw">as_tibble</span>(veg_sh), y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_step</span>(<span class="kw">f_aes</span>(yf <span class="op">~</span><span class="st"> </span>x), <span class="dt">direction =</span> <span class="st">&quot;vh&quot;</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">lwd =</span> <span class="dv">1</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Dissimilarités observées&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Distances sur la carte&quot;</span>,
-    <span class="dt">caption =</span> glue<span class="op">::</span><span class="kw">glue</span>(<span class="st">&quot;R² métrique = {round(mR2, 3)}, R² non métrique = {round(nmR2, 3)}&quot;</span>))</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">veg_mds &lt;-<span class="st"> </span><span class="kw">augment</span>(mds., veg)</code></pre>
+<pre><code># Warning: `as_tibble.matrix()` requires a matrix with column names or a `.name_repair` argument. Using compatibility `.name_repair`.
+# This warning is displayed once per session.</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">veg_mds<span class="op">$</span>stations &lt;-<span class="st"> </span>stations
+
+<span class="kw">chart</span>(veg_mds, .mds2 <span class="op">~</span><span class="st"> </span>.mds1 <span class="op">%label=%</span><span class="st"> </span>stations) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span>ggrepel<span class="op">::</span><span class="kw">geom_text_repel</span>()</code></pre>
 <p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(veg_sh<span class="op">$</span>y, veg_sh<span class="op">$</span>yf)<span class="op">^</span><span class="dv">2</span></code></pre>
-<pre><code># [1] 0.9179788</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="dv">1</span><span class="op">-</span><span class="st"> </span><span class="kw">sum</span>(vegan<span class="op">::</span><span class="kw">goodness</span>(veg_mds)<span class="op">^</span><span class="dv">2</span>)</code></pre>
-<pre><code># [1] 0.9840648</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lm</span>(<span class="dt">data =</span> <span class="kw">as_tibble</span>(veg_sh), yf <span class="op">~</span><span class="st"> </span>x) <span class="op">%&gt;.%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">summary</span>(.)</code></pre>
-<pre><code># 
-# Call:
-# lm(formula = yf ~ x, data = as_tibble(veg_sh))
-# 
-# Residuals:
-#      Min       1Q   Median       3Q      Max 
-# -0.20320 -0.05639 -0.01554  0.04667  0.50675 
-# 
-# Coefficients:
-#             Estimate Std. Error t value Pr(&gt;|t|)    
-# (Intercept) -0.91292    0.02238  -40.79   &lt;2e-16 ***
-# x            5.01374    0.04900  102.33   &lt;2e-16 ***
-# ---
-# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-# 
-# Residual standard error: 0.09778 on 274 degrees of freedom
-# Multiple R-squared:  0.9745,  Adjusted R-squared:  0.9744 
-# F-statistic: 1.047e+04 on 1 and 274 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <div id="mds-metrique" class="section level3">
 <h3><span class="header-section-number">6.2.2</span> MDS métrique</h3>
+<pre class="sourceCode r"><code class="sourceCode r">mds. &lt;-<span class="st"> </span><span class="kw">mds</span>(veg_dist, <span class="dt">fun =</span> <span class="st">&quot;sammon&quot;</span>)</code></pre>
+<pre><code># Initial stress        : 0.11666
+# stress after  10 iters: 0.05079, magic = 0.461
+# stress after  20 iters: 0.04885, magic = 0.500
+# stress after  30 iters: 0.04883, magic = 0.500</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">autoplot</span>(mds.)</code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r">sh. &lt;-<span class="st"> </span><span class="kw">shepard</span>(veg_dist, mds.)
+<span class="kw">autoplot</span>(sh.)</code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="mds-non-metrique" class="section level3">
 <h3><span class="header-section-number">6.2.3</span> MDS non métrique</h3>
 <p>La version non métrique a été proposée par Kruskal (on parle aussi du positionnement multidimensionnel de Kruskal) considère les rangs des distances et non les distances elle-mêmes. Il faut comprendre qu’ici seul l’<em>ordre</em> des points sur la carte est prise en compte, mais pas la valeur de la distance elle-même. Cette méthode est utile lorsque des points extrêmes exhibent des dissimilarités particulièrement dilatées par rapport à l’ensemble des autres individus.</p>
+<pre class="sourceCode r"><code class="sourceCode r">mds. &lt;-<span class="st"> </span><span class="kw">mds</span>(veg_dist, <span class="dt">fun =</span> <span class="st">&quot;monoMDS&quot;</span>)
+<span class="kw">autoplot</span>(mds.)</code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r">sh. &lt;-<span class="st"> </span><span class="kw">shepard</span>(veg_dist, mds.)
+<span class="kw">autoplot</span>(sh.)</code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="3">
-<li id="fn3"><p>Chaque métrique de distance offre un éclairage différent sur les données. Elles agissent comme autant de filtres différents à votre disposition pour explorer vos données multivariées.<a href="positionnement-multidimensionnel-mds.html#fnref3" class="footnote-back">↩</a></p></li>
+<ol start="17">
+<li id="fn17"><p>Chaque métrique de distance offre un éclairage différent sur les données. Elles agissent comme autant de filtres différents à votre disposition pour explorer vos données multivariées.<a href="positionnement-multidimensionnel-mds.html#fnref17" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>
