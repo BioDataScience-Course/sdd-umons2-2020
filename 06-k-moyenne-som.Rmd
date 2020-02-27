@@ -567,7 +567,7 @@ zoo <- read("zooplankton", package = "data.io")
 zoo
 ```
 
-Les 19 premières colonnes représentent des mesures réalisées sur notre plancton et la vingtième est la classe. Nous nous débarasserons de la colonne classe et transformons les données numériques en **matrice** aporès avoir standardisé les données (étapes *obligatoires*) pour stocker le résultat dans `zoo-mat`.
+Les 19 premières colonnes représentent des mesures réalisées sur notre plancton et la vingtième est la classe. Nous nous débarasserons de la colonne classe et transformons les données numériques en **matrice** après avoir standardisé les données (étapes *obligatoires*) pour stocker le résultat dans `zoo_mat`.
 
 ```{r}
 zoo %>.%
@@ -576,27 +576,27 @@ zoo %>.%
   as.matrix(.) -> zoo_mat
 ```
 
-Avant de pouvoir réaliser notre analyse, nous devons décider d'avance la topologie de la carte, c'est-à-dire, l'arrangement des cellules ainsi que le nombre de lignes et de colonnes. Nous verrons plus loin des outils pour nous y aider. Pour l'instant, considérons les deux topologies les plus fréquentes\ : la **grille rectangulaire** et la **grille hexagonale**. Plus le nombre de celluels est important, plus la carte sera détaillée, mais plus il nous faudra de données pour la calculer et la "peupler". Considérons par exemple une grille 7 par 7 qui contient donc 49 celluels au total.
+Avant de pouvoir réaliser notre analyse, nous devons décider d'avance la topologie de la carte, c'est-à-dire, l'arrangement des cellules ainsi que le nombre de lignes et de colonnes. Le nombre de cellules totales choisies dépend à la fois du niveau de détails souhaité, et du nombre d'individus dans votre jeu de données (il faut naturellement plus de données que de cellules, disons, au moins 5 à 10 fois plus). Pour l'instant, considérons les deux topologies les plus fréquentes\ : la **grille rectangulaire** et la **grille hexagonale**. Plus le nombre de cellules est important, plus la carte sera détaillée, mais plus il nous faudra de données pour la calculer et la "peupler". Considérons par exemple une grille 7 par 7 qui contient donc 49 cellules au total. Sachant que nous avons plus de 1200 particules de plancton mesurées dans `zoo`, le niveau de détail choisi est loin d'être trop ambitieux.
 
-- La grille rectangulaire est celle qui vous vient probablement immédiatement à l'esprit. Il s'agit d'arranger les cellules en lignes horizontales et colonnes verticales. La fonction `somgrid()` du package `kohonen` permet de créer une telle grille.
+La grille rectangulaire est celle qui vous vient probablement immédiatement à l'esprit. Il s'agit d'arranger les cellules en lignes horizontales et colonnes verticales. La fonction `somgrid()` du package `kohonen` permet de créer une telle grille.
 
 ```{r}
 library(kohonen) # Charge le package kohonen
 rect_grid_7_7 <- somgrid(7, 7, topo = "rectangular") # Crée la grille
 ```
 
-Il n'y a pas de graphique `chart` ou `ggplot2` dans le package `kohonen`. Nous utiliserons ici les graphiques de base de R. Pour visualiser la grille, il faut la transformer en un objet `kohonen`. Nous pouvons ajouter plein d'information sur la grille. Ici, nous rajoutons une propriété calculée à l'aide de `unit.distances()` qui est la distance des cellules de la carte par référence à la cellule centrale. Les cellules sont numérotées de 1 à *n* en partant en bas à gauche, en progressant le long de la ligne du bas vers la droite, et en reprenant à gauche à la ligne au dessus. Donc, la ligne du bas contient de gauche à droite les cellules n°1 à 7. La ligne au dessus contient les cellules n°8 à 14, et ainsi de suite. Donc la cellule du centre de la grille est la cellule n°25.
+Il n'y a pas de graphique `chart` ou `ggplot2` dans le package `kohonen`. Nous utiliserons ici les graphiques de base de R. Pour visualiser la grille, il faut la transformer en un objet `kohonen`. Nous pouvons ajouter plein d'information sur la grille. Ici, nous rajoutons une propriété calculée à l'aide de `unit.distances()` qui est la distance des cellules de la carte par référence à la cellule centrale. Les cellules sont numérotées de 1 à *n* en partant en bas à gauche, en progressant le long de la ligne du bas vers la droite, et en reprenant à gauche à la ligne au dessus. Donc, la ligne du bas contient de gauche à droite les cellules n°1 à 7. La ligne au dessus contient les cellules n°8 à 14, et ainsi de suite. La cellule du centre de la grille en en 4^ème^ ligne en partant du bas et en position 4 sur cette ligne, soit trois lignes complètes plus quatre ($3*7+4=25$). C'est la cellule n°25.
 
 ```{r}
 rect_grid_7_7 %>.%
-  # Transformartion en un objet de classe kohonen qui est une liste
+  # Transformation en un objet de classe kohonen qui est une liste
   structure(list(grid = .), class = "kohonen") %>.% # Objet de classe kohonen
   plot(., type = "property", # Graphique de propriété
     property = unit.distances(rect_grid_7_7)[25, ], # distance à la cellule 25
     main = "Distance depuis la cellule centrale") # Titre du graphique
 ```
 
-Les cellules de la grille ne sont pas disposées au hasard dans la carte SOM. Des relations de voisinage sont utilisées pour placer les individus à représenter dans des cellules adjacentes si ils se ressemblent. Avec une grille rectangulaire, nous avons donc deux modalités de variation\ : en horizontal et en vertival, ce qui donne deux gradients possibles qui, combinés donnent des extrêmes dans les coins opposés. Une cellule possède huits voisins directs.
+Les cellules de la grille ne sont pas disposées au hasard dans la carte SOM. Des relations de voisinage sont utilisées pour placer les individus à représenter dans des cellules adjacentes s'ils se ressemblent. Avec une grille rectangulaire, nous avons donc deux modalités de variation\ : en horizontal et en vertival, ce qui donne deux gradients possibles qui, combinés donnent des extrêmes dans les coins opposés. Une cellule possède huits voisins directs.
 
 L'autre topologie possible est la grille hexagonale. Voyons ce que cela donne\ :
 
@@ -604,7 +604,7 @@ L'autre topologie possible est la grille hexagonale. Voyons ce que cela donne\ :
 hex_grid_7_7 <- somgrid(7, 7, topo = "hexagonal")
 
 hex_grid_7_7 %>.%
-  # Transformartion en un objet de classe kohonen qui est une liste
+  # Transformation en un objet de classe kohonen qui est une liste
   structure(list(grid = .), class = "kohonen") %>.% # Objet de classe kohonen
   plot(., type = "property", # Graphique de propriété
     property = unit.distances(hex_grid_7_7)[25, ], # distance à la cellule 25
@@ -613,7 +613,7 @@ hex_grid_7_7 %>.%
 
 Ici, nous n'avons que six voisins directs, mais trois directions dans lesquelles les gradients peuvent varier\ : en horizontal, en diagonale vers la gauche et en diagonale vers la droite. Cela offre plus de possibilités pour l'agencement des individus. Nous voyons aussi plus de nuances dans les distances (il y a plus de couleurs différentes), pour une grille de même taille 7 par 7 que dans le cas de la grille rectangulaire. **Nous utiliserons donc préférentiellement la grille hexagonale.**
 
-Effectuons maintenant le calcul de notre SOM à l'aide de la fonction `som()` du package `kohonen`. Comme l'analyse fait intervenir le générateur pseudo-aléatoire, nous pouvons utiliser de manière optionelle `set.seed()` avec un nombre choisi au hasard (et toujours différent à chaque utilisation) pour que cette analyse particulière-là soit reproductible. Sinon, à chaque exécution, nous obtiendrons un résultat légèrement différent.
+Effectuons maintenant le calcul de notre SOM à l'aide de la fonction `som()` du package `kohonen`. Comme l'analyse fait intervenir le générateur pseudo-aléatoire, nous pouvons utiliser de manière optionnelle `set.seed()` avec un nombre choisi au hasard (et toujours différent à chaque utilisation) pour que cette analyse particulière-là soit reproductible. Sinon, à chaque exécution, nous obtiendrons un résultat légèrement différent.
 
 ```{r}
 set.seed(8657)
@@ -621,7 +621,7 @@ zoo_som <- som(zoo_mat, grid = somgrid(7, 7, topo = "hexagonal"))
 summary(zoo_som)
 ```
 
-Le résumé de l'objet ne nous donne pas beaucoup d'info. C'est normal. La technique étant visuelle, ce qui est important, c'est de représenter graphiquement la carte. Avec les graphiques R de base, la fonction utilisée est `plot()`. Nous avons plusieurs types disponibles et une large palette d'options. Voyez l'aide en ligne de`?plot.kohonen`. Le premier graphique (`type = "changes"`) montre l'évolution de l'apprentissage au fil des itérations. L'objectif est de descendre le plus possible sur l'axe des ordonnées pour réduire au maximum la distince des individus par rapprot à la cellule (unit en anglais) où ils devraient se placer. Idéalement, nous souhaitons tendre verss zéro. En pratique, nous pourrons arrêter les itération lorsque la courbe ne diminue plus de manière significative.
+Le résumé de l'objet ne nous donne pas beaucoup d'info. C'est normal. La technique étant visuelle, ce qui est important, c'est de représenter graphiquement la carte. Avec les graphiques R de base, la fonction utilisée est `plot()`. Nous avons plusieurs types disponibles et une large palette d'options. Voyez l'aide en ligne de`?plot.kohonen`. Le premier graphique (`type = "changes"`) montre l'évolution de l'apprentissage au fil des itérations. L'objectif est de descendre le plus possible sur l'axe des ordonnées pour réduire au maximum la distance des individus par rapport aux cellules (unit en anglais) où ils devraient se placer. Idéalement, nous souhaitons tendre vers zéro. En pratique, nous pourrons arrêter les itérations lorsque la courbe ne diminue plus de manière significative.
 
 ```{r}
 plot(zoo_som, type = "changes")
@@ -637,21 +637,116 @@ plot(zoo_som, type = "changes")
 
 Vous serez sans doute surpris de constater que la diminution de la courbe se fait plus lentement maintenant. En fait `som()` va adapter son taux d'apprentissage en fonction du nombre d'itérations qu'on lui donne et va alors "peaufiner le travail" d'autant plus. Au final, la valeur n'est pas plus basse pour autant. Donc, nous avons aboutit probablement à une solution. 
 
-Le second graphique que nous pouvons réaliser consiste à placer les individus dans la carte, en utilisant éventuellement une couleur différente en fonction d'une caractéristique de ces individus (ici, leur `class`e). Ce graphique est obtenu avec `type = "mapping"`. Si vous ne voulez pas représenter la grille hexagonale à l'aide de cercles, vous pouvez spécifier `shape = "straight"`.
+Le second graphique que nous pouvons réaliser consiste à placer les individus dans la carte, en utilisant éventuellement une couleur différente en fonction d'une caractéristique de ces individus (ici, leur `class`e). Ce graphique est obtenu avec `type = "mapping"`. Si vous ne voulez pas représenter la grille hexagonale à l'aide de cercles, vous pouvez spécifier `shape = "straight"`. Nous avons 17 classes de zooplancton et il est difficile de représenter plus de 10-12 couleurs distinctes, mais [ce site](https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/) propose une palette de 20 couleurs distinctes. Nous en utiliserons les 17 premières...
 
 ```{r}
-plot(zoo_som, type = "mapping", shape = "straight", col = zoo$class)
+colors17 <- c("#e6194B", "#3cb44b", "#ffe119", "#4363d8", "#f58231", "#911eb4",
+  "#42d4f4", "#f032e6", "#bfef45", "#fabebe", "#469990", "#e6beff", "#9A6324",
+  "#fffac8", "#800000", "#aaffc3", "#808000", "#ffd8b1")
+plot(zoo_som, type = "mapping", shape = "straight", col = colors17[zoo$class])
 ```
 
-Nous voyons ici que, malgré que l'information contenue dans `class` n'ait pas été utilisées. Les différents individus de zooplancton ne se répartissent pas au hasard en fonction de ce critère. Nous pouyvons également voir les cellules qui contiennent plus ou moins d'individus, mais si l'objectif est de visionner *uniquement* le remplissage des cellules, le `type = "counts"` est plus adapté. 
+Nous n'avons pas ajouté de légende qui indique à quelle classe correspond quelle couleur. Ce que nous voulons voir, c'est si les cellules arrivent à séparer les classes. Nous voyons que la séparation est imparfaite, mais des tendances apparaissent avec certaines couleurs qui se retrouvent plutôt dans une région de la carte.
+
+Nous voyons donc ici que, malgré que l'information contenue dans `class` n'ait pas été utilisées. Les différents individus de zooplancton ne se répartissent pas au hasard en fonction de ce critère. Nous pouvons également voir les cellules qui contiennent plus ou moins d'individus, mais si l'objectif est de visionner *uniquement* le remplissage des cellules, le `type = "counts"` est plus adapté. 
 
 ```{r}
 plot(zoo_som, type = "counts", shape = "straight")
 ```
 
+Nous pouvons obtenir la cellule dans laquelle chaque individu est mappé comme suit\ :
+
+```{r}
+zoo_som$unit.classif
+```
+
+Par conséquent, nous pouvons créer un tableau de contingence qui répertorie le nombre d'iundividus mappés dans chaque cellule à l'aide de `table()`. Nous l'enregistrons dans `zoo_som_nb` car nous la réutiliserons plus tard.
+
+```{r}
+zoo_som_nb <- table(zoo_som$unit.classif)
+zoo_som_nb
+```
+
+
+### Interprétation d'un SOM
+
+De nombreuses autres présentations graphiques sont possibles sur cette base. Nous allons explorer deux aspects complémentaires\ : (1) représentation des variables, et (2) réalisation et représentation de regroupements.
+
+
+#### Représentation des variables
+
+La carte SOM est orientée. C'est-à-dire que les cellules représentent des formes différentes de plancton telles qu'exprimées à travers les 19 variables utilisées ici (quantification de la taille, de la forme, de la transparence, ...). Le graphique `type = "codes"` permet de visualiser ces différences de manière générale\ :
+
+```{r, fig.height=7}
+plot(zoo_som, type = "codes", codeRendering = "segments")
+```
+
+Ce graphique est riche en informations. Nous voyons que\ :
+
+- les très grands individus (`ecd`, `area`, `perimeter`, etc.), soit les segments verts sont en haut à droite de la carte et les petits sont à gauche,
+- les individus opaques (variables `mean`, `mode`, `max`, etc.^[Attention\ : la variable `transparency`, contrairement à ce que son nom pourrait suggérer n'est pas une mesure de la transparence de l'objet, mais de l'aspect plus ou moins régulier et lisse de sa silhouette.]), soit des segments dans les tons jaunes sont en bas à droite. Les organismes plus transparents sont en haut à gauche,
+- au delà de ces deux principaux critères qui se dégagement prioritairement, les aspects de forme (segments rose-rouges) se retrouvent exprimés moins nettement le long de gradients. La `circularity` mesure la silhouette plus ou moins arrondie des items (sa valeur est d'autant plus élevée que la forme se rapproche d'un cercle). Les organismes circulaires se retrouvent dans le bas de la carte. L'`elongation` et l'`aspect` mesurent l'allongement de la particule et se retrouvent plutôt exprimés positivement vers le haut de la carte.
+
+Nous pouvons donc **orienter** notre carte SOM en indiquant l'information relative aux variables. Lorsque le nombre de variables est élevé ou relativement élevé comme ici, cela devient néanmoins difficile à lire. Il est aussi possible de colorer les cartes en fonction d'une et une seule variable pour en faciliter la lecture à l'aide de `type = "property"`. Voici quelques exemples (notez la façon de diviser une page graphique en lignes et colonnes à l'aide de `par(mfrow = ))` en graphiques R de base, ensuite une boucle `for` réalise les six graphiques l'un après l'autre)\ :
+
+```{r}
+par(mfrow = c(2, 3))
+for (var in c("size", "mode", "range", "aspect", "elongation", "circularity"))
+  plot(zoo_som, type = "property", property = zoo_som$codes[[1]][, var],
+    main = var, palette.name = viridis::inferno)
+```
+
+Nous pouvons plus facilement inspecter les zones d'influence de différentes variables ciblées. Ici, `size` est une mesure de la taille des particules, `mode` est le niveau d'opacité moyen, `range` est la variation d'opacité (un `range` important indique que la particule a des parties très transparentes et d'autres très opaques), `aspect` est le rapport longueur/largeur, `elongation` est une indication de la complexité du périmètre de la particule, et `circularity` est sa forme plus ou moins circulaire. Pour une explication détaillée des 19 variables, faites `?zooplankton`.
+
+
+#### Regroupements
+
+Lorsque nous avons réalisé une CAH sur le jeu de données `zooplankton`, nous étions obligés de choisir deux variables parmi les 19 pour visualiser le regroupement sur un graphique nuage de points. C'est peu, et cela ne permet pas d'avoir une vision synthétique sur l'ensemble de l'information. Les méthodes d'ordination permettent de visualiser plus d'information sur un petit nombre de dimensions grâce aux techniques de réduction des dimensions qu'elles implémentent. Les cartes SOM offrent encore un niveau supplémentaire de raffinement. Nous pouvons considérer que chaque cellule est un premier résumé des données et nous pouvons effectuer ensuite une CAH sur ces cellules afin de dégager un regroupement et le visualiser sur la carte SOM. L'intérêt est que l'on réduit un jeu de données potentiellement très volumineux à un nombre plus restreint de cellules (ici 7x7 = 49), ce qui est plus "digeste" pour la CAH. Voici comment ça fonctionne\ :
+
+```{r}
+zoo_som_dist <- dist(zoo_som$codes[[1]]) # Distance euclidienne entre cellules
+zoo_som_cah <- hclust(zoo_som_dist, method = "ward.D2", members = zoo_som_nb)
+```
+
+Notre CAH a été réalisée ici avec la méthode D2 de Ward. L'argument `members =` est important. Il permet de pondérer chaque cellule en fonction du nombre d'individus qui y sont mappés. Toutes les cellules n'ont pas un même nombre d'individus, et nous souhaitons mettre plus de poids dans l'analyse aux cellules les plus remplies.
+
+Voici le dendrogramme\ :
+
+```{r}
+plot(zoo_som_cah, hang = -1)
+abline(h = 11.5, col = "red") # Niveau de coupure proposé
+```
+
+Les V1 à V49 sont les numéros de cellules. Nous pouvons couper à différents endroits dans ce dendrogramme, mais si nous décidons de distringuer les cinq groupes correspondants au niveau de coupure à une hauteur de 11,5 (comme sur le graphique), voici ce que cela donne\ :
+
+```{r}
+groupes <- cutree(zoo_som_cah, h = 11.5)
+groupes
+```
+
+Visualisons ce découpage sur la carte SOM (l'argument `bgcol = ` colorie le fond des cellules en fonction des groupes^[Nous avons choisi ici encore une autre palette de couleurs provenant du package `RColorBrewer`, voir [ici](http://www.sthda.com/french/wiki/couleurs-dans-r).], et `add.cluster.boudaries()` individualise des zones sur la carte en fonction du regroupement choisi).
+
+```{r}
+plot(zoo_som, type = "mapping", pch = ".", main = "SOM zoo, 5 groupes",
+  bgcol =  RColorBrewer::brewer.pal(5, "Set2")[groupes])
+add.cluster.boundaries(zoo_som, clustering = groupes)
+```
+
+Grâce à la topographie des variables que nous avons réalisée plus haut, nous savons que\ :
+
+- le groupe vert bouteille en bas à gauche reprend les petites particules plutôt transparentes,
+- le groupe orange en bas à droite est constituée de particules très contrastées avec des parties opaques et d'autres transparentes (`range` important),
+- le groupe du dessus en bleu est constitué de particules petites à moyennes ayant une forme complexe (variable `elongation`),
+- le groupe rose est constitué des particules moyennes à grandes,
+- le groupe vert clair d'une seule cellule en haut à droite reprend les toutes grandes particules.
+
+Nous n'avons fait qu'effleurer les nombreuses possibilités des cartes SOM... Il est par exemple possible d'aller mapper des nouveaux individus dans cette carte (données supplémentaires), ou même de faire une classification sur base d'exemples (classification supervisée) que nous verrons au cours de Science des Données Biologiques III. Nous espérons que cela vous donnera l'envie et la curiosité de tester cette méthode sur vos données et d'explorer plus avant ses nombreuses possibilités.
+
 
 ##### Pour en savoir plus {-}
 
-- Une [explication très détaillée en français](https://meritis.fr/ia/cartes-topologiques-de-kohonen/) accompagnée de la résolution d'un exemple fictif résolu dans R.
+- Une [explication très détaillée en français](https://meritis.fr/ia/cartes-topologiques-de-kohonen/) accompagnée de la résolution d'un exemple fictif dans R.
 
-- Si vous êtes aventureux, vous pouvoez vous lancer dans la réimplémentation des graphiques du package `kohonen` en `chart`ou `ggplot2`. Voici [un bon point de départ](http://blog.schochastics.net/post/soms-and-ggplot/) (en anglais).
+- Une [autre explication détaillée en français](http://eric.univ-lyon2.fr/~ricco/tanagra/fichiers/fr_Tanagra_Kohonen_SOM_R.pdf) avec exemple dans R.
+
+- Si vous êtes aventureux, vous pouvez vous lancer dans la réimplémentation des graphiques du package `kohonen` en `chart`ou `ggplot2`. Voici [un bon point de départ](http://blog.schochastics.net/post/soms-and-ggplot/) (en anglais).
