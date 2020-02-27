@@ -1198,7 +1198,7 @@ Grâce à la topographie des variables que nous avons réalisée plus haut, nous
 - le groupe rose est constitué des particules moyennes à grandes,
 - le groupe vert clair d'une seule cellule en haut à droite reprend les toutes grandes particules.
 
-Nous n'avons fait qu'effleurer les nombreuses possibilités des cartes SOM... Il est par exemple possible d'aller mapper des nouveaux individus dans cette carte (données supplémentaires), ou même de faire une classification sur base d'exemples (classification supervisée) que nous verrons au cours de Science des Données Biologiques III. Nous espérons que cela vous donnera l'envie et la curiosité de tester cette méthode sur vos données et d'explorer plus avant ses nombreuses possibilités.
+Nous n'avons fait qu'effleurer les nombreuses possibilités des cartes auto-adaptatives SOM... Il est par exemple possible d'aller mapper des nouveaux individus dans cette carte (données supplémentaires), ou même de faire une classification sur base d'exemples (classification supervisée) que nous verrons au cours de Science des Données Biologiques III. Nous espérons que cela vous donnera l'envie et la curiosité de tester cette méthode sur vos données et d'explorer plus avant ses nombreuses possibilités.
 
 
 ##### Pour en savoir plus {-}

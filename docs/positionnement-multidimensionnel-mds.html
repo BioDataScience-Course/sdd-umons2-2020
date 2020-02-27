@@ -290,7 +290,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <p><img src="images/sdd2_06/tenor.gif" /></p>
 <p>Il existe, en réalité, plusieurs techniques de MDS. Elle répondent toutes au schéma suivant :</p>
 <ul>
-<li>A partir d’un tableau multivarié de <em>n</em> lignes et <em>p</em> colonnes, nous calculons une matrice de distances (le choix de la transformation initiale éventuelle et de la métrique de distance utilisée sont totalement libres ici<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>).</li>
+<li>A partir d’un tableau multivarié de <em>n</em> lignes et <em>p</em> colonnes, nous calculons une matrice de distances (le choix de la transformation initiale éventuelle et de la métrique de distance utilisée sont totalement libres ici<a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a>).</li>
 <li>Nous souhaitons représenter une carte (nuage de points) à <em>k</em> dimensions (<em>k</em> = 2, éventuellement <em>k</em> = 3) où les <em>n</em> individus seront placés de telle façon que les proximités exprimées par des valeurs faibles dans la matrice de dissimilarité soient respectées <em>autant que possible</em> entre tous les points.</li>
 <li>Pour y arriver les points sont placés successivement sur la carte et réajustés afin de minimiser une <strong>fonction de coût</strong>, encore appelée <strong>fonction de stress</strong> qui quantifie de combien nous avons dû “tordre” le réseau à <em>p</em> dimensions initial représentant les distances entre toutes les paires. C’est en adoptant différentes fonctions de stress que nous aboutissons aux différentes variantes de MDS. La fonction de stress est représentée graphiquement (voir ci-dessous) pour diagnostiquer le traitement réaliser et décider si la représentation est utilisable (pas trop tordue) ou non.</li>
 <li>Le positionnement des points faisant intervenir un facteur aléatoire (choix des points à placer en premier, réorganisation ensuite pour minimiser la fonction de stress), le résutat final peut varier d’une fois à l’autre sur les mêmes données, voir ne pas converger vers une solution stable. Il faut en être conscient.</li>
@@ -578,8 +578,8 @@ veg</code></pre>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="3">
-<li id="fn3"><p>Chaque métrique de distance offre un éclairage différent sur les données. Elles agissent comme autant de filtres différents à votre disposition pour explorer vos données multivariées.<a href="positionnement-multidimensionnel-mds.html#fnref3" class="footnote-back">↩</a></p></li>
+<ol start="17">
+<li id="fn17"><p>Chaque métrique de distance offre un éclairage différent sur les données. Elles agissent comme autant de filtres différents à votre disposition pour explorer vos données multivariées.<a href="positionnement-multidimensionnel-mds.html#fnref17" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>
