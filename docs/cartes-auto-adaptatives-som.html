@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-02-26">
+<meta name="date" content="2020-02-27">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -240,7 +240,9 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="6.2.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-metrique-ou-pcoa"><i class="fa fa-check"></i><b>6.2.2</b> MDS métrique ou PCoA</a></li>
 <li class="chapter" data-level="6.2.3" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-non-metrique"><i class="fa fa-check"></i><b>6.2.3</b> MDS non métrique</a></li>
 </ul></li>
-<li class="chapter" data-level="6.3" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html"><i class="fa fa-check"></i><b>6.3</b> Cartes auto-adaptatives (SOM)</a></li>
+<li class="chapter" data-level="6.3" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html"><i class="fa fa-check"></i><b>6.3</b> Cartes auto-adaptatives (SOM)</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html#som-sur-le-zooplancton"><i class="fa fa-check"></i><b>6.3.1</b> SOM sur le zooplancton</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
 <li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a></li>
@@ -284,10 +286,108 @@ code span.wa { color: #bf0303; } /* Warning */
 <h2><span class="header-section-number">6.3</span> Cartes auto-adaptatives (SOM)</h2>
 <p>Le positionnement multidimensionnel faisant appel à une matrice de distances entre tous les individus, les calculs deviennent vite pénalisants au fur et à mesure que le jeu de données augmente en taille. En général, les calculs sont assez lents. Nous verrons au module suivant que l’<strong>analyse en composantes principales</strong> apporte une réponse intéressante à ce problème, mais nous contraint à étudier des corrélations linéaires et des distances de type euclidiennes.</p>
 <p>Une approche radicalement différente, qui reste plus générale car non linéaire, est la méthode des <strong>cartes auto-adaptatives</strong>, ou encore, <strong>cartes de Kohonen</strong> du nom de son auteur se désigne par “self-organizing map” en anglais. L’acronyme <strong>SOM</strong> est fréquemment utilisé, même en français. Cette technique va encore une fois exploiter une matrice de distances dans le but de représenter les individus sur une carte. Cette fois-ci, la carte contient un certain nombre de cellules qui forment une grille, ou mieux, une disposition en nid d’abeille (nous verrons plus loin pourquoi cette disposition particulière est intéressante). De manière similaire au MDS, nous allons faire en sorte que des individus similaires soient proches sur la carte, et des individus différents soient éloignés. La division de la carte en différentes cellules permet de regrouper les individus. Ceci permet une classification comme pour la CAH ou les k-moyennes. Les SOM apparaissent donc comme une technique hybride entre <strong>ordination</strong> (représentation sur des cartes) et <strong>classification</strong> (regroupement des individus).</p>
-<p>La théorie et les calculs derrière les SOM sont très complexes. Elles font appel aux <strong>réseaux de neurones adaptatifs</strong> et leur fonctionnement est inspiré de celui du cerveau humain. Tout comme notre cerveau, les SOM vont utiliser l’information en entrée pour aller assigner une zone de traitement de l’information (pour notre cerveau) ou une cellule dans la carte (pour les SOM). Étant donné la complexité du calcul, les développement mathématiques n’ont pas leur place dans ce cours. Ce qui importe, c’est de comprendre le concept, et d’être ensuite capable d’utiliser les SOM à bon escient. Uniquement pour ceux d’entre vous qui désirent comprendre les détails du calcul, vous pouvez visionner la vidéo suivante <strong>(facultative et en anglais)</strong> :</p>
+<p>La théorie et les calculs derrière les SOM sont très complexes. Elles font appel aux <strong>réseaux de neurones adaptatifs</strong> et leur fonctionnement est inspiré de celui du cerveau humain. Tout comme notre cerveau, les SOM vont utiliser l’information en entrée pour aller assigner une zone de traitement de l’information (pour notre cerveau) ou une cellule dans la carte (pour les SOM). Étant donné la complexité du calcul, les développement mathématiques n’ont pas leur place dans ce cours. Ce qui importe, c’est de comprendre le concept, et d’être ensuite capable d’utiliser les SOM à bon escient. Uniquement pour ceux d’entre vous qui désirent comprendre les détails du calcul, vous pouvez lire <a href="https://towardsdatascience.com/kohonen-self-organizing-maps-a29040d688da">ici</a> ou visionner la vidéo suivante <strong>(facultative et en anglais)</strong> :</p>
 <iframe src="https://www.youtube.com/embed/0qtvb_Nx2tA?end=266" width="770" height="433" frameborder="0" allowfullscreen=""></iframe>
-<p>Pourquoi grille en nid d’abeille ?</p>
+<p>Plutôt que de détailler les calculs, nous vous montrons ici comment un ensemble de pixels de couleurs différentes est organisé sur une carte SOM de Kohonen en un pattern infiniment plus cohérent… automatiquement (cet example est proposé par <a href="https://amethyste16.wordpress.com/about/">Frédéric De Lène Mirouze</a> dans <a href="https://amethyste16.wordpress.com/2015/10/24/reseau-de-neurones-les-cartes-auto-adaptatives/">son blog</a>).</p>
+<div class="figure">
+<img src="images/sdd2_06/pixels_aleatoires.png" alt="Image créée artificiellement avec disposition aléatoire des pixels." />
+<p class="caption">Image créée artificiellement avec disposition aléatoire des pixels.</p>
+</div>
+<div class="figure">
+<img src="images/sdd2_06/pixels_som.png" alt="Carte SOM obtenue à partir de l’image précédente : les pixels sont automatiquement triés par couleur sur la carte." />
+<p class="caption">Carte SOM obtenue à partir de l’image précédente : les pixels sont automatiquement triés par couleur sur la carte.</p>
+</div>
+<p>Ce qui est évident sur un exemple aussi visuel que celui-ci fonctionne aussi très bien pour ranger les individus dans un tableau multivarié <em>a priori</em> cahotique comme ceux que nous rencontrons régulièrement en statistiques multivariées en biologie.</p>
+<div id="som-sur-le-zooplancton" class="section level3">
+<h3><span class="header-section-number">6.3.1</span> SOM sur le zooplancton</h3>
+<p>Reprenons notre exemple du zooplankton.</p>
+<pre class="sourceCode r"><code class="sourceCode r">zoo &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="st">&quot;zooplankton&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;data.io&quot;</span>)
+zoo</code></pre>
+<pre><code># # A tibble: 1,262 x 20
+#      ecd  area perimeter feret major minor  mean  mode   min   max std_dev
+#    &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+#  1 0.770 0.465      4.45 1.32  1.16  0.509 0.363 0.036 0.004 0.908   0.231
+#  2 0.700 0.385      2.32 0.728 0.713 0.688 0.361 0.492 0.024 0.676   0.183
+#  3 0.815 0.521      4.15 1.33  1.11  0.598 0.308 0.032 0.008 0.696   0.204
+#  4 0.785 0.484      4.44 1.78  1.56  0.394 0.332 0.036 0.004 0.728   0.218
+#  5 0.361 0.103      1.71 0.739 0.694 0.188 0.153 0.016 0.008 0.452   0.110
+#  6 0.832 0.544      5.27 1.66  1.36  0.511 0.371 0.02  0.004 0.844   0.268
+#  7 1.23  1.20      15.7  3.92  1.37  1.11  0.217 0.012 0.004 0.784   0.214
+#  8 0.620 0.302      3.98 1.19  1.04  0.370 0.316 0.012 0.004 0.756   0.246
+#  9 1.19  1.12      15.3  3.85  1.34  1.06  0.176 0.012 0.004 0.728   0.172
+# 10 1.04  0.856      7.60 1.89  1.66  0.656 0.404 0.044 0.004 0.88    0.264
+# # … with 1,252 more rows, and 9 more variables: range &lt;dbl&gt;, size &lt;dbl&gt;,
+# #   aspect &lt;dbl&gt;, elongation &lt;dbl&gt;, compactness &lt;dbl&gt;, transparency &lt;dbl&gt;,
+# #   circularity &lt;dbl&gt;, density &lt;dbl&gt;, class &lt;fct&gt;</code></pre>
+<p>Les 19 premières colonnes représentent des mesures réalisées sur notre plancton et la vingtième est la classe. Nous nous débarasserons de la colonne classe et transformons les données numériques en <strong>matrice</strong> aporès avoir standardisé les données (étapes <em>obligatoires</em>) pour stocker le résultat dans <code>zoo-mat</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">zoo <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">select</span>(., <span class="op">-</span>class) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">scale</span>(.) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">as.matrix</span>(.) -&gt;<span class="st"> </span>zoo_mat</code></pre>
+<p>Avant de pouvoir réaliser notre analyse, nous devons décider d’avance la topologie de la carte, c’est-à-dire, l’arrangement des cellules ainsi que le nombre de lignes et de colonnes. Nous verrons plus loin des outils pour nous y aider. Pour l’instant, considérons les deux topologies les plus fréquentes : la <strong>grille rectangulaire</strong> et la <strong>grille hexagonale</strong>. Plus le nombre de celluels est important, plus la carte sera détaillée, mais plus il nous faudra de données pour la calculer et la “peupler”. Considérons par exemple une grille 7 par 7 qui contient donc 49 celluels au total.</p>
+<ul>
+<li>La grille rectangulaire est celle qui vous vient probablement immédiatement à l’esprit. Il s’agit d’arranger les cellules en lignes horizontales et colonnes verticales. La fonction <code>somgrid()</code> du package <code>kohonen</code> permet de créer une telle grille.</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(kohonen) <span class="co"># Charge le package kohonen</span></code></pre>
+<pre><code># 
+# Attaching package: &#39;kohonen&#39;</code></pre>
+<pre><code># The following object is masked from &#39;package:purrr&#39;:
+# 
+#     map</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">rect_grid_<span class="dv">7</span>_<span class="dv">7</span> &lt;-<span class="st"> </span><span class="kw">somgrid</span>(<span class="dv">7</span>, <span class="dv">7</span>, <span class="dt">topo =</span> <span class="st">&quot;rectangular&quot;</span>) <span class="co"># Crée la grille</span></code></pre>
+<p>Il n’y a pas de graphique <code>chart</code> ou <code>ggplot2</code> dans le package <code>kohonen</code>. Nous utiliserons ici les graphiques de base de R. Pour visualiser la grille, il faut la transformer en un objet <code>kohonen</code>. Nous pouvons ajouter plein d’information sur la grille. Ici, nous rajoutons une propriété calculée à l’aide de <code>unit.distances()</code> qui est la distance des cellules de la carte par référence à la cellule centrale. Les cellules sont numérotées de 1 à <em>n</em> en partant en bas à gauche, en progressant le long de la ligne du bas vers la droite, et en reprenant à gauche à la ligne au dessus. Donc, la ligne du bas contient de gauche à droite les cellules n°1 à 7. La ligne au dessus contient les cellules n°8 à 14, et ainsi de suite. Donc la cellule du centre de la grille est la cellule n°25.</p>
+<pre class="sourceCode r"><code class="sourceCode r">rect_grid_<span class="dv">7</span>_<span class="dv">7</span> <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="co"># Transformartion en un objet de classe kohonen qui est une liste</span>
+<span class="st">  </span><span class="kw">structure</span>(<span class="kw">list</span>(<span class="dt">grid =</span> .), <span class="dt">class =</span> <span class="st">&quot;kohonen&quot;</span>) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Objet de classe kohonen</span>
+<span class="st">  </span><span class="kw">plot</span>(., <span class="dt">type =</span> <span class="st">&quot;property&quot;</span>, <span class="co"># Graphique de propriété</span>
+    <span class="dt">property =</span> <span class="kw">unit.distances</span>(rect_grid_<span class="dv">7</span>_<span class="dv">7</span>)[<span class="dv">25</span>, ], <span class="co"># distance à la cellule 25</span>
+    <span class="dt">main =</span> <span class="st">&quot;Distance depuis la cellule centrale&quot;</span>) <span class="co"># Titre du graphique</span></code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Les cellules de la grille ne sont pas disposées au hasard dans la carte SOM. Des relations de voisinage sont utilisées pour placer les individus à représenter dans des cellules adjacentes si ils se ressemblent. Avec une grille rectangulaire, nous avons donc deux modalités de variation : en horizontal et en vertival, ce qui donne deux gradients possibles qui, combinés donnent des extrêmes dans les coins opposés. Une cellule possède huits voisins directs.</p>
+<p>L’autre topologie possible est la grille hexagonale. Voyons ce que cela donne :</p>
+<pre class="sourceCode r"><code class="sourceCode r">hex_grid_<span class="dv">7</span>_<span class="dv">7</span> &lt;-<span class="st"> </span><span class="kw">somgrid</span>(<span class="dv">7</span>, <span class="dv">7</span>, <span class="dt">topo =</span> <span class="st">&quot;hexagonal&quot;</span>)
 
+hex_grid_<span class="dv">7</span>_<span class="dv">7</span> <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="co"># Transformartion en un objet de classe kohonen qui est une liste</span>
+<span class="st">  </span><span class="kw">structure</span>(<span class="kw">list</span>(<span class="dt">grid =</span> .), <span class="dt">class =</span> <span class="st">&quot;kohonen&quot;</span>) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Objet de classe kohonen</span>
+<span class="st">  </span><span class="kw">plot</span>(., <span class="dt">type =</span> <span class="st">&quot;property&quot;</span>, <span class="co"># Graphique de propriété</span>
+    <span class="dt">property =</span> <span class="kw">unit.distances</span>(hex_grid_<span class="dv">7</span>_<span class="dv">7</span>)[<span class="dv">25</span>, ], <span class="co"># distance à la cellule 25</span>
+    <span class="dt">main =</span> <span class="st">&quot;Distance depuis la cellule centrale&quot;</span>) <span class="co"># Titre du graphique</span></code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ici, nous n’avons que six voisins directs, mais trois directions dans lesquelles les gradients peuvent varier : en horizontal, en diagonale vers la gauche et en diagonale vers la droite. Cela offre plus de possibilités pour l’agencement des individus. Nous voyons aussi plus de nuances dans les distances (il y a plus de couleurs différentes), pour une grille de même taille 7 par 7 que dans le cas de la grille rectangulaire. <strong>Nous utiliserons donc préférentiellement la grille hexagonale.</strong></p>
+<p>Effectuons maintenant le calcul de notre SOM à l’aide de la fonction <code>som()</code> du package <code>kohonen</code>. Comme l’analyse fait intervenir le générateur pseudo-aléatoire, nous pouvons utiliser de manière optionelle <code>set.seed()</code> avec un nombre choisi au hasard (et toujours différent à chaque utilisation) pour que cette analyse particulière-là soit reproductible. Sinon, à chaque exécution, nous obtiendrons un résultat légèrement différent.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">8657</span>)
+zoo_som &lt;-<span class="st"> </span><span class="kw">som</span>(zoo_mat, <span class="dt">grid =</span> <span class="kw">somgrid</span>(<span class="dv">7</span>, <span class="dv">7</span>, <span class="dt">topo =</span> <span class="st">&quot;hexagonal&quot;</span>))
+<span class="kw">summary</span>(zoo_som)</code></pre>
+<pre><code># SOM of size 7x7 with a hexagonal topology and a bubble neighbourhood function.
+# The number of data layers is 1.
+# Distance measure(s) used: sumofsquares.
+# Training data included: 1262 objects.
+# Mean distance to the closest unit in the map: 2.519.</code></pre>
+<p>Le résumé de l’objet ne nous donne pas beaucoup d’info. C’est normal. La technique étant visuelle, ce qui est important, c’est de représenter graphiquement la carte. Avec les graphiques R de base, la fonction utilisée est <code>plot()</code>. Nous avons plusieurs types disponibles et une large palette d’options. Voyez l’aide en ligne de<code>?plot.kohonen</code>. Le premier graphique (<code>type = &quot;changes&quot;</code>) montre l’évolution de l’apprentissage au fil des itérations. L’objectif est de descendre le plus possible sur l’axe des ordonnées pour réduire au maximum la distince des individus par rapprot à la cellule (unit en anglais) où ils devraient se placer. Idéalement, nous souhaitons tendre verss zéro. En pratique, nous pourrons arrêter les itération lorsque la courbe ne diminue plus de manière significative.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(zoo_som, <span class="dt">type =</span> <span class="st">&quot;changes&quot;</span>)</code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ici, il semble que nous ne diminuons plus vraiment à partir de la 85<sup>ème</sup> itération environ. Nous pouvons nous en convaincre en relançant l’analyse avec un plus grand nombre d’itérations (avec l’argument <code>rlen =</code> de <code>som()</code>).</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">954</span>)
+zoo_som &lt;-<span class="st"> </span><span class="kw">som</span>(zoo_mat, <span class="dt">grid =</span> <span class="kw">somgrid</span>(<span class="dv">7</span>, <span class="dv">7</span>, <span class="dt">topo =</span> <span class="st">&quot;hexagonal&quot;</span>), <span class="dt">rlen =</span> <span class="dv">200</span>)
+<span class="kw">plot</span>(zoo_som, <span class="dt">type =</span> <span class="st">&quot;changes&quot;</span>)</code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-50-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Vous serez sans doute surpris de constater que la diminution de la courbe se fait plus lentement maintenant. En fait <code>som()</code> va adapter son taux d’apprentissage en fonction du nombre d’itérations qu’on lui donne et va alors “peaufiner le travail” d’autant plus. Au final, la valeur n’est pas plus basse pour autant. Donc, nous avons aboutit probablement à une solution.</p>
+<p>Le second graphique que nous pouvons réaliser consiste à placer les individus dans la carte, en utilisant éventuellement une couleur différente en fonction d’une caractéristique de ces individus (ici, leur <code>class</code>e). Ce graphique est obtenu avec <code>type = &quot;mapping&quot;</code>. Si vous ne voulez pas représenter la grille hexagonale à l’aide de cercles, vous pouvez spécifier <code>shape = &quot;straight&quot;</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(zoo_som, <span class="dt">type =</span> <span class="st">&quot;mapping&quot;</span>, <span class="dt">shape =</span> <span class="st">&quot;straight&quot;</span>, <span class="dt">col =</span> zoo<span class="op">$</span>class)</code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-51-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Nous voyons ici que, malgré que l’information contenue dans <code>class</code> n’ait pas été utilisées. Les différents individus de zooplancton ne se répartissent pas au hasard en fonction de ce critère. Nous pouyvons également voir les cellules qui contiennent plus ou moins d’individus, mais si l’objectif est de visionner <em>uniquement</em> le remplissage des cellules, le <code>type = &quot;counts&quot;</code> est plus adapté.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(zoo_som, <span class="dt">type =</span> <span class="st">&quot;counts&quot;</span>, <span class="dt">shape =</span> <span class="st">&quot;straight&quot;</span>)</code></pre>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-52-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="pour-en-savoir-plus-4" class="section level5 unnumbered">
+<h5>Pour en savoir plus</h5>
+<ul>
+<li><p>Une <a href="https://meritis.fr/ia/cartes-topologiques-de-kohonen/">explication très détaillée en français</a> accompagnée de la résolution d’un exemple fictif résolu dans R.</p></li>
+<li><p>Si vous êtes aventureux, vous pouvoez vous lancer dans la réimplémentation des graphiques du package <code>kohonen</code> en <code>chart</code>ou <code>ggplot2</code>. Voici <a href="http://blog.schochastics.net/post/soms-and-ggplot/">un bon point de départ</a> (en anglais).</p></li>
+</ul>
+
+</div>
+</div>
 </div>
 <!-- </div> -->
 <div id="disqus_thread"></div>
