@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-02-26">
+<meta name="date" content="2020-02-27">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -240,7 +240,10 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="6.2.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-metrique-ou-pcoa"><i class="fa fa-check"></i><b>6.2.2</b> MDS métrique ou PCoA</a></li>
 <li class="chapter" data-level="6.2.3" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-non-metrique"><i class="fa fa-check"></i><b>6.2.3</b> MDS non métrique</a></li>
 </ul></li>
-<li class="chapter" data-level="6.3" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html"><i class="fa fa-check"></i><b>6.3</b> Cartes auto-adaptatives (SOM)</a></li>
+<li class="chapter" data-level="6.3" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html"><i class="fa fa-check"></i><b>6.3</b> Cartes auto-adaptatives (SOM)</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html#som-sur-le-zooplancton"><i class="fa fa-check"></i><b>6.3.1</b> SOM sur le zooplancton</a></li>
+<li class="chapter" data-level="6.3.2" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html#interpretation-dun-som"><i class="fa fa-check"></i><b>6.3.2</b> Interprétation d’un SOM</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
 <li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a></li>
@@ -564,7 +567,13 @@ veg</code></pre>
 <p>Restez toujours attentif à la taille du jeu de données que vous utilisez pour réaliser une MDS, en particuliers une MDS non métrique. Quelques centaines de lignes, ça dois passer, plusieurs dizaines de milliers ou plus, ça ne passera pas ! La limite dépend bien sûr de la puissance de votre ordinateur et de la quantité de mémoire vive disponible. Retenez toutefois que la quantité de calculs augmente drastiquement avec la taille du jeu de données à traiter.</p>
 </div>
 
-<p>La fonction <code>mds()</code> donne accès à d’autres versions de MDS non métriques également. Ainsi, <code>mds$isoMDS()</code> ou <code>mds$monoMDS()</code> correspondent toutes deux à la version de Kruskal mais en utilisant une seule configuration de départ (donc, moins robustes mais plus rapides à calculer). La <code>mds$sammon()</code> est une autre forme de MDS non métrique décrite dans l’aide en ligne de <code>?MASS::sammon</code>.</p>
+<div id="pour-en-savoir-plus-3" class="section level5 unnumbered">
+<h5>Pour en savoir plus</h5>
+<ul>
+<li><p>La fonction <code>mds()</code> donne accès à d’autres versions de MDS non métriques également. Ainsi, <code>mds$isoMDS()</code> ou <code>mds$monoMDS()</code> correspondent toutes deux à la version de Kruskal mais en utilisant une seule configuration de départ (donc, moins robustes mais plus rapides à calculer). La <code>mds$sammon()</code> est une autre forme de MDS non métrique décrite dans l’aide en ligne de <code>?MASS::sammon</code>.</p></li>
+<li><p>Des techniques existent pour déterminer la dimension <em>k</em> idéale de la carte. Le <strong>graphique des éboulis</strong> (screeplot en anglais) sera abordé au module suivante dans le cadre de l’ACP. Il en existe une version pour le MDS, voyez <a href="https://rpubs.com/YaPi/393252">ici</a> (en anglais).</p></li>
+</ul>
+</div>
 </div>
 </div>
 <div class="footnotes">
