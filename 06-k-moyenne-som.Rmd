@@ -529,6 +529,29 @@ Restez toujours attentif à la taille du jeu de données que vous utilisez pour 
 
 La fonction `mds()` donne accès à d'autres versions de MDS non métriques également. Ainsi, `mds$isoMDS()` ou `mds$monoMDS()` correspondent toutes deux à la version de Kruskal mais en utilisant une seule configuration de départ (donc, moins robustes mais plus rapides à calculer). La `mds$sammon()` est une autre forme de MDS non métrique décrite dans l'aide en ligne de `?MASS::sammon`.
 
+##### A vous de jouer ! {-}
+
+- Réalisez le tutoriel afin de vérifier votre bonne compréhension de la mds.
+
+```{block2, type='bdd'}
+Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
+
+    BioDataScience2::run("06b_mds")
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
+```
+
+- Complétez votre carnet de note par binôme sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).
+
+```{block2, type='bdd'}
+
+Completez votre projet. Lisez attentivement le README.
+
+La dernière version du README est disponible via le lien suivant\ :
+  
+- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea>
+```
+
 
 ## Cartes auto-adaptatives (SOM)
 
