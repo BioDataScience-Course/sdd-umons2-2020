@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-02-27">
+<meta name="date" content="2020-02-28">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -290,7 +290,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <p><img src="images/sdd2_06/tenor.gif" /></p>
 <p>Il existe, en réalité, plusieurs techniques de MDS. Elle répondent toutes au schéma suivant :</p>
 <ul>
-<li>A partir d’un tableau multivarié de <em>n</em> lignes et <em>p</em> colonnes, nous calculons une matrice de distances (le choix de la transformation initiale éventuelle et de la métrique de distance utilisée sont totalement libres ici<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>).</li>
+<li>A partir d’un tableau multivarié de <em>n</em> lignes et <em>p</em> colonnes, nous calculons une matrice de distances (le choix de la transformation initiale éventuelle et de la métrique de distance utilisée sont totalement libres ici<a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a>).</li>
 <li>Nous souhaitons représenter une carte (nuage de points) à <em>k</em> dimensions (<em>k</em> = 2, éventuellement <em>k</em> = 3) où les <em>n</em> individus seront placés de telle façon que les proximités exprimées par des valeurs faibles dans la matrice de dissimilarité soient respectées <em>autant que possible</em> entre tous les points.</li>
 <li>Pour y arriver les points sont placés successivement sur la carte et réajustés afin de minimiser une <strong>fonction de coût</strong>, encore appelée <strong>fonction de stress</strong> qui quantifie de combien nous avons dû “tordre” le réseau à <em>p</em> dimensions initial représentant les distances entre toutes les paires. C’est en adoptant différentes fonctions de stress que nous aboutissons aux différentes variantes de MDS. La fonction de stress est représentée graphiquement (voir ci-dessous) pour diagnostiquer le traitement réaliser et décider si la représentation est utilisable (pas trop tordue) ou non.</li>
 <li>Le positionnement des points faisant intervenir un facteur aléatoire (choix des points à placer en premier, réorganisation ensuite pour minimiser la fonction de stress), le résutat final peut varier d’une fois à l’autre sur les mêmes données, voir ne pas converger vers une solution stable. Il faut en être conscient.</li>
@@ -510,7 +510,7 @@ veg</code></pre>
 # ... Procrustes: rmse 1.056302e-05  max resid 3.244521e-05 
 # ... Similar to previous best
 # Run 5 stress 0.1256617 
-# ... Procrustes: rmse 6.34123e-06  max resid 1.783762e-05 
+# ... Procrustes: rmse 6.341228e-06  max resid 1.783762e-05 
 # ... Similar to previous best
 # Run 6 stress 0.1256617 
 # ... Procrustes: rmse 1.768348e-05  max resid 4.243365e-05 
@@ -574,12 +574,36 @@ veg</code></pre>
 <li><p>Des techniques existent pour déterminer la dimension <em>k</em> idéale de la carte. Le <strong>graphique des éboulis</strong> (screeplot en anglais) sera abordé au module suivante dans le cadre de l’ACP. Il en existe une version pour le MDS, voyez <a href="https://rpubs.com/YaPi/393252">ici</a> (en anglais).</p></li>
 </ul>
 </div>
+<div id="a-vous-de-jouer-16" class="section level5 unnumbered">
+<h5>A vous de jouer !</h5>
+<ul>
+<li>Réalisez le tutoriel afin de vérifier votre bonne compréhension de la mds.</li>
+</ul>
+
+<div class="bdd">
+<p>Démarrez la SciViews Box et RStudio. Dans la fenêtre <strong>Console</strong> de RStudio, entrez l’instruction suivante suivie de la touche <code>Entrée</code> pour ouvrir le tutoriel concernant les bases de R :</p>
+<pre><code>BioDataScience2::run(&quot;06b_mds&quot;)</code></pre>
+N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
+</div>
+
+<ul>
+<li>Complétez votre carnet de note par binôme sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).</li>
+</ul>
+
+<div class="bdd">
+<p>Completez votre projet. Lisez attentivement le README.</p>
+<p>La dernière version du README est disponible via le lien suivant :</p>
+<ul>
+<li><a href="https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea" class="uri">https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea</a>
+</div></li>
+</ul>
+</div>
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="3">
-<li id="fn3"><p>Chaque métrique de distance offre un éclairage différent sur les données. Elles agissent comme autant de filtres différents à votre disposition pour explorer vos données multivariées.<a href="positionnement-multidimensionnel-mds.html#fnref3" class="footnote-back">↩</a></p></li>
+<ol start="17">
+<li id="fn17"><p>Chaque métrique de distance offre un éclairage différent sur les données. Elles agissent comme autant de filtres différents à votre disposition pour explorer vos données multivariées.<a href="positionnement-multidimensionnel-mds.html#fnref17" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>

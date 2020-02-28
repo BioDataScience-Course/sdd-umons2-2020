@@ -749,7 +749,7 @@ veg_nmds <- mds$nonmetric(veg_dist) # Calcul
 # ... Procrustes: rmse 1.056302e-05  max resid 3.244521e-05 
 # ... Similar to previous best
 # Run 5 stress 0.1256617 
-# ... Procrustes: rmse 6.34123e-06  max resid 1.783762e-05 
+# ... Procrustes: rmse 6.341228e-06  max resid 1.783762e-05 
 # ... Similar to previous best
 # Run 6 stress 0.1256617 
 # ... Procrustes: rmse 1.768348e-05  max resid 4.243365e-05 
@@ -840,6 +840,25 @@ Restez toujours attentif à la taille du jeu de données que vous utilisez pour 
 
 - Des techniques existent pour déterminer la dimension *k* idéale de la carte. Le **graphique des éboulis** (screeplot en anglais) sera abordé au module suivante dans le cadre de l'ACP. Il en existe une version pour le MDS, voyez [ici](https://rpubs.com/YaPi/393252) (en anglais).
 
+
+##### A vous de jouer ! {-}
+
+- Réalisez le tutoriel afin de vérifier votre bonne compréhension de la mds.
+
+\BeginKnitrBlock{bdd}<div class="bdd">Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
+
+    BioDataScience2::run("06b_mds")
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.</div>\EndKnitrBlock{bdd}
+
+- Complétez votre carnet de note par binôme sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).
+
+\BeginKnitrBlock{bdd}<div class="bdd">
+Completez votre projet. Lisez attentivement le README.
+
+La dernière version du README est disponible via le lien suivant\ :
+  
+- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea></div>\EndKnitrBlock{bdd}
 
 
 ## Cartes auto-adaptatives (SOM)
@@ -938,7 +957,7 @@ rect_grid_7_7 %>.%
     main = "Distance depuis la cellule centrale") # Titre du graphique
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" />
 
 Les cellules de la grille ne sont pas disposées au hasard dans la carte SOM. Des relations de voisinage sont utilisées pour placer les individus à représenter dans des cellules adjacentes s'ils se ressemblent. Avec une grille rectangulaire, nous avons donc deux modalités de variation\ : en horizontal et en vertival, ce qui donne deux gradients possibles qui, combinés donnent des extrêmes dans les coins opposés. Une cellule possède huits voisins directs.
 
@@ -956,7 +975,7 @@ hex_grid_7_7 %>.%
     main = "Distance depuis la cellule centrale") # Titre du graphique
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" />
 
 Ici, nous n'avons que six voisins directs, mais trois directions dans lesquelles les gradients peuvent varier\ : en horizontal, en diagonale vers la gauche et en diagonale vers la droite. Cela offre plus de possibilités pour l'agencement des individus. Nous voyons aussi plus de nuances dans les distances (il y a plus de couleurs différentes), pour une grille de même taille 7 par 7 que dans le cas de la grille rectangulaire. **Nous utiliserons donc préférentiellement la grille hexagonale.**
 
@@ -984,7 +1003,7 @@ Le résumé de l'objet ne nous donne pas beaucoup d'info. C'est normal. La techn
 plot(zoo_som, type = "changes")
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-51-1.png" width="672" style="display: block; margin: auto;" />
 
 Ici, il semble que nous ne diminuons plus vraiment à partir de la 85^ème^ itération environ. Nous pouvons nous en convaincre en relançant l'analyse avec un plus grand nombre d'itérations (avec l'argument `rlen =` de `som()`).
 
@@ -995,7 +1014,7 @@ zoo_som <- som(zoo_mat, grid = somgrid(7, 7, topo = "hexagonal"), rlen = 200)
 plot(zoo_som, type = "changes")
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-50-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-52-1.png" width="672" style="display: block; margin: auto;" />
 
 Vous serez sans doute surpris de constater que la diminution de la courbe se fait plus lentement maintenant. En fait `som()` va adapter son taux d'apprentissage en fonction du nombre d'itérations qu'on lui donne et va alors "peaufiner le travail" d'autant plus. Au final, la valeur n'est pas plus basse pour autant. Donc, nous avons aboutit probablement à une solution. 
 
@@ -1009,7 +1028,7 @@ colors17 <- c("#e6194B", "#3cb44b", "#ffe119", "#4363d8", "#f58231", "#911eb4",
 plot(zoo_som, type = "mapping", shape = "straight", col = colors17[zoo$class])
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-51-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-53-1.png" width="672" style="display: block; margin: auto;" />
 
 Nous n'avons pas ajouté de légende qui indique à quelle classe correspond quelle couleur. Ce que nous voulons voir, c'est si les cellules arrivent à séparer les classes. Nous voyons que la séparation est imparfaite, mais des tendances apparaissent avec certaines couleurs qui se retrouvent plutôt dans une région de la carte.
 
@@ -1020,7 +1039,7 @@ Nous voyons donc ici que, malgré que l'information contenue dans `class` n'ait 
 plot(zoo_som, type = "counts", shape = "straight")
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-52-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-54-1.png" width="672" style="display: block; margin: auto;" />
 
 Nous pouvons obtenir la cellule dans laquelle chaque individu est mappé comme suit\ :
 
@@ -1118,7 +1137,7 @@ La carte SOM est orientée. C'est-à-dire que les cellules représentent des for
 plot(zoo_som, type = "codes", codeRendering = "segments")
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-55-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-57-1.png" width="672" style="display: block; margin: auto;" />
 
 Ce graphique est riche en informations. Nous voyons que\ :
 
@@ -1136,7 +1155,7 @@ for (var in c("size", "mode", "range", "aspect", "elongation", "circularity"))
     main = var, palette.name = viridis::inferno)
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-56-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-58-1.png" width="672" style="display: block; margin: auto;" />
 
 Nous pouvons plus facilement inspecter les zones d'influence de différentes variables ciblées. Ici, `size` est une mesure de la taille des particules, `mode` est le niveau d'opacité moyen, `range` est la variation d'opacité (un `range` important indique que la particule a des parties très transparentes et d'autres très opaques), `aspect` est le rapport longueur/largeur, `elongation` est une indication de la complexité du périmètre de la particule, et `circularity` est sa forme plus ou moins circulaire. Pour une explication détaillée des 19 variables, faites `?zooplankton`.
 
@@ -1161,7 +1180,7 @@ plot(zoo_som_cah, hang = -1)
 abline(h = 11.5, col = "red") # Niveau de coupure proposé
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-58-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-60-1.png" width="672" style="display: block; margin: auto;" />
 
 Les V1 à V49 sont les numéros de cellules. Nous pouvons couper à différents endroits dans ce dendrogramme, mais si nous décidons de distringuer les cinq groupes correspondants au niveau de coupure à une hauteur de 11,5 (comme sur le graphique), voici ce que cela donne\ :
 
@@ -1189,7 +1208,7 @@ plot(zoo_som, type = "mapping", pch = ".", main = "SOM zoo, 5 groupes",
 add.cluster.boundaries(zoo_som, clustering = groupes)
 ```
 
-<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-60-1.png" width="672" style="display: block; margin: auto;" />
+<img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-62-1.png" width="672" style="display: block; margin: auto;" />
 
 Grâce à la topographie des variables que nous avons réalisée plus haut, nous savons que\ :
 
@@ -1209,3 +1228,23 @@ Nous n'avons fait qu'effleurer les nombreuses possibilités des cartes auto-adap
 - Une [autre explication détaillée en français](http://eric.univ-lyon2.fr/~ricco/tanagra/fichiers/fr_Tanagra_Kohonen_SOM_R.pdf) avec exemple dans R.
 
 - Si vous êtes aventureux, vous pouvez vous lancer dans la réimplémentation des graphiques du package `kohonen` en `chart`ou `ggplot2`. Voici [un bon point de départ](http://blog.schochastics.net/post/soms-and-ggplot/) (en anglais).
+
+##### A vous de jouer ! {-}
+
+- Réalisez le tutoriel afin de vérifier votre bonne compréhension de la som.
+
+\BeginKnitrBlock{bdd}<div class="bdd">Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
+
+    BioDataScience2::run("06c_som")
+
+N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.</div>\EndKnitrBlock{bdd}
+
+- Complétez votre carnet de note par binôme sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).
+
+\BeginKnitrBlock{bdd}<div class="bdd">
+Completez votre projet. Lisez attentivement le README.
+
+La dernière version du README est disponible via le lien suivant\ :
+  
+- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea></div>\EndKnitrBlock{bdd}
+

@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-02-27">
+<meta name="date" content="2020-02-28">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -286,7 +286,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="k-moyennes" class="section level2">
 <h2><span class="header-section-number">6.1</span> K-moyennes</h2>
 <p>Les k-moyennes (ou “k-means” en anglais) représentent une autre façon de regrouper les individus d’un tableau multivarié. Par rapport à la CAH, cette technique est généralement moins efficace, mais elle a l’avantage de permettre le regroupement d’un très grand nombre d’individus (gros jeu de données), là où la CAH nécessiterait trop de temps de calcul et de mémoire vive. Il est donc utile de connaitre cette seconde technique à utiliser comme solution de secours lorsque le dendrogramme de la CAH devient illisible sur de très gros jeux de données.</p>
-<p>Le principe des k-moyennes est très simple<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> :</p>
+<p>Le principe des k-moyennes est très simple<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a> :</p>
 <ul>
 <li>L’utilisateur choisi le nombre de groupes <em>k</em> qu’il veut obtenir à l’avance.</li>
 <li>La position des <em>k</em> centres est choisie au hasard au début.</li>
@@ -381,7 +381,7 @@ zoo6_kmeans</code></pre>
 La fonction <code>factoextra::fviz_nbclust()</code> propose d’ailleurs deux autres méthodes pour déterminer le nombre optimal de groupes <em>k</em>, avec <code>method = &quot;silhouette&quot;</code> ou <code>method = &quot;gap_stat&quot;</code>. Voyez l’aide en ligne de cette fonction <code>?factoextra::fviz_nbclust</code>. Ces différentes méthodes peuvent d’ailleurs suggérer des regroupements différents pour les mêmes données… preuve qu’il n’y a pas <em>une et une seule</em> solution optimale !
 </div>
 
-<p>A ce stade, nous pouvons collecter les groupes et les ajouter à notre tableau de données. Pour la CAH, vous avez déjà remarqué que rajouter ces groupes dans le <em>tableau de départ</em> peut mener à des effets surprenants si nous relançons ensuite l’analyse sur le tableau ainsi complété<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Donc, nous prendrons soin de placer les données ainsi complétées de la colonne <code>cluster</code> dans un tableau différent nommé <code>zoo6b</code>. Pour se faire, nous pouvons utiliser <code>broom::augment()</code>.</p>
+<p>A ce stade, nous pouvons collecter les groupes et les ajouter à notre tableau de données. Pour la CAH, vous avez déjà remarqué que rajouter ces groupes dans le <em>tableau de départ</em> peut mener à des effets surprenants si nous relançons ensuite l’analyse sur le tableau ainsi complété<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a>. Donc, nous prendrons soin de placer les données ainsi complétées de la colonne <code>cluster</code> dans un tableau différent nommé <code>zoo6b</code>. Pour se faire, nous pouvons utiliser <code>broom::augment()</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">broom<span class="op">::</span><span class="kw">augment</span>(zoo6_kmeans, zoo6) <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">rename</span>(., <span class="dt">cluster =</span> .cluster) -&gt;<span class="st"> </span>zoo6b
 <span class="kw">names</span>(zoo6b)</code></pre>
@@ -591,9 +591,9 @@ N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la mai
 </div>
 <div class="footnotes">
 <hr />
-<ol start="1">
-<li id="fn1"><p>En pratique, différents algorithmes avec diverses optimisations existent. Le plus récent et le plus sophistiqué est celui de Hartigan-Wong. Il est utilisé par défaut par la fonction <code>kmeans()</code>. En pratique, il y a peu de raison d’en changer.<a href="k-moyennes.html#fnref1" class="footnote-back">↩</a></p></li>
-<li id="fn2"><p>Nous vous avons proposé exprès de rajouter les groupes dans le tableau de départ pour que vous soyez confronté à ce problème. Ici, nous proposons donc une autre façon de travailler qui l’évite en assignant le résultat dans une <em>autre</em> variable.<a href="k-moyennes.html#fnref2" class="footnote-back">↩</a></p></li>
+<ol start="15">
+<li id="fn15"><p>En pratique, différents algorithmes avec diverses optimisations existent. Le plus récent et le plus sophistiqué est celui de Hartigan-Wong. Il est utilisé par défaut par la fonction <code>kmeans()</code>. En pratique, il y a peu de raison d’en changer.<a href="k-moyennes.html#fnref15" class="footnote-back">↩</a></p></li>
+<li id="fn16"><p>Nous vous avons proposé exprès de rajouter les groupes dans le tableau de départ pour que vous soyez confronté à ce problème. Ici, nous proposons donc une autre façon de travailler qui l’évite en assignant le résultat dans une <em>autre</em> variable.<a href="k-moyennes.html#fnref16" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>

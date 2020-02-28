@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-02-27">
+<meta name="date" content="2020-02-28">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -341,7 +341,7 @@ zoo</code></pre>
 <span class="st">  </span><span class="kw">plot</span>(., <span class="dt">type =</span> <span class="st">&quot;property&quot;</span>, <span class="co"># Graphique de propriété</span>
     <span class="dt">property =</span> <span class="kw">unit.distances</span>(rect_grid_<span class="dv">7</span>_<span class="dv">7</span>)[<span class="dv">25</span>, ], <span class="co"># distance à la cellule 25</span>
     <span class="dt">main =</span> <span class="st">&quot;Distance depuis la cellule centrale&quot;</span>) <span class="co"># Titre du graphique</span></code></pre>
-<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Les cellules de la grille ne sont pas disposées au hasard dans la carte SOM. Des relations de voisinage sont utilisées pour placer les individus à représenter dans des cellules adjacentes s’ils se ressemblent. Avec une grille rectangulaire, nous avons donc deux modalités de variation : en horizontal et en vertival, ce qui donne deux gradients possibles qui, combinés donnent des extrêmes dans les coins opposés. Une cellule possède huits voisins directs.</p>
 <p>L’autre topologie possible est la grille hexagonale. Voyons ce que cela donne :</p>
 <pre class="sourceCode r"><code class="sourceCode r">hex_grid_<span class="dv">7</span>_<span class="dv">7</span> &lt;-<span class="st"> </span><span class="kw">somgrid</span>(<span class="dv">7</span>, <span class="dv">7</span>, <span class="dt">topo =</span> <span class="st">&quot;hexagonal&quot;</span>)
@@ -352,7 +352,7 @@ hex_grid_<span class="dv">7</span>_<span class="dv">7</span> <span class="op">%&
 <span class="st">  </span><span class="kw">plot</span>(., <span class="dt">type =</span> <span class="st">&quot;property&quot;</span>, <span class="co"># Graphique de propriété</span>
     <span class="dt">property =</span> <span class="kw">unit.distances</span>(hex_grid_<span class="dv">7</span>_<span class="dv">7</span>)[<span class="dv">25</span>, ], <span class="co"># distance à la cellule 25</span>
     <span class="dt">main =</span> <span class="st">&quot;Distance depuis la cellule centrale&quot;</span>) <span class="co"># Titre du graphique</span></code></pre>
-<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Ici, nous n’avons que six voisins directs, mais trois directions dans lesquelles les gradients peuvent varier : en horizontal, en diagonale vers la gauche et en diagonale vers la droite. Cela offre plus de possibilités pour l’agencement des individus. Nous voyons aussi plus de nuances dans les distances (il y a plus de couleurs différentes), pour une grille de même taille 7 par 7 que dans le cas de la grille rectangulaire. <strong>Nous utiliserons donc préférentiellement la grille hexagonale.</strong></p>
 <p>Effectuons maintenant le calcul de notre SOM à l’aide de la fonction <code>som()</code> du package <code>kohonen</code>. Comme l’analyse fait intervenir le générateur pseudo-aléatoire, nous pouvons utiliser de manière optionnelle <code>set.seed()</code> avec un nombre choisi au hasard (et toujours différent à chaque utilisation) pour que cette analyse particulière-là soit reproductible. Sinon, à chaque exécution, nous obtiendrons un résultat légèrement différent.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">8657</span>)
@@ -365,23 +365,23 @@ zoo_som &lt;-<span class="st"> </span><span class="kw">som</span>(zoo_mat, <span
 # Mean distance to the closest unit in the map: 2.519.</code></pre>
 <p>Le résumé de l’objet ne nous donne pas beaucoup d’info. C’est normal. La technique étant visuelle, ce qui est important, c’est de représenter graphiquement la carte. Avec les graphiques R de base, la fonction utilisée est <code>plot()</code>. Nous avons plusieurs types disponibles et une large palette d’options. Voyez l’aide en ligne de<code>?plot.kohonen</code>. Le premier graphique (<code>type = &quot;changes&quot;</code>) montre l’évolution de l’apprentissage au fil des itérations. L’objectif est de descendre le plus possible sur l’axe des ordonnées pour réduire au maximum la distance des individus par rapport aux cellules (unit en anglais) où ils devraient se placer. Idéalement, nous souhaitons tendre vers zéro. En pratique, nous pourrons arrêter les itérations lorsque la courbe ne diminue plus de manière significative.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(zoo_som, <span class="dt">type =</span> <span class="st">&quot;changes&quot;</span>)</code></pre>
-<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-51-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Ici, il semble que nous ne diminuons plus vraiment à partir de la 85<sup>ème</sup> itération environ. Nous pouvons nous en convaincre en relançant l’analyse avec un plus grand nombre d’itérations (avec l’argument <code>rlen =</code> de <code>som()</code>).</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">954</span>)
 zoo_som &lt;-<span class="st"> </span><span class="kw">som</span>(zoo_mat, <span class="dt">grid =</span> <span class="kw">somgrid</span>(<span class="dv">7</span>, <span class="dv">7</span>, <span class="dt">topo =</span> <span class="st">&quot;hexagonal&quot;</span>), <span class="dt">rlen =</span> <span class="dv">200</span>)
 <span class="kw">plot</span>(zoo_som, <span class="dt">type =</span> <span class="st">&quot;changes&quot;</span>)</code></pre>
-<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-50-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-52-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Vous serez sans doute surpris de constater que la diminution de la courbe se fait plus lentement maintenant. En fait <code>som()</code> va adapter son taux d’apprentissage en fonction du nombre d’itérations qu’on lui donne et va alors “peaufiner le travail” d’autant plus. Au final, la valeur n’est pas plus basse pour autant. Donc, nous avons aboutit probablement à une solution.</p>
 <p>Le second graphique que nous pouvons réaliser consiste à placer les individus dans la carte, en utilisant éventuellement une couleur différente en fonction d’une caractéristique de ces individus (ici, leur <code>class</code>e). Ce graphique est obtenu avec <code>type = &quot;mapping&quot;</code>. Si vous ne voulez pas représenter la grille hexagonale à l’aide de cercles, vous pouvez spécifier <code>shape = &quot;straight&quot;</code>. Nous avons 17 classes de zooplancton et il est difficile de représenter plus de 10-12 couleurs distinctes, mais <a href="https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/">ce site</a> propose une palette de 20 couleurs distinctes. Nous en utiliserons les 17 premières…</p>
 <pre class="sourceCode r"><code class="sourceCode r">colors17 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;#e6194B&quot;</span>, <span class="st">&quot;#3cb44b&quot;</span>, <span class="st">&quot;#ffe119&quot;</span>, <span class="st">&quot;#4363d8&quot;</span>, <span class="st">&quot;#f58231&quot;</span>, <span class="st">&quot;#911eb4&quot;</span>,
   <span class="st">&quot;#42d4f4&quot;</span>, <span class="st">&quot;#f032e6&quot;</span>, <span class="st">&quot;#bfef45&quot;</span>, <span class="st">&quot;#fabebe&quot;</span>, <span class="st">&quot;#469990&quot;</span>, <span class="st">&quot;#e6beff&quot;</span>, <span class="st">&quot;#9A6324&quot;</span>,
   <span class="st">&quot;#fffac8&quot;</span>, <span class="st">&quot;#800000&quot;</span>, <span class="st">&quot;#aaffc3&quot;</span>, <span class="st">&quot;#808000&quot;</span>, <span class="st">&quot;#ffd8b1&quot;</span>)
 <span class="kw">plot</span>(zoo_som, <span class="dt">type =</span> <span class="st">&quot;mapping&quot;</span>, <span class="dt">shape =</span> <span class="st">&quot;straight&quot;</span>, <span class="dt">col =</span> colors17[zoo<span class="op">$</span>class])</code></pre>
-<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-51-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-53-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Nous n’avons pas ajouté de légende qui indique à quelle classe correspond quelle couleur. Ce que nous voulons voir, c’est si les cellules arrivent à séparer les classes. Nous voyons que la séparation est imparfaite, mais des tendances apparaissent avec certaines couleurs qui se retrouvent plutôt dans une région de la carte.</p>
 <p>Nous voyons donc ici que, malgré que l’information contenue dans <code>class</code> n’ait pas été utilisées. Les différents individus de zooplancton ne se répartissent pas au hasard en fonction de ce critère. Nous pouvons également voir les cellules qui contiennent plus ou moins d’individus, mais si l’objectif est de visionner <em>uniquement</em> le remplissage des cellules, le <code>type = &quot;counts&quot;</code> est plus adapté.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(zoo_som, <span class="dt">type =</span> <span class="st">&quot;counts&quot;</span>, <span class="dt">shape =</span> <span class="st">&quot;straight&quot;</span>)</code></pre>
-<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-52-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-54-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Nous pouvons obtenir la cellule dans laquelle chaque individu est mappé comme suit :</p>
 <pre class="sourceCode r"><code class="sourceCode r">zoo_som<span class="op">$</span>unit.classif</code></pre>
 <pre><code>#    [1] 19  6 25 17 15 19 40 17 40 19 41 39  6 32 17 14 32 22 40 29 26 24 26
@@ -455,11 +455,11 @@ zoo_som_nb</code></pre>
 <h4><span class="header-section-number">6.3.2.1</span> Représentation des variables</h4>
 <p>La carte SOM est orientée. C’est-à-dire que les cellules représentent des formes différentes de plancton telles qu’exprimées à travers les 19 variables utilisées ici (quantification de la taille, de la forme, de la transparence, …). Le graphique <code>type = &quot;codes&quot;</code> permet de visualiser ces différences de manière générale :</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(zoo_som, <span class="dt">type =</span> <span class="st">&quot;codes&quot;</span>, <span class="dt">codeRendering =</span> <span class="st">&quot;segments&quot;</span>)</code></pre>
-<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-55-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-57-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Ce graphique est riche en informations. Nous voyons que :</p>
 <ul>
 <li>les très grands individus (<code>ecd</code>, <code>area</code>, <code>perimeter</code>, etc.), soit les segments verts sont en haut à droite de la carte et les petits sont à gauche,</li>
-<li>les individus opaques (variables <code>mean</code>, <code>mode</code>, <code>max</code>, etc.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>), soit des segments dans les tons jaunes sont en bas à droite. Les organismes plus transparents sont en haut à gauche,</li>
+<li>les individus opaques (variables <code>mean</code>, <code>mode</code>, <code>max</code>, etc.<a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a>), soit des segments dans les tons jaunes sont en bas à droite. Les organismes plus transparents sont en haut à gauche,</li>
 <li>au delà de ces deux principaux critères qui se dégagement prioritairement, les aspects de forme (segments rose-rouges) se retrouvent exprimés moins nettement le long de gradients. La <code>circularity</code> mesure la silhouette plus ou moins arrondie des items (sa valeur est d’autant plus élevée que la forme se rapproche d’un cercle). Les organismes circulaires se retrouvent dans le bas de la carte. L’<code>elongation</code> et l’<code>aspect</code> mesurent l’allongement de la particule et se retrouvent plutôt exprimés positivement vers le haut de la carte.</li>
 </ul>
 <p>Nous pouvons donc <strong>orienter</strong> notre carte SOM en indiquant l’information relative aux variables. Lorsque le nombre de variables est élevé ou relativement élevé comme ici, cela devient néanmoins difficile à lire. Il est aussi possible de colorer les cartes en fonction d’une et une seule variable pour en faciliter la lecture à l’aide de <code>type = &quot;property&quot;</code>. Voici quelques exemples (notez la façon de diviser une page graphique en lignes et colonnes à l’aide de <code>par(mfrow = ))</code> en graphiques R de base, ensuite une boucle <code>for</code> réalise les six graphiques l’un après l’autre) :</p>
@@ -467,7 +467,7 @@ zoo_som_nb</code></pre>
 <span class="cf">for</span> (var <span class="cf">in</span> <span class="kw">c</span>(<span class="st">&quot;size&quot;</span>, <span class="st">&quot;mode&quot;</span>, <span class="st">&quot;range&quot;</span>, <span class="st">&quot;aspect&quot;</span>, <span class="st">&quot;elongation&quot;</span>, <span class="st">&quot;circularity&quot;</span>))
   <span class="kw">plot</span>(zoo_som, <span class="dt">type =</span> <span class="st">&quot;property&quot;</span>, <span class="dt">property =</span> zoo_som<span class="op">$</span>codes[[<span class="dv">1</span>]][, var],
     <span class="dt">main =</span> var, <span class="dt">palette.name =</span> viridis<span class="op">::</span>inferno)</code></pre>
-<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-56-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-58-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Nous pouvons plus facilement inspecter les zones d’influence de différentes variables ciblées. Ici, <code>size</code> est une mesure de la taille des particules, <code>mode</code> est le niveau d’opacité moyen, <code>range</code> est la variation d’opacité (un <code>range</code> important indique que la particule a des parties très transparentes et d’autres très opaques), <code>aspect</code> est le rapport longueur/largeur, <code>elongation</code> est une indication de la complexité du périmètre de la particule, et <code>circularity</code> est sa forme plus ou moins circulaire. Pour une explication détaillée des 19 variables, faites <code>?zooplankton</code>.</p>
 </div>
 <div id="regroupements" class="section level4">
@@ -479,7 +479,7 @@ zoo_som_cah &lt;-<span class="st"> </span><span class="kw">hclust</span>(zoo_som
 <p>Voici le dendrogramme :</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(zoo_som_cah, <span class="dt">hang =</span> <span class="dv">-1</span>)
 <span class="kw">abline</span>(<span class="dt">h =</span> <span class="fl">11.5</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>) <span class="co"># Niveau de coupure proposé</span></code></pre>
-<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-58-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-60-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Les V1 à V49 sont les numéros de cellules. Nous pouvons couper à différents endroits dans ce dendrogramme, mais si nous décidons de distringuer les cinq groupes correspondants au niveau de coupure à une hauteur de 11,5 (comme sur le graphique), voici ce que cela donne :</p>
 <pre class="sourceCode r"><code class="sourceCode r">groupes &lt;-<span class="st"> </span><span class="kw">cutree</span>(zoo_som_cah, <span class="dt">h =</span> <span class="fl">11.5</span>)
 groupes</code></pre>
@@ -489,11 +489,11 @@ groupes</code></pre>
 #   2   2   2   1   1   1   1   2   3   3   1   1   1   3   3   3   4   1 
 # V37 V38 V39 V40 V41 V42 V43 V44 V45 V46 V47 V48 V49 
 #   3   3   3   3   4   4   3   3   3   3   4   4   5</code></pre>
-<p>Visualisons ce découpage sur la carte SOM (l’argument <code>bgcol =</code> colorie le fond des cellules en fonction des groupes<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>, et <code>add.cluster.boudaries()</code> individualise des zones sur la carte en fonction du regroupement choisi).</p>
+<p>Visualisons ce découpage sur la carte SOM (l’argument <code>bgcol =</code> colorie le fond des cellules en fonction des groupes<a href="#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a>, et <code>add.cluster.boudaries()</code> individualise des zones sur la carte en fonction du regroupement choisi).</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(zoo_som, <span class="dt">type =</span> <span class="st">&quot;mapping&quot;</span>, <span class="dt">pch =</span> <span class="st">&quot;.&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;SOM zoo, 5 groupes&quot;</span>,
   <span class="dt">bgcol =</span>  RColorBrewer<span class="op">::</span><span class="kw">brewer.pal</span>(<span class="dv">5</span>, <span class="st">&quot;Set2&quot;</span>)[groupes])
 <span class="kw">add.cluster.boundaries</span>(zoo_som, <span class="dt">clustering =</span> groupes)</code></pre>
-<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-60-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="06-k-moyenne-som_files/figure-html/unnamed-chunk-62-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Grâce à la topographie des variables que nous avons réalisée plus haut, nous savons que :</p>
 <ul>
 <li>le groupe vert bouteille en bas à gauche reprend les petites particules plutôt transparentes,</li>
@@ -510,6 +510,30 @@ groupes</code></pre>
 <li><p>Une <a href="http://eric.univ-lyon2.fr/~ricco/tanagra/fichiers/fr_Tanagra_Kohonen_SOM_R.pdf">autre explication détaillée en français</a> avec exemple dans R.</p></li>
 <li><p>Si vous êtes aventureux, vous pouvez vous lancer dans la réimplémentation des graphiques du package <code>kohonen</code> en <code>chart</code>ou <code>ggplot2</code>. Voici <a href="http://blog.schochastics.net/post/soms-and-ggplot/">un bon point de départ</a> (en anglais).</p></li>
 </ul>
+</div>
+<div id="a-vous-de-jouer-17" class="section level5 unnumbered">
+<h5>A vous de jouer !</h5>
+<ul>
+<li>Réalisez le tutoriel afin de vérifier votre bonne compréhension de la som.</li>
+</ul>
+
+<div class="bdd">
+<p>Démarrez la SciViews Box et RStudio. Dans la fenêtre <strong>Console</strong> de RStudio, entrez l’instruction suivante suivie de la touche <code>Entrée</code> pour ouvrir le tutoriel concernant les bases de R :</p>
+<pre><code>BioDataScience2::run(&quot;06c_som&quot;)</code></pre>
+N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
+</div>
+
+<ul>
+<li>Complétez votre carnet de note par binôme sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).</li>
+</ul>
+
+<div class="bdd">
+<p>Completez votre projet. Lisez attentivement le README.</p>
+<p>La dernière version du README est disponible via le lien suivant :</p>
+<ul>
+<li><a href="https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea" class="uri">https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea</a>
+</div></li>
+</ul>
 
 </div>
 </div>
@@ -518,9 +542,9 @@ groupes</code></pre>
 <!-- </div> -->
 <div class="footnotes">
 <hr />
-<ol start="4">
-<li id="fn4"><p>Attention : la variable <code>transparency</code>, contrairement à ce que son nom pourrait suggérer n’est pas une mesure de la transparence de l’objet, mais de l’aspect plus ou moins régulier et lisse de sa silhouette.<a href="cartes-auto-adaptatives-som.html#fnref4" class="footnote-back">↩</a></p></li>
-<li id="fn5"><p>Nous avons choisi ici encore une autre palette de couleurs provenant du package <code>RColorBrewer</code>, voir <a href="http://www.sthda.com/french/wiki/couleurs-dans-r">ici</a>.<a href="cartes-auto-adaptatives-som.html#fnref5" class="footnote-back">↩</a></p></li>
+<ol start="18">
+<li id="fn18"><p>Attention : la variable <code>transparency</code>, contrairement à ce que son nom pourrait suggérer n’est pas une mesure de la transparence de l’objet, mais de l’aspect plus ou moins régulier et lisse de sa silhouette.<a href="cartes-auto-adaptatives-som.html#fnref18" class="footnote-back">↩</a></p></li>
+<li id="fn19"><p>Nous avons choisi ici encore une autre palette de couleurs provenant du package <code>RColorBrewer</code>, voir <a href="http://www.sthda.com/french/wiki/couleurs-dans-r">ici</a>.<a href="cartes-auto-adaptatives-som.html#fnref19" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>
