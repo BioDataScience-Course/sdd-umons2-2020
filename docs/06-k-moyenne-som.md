@@ -516,7 +516,7 @@ plot.mds <- function(x, y, ...) {
   plot(data = points, mds2 ~ mds1,...)
 }
 
-autoplot.mds <- function(object,  labels, ...) {
+autoplot.mds <- function(object, labels, ...) {
   points <- tibble::as_tibble(object$points, .name_repair = "minimal")
   colnames(points) <- paste0("mds", 1:ncol(points))
   

@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-02-28">
+<meta name="date" content="2020-03-08">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -246,6 +246,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
+<li class="chapter" data-level="7.0.1" data-path="acp-afc.html"><a href="acp-afc.html#acp-simplifiee-sous-sciviewsr"><i class="fa fa-check"></i><b>7.0.1</b> ACP simplifiée sous SciViews::R</a></li>
 <li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a></li>
 <li class="chapter" data-level="7.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>7.2</b> Analyse factorielle des correspondances</a></li>
 </ul></li>
@@ -338,7 +339,7 @@ plot.mds &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, ..
   <span class="kw">plot</span>(<span class="dt">data =</span> points, mds2 <span class="op">~</span><span class="st"> </span>mds1,...)
 }
 
-autoplot.mds &lt;-<span class="st"> </span><span class="cf">function</span>(object,  labels, ...) {
+autoplot.mds &lt;-<span class="st"> </span><span class="cf">function</span>(object, labels, ...) {
   points &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">as_tibble</span>(object<span class="op">$</span>points, <span class="dt">.name_repair =</span> <span class="st">&quot;minimal&quot;</span>)
   <span class="kw">colnames</span>(points) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;mds&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="kw">ncol</span>(points))
   
