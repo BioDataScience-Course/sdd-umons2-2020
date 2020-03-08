@@ -12,7 +12,96 @@ SciViews::R
 
 ##### Prérequis {-}
 
-TODO
+
+### ACP simplifiée sous SciViews::R
+
+Dans R, il existe plus d'une dizaine de fonctions différentes pour réaliser l'ACP. Afin de vous simplifier le travail et de pouvoir traiter votre ACP comme d'autres analyses similaires nous vous propoons les fonctions supplémentaites suivante. **Ces fonctions sont à copier-coller en haut de vos scripts R, ou dans un chunk de "setup" à l'intérieur de vos documents R Markdown/Notebook.**
+
+```{r}
+SciViews::R()
+library(broom)
+
+autoplot.pcomp <- function(object, labels, ...) {
+  scores <- tibble::as_tibble(object$scores, .name_repair = "minimal")
+  
+  if (!missing(labels)) {
+    if (length(labels) != nrow(scores))
+      stop("You must provide a character vector of length ", nrow(scores),
+        " for 'labels'")
+    scores$.labels <- labels
+    chart::chart(scores, PC2 ~ PC1 %col=% .labels, ...) +
+      geom_point()
+  } else {# Plot without labels
+    chart::chart(scores, PC2 ~ PC1, ...) +
+      geom_point()
+  }
+}
+
+# screeplot.pcomp
+screechart <- function(object, type = c("barplot", "lines", "proportion", "cumulative"), ...) {
+  
+  if (class(object) != "pcomp")
+    stop("the object must be `pcomp` object")
+  
+  # extract standard deviation of the object pcomp
+  sd <- object$sdev
+    
+  variance <- tibble::tibble(
+    pc = names(sd),
+    sdev = sd,
+    var = sdev^2,
+    prop = var/sum(var),
+    cumul = cumsum(prop)
+    )
+  
+  variance <- data.io::labelise(
+    variance, label = list(
+      pc = "Principal component",
+      sdev = "Standard deviation",
+      var = "Variance",
+      prop = "Proportion of Variance",
+      cumul = "Cumulative proportion of variance"),
+    self = FALSE)
+  
+  type <- match.arg(type) 
+  
+  if (type == "barplot") {
+    varplot  <- chart::chart(variance, var ~ pc) +
+    geom_col()
+  } 
+  
+  if (type == "lines") {
+    varplot  <- chart::chart(variance, var ~ pc %group=% 1) +
+      geom_line() +
+      geom_point()
+  }
+  
+  if (type == "proportion") {
+    varplot  <- chart::chart(variance, prop ~ pc %group=% 1) +
+      geom_line() +
+      geom_point()
+  }
+  
+  if (type == "cumulative") {
+   varplot  <- chart::chart(variance, cumul ~ pc %group=% 1) +
+      geom_line() +
+      geom_point()
+  }
+  
+  varplot
+}
+
+# augment.pcomp -------------------------------------------
+augment.pcomp <- function(x, data,  ...){
+  scores <- as_tibble(x$scores)
+  colnames(scores) <- paste0(
+    ".", stringr::str_to_lower(names(scores)))
+  bind_cols(data, scores)
+}
+```
+
+
+
 
 ## Analyse en composantes principales
 
