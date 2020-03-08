@@ -5,102 +5,20 @@
 
 ##### Objectifs {-}
 
-- TODO
+- Apprendre à réaliser une ordination de données quantitatives à l'aide de l'ACP.
+
+- Savoir ordiner des variables qualitatives sous forme de tavbleaux cas par variables ou de tables de contingences à double entrée à l'aide de l'AFC.
 
 ##### Prérequis {-}
 
-
-### ACP simplifiée sous SciViews::R
-
-Dans R, il existe plus d'une dizaine de fonctions différentes pour réaliser l'ACP. Afin de vous simplifier le travail et de pouvoir traiter votre ACP comme d'autres analyses similaires nous vous propoons les fonctions supplémentaites suivante. **Ces fonctions sont à copier-coller en haut de vos scripts R, ou dans un chunk de "setup" à l'intérieur de vos documents R Markdown/Notebook.**
-
-
-```r
-SciViews::R()
-library(broom)
-
-autoplot.pcomp <- function(object, labels, ...) {
-  scores <- tibble::as_tibble(object$scores, .name_repair = "minimal")
-  
-  if (!missing(labels)) {
-    if (length(labels) != nrow(scores))
-      stop("You must provide a character vector of length ", nrow(scores),
-        " for 'labels'")
-    scores$.labels <- labels
-    chart::chart(scores, PC2 ~ PC1 %col=% .labels, ...) +
-      geom_point()
-  } else {# Plot without labels
-    chart::chart(scores, PC2 ~ PC1, ...) +
-      geom_point()
-  }
-}
-
-# screeplot.pcomp
-screechart <- function(object, type = c("barplot", "lines", "proportion", "cumulative"), ...) {
-  
-  if (class(object) != "pcomp")
-    stop("the object must be `pcomp` object")
-  
-  # extract standard deviation of the object pcomp
-  sd <- object$sdev
-    
-  variance <- tibble::tibble(
-    pc = names(sd),
-    sdev = sd,
-    var = sdev^2,
-    prop = var/sum(var),
-    cumul = cumsum(prop)
-    )
-  
-  variance <- data.io::labelise(
-    variance, label = list(
-      pc = "Principal component",
-      sdev = "Standard deviation",
-      var = "Variance",
-      prop = "Proportion of Variance",
-      cumul = "Cumulative proportion of variance"),
-    self = FALSE)
-  
-  type <- match.arg(type) 
-  
-  if (type == "barplot") {
-    varplot  <- chart::chart(variance, var ~ pc) +
-    geom_col()
-  } 
-  
-  if (type == "lines") {
-    varplot  <- chart::chart(variance, var ~ pc %group=% 1) +
-      geom_line() +
-      geom_point()
-  }
-  
-  if (type == "proportion") {
-    varplot  <- chart::chart(variance, prop ~ pc %group=% 1) +
-      geom_line() +
-      geom_point()
-  }
-  
-  if (type == "cumulative") {
-   varplot  <- chart::chart(variance, cumul ~ pc %group=% 1) +
-      geom_line() +
-      geom_point()
-  }
-  
-  varplot
-}
-
-# augment.pcomp -------------------------------------------
-augment.pcomp <- function(x, data,  ...){
-  scores <- as_tibble(x$scores)
-  colnames(scores) <- paste0(
-    ".", stringr::str_to_lower(names(scores)))
-  bind_cols(data, scores)
-}
-```
-
-
+- Le module 6, et en particulier la partie sur le MDS doivent être assimilés avant d'attaquer le présent module.
 
 
 ## Analyse en composantes principales
 
+Notre première approche d'ordination avec le MDS dans le précédent module nous a permis de comprendre l'intérêt de représenter des données multivariées sur des **cartes**. Malheureusement, les techniques itératives et basées sur les matrices de distances du MDS rendent cette technique peu propice pour analyser des gros jeux de données. En effet, le temps de calcul et le besoin en mémoire vive grandissent de manière exponentielle avec la taille des jeux de données. Heureusement, il existe aussi des techniques d'ordination qui se calculent plus facilement et plus rapidement sur de très gros jeux de données. L'**Analyse en Composantes Principales** ou ACP ("Principal Component Analysis" ou PCA en anglais) est une méthode de base qu'il est indispensable de connaitre et de comprendre. La plupart des autres techniques d'ordination plus sophistiquées sont des variante de l'ACP.
+
+
 ## Analyse factorielle des correspondances
+
+Comme l'ACP s'intéresse à des corrélations linéaires entre variables quantitatives, elle n'est absolument pas utilisable pour traiter des variables qualitatives. L'**Analyse Factorielle des Correspondances** sera utile dans ce dernier cas (AFC, ou en anglais "Correspondence Analysis" ou CA).

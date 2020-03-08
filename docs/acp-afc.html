@@ -61,72 +61,6 @@
 <script src="libs/rglWebGL-binding-0.100.19/rglWebGL.js"></script>
 
 
-<style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    background-color: #ffffff;
-    color: #a0a0a0;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
-div.sourceCode
-  { color: #1f1c1b; background-color: #ffffff; }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span. { color: #1f1c1b; } /* Normal */
-code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
-code span.an { color: #ca60ca; } /* Annotation */
-code span.at { color: #0057ae; } /* Attribute */
-code span.bn { color: #b08000; } /* BaseN */
-code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
-code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #924c9d; } /* Char */
-code span.cn { color: #aa5500; } /* Constant */
-code span.co { color: #898887; } /* Comment */
-code span.cv { color: #0095ff; } /* CommentVar */
-code span.do { color: #607880; } /* Documentation */
-code span.dt { color: #0057ae; } /* DataType */
-code span.dv { color: #b08000; } /* DecVal */
-code span.er { color: #bf0303; text-decoration: underline; } /* Error */
-code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
-code span.fl { color: #b08000; } /* Float */
-code span.fu { color: #644a9b; } /* Function */
-code span.im { color: #ff5500; } /* Import */
-code span.in { color: #b08000; } /* Information */
-code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
-code span.op { color: #1f1c1b; } /* Operator */
-code span.ot { color: #006e28; } /* Other */
-code span.pp { color: #006e28; } /* Preprocessor */
-code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
-code span.sc { color: #3daee9; } /* SpecialChar */
-code span.ss { color: #ff5500; } /* SpecialString */
-code span.st { color: #bf0303; } /* String */
-code span.va { color: #0057ae; } /* Variable */
-code span.vs { color: #bf0303; } /* VerbatimString */
-code span.wa { color: #bf0303; } /* Warning */
-</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -246,7 +180,6 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
-<li class="chapter" data-level="7.0.1" data-path="acp-afc.html"><a href="acp-afc.html#acp-simplifiee-sous-sciviewsr"><i class="fa fa-check"></i><b>7.0.1</b> ACP simplifiée sous SciViews::R</a></li>
 <li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a></li>
 <li class="chapter" data-level="7.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>7.2</b> Analyse factorielle des correspondances</a></li>
 </ul></li>
@@ -289,95 +222,15 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="objectifs-6" class="section level5 unnumbered">
 <h5>Objectifs</h5>
 <ul>
-<li>TODO</li>
+<li><p>Apprendre à réaliser une ordination de données quantitatives à l’aide de l’ACP.</p></li>
+<li><p>Savoir ordiner des variables qualitatives sous forme de tavbleaux cas par variables ou de tables de contingences à double entrée à l’aide de l’AFC.</p></li>
 </ul>
 </div>
 <div id="prerequis-6" class="section level5 unnumbered">
 <h5>Prérequis</h5>
-</div>
-<div id="acp-simplifiee-sous-sciviewsr" class="section level3">
-<h3><span class="header-section-number">7.0.1</span> ACP simplifiée sous SciViews::R</h3>
-<p>Dans R, il existe plus d’une dizaine de fonctions différentes pour réaliser l’ACP. Afin de vous simplifier le travail et de pouvoir traiter votre ACP comme d’autres analyses similaires nous vous propoons les fonctions supplémentaites suivante. <strong>Ces fonctions sont à copier-coller en haut de vos scripts R, ou dans un chunk de “setup” à l’intérieur de vos documents R Markdown/Notebook.</strong></p>
-<pre class="sourceCode r"><code class="sourceCode r">SciViews<span class="op">::</span><span class="kw">R</span>()
-<span class="kw">library</span>(broom)
-
-autoplot.pcomp &lt;-<span class="st"> </span><span class="cf">function</span>(object, labels, ...) {
-  scores &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">as_tibble</span>(object<span class="op">$</span>scores, <span class="dt">.name_repair =</span> <span class="st">&quot;minimal&quot;</span>)
-  
-  <span class="cf">if</span> (<span class="op">!</span><span class="kw">missing</span>(labels)) {
-    <span class="cf">if</span> (<span class="kw">length</span>(labels) <span class="op">!=</span><span class="st"> </span><span class="kw">nrow</span>(scores))
-      <span class="kw">stop</span>(<span class="st">&quot;You must provide a character vector of length &quot;</span>, <span class="kw">nrow</span>(scores),
-        <span class="st">&quot; for &#39;labels&#39;&quot;</span>)
-    scores<span class="op">$</span>.labels &lt;-<span class="st"> </span>labels
-    chart<span class="op">::</span><span class="kw">chart</span>(scores, PC2 <span class="op">~</span><span class="st"> </span>PC1 <span class="op">%col=%</span><span class="st"> </span>.labels, ...) <span class="op">+</span>
-<span class="st">      </span><span class="kw">geom_point</span>()
-  } <span class="cf">else</span> {<span class="co"># Plot without labels</span>
-    chart<span class="op">::</span><span class="kw">chart</span>(scores, PC2 <span class="op">~</span><span class="st"> </span>PC1, ...) <span class="op">+</span>
-<span class="st">      </span><span class="kw">geom_point</span>()
-  }
-}
-
-<span class="co"># screeplot.pcomp</span>
-screechart &lt;-<span class="st"> </span><span class="cf">function</span>(object, <span class="dt">type =</span> <span class="kw">c</span>(<span class="st">&quot;barplot&quot;</span>, <span class="st">&quot;lines&quot;</span>, <span class="st">&quot;proportion&quot;</span>, <span class="st">&quot;cumulative&quot;</span>), ...) {
-  
-  <span class="cf">if</span> (<span class="kw">class</span>(object) <span class="op">!=</span><span class="st"> &quot;pcomp&quot;</span>)
-    <span class="kw">stop</span>(<span class="st">&quot;the object must be `pcomp` object&quot;</span>)
-  
-  <span class="co"># extract standard deviation of the object pcomp</span>
-  sd &lt;-<span class="st"> </span>object<span class="op">$</span>sdev
-    
-  variance &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tibble</span>(
-    <span class="dt">pc =</span> <span class="kw">names</span>(sd),
-    <span class="dt">sdev =</span> sd,
-    <span class="dt">var =</span> sdev<span class="op">^</span><span class="dv">2</span>,
-    <span class="dt">prop =</span> var<span class="op">/</span><span class="kw">sum</span>(var),
-    <span class="dt">cumul =</span> <span class="kw">cumsum</span>(prop)
-    )
-  
-  variance &lt;-<span class="st"> </span>data.io<span class="op">::</span><span class="kw">labelise</span>(
-    variance, <span class="dt">label =</span> <span class="kw">list</span>(
-      <span class="dt">pc =</span> <span class="st">&quot;Principal component&quot;</span>,
-      <span class="dt">sdev =</span> <span class="st">&quot;Standard deviation&quot;</span>,
-      <span class="dt">var =</span> <span class="st">&quot;Variance&quot;</span>,
-      <span class="dt">prop =</span> <span class="st">&quot;Proportion of Variance&quot;</span>,
-      <span class="dt">cumul =</span> <span class="st">&quot;Cumulative proportion of variance&quot;</span>),
-    <span class="dt">self =</span> <span class="ot">FALSE</span>)
-  
-  type &lt;-<span class="st"> </span><span class="kw">match.arg</span>(type) 
-  
-  <span class="cf">if</span> (type <span class="op">==</span><span class="st"> &quot;barplot&quot;</span>) {
-    varplot  &lt;-<span class="st"> </span>chart<span class="op">::</span><span class="kw">chart</span>(variance, var <span class="op">~</span><span class="st"> </span>pc) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_col</span>()
-  } 
-  
-  <span class="cf">if</span> (type <span class="op">==</span><span class="st"> &quot;lines&quot;</span>) {
-    varplot  &lt;-<span class="st"> </span>chart<span class="op">::</span><span class="kw">chart</span>(variance, var <span class="op">~</span><span class="st"> </span>pc <span class="op">%group=%</span><span class="st"> </span><span class="dv">1</span>) <span class="op">+</span>
-<span class="st">      </span><span class="kw">geom_line</span>() <span class="op">+</span>
-<span class="st">      </span><span class="kw">geom_point</span>()
-  }
-  
-  <span class="cf">if</span> (type <span class="op">==</span><span class="st"> &quot;proportion&quot;</span>) {
-    varplot  &lt;-<span class="st"> </span>chart<span class="op">::</span><span class="kw">chart</span>(variance, prop <span class="op">~</span><span class="st"> </span>pc <span class="op">%group=%</span><span class="st"> </span><span class="dv">1</span>) <span class="op">+</span>
-<span class="st">      </span><span class="kw">geom_line</span>() <span class="op">+</span>
-<span class="st">      </span><span class="kw">geom_point</span>()
-  }
-  
-  <span class="cf">if</span> (type <span class="op">==</span><span class="st"> &quot;cumulative&quot;</span>) {
-   varplot  &lt;-<span class="st"> </span>chart<span class="op">::</span><span class="kw">chart</span>(variance, cumul <span class="op">~</span><span class="st"> </span>pc <span class="op">%group=%</span><span class="st"> </span><span class="dv">1</span>) <span class="op">+</span>
-<span class="st">      </span><span class="kw">geom_line</span>() <span class="op">+</span>
-<span class="st">      </span><span class="kw">geom_point</span>()
-  }
-  
-  varplot
-}
-
-<span class="co"># augment.pcomp -------------------------------------------</span>
-augment.pcomp &lt;-<span class="st"> </span><span class="cf">function</span>(x, data,  ...){
-  scores &lt;-<span class="st"> </span><span class="kw">as_tibble</span>(x<span class="op">$</span>scores)
-  <span class="kw">colnames</span>(scores) &lt;-<span class="st"> </span><span class="kw">paste0</span>(
-    <span class="st">&quot;.&quot;</span>, stringr<span class="op">::</span><span class="kw">str_to_lower</span>(<span class="kw">names</span>(scores)))
-  <span class="kw">bind_cols</span>(data, scores)
-}</code></pre>
+<ul>
+<li>Le module 6, et en particulier la partie sur le MDS doivent être assimilés avant d’attaquer le présent module.</li>
+</ul>
 </div> 
 </div>
 <div id="disqus_thread"></div>
@@ -451,19 +304,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
-    script.src = src;
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>
