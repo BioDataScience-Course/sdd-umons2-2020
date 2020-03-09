@@ -427,7 +427,7 @@ knitr::kable(urchin2_cor, digits = 2)
 plot(urchin2_cor)
 ```
 
-Toutes les corrélations sont positives, et certaines sont très élevées. Cela indique que plusieurs variables sont (pratiquement complètement)  redondantes, par exemple, `diameter1` et `diameter2`. Un effet princiapl semble dominer.
+Toutes les corrélations sont positives, et certaines sont très élevées. Cela indique que plusieurs variables sont (pratiquement complètement)  redondantes, par exemple, `diameter1` et `diameter2`. Un effet principal semble dominer.
 
 Si nous refaisons quelques graphiques, nous nous rappelons que les relations *ne sont pas* linéaires, par exemple, entre `diameter1` et `weight`\ :
 
@@ -444,7 +444,7 @@ chart(data = urchin2, log(weight) ~ log(diameter1)) +
 ```
 
 ```{block2, type='warning'}
-Il est crucial de bien nettoyer son jeu de données avant une ACP, et aussi, de vérifier que les relations sont linéaires, sinon, de transformer les données de manière appropriée. Rappelez-vous que l'ACP s'intéresse aux corrélations **linéaires** entre vos variables. 
+Il est crucial de bien nettoyer son jeu de données avant une ACP, et aussi, de vérifier que les relations sont linéaires. Sinon il faut transformer les données de manière appropriée. Rappelez-vous que l'ACP s'intéresse aux corrélations **linéaires** entre vos variables. 
 ```
 
 Attention toutefois à la transformation logarithmique appliquée sur des données qui peuvent contenir des zéros (par exemple, `gonads` ou `dry_gonads`). Dans ce cas, la transformartion logarithme(x + 1) réalisée avec la fonction `log1p()` est plus indiquée. Nous allons ici trtansformer **toutes** les variables en log(x + 1). C'est assez fastidieux à faire avec `mutate()`, mais nous pouvons l'utiliser directemnt sur le tableau entier réduit aux variables quantitatives continues seules lors de l'appel à `pca()` comme suit\ :
@@ -487,7 +487,7 @@ urchin2 %>.%
   select(., -origin, -maturity, -buoyant_weight) %>.% # Elimination des variables inutiles
   (. / urchin2$buoyant_weight) %>.% # Division par buoyant_weight
   log1p(.) -> urchin3 # Transformation log(x + 1)
-urchin3
+head(urchin3)
 ```
 
 Refaisons notre ACP sur `urchin3` ainsi calculé\ :
