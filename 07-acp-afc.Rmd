@@ -83,10 +83,10 @@ pca <- function(x, ...) {
 
 scale_axes <- function(data, aspect.ratio = 1) {
   range_x <- range(data[, 1])
-  span_x <- max(range_x) - min(range_x)
+  span_x <- abs(max(range_x) - min(range_x))
   range_y <- range(data[, 2])
-  span_y <- max(range_y) - min(range_y)
-  if (span_y * aspect.ratio < span_x) {
+  span_y <- abs(max(range_y) - min(range_y))
+  if ((span_y / aspect.ratio) > span_x) {
     # Adjust range_x
     span_x_2 <- span_y / aspect.ratio / 2
     range_x_mid <- sum(range_x) / 2
@@ -945,10 +945,10 @@ ca <- ca::ca
 
 scale_axes <- function(data, aspect.ratio = 1) {
   range_x <- range(data[, 1])
-  span_x <- max(range_x) - min(range_x)
+  span_x <- abs(max(range_x) - min(range_x))
   range_y <- range(data[, 2])
-  span_y <- max(range_y) - min(range_y)
-  if (span_y * aspect.ratio < span_x) {
+  span_y <- abs(max(range_y) - min(range_y))
+  if ((span_y / aspect.ratio) > span_x) {
     # Adjust range_x
     span_x_2 <- span_y / aspect.ratio / 2
     range_x_mid <- sum(range_x) / 2
