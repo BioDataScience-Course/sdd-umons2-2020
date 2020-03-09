@@ -924,7 +924,33 @@ Tout ces calculs se généralisent facilement à trois, puis à N dimensions.
 
 - Une [explication détaillée de la PCA en anglais](http://staff.ustc.edu.cn/~zwp/teach/MVA/abdi-awPCA2010.pdf).
 
-- Une page qui reprend [une série de vidéos](http://www.sthda.com/english/articles/21-courses/65-principal-component-analysis-course-using-factominer/) qui présentent les différentes facettes de l'A CP (en franglais).
+- Une page qui reprend [une série de vidéos](http://www.sthda.com/english/articles/21-courses/65-principal-component-analysis-course-using-factominer/) qui présentent les différentes facettes de l'ACP (en franglais).
+
+##### A vous de jouer ! {-}
+
+- Réalisez le début du projet spécifique et dédié uniquement au module 07. Ce module couvre la matière entière du module 7. 
+
+```{block2, type='bdd'}
+Suite à la lecture de l’ACP, réalisez ce projet individuel pour appliquer vos nouvelles connaissances.
+
+- <https://classroom.github.com/a/BPcVdLab>
+  
+Lisez attentivement le README
+
+*Ce projet doit être terminé à la fin de ce module*
+```
+
+
+- Complétez votre projet sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).
+
+```{block2, type='bdd'}
+
+Complétez votre projet. Lisez attentivement le README.
+
+La dernière version du README est disponible via le lien suivant\ :
+  
+- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea>
+```
 
 
 ## Analyse factorielle des correspondances
@@ -1047,3 +1073,27 @@ class(chart.ca) <- c("function", "subsettable_type")
 
 ```
 
+##### A vous de jouer ! {-}
+
+- Réalisez la suite du projet spécifique et dédié uniquement au module 07. Ce module couvre la matière entière du module 7. 
+
+```{block2, type='bdd'}
+Suite à la lecture de l’AFC, completez ce projet individuel pour appliquer vos nouvelles connaissances.
+
+La dernière version du README est disponible via le lien suivant\ :
+  
+- <https://github.com/BioDataScience-Course/sdd2_module07>
+
+*Ce projet doit être terminé à la fin de ce module*
+```
+
+- Complétez votre projet sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).
+
+```{block2, type='bdd'}
+
+Completez votre projet. Lisez attentivement le README.
+
+La dernière version du README est disponible via le lien suivant\ :
+  
+- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea>
+```
