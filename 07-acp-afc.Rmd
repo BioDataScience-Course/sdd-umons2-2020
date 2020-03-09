@@ -21,7 +21,858 @@ SciViews::R
 
 Notre première approche d'ordination avec le MDS dans le précédent module nous a permis de comprendre l'intérêt de représenter des données multivariées sur des **cartes**. Malheureusement, les techniques itératives et basées sur les matrices de distances du MDS rendent cette technique peu propice pour analyser des gros jeux de données. En effet, le temps de calcul et le besoin en mémoire vive grandissent de manière exponentielle avec la taille des jeux de données. Heureusement, il existe aussi des techniques d'ordination qui se calculent plus facilement et plus rapidement sur de très gros jeux de données. L'**Analyse en Composantes Principales** ou ACP ("Principal Component Analysis" ou PCA en anglais) est une méthode de base qu'il est indispensable de connaitre et de comprendre. La plupart des autres techniques d'ordination plus sophistiquées sont des variante de l'ACP.
 
+- Des **relations linéaires** sont suspectées entres les variables  (si elles ne sont pas linéaires, penser à transformer les données auparavant pour les linéairser).
+
+- Ces relations conduisent à une répartition des individus (le nuage de points) qui forme une **structure que l’on cherchera à interpréter**.
+
+- Pour **visualiser** cette structure, les données sont simplifiées (réduites) de **N variables à n (n < N et n = 2 ou 3)**. La représentation sous forme d'un nuage de points s'appelle une **carte**.
+
+- La réduction des dimensions se fait avec une perte minimale d'information au sens de la variance des données.
+
+
+### ACP dans SciViews::R
+
+L'ACP est facilitée dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documenbts R Markdown/Notebook.
+
+```{r}
+SciViews::R()
+library(broom)
+
+# broom implements only methods for prcomp objects, not princomp, while pcomp
+# is compatible with princomp... but prcomp is simpler. So, conversion is easy
+as.prcomp <- function(x, ...)
+  UseMethod("as.prcomp")
+
+as.prcomp.default <- function(x, ...)
+  stop("No method to convert this object into a 'prcomp'")
+
+as.prcomp.prcomp <- function(x, ...)
+  x
+
+as.prcomp.princomp <- function(x, ...)
+  structure(list(sdev = as.numeric(x$sdev), rotation = unclass(x$loadings),
+    center = x$center, scale = x$scale, x = as.matrix(x$scores)),
+    class = "prcomp")
+
+# Comparison of pcomp() -> as.prcomp() with prcomp() directly
+# Almost the same, only no rownames for x (is it important?)
+#iris_prcomp_pcomp <- as.prcomp(pcomp(iris[, -5], scale = TRUE))
+#iris_prcomp <- prcomp(iris[, -5], scale = TRUE)
+
+# Now, broom methods can be defined simply by converting into prcomp objects
+augment.princomp <- function(x, data = NULL, newdata, ...)
+  if (missing(newdata)) {
+  augment(as.prcomp(x), data = data, ...)
+  } else {
+    augment(as.prcomp(x), data = data, newdata = newdata, ...)
+  }
+
+tidy.princomp <- function(x, matrix = "u", ...)
+  tidy(as.prcomp(x), matrix = matrix, ...)
+
+# There is no glance.prcomp() method
+
+# There is a problem with pcomp() that returns a data.frame in scores,
+# while it is a matrix in the original princomp object. pca() corrects this
+pca <- function(x, ...) {
+  res <- SciViews::pcomp(x, ...)
+  # Change scores into a matrix
+  res$scores <- as.matrix(res$scores)
+  res
+}
+
+scale_axes <- function(data, aspect.ratio = 1) {
+  range_x <- range(data[, 1])
+  span_x <- max(range_x) - min(range_x)
+  range_y <- range(data[, 2])
+  span_y <- max(range_y) - min(range_y)
+  if (span_y * aspect.ratio > span_x) {
+    # Adjust range_x
+    span_x_2 <- span_y / aspect.ratio / 2
+    range_x_mid <- sum(range_x) / 2
+    range_x <- c(range_x_mid - span_x_2, range_x_mid + span_x_2)
+  } else {
+    # Adjust range_y
+    span_y_2 <- span_x * aspect.ratio / 2
+    range_y_mid <- sum(range_y) / 2
+    range_y <- c(range_y_mid - span_y_2, range_y_mid + span_y_2)
+  }
+  list(x = range_x, y = range_y)
+}
+
+autoplot.pcomp <- function(object,
+type = c("screeplot", "altscreeplot", "loadings", "correlations", "scores", "biplot"),
+choices = 1L:2L, name = deparse(substitute(object)), ar.length = 0.1,
+circle.col = "gray", col = "black", fill = "gray", scale = 1, aspect.ratio = 1,
+repel = FALSE, labels, title, xlab, ylab, ...) {
+  type = match.arg(type)
+
+  if (missing(title))
+    title <- paste(name, type, sep = " - ")
+
+  contribs <- paste0(names(object$sdev), " (",
+    round((object$sdev^2/object$totdev^2) * 100, digits = 1), "%)")[choices]
+
+  scores <- as.data.frame(object$scores[, choices])
+  names(scores) <- c("x", "y")
+  if (!missing(labels)) {
+    if (length(labels) != nrow(scores))
+      stop("You must provide a character vector of length ", nrow(scores),
+        " for 'labels'")
+    scores$labels <- labels
+  } else {# Default labels are row numbers
+    scores$labels <- 1:nrow(scores)
+  }
+
+  lims <- scale_axes(scores, aspect.ratio = aspect.ratio)
+
+  if (!missing(col)) {
+    if (length(col) != nrow(scores))
+      stop("You must provide a vector of length ", nrow(scores), " for 'col'")
+    scores$color <- col
+    scores_formula <- y ~ x %col=% color %label=% labels
+  } else {
+    if (missing(labels)) {
+      scores_formula <- y ~ x %label=% labels
+    } else {
+      scores_formula <- y ~ x %col=% labels %label=% labels
+    }
+  }
+
+  res <- switch(type,
+    screeplot = object %>.% # Classical screeplot
+      tidy(., "pcs") %>.%
+      chart(data = ., std.dev^2 ~ PC) +
+      geom_col(col = col, fill = fill) +
+      labs(y = "Variances", title = title),
+
+    altscreeplot = object %>.% # screeplot represented by dots and lines
+      tidy(., "pcs") %>.%
+      chart(data = ., std.dev^2 ~ PC) +
+      geom_line(col = col) +
+      geom_point(col = "white", fill = col, size = 2, shape = 21, stroke = 3) +
+      labs(y = "Variances", title = title),
+
+    loadings = object %>.% # Plots of the variables
+      tidy(., "variables") %>.%
+      spread(., key = PC, value = value) %>.%
+      #rename_if(., is.numeric, function(x) paste0("PC", x)) %>.%
+      select(., c(1, choices + 1)) %>.%
+      set_names(., c("labels", "x", "y")) %>.%
+      chart(data = ., y ~ x %xend=% 0 %yend=% 0 %label=% labels) +
+        annotate("path", col = circle.col,
+          x = cos(seq(0, 2*pi, length.out = 100)),
+          y = sin(seq(0, 2*pi, length.out = 100))) +
+        geom_hline(yintercept = 0, col = circle.col) +
+        geom_vline(xintercept = 0, col = circle.col) +
+        geom_segment(arrow = arrow(length = unit(ar.length, "inches"),
+          ends = "first")) +
+        ggrepel::geom_text_repel(hjust = "outward", vjust = "outward") +
+        coord_fixed(ratio = 1) +
+        labs(x = contribs[1], y = contribs[2], title = title),
+
+    correlations = object %>.% # Correlations plot
+      Correlation(.) %>.%
+      as_tibble(., rownames = "labels") %>.%
+      select(., c(1, choices + 1)) %>.%
+      set_names(., c("labels", "x", "y")) %>.%
+      chart(data = ., y ~ x %xend=% 0 %yend=% 0 %label=% labels) +
+      annotate("path", col = circle.col,
+        x = cos(seq(0, 2*pi, length.out = 100)),
+        y = sin(seq(0, 2*pi, length.out = 100))) +
+      geom_hline(yintercept = 0, col = circle.col) +
+      geom_vline(xintercept = 0, col = circle.col) +
+      geom_segment(arrow = arrow(length = unit(ar.length, "inches"),
+        ends = "first")) +
+      ggrepel::geom_text_repel(hjust = "outward", vjust = "outward") +
+      coord_fixed(ratio = 1) +
+      labs(x = contribs[1], y = contribs[2], title = title),
+
+    scores = scores %>.% # Plot of the individuals
+      chart(data = ., scores_formula) +
+      geom_hline(yintercept = 0, col = circle.col) +
+      geom_vline(xintercept = 0, col = circle.col) +
+      coord_fixed(ratio = 1, xlim = lims$x, ylim = lims$y, expand = TRUE) +
+      labs(x = contribs[1], y = contribs[2], title = title) +
+      theme(legend.position = "none"),
+
+    biplot = object %>.% # Biplot using ggfortify function
+      as.prcomp(.) %>.%
+      ggfortify:::autoplot.prcomp(., x = choices[1], y = choices[2],
+        scale = scale, size = -1, label = TRUE, loadings = TRUE,
+        loadings.label = TRUE) +
+      geom_hline(yintercept = 0, col = circle.col) +
+      geom_vline(xintercept = 0, col = circle.col) +
+      theme_sciviews() +
+      labs(x = contribs[1], y = contribs[2], title = title),
+
+    stop("Unrecognized type, must be 'screeplot', 'altscreeplot', loadings', 'correlations', 'scores' or 'biplot'")
+  )
+
+  if (type == "scores") {
+    if (isTRUE(repel)) {
+      res <- res + geom_point() + ggrepel::geom_text_repel()
+    } else {# Use text
+      res <- res + geom_text()
+    }
+  }
+
+  if (!missing(xlab))
+    res <- res + xlab(xlab)
+  if (!missing(ylab))
+    res <- res + ylab(ylab)
+  res
+}
+
+chart.pcomp <- function(data, choices = 1L:2L, name = deparse(substitute(data)),
+..., type = NULL, env = parent.frame())
+  autoplot.pcomp(data, choices = choices, name = name, ..., type = type, env = env)
+class(chart.pcomp) <- c("function", "subsettable_type")
+```
+
+
+### Indiens diabétiques
+
+Les indiens Pimas sont des amérindiens originaires du nord du Mexique qui sont connus pour compter le plus haut pourcentage d'obèses et de diabétiques de toutes les éthnies. Ils ont fait l'objet de plusieurs études scientifiques d'autant plus que les Pimas en Arizona développent principalement cette obésité et ce diabète, alors que les Pimas mexicains les ont plus rarement. Il est supposé que leur mode de vie différent aux Etats_Units pourrait en être la raison. Voici un jeu de données qui permet d'explorer un peu ceci (nous éliminons les lignes qui contiennent des données manquantes dans le tableau initial à l'aide de `drop_na()`\ :
+
+```{r}
+read("PimaIndiansDiabetes2", package = "mlbench") %>.%
+  drop_na(.) -> pima
+pima
+```
+
+Avant de nous lancer dans une ACP, nous devons décrire les données, repérer les variables quantitatives d'intérêt, et synthétiser les corrélations linéaires (coefficients de corrélation de Pearson) entre ces variables.
+
+```{r}
+skimr::skim(pima)
+```
+
+Nous avons une variable facteur `diabetes` à exclure de l'analyse, mais la variable `pregnant`, est une variable numérique discrète (nombre d'enfants portés). Nous l'éliminerons aussi de l'analyse.
+
+La fonction `correlation()` du package `SciViews` nous permet d'inspecter les corrélations entre les variables choisies (donc toutes à l'exception de `pregnant` et `diabetes` qui ne sont pas quantitatives continues)\ :
+
+```{r}
+pima_cor <- correlation(pima[, 2:8])
+knitr::kable(pima_cor, digits = 2)
+plot(pima_cor)
+```
+
+Quelques corrélations positives d'intensités moyennes se dégagent ici, notamment entre `mass` et `triceps` (épaisseur du pli cutané au niveau du triceps), ainsi qu'entre `glucose` (taux de glucose dans le sang), `insulin` (taux d'insuline dans le sang) et `age`. Par contre, la pression artérielle (`pressure`) et le `pedigree` (variable qui quantifie la susceptibilité au diabète en fonction de la parenté) semblent peu corrélés avec les autres variables.
+
+L'ACP est en fait équivalente à une Analyse en Coordonnées Principales sur une matrice de distances euclidiennes (MDS métrique), mais en plus efficace en terme de calculs. Nous pouvons donc nous lancer dans l'analyse et en comprendre les résultats en gardant ceci à l'esprit.
+
+Nous utiliserons la fonction `pca()` qui prend un argument `data =` et une formule du type `~ var1 + var2 + .... + varn`, ou plus simplement, directement un tableau contenant uniquement les variables à analyser comme argument unique. Comme les différentes variables sont mesurées dans des unités différentes, nous devons les standardiser (écart type ramené à un pour toutes). Ceci est réalisé par la fonction `pca()` en lui indiquant `scale = TRUE`. Donc\ :
+
+```{r}
+pima_pca <- pca(data = pima, ~ glucose + pressure + triceps + insulin + mass +
+  pedigree + age, scale = TRUE)
+```
+
+Ou alors, nous selectionnons les variables d'intérêt avec `select()` et appliquons `pca()` directement sur ce tableau, ce qui donnera le même résultat.
+
+```{r}
+pima %>.%
+  select(., glucose:age) %>.%
+  pca(., scale = TRUE) -> pima_pca
+```
+
+Le nuage de points dans l'espace initial à sept dimensions a été centré (origine ramenée au centre de gravité du nuage de points = moyenne des variables). Ensuite une rotation des axes a été réalisée pour orienter son plus grand axe selon un premier **axe principal 1** ou **PC1** . Ensuite **PC2** est construit orthogonal au premier et dans la seconde direction de plus grande variabilité du nuage de points, et ainsi de suite pour les autres axes. Ainsi les axes PC1, PC2, PC3, ... représentent une **part de variance** de plus en plus faible par rapport à la variance totale du jeu de données. Ceci est présenté dans le résumé\ :
+
+```{r}
+summary(pima_pca)
+```
+
+Le premier tableau `Importance of components (eigenvalues):` montre la part de variance présentée sur chacun des sept axes de l'ACP (PC1, PC2, ..., PC7). Le fait qu'il s'agit de *valeurs propres* (*eigenvalues* en anglais) apparaitra plus clair lorsque vous aurez lu les explications détaillées plus bas. Ces parts de variance s'additionnent pour donner la variance totale du nuage de points dans les sept dimensions (propriété d'additivité des variances). Pour facilité la lecture, la `Proportion de Variance` en %  est reprise également, ainsi que les proportions cumulées. Ainsi, les deux premiers axes de l'ACP capturent ici 53% de la variance totale. Et il faudrait considérer les cinq premiers axes pour capturer 90% de la variance totale.
+
+Le second tableau `Loadings (eigenvectors, rotation matrix):` est la matrice de transformation des coordonnées initiales sur les lignes en coordonnées PC1 à PC7 en colonnes. Nous pouvons y lire l'**importante** des variables initiales sur les axes de l'ACP. Par exemple, l'axe PC3 contraste essentiellement `pressure` et `pedigree`.
+
+Le **graphique des éboulis** sert à visualiser la "chute" de la variance d'un axe principal à l'autre, et aide à choisir le nombre d'axes à conserver (espace à dimensions réduites avec perte minimale d'information). Deux variantes en diagramme en barres versticales `chart$screeplot()` ou `chart$scree()` ou sous forme d'une ligne brisée `chart$altscree()` sont disponibles\ :
+
+```{r}
+chart$scree(pima_pca, fill = "cornsilk")
+```
+
+```{r}
+chart$altscree(pima_pca)
+```
+
+La diminution est importante entre le premier et le second axe, mais plus progressive ensuite. Ceci traduit une structure plus complexe dans les données qui ne se réduit pas facilement à un très petit nombre d'axes. Nous pouvons visualiser le **premier plan principal** constitué par PC1 et PC2, tout en gardant à l'esprit que seulement 53% de la variance totale y est capturée. Donc, nous pouvons nous attendre à des déformations non négligeables des données dans ce plan. Nous verrons qu'il est porteur, toutefois, d'information utile.
+
+Deux types de représentations peuvent être réalisées à partir d'ici\ : la représentation dans **l'espace des variables**, et la représentation complémentaire dans **l'espace des individus**. Ces deux représentations sont complémentaires et s'analysent conjointement. L'espace des variables représente les axes initiaux projettés comme des ombres dans le plan choisi de l'ACP. Il se réalise à l'aide de `chart$loadings()`. Par exemple pour PC1 et PC2 (`choices = c(1, 2)`)\ :
+
+```{r}
+chart$loadings(pima_pca, choices = c(1, 2))
+```
+
+Ce graphique s'interpète selon les critères suivants\ :
+
+- Plus la norme (longueur) du vecteur qui représente une variable est grande et se rapporche de un (matérialisé par le cer cle gris), plus la variable est bien représentée dans le plan choisi. On évitera d'interpréter ici les variables qui ont des normes petites, comme `pedigree` ou `pressure`.
+
+- Des vecteurs qui pointent dans la même direction représentent des variables **directement corrélés** entre elles. C'est le cas de `glucose`, `insulin` et `age`d'une part, et par ailleurs aussi de `mass` et `triceps`.
+
+- Des vecteurs qui pointent en directions opposées représentent des variables **inversément proportionnelles**. Il n'y en a pas ici.
+
+- Des vecteurs orthogonaux représentent des variables **non corrélées** entre elles. ainsi le groupoe `glucose`/`insulin`/`age` n'est pas corrélé avec le groupe `mass`/`triceps`
+
+- Les PCs sont orientés en fonction des variables initiales, ou à défaut, les zones du graphique sont orientés. Ici, les gros sont dans le haut à droite du graphique, alors que ceux qui sont agés, et ont beaucoup de sucre et d'insuline dans le sang sont en bas à droite. A l'opposé, on trouve les plus maigres en bas à gauche et les jeunes ayant moins de glucose et d'insuline dans le sang en haut à gauche du graphique.
+
+Cela donne déjà une vision synthétique des différentes corrélations entre la variables. Naturellement, on peut très bien choisir d'autres axes, pour peu qu'ils représentent une part de variance relativement importante. Par exemple, ici, nous pouvons représente le plan constitué par PC1 et PC3\ :
+
+```{r}
+chart$loadings(pima_pca, choices = c(1, 3))
+```
+
+Nous voyons que `pedigree` et `pressure` (inversément proportionnels) sont bien mieux représentés le long de PC3. Ici l'axe PC3 est plus facile à orienter\ : en haut les pédigrées élevés et les pressions qartérielles basses, et en bas le contraire.
+
+La seconde représentation se fait dans **l'espace des individus**. Ici, nous allons projeter les points relatifs à chaque individu dans le plan de l'ACP choisi. Cela se réalise à l'aide de `chart$scores()` (l'aspect ratio est le rapport hauteur/largeur peut s'adapter)\ :
+
+```{r}
+chart$scores(pima_pca, choices = c(1, 2), aspect.ratio = 3/5)
+```
+
+Ce graphique est peu lisible tel quel. Généralement, nous représentons d'autres informations utiles sous forme de labels et ou de couleurs différentes. Nous pouvons ainsi contraster les individus qui ont le diabète de ceux qui ne l'ont pas sur ce graphique et aussi ajouter des ellipses de confiance à 95% autour des deux groupes pour aider à la cerner à l'aide de `stat_ellipse()`\ :
+
+```{r}
+chart$scores(pima_pca, choices = c(1, 2),
+  labels = pima$diabetes) +
+  stat_ellipse()
+```
+
+Ce graphique est nettement plus intéressant. Il s'interprète comme suit\ :
+
+- Nous savons que les individus plus âgés et ayant plus de glucose et d'insuline dans le sang sont dans le bas à droite du graphique. Or le groupe des diabétique, s'il ne se détache pas complètement tend à s'étaler plus dans cette région.
+
+- A l'inverse, le groupe des non diabétiques s'étale vers la gauche, c'est-à-dire dans une région reprenant les individus les plus jeunes et les plus maigres.
+
+Le graphique entre PC1 et PC3 donne ceci\ :
+
+```{r}
+chart$scores(pima_pca, choices = c(1, 3),
+  labels = pima$diabetes) +
+  stat_ellipse()
+```
+
+Ici, la séparation se fait essentiellement sur l'axe horizontal (PC1). Donc, les différentes de pédigrée (élevé dans le haut du graphique) et de pression artérielle (élevée dans le bas du graphique) semblent être moins liés au diabète.
+
+Etant donné que les deux graphiques (variables et individus) s'interprètent conjointement, nous pourrions être tentés de les superposer, cela s'appelle un **biplot**. Mais se pose alors un problème\ : celui de mettre à l'échelle les deux représentations pour qu'elles soient cohérentes entre elles. Ceci n'est pas facile et différentes représentations coexistent. L'argument `scale =` de la fonction `chart$biplot()` permet d'utiliser différentes mises à l'échelle. Enfin, ce type de graphique tend à être souvent bien trop encombré. Il est donc plus difficile à lire que les deux graphiques des variables et individus séparés. Voici ce que cela donne pour notre jeu de données exemple\ :
+
+```{r}
+chart$biplot(pima_pca)
+```
+
+Bien moins lisible\ !
+
+
+### Visualisation de données quantitatives
+
+#### Deux dimensions
+
+**Le nuage de points** est le graphe idéal pour visualiser la distribution des données bivariées pour deux vaeriavbles quantitatives. Il permet de visualiser également une **association** entre deux variables. Il permet aussi de visualiser comment deux ou plusieurs groupes peuvent être séparés en fonction de ces deux variables.
+
+```{r}
+chart(data = pima, glucose ~ insulin %col=% diabetes) +
+  geom_point()
+```
+
+
+#### Trois dimensions
+
+**Le nuage de points en pseudo-3D** est l’équivalent pour visualiser trois variables quantitatives simultanément. Il est nécessaire de rendre l’effet de la **troisième dimension** (perspective, variation de taille des objets, ...).  La possibilité de **faire tourner l’objet 3D virtuel** est indispensable pour concrétiser l’effet 3D et pour le visionner sous différents angles
+
+Le package `rgl` permet de réaliser ce genre de graphique 3D interactif (que vous pouvez faire tourner dans l'orientation que vous voulez à la souris)\ :
+
+```{r, echo=FALSE}
+library(rgl)
+knitr::knit_hooks$set(webgl = hook_webgl)
+```
+
+```{r}
+rgl::plot3d(pima$insulin, pima$glucose, pima$triceps,
+  col = as.integer(pima$diabetes))
+```
+
+```{r, echo=FALSE}
+rgl::rglwidget(width = 800, height = 800)
+```
+
+
+#### Plus de trois dimensions
+
+Déjà à trois dimensions la visualisation devient délicate, mais au delà, cela devient pratiquement mission impossible. La **matrice de nuages de points** peut rendre service ici, mais dans certaines limites (tous les angles de vue ne sont pas accessibles).
+
+```{r}
+GGally::ggscatmat(pima, 2:6, color = "diabetes")
+```
+
+Nous voyons qu'ici nous atteignons les limites des possibilités. C'est pour cela que, pour des données multivariées comportant beaucoup de variables quantitatives, les techniques de réduction des dimensions comme l'ACP sont indispensables.
+
+
+### ACP : mécanisme
+
+Nous allons partir d'un exemple presque trivial pour illuster le principe de l'ACP. Comment réduire un tableau bivarié en une représentation des individus en une seule dimension (classement sur une droite) avec perte minimale d'information\ ? Par exemple, en partant de ces données fictives\ :
+
+```{r echo=FALSE, fig.width=9, fig.height=5, message=FALSE}
+dat <- data.frame(Station = 1:9,
+  Var1 = c(6, 1, 5, 7, 11, 10, 15, 18, 14),
+  Var2 = c(4, 2, 10, 9, 8, 12, 10, 16, 16))
+library(grid)
+library(gridExtra)
+tbl <- tableGrob(dat, rows = NULL, theme = ttheme_default(base_size = 9))
+plt <- ggplot(dat, aes(x = Var1, y = Var2)) +
+  geom_blank() +
+  theme_void()
+#grid.newpage()
+#grid.draw(tbl)
+marrangeGrob(list(tbl, plt), nrow = 1, ncol = 2, top = NULL)
+```
+
+Voic une représentation graphique 2D de ces données\ :
+
+```{r echo=FALSE, fig.width=9, fig.height=5}
+# One solution would be to put both plots on one graph
+library(tidyverse)
+plt <- ggplot(dat) +
+  #geom_point(mapping = aes(x = Var1, y = Var2, label = Station)) +
+  theme_bw() +
+  theme(plot.background = element_blank()) +
+  geom_text(aes(x = Var1, y = Var2, label = Station), hjust = 0, vjust = 0)
+marrangeGrob(list(tbl, plt), nrow = 1, ncol = 2, top = NULL)
+```
+
+Si nous réduisons à une seule dimension en laissant tomber une des deux variables, voici ce que cela donne (ici on ne garde que `Var1`, donc, on projette les points sur l'axe des abscisses).
+
+
+```{r echo=FALSE, fig.width=4.5, fig.height=5}
+plt <- ggplot(dat) +
+  #geom_point(mapping = aes(x = Var1, y = Var2, label = Station)) +
+  theme_bw() +
+  theme(plot.background = element_blank()) +
+  geom_text(aes(x = Var1, y = Var2, label = Station), hjust = 0, vjust = 0) +
+  geom_hline(yintercept = 0, col = "red", lwd = 1) +
+  geom_segment(aes(x =  Var1, y = Var2, xend = Var1, yend = 0),
+    col = "darkgray", linetype = 2)
+plt
+```
+
+Au final, nous avons ordonné nos individus en une dimension comme suit\ :
+
+```{r echo=FALSE, fig.width=4.5, fig.height=1}
+plt2 <- ggplot(dat) +
+  theme_bw() +
+  theme(plot.background = element_blank()) +
+  geom_text(aes(x = Var1, y = 1, label = Station), hjust = 0, vjust = 0) +
+  theme(axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()) +
+  coord_fixed(ratio = 15)
+plt2
+```
+
+C'est une mauvaise solution car il y a trop de perte d'information. Regardez l'écart entre 7 et 9 sur le graphqie en deux dimensions et dans celui à une dimension\ : les points sont trop près. Comparez sur les deux graphiques les distances 7 - 9 avec  9 - 8 et 1 - 2 *versus* 1 - 3. Tout cela est très mal représenté en une seule dimension.
+
+Une autre solution serait de projeter le long de la droite de "tendance générale", c'est-à-dire le long de l'axe de plus grand allongement du nuage de points.
+
+
+```{r echo=FALSE, fig.width=4.5, fig.height=5}
+dat$Proj <- (dat$Var1 + dat$Var2) / 2
+plt <- ggplot(dat) +
+  #geom_point(mapping = aes(x = Var1, y = Var2, label = Station)) +
+  theme_bw() +
+  theme(plot.background = element_blank()) +
+  geom_text(aes(x = Var1, y = Var2, label = Station), hjust = 0, vjust = 0) +
+  geom_abline(slope = 1, intercept = 0, col = "red", lwd = 1) +
+  geom_segment(aes(x =  Var1, y = Var2, xend = Proj, yend = Proj),
+    col = "darkgray", linetype = 2)
+plt
+```
+
+Cela donne ceci en une seule dimension\ :
+
+```{r echo=FALSE, fig.width=4.5, fig.height=1}
+plt2 <- ggplot(dat) +
+  theme_bw() +
+  theme(plot.background = element_blank()) +
+  geom_text(aes(x = Proj, y = 1, label = Station), hjust = 0, vjust = 0) +
+  theme(axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()) +
+  coord_fixed(ratio = 15)
+plt2
+```
+
+C'est une bien meilleure solution car la perte d'information est ici minimale. Regardez à nouveau la distance entre 7 et 9 sur le graphique initial à deux dimensions et sur le nouveau graphique réduit à une dimension\ : c'est mieux qu'avant. Comparez aussi les distances respectives entre les paires 7 - 9 et 9 - 8, ainsi que 1 - 2 par rapport à 1 - 3. Tout cela est bien pieux représenté à présent.
+
+**L’ACP effectue précisément la projection que nous venons d’imaginer.**
+
+- La droite de projection est appelée **composante principale 1**. La composante principale 1 présente la plus grande variabilité possible sur un seul axe.
+
+- Ensuite on calcule la composante 2 comme étant orthogonale (i.e., perpendiculaire) à PC1 et présentant la plus grande variabilité non encore capturée par la composante 1.
+
+- Le mécanisme revient à projeter les points sur des axes orientés différemment dans l'e plan'espace à N dimensions (pour N variables intiales). En effet, mathématiquement ce mécanisme se généralise facilement à trois, puis à N dimensions.
+
+
+### Calcul matriciel ACP
+
+La rotation optimale des axes vers les PC1 à PCN se résoud par un calcul matriciel. Nous allons maintenant le détailler. Mais auparavant, nous devons nous rafraîchir l'esprit concernant quelques notions.
+
+- Multiplication matricielle\ : $\begin{pmatrix}
+2 & 3\\
+2 & 1
+\end{pmatrix}
+\times
+\begin{pmatrix}
+1\\
+3
+\end{pmatrix}
+=
+\begin{pmatrix}
+11\\
+5
+\end{pmatrix}$ 
+
+- Vecteurs propres et valeurs propres (il en existe autant qu’il y a de colonnes dans la matrice de départ) :
+
+$$
+\begin{pmatrix}
+2 & 3\\
+2 & 1
+\end{pmatrix}
+\times
+\begin{pmatrix}
+3\\
+2
+\end{pmatrix}
+=
+\begin{pmatrix}
+12\\
+8
+\end{pmatrix}
+= 4 \times
+\begin{pmatrix}
+3\\
+2
+\end{pmatrix}
+$$
+
+- La constante (4) est une **valeur propre** et la matrice multipliée (à droite) est la matrice des **vecteurs propres**.
+
+- La rotation d'un système d'axes à deux dimensions d'un angle $\alpha$ peut se représenter sous forme d'un calcul matriciel\ :
+
+
+$$
+\begin{pmatrix}
+\cos \alpha & \sin \alpha\\
+-\sin \alpha & \cos \alpha
+\end{pmatrix}
+\times
+\begin{pmatrix}
+x\\
+y
+\end{pmatrix}
+=
+\begin{pmatrix}
+x'\\
+y'
+\end{pmatrix}
+$$
+
+Dans le cas particulier de l’ACP, la matrice de transformation qui effectue la rotation voulue pour obtenir les axes principaux est **la matrice rassemblant tous les vecteurs propres calculés après diagonalisation de la matrice de corrélation ou de variance/covariance** (réduction ou non, respectivement). Le schéma suivant visualise la rotation depuis les axes initiaux X et Y (variables de départ) en bleu royal vers les PC1, PC2 en rouge. Un individu p est représenté par les coordonnées {x, y} dans le système d'axes initial XY. Les nouvelles coordonnées {x', y'} sont recalculées par projection sur les nouveaux axes PC1-PC2. Les flèches bleues sont représentées dans l'espace des variables, tandis que les points reprojettés sur PC1-PC2 sont représentés dans l'espace des individus selon les coordonnées primes en rouge.
+
+```{r, fig.width=4.5, fig.height=4.5, echo=FALSE, message=FALSE, warning=FALSE}
+# Point
+plot(1, 1, xlab = "", ylab = "", xlim = c(-1.7, 1.7), ylim = c(-1.7, 1.7),
+  xaxt = "n", yaxt = "n", bty = "n")
+text(1.15, 1.15, "p")
+
+# Original coordinates
+arrows(-1.5, 0, 1.5, 0, length = 0.15, col = "darkblue")
+arrows(0, -1.5, 0, 1.5, length = 0.15, col = "darkblue")
+text(1.6, 0, "X", col = "darkblue")
+text(0, 1.65, "Y", col = "darkblue")
+segments(0, 1, 1, 1, lty = 3, col = "darkblue")
+segments(1, 0, 1, 1, lty = 3, col = "darkblue")
+text(1, -0.1, "x", col = "darkblue")
+text(-0.1, 1, "y", col = "darkblue")
+
+# Rotated coordinates
+a <- pi/10
+arrows(-1.5 * cos(a), -1.5 * sin(a), 1.5 * cos(a), 1.5 * sin(a), length = 0.15, col = "red")
+arrows(-1.5 * -sin(a), -1.5 * cos(a), 1.5 * -sin(a), 1.5 * cos(a), length = 0.15, col = "red")
+text(1.75 * cos(a), 1.65 * sin(a), "PC1", col = "red")
+text(1.65 * -sin(a), 1.65 * cos(a), "PC2", col = "red")
+segments(1.2, 0.4, 1, 1, lty = 3, col = "red")
+segments(-0.2, 0.6, 1, 1, lty = 3, col = "red")
+text(1, -0.1, "x", col = "darkblue")
+text(-0.1, 1, "y", col = "darkblue")
+text(1.2, 0.28, "x'", col = "red")
+text(-0.32, 0.55, "y'", col = "red")
+```
+
+
+#### Résolution numérique simple
+
+Effectuons une ACP sur matrice var/covar sans réduction des données (mais calcul très similaire lorsque les données sont réduites) sur un exemple numérique simple.
+
+- Étape 1\ :  centrage des données
+
+$$
+\mathop{\begin{pmatrix}
+2 & 1 \\
+3 & 4 \\
+5 & 0 \\
+7 & 6 \\
+9 & 2
+\end{pmatrix}}_{\text{Tableau brut}}
+\xrightarrow{\phantom{---}\text{centrage}\phantom{---}}
+\mathop{\begin{pmatrix}
+-3.2 & -1.8 \\
+-2.2 & \phantom{-}1.4 \\
+-0.2 & -2.6 \\
+\phantom{-}1.8 & \phantom{-}3.4 \\
+\phantom{-}3.8 & -0.6
+\end{pmatrix}}_{\text{Tableau centré (X)}}
+$$
+
+- Étape 2\ :  calcul de la matrice de variance/covariance
+
+$$
+\mathop{\begin{pmatrix}
+-3.2 & -1.8 \\
+-2.2 & \phantom{-}1.4 \\
+-0.2 & -2.6 \\
+\phantom{-}1.8 & \phantom{-}3.4 \\
+\phantom{-}3.8 & -0.6
+\end{pmatrix}}_{\text{Tableau centré (X)}}
+\xrightarrow{\phantom{---}\text{var/covar}\phantom{---}}
+\mathop{\begin{pmatrix}
+8.2 & 1.6 \\
+1.6 & 5.8
+\end{pmatrix}}_{\text{Matrice carrée (A)}}
+$$
+
+- Étape 3\ : diagonalisation de la matrice var/covar
+
+$$
+\mathop{\begin{pmatrix}
+8.2 & 1.6 \\
+1.6 & 5.8
+\end{pmatrix}}_{\text{Matrice carrée (A)}}
+\xrightarrow{\phantom{---}\text{diagonalisation}\phantom{---}}
+\mathop{\begin{pmatrix}
+9 & 0 \\
+0 & 5
+\end{pmatrix}}_{\text{Matrice diagonalisée (B)}}
+$$
+
+- La **trace** des deux matrices A et B (somme des éléments sur la diagonale) est égale à : 8.2 + 5.8 = 14 = 9 + 5.
+- 8.2 est la **part de variance** exprimée sur le premier axe initial (X)
+- 5.8 est la **part de variance** exprimée sur le second axe initial (Y)
+- 14 est la **variance totale** du jeu de données
+- La matrice diagonale B est la solution exprimant **la plus grande part de variance possible sur le premier axe de l’ACP**\ : 9, soit 64,3% de la variance totale.
+- Les éléments sur la diagonale sont les valeurs propres $\lambda_i$\ ! Vous vous rappelez les fameuses "eigenvalues" dans la sortie de `summary(pima_pca)`.
+
+
+- Étape 4\ : calcul de la matrice de rotation des axes (en utilisant la propriété des valeurs propres $\text{A}.\text{U} = \text{B}.\text{U}$).
+
+$$
+\mathop{\begin{pmatrix}
+8.2 & 1.6 \\
+1.6 & 5.8
+\end{pmatrix}}_{\text{Matrice A}}
+\times
+\text{U}
+=
+\mathop{\begin{pmatrix}
+9 & 0 \\
+0 & 5
+\end{pmatrix}}_{\text{Matrice B}}
+\times
+\text{U}
+\rightarrow
+\text{U}
+=
+\mathop{\begin{pmatrix}
+\phantom{-}0.894 & -0.447 \\
+\phantom{-}0.447 & \phantom{-}0.894
+\end{pmatrix}}_{\text{Matrice des vecteur propres (U)}}
+$$
+
+- La **matrice des vecteurs propres (U)** ("eigenvectors" en anglais) effectue la transformation (**rotation des axes**) pour obtenir les **composantes principales**.
+- L'angle de rotation se déduit en considérant que cette matrice contient des sin et cos d'angles de rotation des axes\ :
+
+$$
+\begin{pmatrix}
+\phantom{-}0.894 & -0.447 \\
+\phantom{-}0.447 & \phantom{-}0.894
+\end{pmatrix}
+=
+\begin{pmatrix}
+\phantom{-}\cos(-26.6°) & \phantom{-}\sin(-26.6°) \\
+-\sin(-26.6°) & \phantom{-}\cos(-26.6°)
+\end{pmatrix}
+$$
+
+- Étape 5\ : représentation dans l'espace des variables. C'est une représentation dans un cercle de la matrice des vecteurs propres U sous forme de vecteurs.
+
+- Étape 6\ : représentation dans l'espace des individus. On recalcule les coordonnées des individus dans le système d'axe après rotation.
+
+$$
+\mathop{\begin{pmatrix}
+-3.2 & -1.8 \\
+-2.2 & \phantom{-}1.4 \\
+-0.2 & -2.6 \\
+\phantom{-}1.8 & \phantom{-}3.4 \\
+\phantom{-}3.8 & -0.6
+\end{pmatrix}}_{\text{Tableau centré (X)}}
+\times
+\mathop{\begin{pmatrix}
+\phantom{-}0.894 & -0.447 \\
+\phantom{-}0.447 & \phantom{-}0.894
+\end{pmatrix}}_{\text{Matrice des vecteur propres (U)}}
+\xrightarrow{\phantom{---}\text{X}.\text{U} = \text{X'}\phantom{---}}
+\mathop{\begin{pmatrix}
+-3.58 & \phantom{-}0.00 \\
+-1.34 & \phantom{-}2.24 \\
+-1.34 & -2.24 \\
+\phantom{-}3.13 & \phantom{-}2.24 \\
+\phantom{-}3.13 & -2.24
+\end{pmatrix}}_{\text{Tableau avec rotation (X')}}
+$$
+
+- Ensuite, on représente ces individus à l'aide d'un graphique en nuage de points.
+
+
+Tout ces calculs se généralisent facilement à trois, puis à N dimensions.
+
+
+##### Pour aller plus loin {-}
+
+- N'hésitez pas à **combiner** plusieurs techniques. Par exemple, vous pouvez représenter les groupes créés par classification ascendante hiérarchiques sur un graphique de l'ACP dans l'espace des individus en faisant varier les couleurs ou les labels des individus en fonction des groupes de la CAH.
+
+- Une [autre explication de l'ACP](http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/112-pca-principal-component-analysis-essentials/) en utilsant quelques autres fonctions de R pour visualiser le résultat
+
+- Une [explication détaillée de la PCA en anglais](http://staff.ustc.edu.cn/~zwp/teach/MVA/abdi-awPCA2010.pdf).
+
+- Une page qui reprend [une série de vidéos](http://www.sthda.com/english/articles/21-courses/65-principal-component-analysis-course-using-factominer/) qui présentent les différentes facettes de l'A CP (en franglais).
+
 
 ## Analyse factorielle des correspondances
 
 Comme l'ACP s'intéresse à des corrélations linéaires entre variables quantitatives, elle n'est absolument pas utilisable pour traiter des variables qualitatives. L'**Analyse Factorielle des Correspondances** sera utile dans ce dernier cas (AFC, ou en anglais "Correspondence Analysis" ou CA).
+
+
+### AFC dans SciViews::R
+
+L'AFC utilises la fonction `ca()` du package `ca` dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documenbts R Markdown/Notebook.
+
+```{r}
+SciViews::R
+library(broom)
+
+# Au lieu de MASS::corresp(, nf = 2), nous préférons ca::ca()
+ca <- ca::ca
+
+scale_axes <- function(data, aspect.ratio = 1) {
+  range_x <- range(data[, 1])
+  span_x <- max(range_x) - min(range_x)
+  range_y <- range(data[, 2])
+  span_y <- max(range_y) - min(range_y)
+  if (span_y * aspect.ratio > span_x) {
+    # Adjust range_x
+    span_x_2 <- span_y / aspect.ratio / 2
+    range_x_mid <- sum(range_x) / 2
+    range_x <- c(range_x_mid - span_x_2, range_x_mid + span_x_2)
+  } else {
+    # Adjust range_y
+    span_y_2 <- span_x * aspect.ratio / 2
+    range_y_mid <- sum(range_y) / 2
+    range_y <- c(range_y_mid - span_y_2, range_y_mid + span_y_2)
+  }
+  list(x = range_x, y = range_y)
+}
+
+plot3d <- rgl::plot3d
+plot3d.ca <- ca:::plot3d.ca
+
+autoplot.ca <- function(object, choices = 1L:2L,
+type = c("screeplot", "altscreeplot", "biplot"), col = "black", fill = "gray",
+aspect.ratio = 1, repel = FALSE, ...) {
+  type = match.arg(type)
+
+  res <- switch(type,
+    screeplot = object %>.% # Classical screeplot
+      `[[`(., "sv") %>.%
+      tibble(Dimension = 1:length(.), sv = .) %>.%
+      chart(data = ., sv^2 ~ Dimension) +
+      geom_col(col = col, fill = fill) +
+      labs(y = "Inertia"),
+
+    altscreeplot = object %>.% # screeplot represented by dots and lines
+      `[[`(., "sv") %>.%
+      tibble(Dimension = 1:length(.), sv = .) %>.%
+      chart(data = ., sv^2 ~ Dimension) +
+      geom_line(col = col) +
+      geom_point(col = "white", fill = col, size = 2, shape = 21, stroke = 3) +
+      labs(y = "Inertia"),
+
+    biplot = {
+      # We want to use the function plot.ca(), but without plotting the base plot
+      # So, we place it in a specific environment where all base plot functions are
+      # fake and do nothing (we just want to collect points coordinates at the end)
+      env <- new.env()
+      env$plot_ca <- ca:::plot.ca
+      environment(env$plot_ca) <- env
+      env$plot <- function(...) NULL
+      env$box <- function(...) NULL
+      env$abline <- function(...) NULL
+      env$axis <- function(...) NULL
+      env$par <- function(...) NULL
+      env$points <- function(...) NULL
+      env$lines <- function(...) NULL
+      env$.arrows <- function(...) NULL
+      env$text <- function(...) NULL
+      env$strwidth <- function(...) NULL
+      env$strheight <- function(...) NULL
+
+      contribs <- paste0("Dimension ", 1:length(object$sv), " (",
+        round(object$sv^2 / sum(object$sv^2) * 100, 1), "%)")[choices]
+
+      res <- env$plot_ca(object, dim = choices, ...)
+
+      rows <- as.data.frame(res$rows)
+      rows$Type <- "rows"
+      rows$Labels <- object$rownames
+      cols <- as.data.frame(res$cols)
+      cols$Type <- "cols"
+      cols$Labels <- object$colnames
+      res <- bind_rows(rows, cols)
+      names(res) <- c("x", "y", "type", "labels")
+
+      lims <- scale_axes(res, aspect.ratio = aspect.ratio)
+      nudge <- (lims$x[2] - lims$x[1]) / 100
+
+      res <- chart(data = res, y ~ x %col=% type %label=% labels) +
+        geom_hline(yintercept = 0, col = "gray") +
+        geom_vline(xintercept = 0, col = "gray") +
+        coord_fixed(ratio = 1, xlim = lims$x, ylim = lims$y, expand = TRUE) +
+        theme(legend.position = "none") +
+        labs(x = contribs[1], y = contribs[2])
+
+      if (isTRUE(repel)) {
+        res <- res + geom_point() + ggrepel::geom_text_repel()
+      } else {# Use text
+        res <- res + geom_point() +
+          geom_text(hjust = 0, vjust = 0, nudge_x = nudge, nudge_y = nudge)
+      }
+      res
+    }
+  )
+  res
+}
+chart.ca <- function(data, choices = 1L:2L, ...,
+type = c("screeplot", "altscreeplot", "boiplot"), env = parent.frame())
+  autoplot.ca(data, choices = choices, ..., type = type, env = env)
+class(chart.ca) <- c("function", "subsettable_type")
+
+```
+

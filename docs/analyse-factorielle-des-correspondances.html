@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-03-08">
+<meta name="date" content="2020-03-09">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -61,6 +61,72 @@
 <script src="libs/rglWebGL-binding-0.100.19/rglWebGL.js"></script>
 
 
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -180,8 +246,16 @@
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
-<li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a></li>
-<li class="chapter" data-level="7.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>7.2</b> Analyse factorielle des correspondances</a></li>
+<li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#acp-dans-sciviewsr"><i class="fa fa-check"></i><b>7.1.1</b> ACP dans SciViews::R</a></li>
+<li class="chapter" data-level="7.1.2" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#indiens-diabetiques"><i class="fa fa-check"></i><b>7.1.2</b> Indiens diabétiques</a></li>
+<li class="chapter" data-level="7.1.3" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#visualisation-de-donnees-quantitatives"><i class="fa fa-check"></i><b>7.1.3</b> Visualisation de données quantitatives</a></li>
+<li class="chapter" data-level="7.1.4" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#acp-mecanisme"><i class="fa fa-check"></i><b>7.1.4</b> ACP : mécanisme</a></li>
+<li class="chapter" data-level="7.1.5" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#calcul-matriciel-acp"><i class="fa fa-check"></i><b>7.1.5</b> Calcul matriciel ACP</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>7.2</b> Analyse factorielle des correspondances</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#afc-dans-sciviewsr"><i class="fa fa-check"></i><b>7.2.1</b> AFC dans SciViews::R</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM</a><ul>
 <li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a></li>
@@ -220,7 +294,118 @@
 <div id="analyse-factorielle-des-correspondances" class="section level2">
 <h2><span class="header-section-number">7.2</span> Analyse factorielle des correspondances</h2>
 <p>Comme l’ACP s’intéresse à des corrélations linéaires entre variables quantitatives, elle n’est absolument pas utilisable pour traiter des variables qualitatives. L’<strong>Analyse Factorielle des Correspondances</strong> sera utile dans ce dernier cas (AFC, ou en anglais “Correspondence Analysis” ou CA).</p>
+<div id="afc-dans-sciviewsr" class="section level3">
+<h3><span class="header-section-number">7.2.1</span> AFC dans SciViews::R</h3>
+<p>L’AFC utilises la fonction <code>ca()</code> du package <code>ca</code> dans <code>SciViews::R</code>, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec <code>chart()</code>) n’est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de <code>setup</code> dans vos documenbts R Markdown/Notebook.</p>
+<pre class="sourceCode r"><code class="sourceCode r">SciViews<span class="op">::</span>R
+<span class="kw">library</span>(broom)
 
+<span class="co"># Au lieu de MASS::corresp(, nf = 2), nous préférons ca::ca()</span>
+ca &lt;-<span class="st"> </span>ca<span class="op">::</span>ca
+
+scale_axes &lt;-<span class="st"> </span><span class="cf">function</span>(data, <span class="dt">aspect.ratio =</span> <span class="dv">1</span>) {
+  range_x &lt;-<span class="st"> </span><span class="kw">range</span>(data[, <span class="dv">1</span>])
+  span_x &lt;-<span class="st"> </span><span class="kw">max</span>(range_x) <span class="op">-</span><span class="st"> </span><span class="kw">min</span>(range_x)
+  range_y &lt;-<span class="st"> </span><span class="kw">range</span>(data[, <span class="dv">2</span>])
+  span_y &lt;-<span class="st"> </span><span class="kw">max</span>(range_y) <span class="op">-</span><span class="st"> </span><span class="kw">min</span>(range_y)
+  <span class="cf">if</span> (span_y <span class="op">*</span><span class="st"> </span>aspect.ratio <span class="op">&gt;</span><span class="st"> </span>span_x) {
+    <span class="co"># Adjust range_x</span>
+    span_x_<span class="dv">2</span> &lt;-<span class="st"> </span>span_y <span class="op">/</span><span class="st"> </span>aspect.ratio <span class="op">/</span><span class="st"> </span><span class="dv">2</span>
+    range_x_mid &lt;-<span class="st"> </span><span class="kw">sum</span>(range_x) <span class="op">/</span><span class="st"> </span><span class="dv">2</span>
+    range_x &lt;-<span class="st"> </span><span class="kw">c</span>(range_x_mid <span class="op">-</span><span class="st"> </span>span_x_<span class="dv">2</span>, range_x_mid <span class="op">+</span><span class="st"> </span>span_x_<span class="dv">2</span>)
+  } <span class="cf">else</span> {
+    <span class="co"># Adjust range_y</span>
+    span_y_<span class="dv">2</span> &lt;-<span class="st"> </span>span_x <span class="op">*</span><span class="st"> </span>aspect.ratio <span class="op">/</span><span class="st"> </span><span class="dv">2</span>
+    range_y_mid &lt;-<span class="st"> </span><span class="kw">sum</span>(range_y) <span class="op">/</span><span class="st"> </span><span class="dv">2</span>
+    range_y &lt;-<span class="st"> </span><span class="kw">c</span>(range_y_mid <span class="op">-</span><span class="st"> </span>span_y_<span class="dv">2</span>, range_y_mid <span class="op">+</span><span class="st"> </span>span_y_<span class="dv">2</span>)
+  }
+  <span class="kw">list</span>(<span class="dt">x =</span> range_x, <span class="dt">y =</span> range_y)
+}
+
+plot3d &lt;-<span class="st"> </span>rgl<span class="op">::</span>plot3d
+plot3d.ca &lt;-<span class="st"> </span>ca<span class="op">:::</span>plot3d.ca
+
+autoplot.ca &lt;-<span class="st"> </span><span class="cf">function</span>(object, <span class="dt">choices =</span> 1L<span class="op">:</span>2L,
+<span class="dt">type =</span> <span class="kw">c</span>(<span class="st">&quot;screeplot&quot;</span>, <span class="st">&quot;altscreeplot&quot;</span>, <span class="st">&quot;biplot&quot;</span>), <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">fill =</span> <span class="st">&quot;gray&quot;</span>,
+<span class="dt">aspect.ratio =</span> <span class="dv">1</span>, <span class="dt">repel =</span> <span class="ot">FALSE</span>, ...) {
+  type =<span class="st"> </span><span class="kw">match.arg</span>(type)
+
+  res &lt;-<span class="st"> </span><span class="cf">switch</span>(type,
+    <span class="dt">screeplot =</span> object <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Classical screeplot</span>
+<span class="st">      `</span><span class="dt">[[</span><span class="st">`</span>(., <span class="st">&quot;sv&quot;</span>) <span class="op">%&gt;.%</span>
+<span class="st">      </span><span class="kw">tibble</span>(<span class="dt">Dimension =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(.), <span class="dt">sv =</span> .) <span class="op">%&gt;.%</span>
+<span class="st">      </span><span class="kw">chart</span>(<span class="dt">data =</span> ., sv<span class="op">^</span><span class="dv">2</span> <span class="op">~</span><span class="st"> </span>Dimension) <span class="op">+</span>
+<span class="st">      </span><span class="kw">geom_col</span>(<span class="dt">col =</span> col, <span class="dt">fill =</span> fill) <span class="op">+</span>
+<span class="st">      </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;Inertia&quot;</span>),
+
+    <span class="dt">altscreeplot =</span> object <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># screeplot represented by dots and lines</span>
+<span class="st">      `</span><span class="dt">[[</span><span class="st">`</span>(., <span class="st">&quot;sv&quot;</span>) <span class="op">%&gt;.%</span>
+<span class="st">      </span><span class="kw">tibble</span>(<span class="dt">Dimension =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(.), <span class="dt">sv =</span> .) <span class="op">%&gt;.%</span>
+<span class="st">      </span><span class="kw">chart</span>(<span class="dt">data =</span> ., sv<span class="op">^</span><span class="dv">2</span> <span class="op">~</span><span class="st"> </span>Dimension) <span class="op">+</span>
+<span class="st">      </span><span class="kw">geom_line</span>(<span class="dt">col =</span> col) <span class="op">+</span>
+<span class="st">      </span><span class="kw">geom_point</span>(<span class="dt">col =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">fill =</span> col, <span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">shape =</span> <span class="dv">21</span>, <span class="dt">stroke =</span> <span class="dv">3</span>) <span class="op">+</span>
+<span class="st">      </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;Inertia&quot;</span>),
+
+    <span class="dt">biplot =</span> {
+      <span class="co"># We want to use the function plot.ca(), but without plotting the base plot</span>
+      <span class="co"># So, we place it in a specific environment where all base plot functions are</span>
+      <span class="co"># fake and do nothing (we just want to collect points coordinates at the end)</span>
+      env &lt;-<span class="st"> </span><span class="kw">new.env</span>()
+      env<span class="op">$</span>plot_ca &lt;-<span class="st"> </span>ca<span class="op">:::</span>plot.ca
+      <span class="kw">environment</span>(env<span class="op">$</span>plot_ca) &lt;-<span class="st"> </span>env
+      env<span class="op">$</span>plot &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="ot">NULL</span>
+      env<span class="op">$</span>box &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="ot">NULL</span>
+      env<span class="op">$</span>abline &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="ot">NULL</span>
+      env<span class="op">$</span>axis &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="ot">NULL</span>
+      env<span class="op">$</span>par &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="ot">NULL</span>
+      env<span class="op">$</span>points &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="ot">NULL</span>
+      env<span class="op">$</span>lines &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="ot">NULL</span>
+      env<span class="op">$</span>.arrows &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="ot">NULL</span>
+      env<span class="op">$</span>text &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="ot">NULL</span>
+      env<span class="op">$</span>strwidth &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="ot">NULL</span>
+      env<span class="op">$</span>strheight &lt;-<span class="st"> </span><span class="cf">function</span>(...) <span class="ot">NULL</span>
+
+      contribs &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;Dimension &quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(object<span class="op">$</span>sv), <span class="st">&quot; (&quot;</span>,
+        <span class="kw">round</span>(object<span class="op">$</span>sv<span class="op">^</span><span class="dv">2</span> <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(object<span class="op">$</span>sv<span class="op">^</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span><span class="dv">100</span>, <span class="dv">1</span>), <span class="st">&quot;%)&quot;</span>)[choices]
+
+      res &lt;-<span class="st"> </span>env<span class="op">$</span><span class="kw">plot_ca</span>(object, <span class="dt">dim =</span> choices, ...)
+
+      rows &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(res<span class="op">$</span>rows)
+      rows<span class="op">$</span>Type &lt;-<span class="st"> &quot;rows&quot;</span>
+      rows<span class="op">$</span>Labels &lt;-<span class="st"> </span>object<span class="op">$</span>rownames
+      cols &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(res<span class="op">$</span>cols)
+      cols<span class="op">$</span>Type &lt;-<span class="st"> &quot;cols&quot;</span>
+      cols<span class="op">$</span>Labels &lt;-<span class="st"> </span>object<span class="op">$</span>colnames
+      res &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(rows, cols)
+      <span class="kw">names</span>(res) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;labels&quot;</span>)
+
+      lims &lt;-<span class="st"> </span><span class="kw">scale_axes</span>(res, <span class="dt">aspect.ratio =</span> aspect.ratio)
+      nudge &lt;-<span class="st"> </span>(lims<span class="op">$</span>x[<span class="dv">2</span>] <span class="op">-</span><span class="st"> </span>lims<span class="op">$</span>x[<span class="dv">1</span>]) <span class="op">/</span><span class="st"> </span><span class="dv">100</span>
+
+      res &lt;-<span class="st"> </span><span class="kw">chart</span>(<span class="dt">data =</span> res, y <span class="op">~</span><span class="st"> </span>x <span class="op">%col=%</span><span class="st"> </span>type <span class="op">%label=%</span><span class="st"> </span>labels) <span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">col =</span> <span class="st">&quot;gray&quot;</span>) <span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>, <span class="dt">col =</span> <span class="st">&quot;gray&quot;</span>) <span class="op">+</span>
+<span class="st">        </span><span class="kw">coord_fixed</span>(<span class="dt">ratio =</span> <span class="dv">1</span>, <span class="dt">xlim =</span> lims<span class="op">$</span>x, <span class="dt">ylim =</span> lims<span class="op">$</span>y, <span class="dt">expand =</span> <span class="ot">TRUE</span>) <span class="op">+</span>
+<span class="st">        </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span>
+<span class="st">        </span><span class="kw">labs</span>(<span class="dt">x =</span> contribs[<span class="dv">1</span>], <span class="dt">y =</span> contribs[<span class="dv">2</span>])
+
+      <span class="cf">if</span> (<span class="kw">isTRUE</span>(repel)) {
+        res &lt;-<span class="st"> </span>res <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span>ggrepel<span class="op">::</span><span class="kw">geom_text_repel</span>()
+      } <span class="cf">else</span> {<span class="co"># Use text</span>
+        res &lt;-<span class="st"> </span>res <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">          </span><span class="kw">geom_text</span>(<span class="dt">hjust =</span> <span class="dv">0</span>, <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">nudge_x =</span> nudge, <span class="dt">nudge_y =</span> nudge)
+      }
+      res
+    }
+  )
+  res
+}
+chart.ca &lt;-<span class="st"> </span><span class="cf">function</span>(data, <span class="dt">choices =</span> 1L<span class="op">:</span>2L, ...,
+<span class="dt">type =</span> <span class="kw">c</span>(<span class="st">&quot;screeplot&quot;</span>, <span class="st">&quot;altscreeplot&quot;</span>, <span class="st">&quot;boiplot&quot;</span>), <span class="dt">env =</span> <span class="kw">parent.frame</span>())
+  <span class="kw">autoplot.ca</span>(data, <span class="dt">choices =</span> choices, ..., <span class="dt">type =</span> type, <span class="dt">env =</span> env)
+<span class="kw">class</span>(chart.ca) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;function&quot;</span>, <span class="st">&quot;subsettable_type&quot;</span>)</code></pre>
+
+</div>
 </div>
 <!-- </div> -->
 <div id="disqus_thread"></div>
@@ -294,6 +479,19 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>
