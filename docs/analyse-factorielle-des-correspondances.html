@@ -257,6 +257,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="7.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>7.2</b> Analyse factorielle des correspondances</a><ul>
 <li class="chapter" data-level="7.2.1" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#afc-dans-sciviewsr"><i class="fa fa-check"></i><b>7.2.1</b> AFC dans SciViews::R</a></li>
 <li class="chapter" data-level="7.2.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#enquete-sur-la-science"><i class="fa fa-check"></i><b>7.2.2</b> Enquête sur la science</a></li>
+<li class="chapter" data-level="7.2.3" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#des-acariens-sinon-rien"><i class="fa fa-check"></i><b>7.2.3</b> Des acariens sinon rien</a></li>
+<li class="chapter" data-level="7.2.4" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#principe-de-lafc"><i class="fa fa-check"></i><b>7.2.4</b> Principe de l’AFC</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM</a><ul>
@@ -410,11 +412,11 @@ chart.ca &lt;-<span class="st"> </span><span class="cf">function</span>(data, <s
 <div id="enquete-sur-la-science" class="section level3">
 <h3><span class="header-section-number">7.2.2</span> Enquête sur la science</h3>
 <p>L’idée de départ de l’AFC est de pouvoir travailler sur des données qualitatives en les transformant en variables quantitatives via une astuce de calcul, et ensuite de réaliser une ACP sur ce tableau quantitatif pour en représenter l’information visuellement sur une carte. Les enquêtes (mais pas seulement) génèrent souvent des quantités importantes de variables qualitatives qu’il faut ensuite analyser. En effet, des sondage proposent la plupart du temps d’évaluer une question sur une échelle de plusieurs niveaux du genre “tout-à-fait d’accord”, “d’accord”, “pas d’accord”, “pas du tout d’accord”, ce qui donnerait une variable facteur à quatre niveaux ordonnés.</p>
-<p>Une grande nequête mondiale a été réalisée en 1993 pour déterminer (entre autre) ce que la population pense de la science en général. Quatre questions sont posées (section 4 de <a href="https://dbk.gesis.org/dbksearch/download.asp?db=E&amp;id=7987">ce questionnaire</a>, voir aussi <a href="https://dbk.gesis.org/dbksearch/sdesc2.asp?no=2450&amp;search=issp%201993&amp;search2=&amp;field=all&amp;field2=&amp;DB=e&amp;tab=0&amp;notabs=&amp;nf=1&amp;af=&amp;ll=10">ici</a>) :</p>
-<p>A. Les gens croient trop souvent à la science, et pas assez aux sentiments et à la foi
-B. En général, la science moderne fait plus de mal que de bien
-C. Tout changement dans la nature apporté par les êtres humains risque d’empirer les choses
-D. La science moderne va résoudre nos problèmes relatifs à l’environement sans faire de grands changements à notre mode de vie</p>
+<p>Une grande enquête mondiale a été réalisée en 1993 pour déterminer (entre autre) ce que la population pense de la science en général. Quatre questions sont posées (section 4 de <a href="https://dbk.gesis.org/dbksearch/download.asp?db=E&amp;id=7987">ce questionnaire</a>, voir aussi <a href="https://dbk.gesis.org/dbksearch/sdesc2.asp?no=2450&amp;search=issp%201993&amp;search2=&amp;field=all&amp;field2=&amp;DB=e&amp;tab=0&amp;notabs=&amp;nf=1&amp;af=&amp;ll=10">ici</a>) :</p>
+<p>A. Les gens croient trop souvent à la science, et pas assez aux sentiments et à la foi</p>
+<p>B. En général, la science moderne fait plus de mal que de bien</p>
+<p>C. Tout changement dans la nature apporté par les êtres humains risque d’empirer les choses</p>
+<p>D. La science moderne va résoudre nos problèmes relatifs à l’environement sans faire de grands changements à notre mode de vie</p>
 <p>Les réponses possibles sont : 1 = tout-à-fait d’accord à 5 = pas du tout d’accord. Le jeu de données <code>wg93</code> du package <code>ca</code> reprend les réponses données par les allemands de l’ouest à ces questions. De plus, les caractéristiques suivantes des répondants sont enregistrées :</p>
 <ul>
 <li>le sexe (1 = homme, 2 = femme),</li>
@@ -478,7 +480,7 @@ wg</code></pre>
 #   -         7       112         82         37            16            27
 #   --        4        44         39         21            13            19</code></pre>
 <ul>
-<li><strong>Étape 2 :</strong> test de Chi<sup>2</sup> d’indépendance, voir <a href="http://biodatascience-course.sciviews.org/sdd-umons/test-dhypothese.html#test-chi2-dindependance">section 8.2 du cours de SDD I</a>. L’hypothèse nulle du test est quel les deux variables sont indépendantes l’une de l’autre. L’hypothèse alternative est qu’une dépendance existe. Si la réponse aux questions est indépendante du niveau d’éducation (pas de rejet de H<em>0</em>), notre analyse est terminée, sinon, il faut approfondir… Choisissons notre seuil <span class="math inline">\(\alpha\)</span> à 5% avant de réaliser notre test.</li>
+<li><strong>Étape 2 :</strong> test de Chi<sup>2</sup> d’indépendance, voir <a href="http://biodatascience-course.sciviews.org/sdd-umons/test-dhypothese.html#test-chi2-dindependance">section 8.2 du cours de SDD I</a>. L’hypothèse nulle du test est quel les deux variables sont indépendantes l’une de l’autre. L’hypothèse alternative est qu’une dépendance existe. Si la réponse aux questions est indépendante du niveau d’éducation (pas de rejet de H<sub>0</sub>), notre analyse est terminée. Sinon, il faut approfondir… Choisissons notre seuil <span class="math inline">\(\alpha\)</span> à 5% avant de réaliser notre test.</li>
 </ul>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chisq.test</span>(wg<span class="op">$</span>B, wg<span class="op">$</span>edu)</code></pre>
 <pre><code># Warning in chisq.test(wg$B, wg$edu): Chi-squared approximation may be
@@ -488,8 +490,8 @@ wg</code></pre>
 # 
 # data:  wg$B and wg$edu
 # X-squared = 42.764, df = 20, p-value = 0.002196</code></pre>
-<p>La valeur <em>p</em> de 0,2% est inférieure à <span class="math inline">\(\alpha\)</span>. Il y a dépendance entre le niveau d’éducation et la réponse à la question B. OK, mais comment ?</p>
-<p>-<strong>Étape 3 :</strong> Si l’hypothèse nulle est rejettée, il faut analyser comment se fait la dépendance. L’AFC va présenter cela de manière claire. La fonction <code>ca()</code> accepte un jeu de données dans l’argument <code>data =</code> et une formule qui spéficie à sa droite les deux variables à croiser séparées par un signe + (<code>~ fact1 + fact2</code>). Donc :</p>
+<p>L’avertissement nous prévient qu’une approximation a du être réalisée, mais le test reste utilisable si la valeur est loin du seuil <span class="math inline">\(/alpha\)</span>. La valeur <em>p</em> de 0,2% est très inférieure à <span class="math inline">\(\alpha\)</span>. Nous rejettons H<sub>0</sub>. Il y a dépendance entre le niveau d’éducation et la réponse à la question B. OK, mais comment se fait cette dépendance ? C’est ici que l’AFC nous vient en aide.</p>
+<p>-<strong>Étape 3 :</strong> Si l’hypothèse nulle est rejettée, il faut analyser plus en profondeur. L’AFC va présenter la dépendance de manière claire. La fonction <code>ca()</code> accepte un jeu de données dans l’argument <code>data =</code> et une formule qui spécifie dans le terme de droite les deux variables à croiser séparées par un signe + (<code>~ fact1 + fact2</code>). Donc :</p>
 <pre class="sourceCode r"><code class="sourceCode r">wg_b_edu &lt;-<span class="st"> </span><span class="kw">ca</span>(<span class="dt">data =</span> wg, <span class="op">~</span><span class="st"> </span>B <span class="op">+</span><span class="st"> </span>edu)
 wg_b_edu</code></pre>
 <pre><code># 
@@ -521,7 +523,7 @@ wg_b_edu</code></pre>
 # Inertia      0.014038
 # Dim. 1       1.962905
 # Dim. 2       0.135512</code></pre>
-<p>Nous retrouvons les valeurs propres (<code>eigenvalues</code>) qui représentent l’inertie exprimée sur les différents axes, avec le pourcentage juste en dessous. Les deux tableaux suivants détaillent les calculs. Il n’est pas indispensable de comprendre tout ce qui s’y trouve, mais notez que les composantes du calcul du Chi<sup>2</sup> pour chaque niveau des variables sont reprises à la ligne <code>ChiDist</code>. Nous y reviendrons. La méthode <code>summary()</code> ainsi que le graphique des éboulis via <code>chart$scree()</code> nous donnent une information plus claire sur la contribution de la variabilité totale sur les différents axes. Cela nous aide à décider si le plan réduit aux dux premiers axes que nous utiliserons ensuite est adéquat ou non (pourcentage suffisant = données bien représentées dans ce plan).</p>
+<p>Nous retrouvons les valeurs propres (<code>eigenvalues</code>) qui représentent l’inertie exprimée sur les différents axes, avec le pourcentage juste en dessous. Les deux tableaux suivants détaillent les calculs. Il n’est pas indispensable de comprendre tout ce qui s’y trouve, mais notez que les composantes du calcul du Chi<sup>2</sup> pour chaque niveau des variables sont reprises à la ligne <code>ChiDist</code>. Nous y reviendrons. La méthode <code>summary()</code> ainsi que le graphique des éboulis via <code>chart$scree()</code> nous donnent une information plus claire sur la contribution de la variabilité totale sur les différents axes. Cela nous aide à décider si le plan réduit aux deux premiers axes que nous utiliserons ensuite est adéquat ou non (pourcentage suffisant = données bien représentées dans ce plan).</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(wg_b_edu, <span class="dt">scree =</span> <span class="ot">TRUE</span>, <span class="dt">rows =</span> <span class="ot">FALSE</span>, <span class="dt">columns =</span> <span class="ot">FALSE</span>)</code></pre>
 <pre><code># 
 # Principal inertias (eigenvalues):
@@ -535,17 +537,191 @@ wg_b_edu</code></pre>
 #  Total: 0.049097 100.0</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">scree</span>(wg_b_edu)</code></pre>
 <p><img src="07-acp-afc_files/figure-html/unnamed-chunk-61-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Ici, les deux premiers axes cumulent plus de 98% de la variation totale. Nous povons donc continuer en toute confiance. Le <strong>biplot()</strong> va ici projetter les individus sur la carte (les individus étant en fait les différents niveaux des deux variables, obtenus après réalisation de deux ACP, l&quot;une sur les colonnes et l’autre sur les lignes). Les deux groupes sont représentés par des couleurs différentes, mais sur une même carte. C’erst la fonction <code>chart$biplot()</code> qui réalise ce graphique.</p>
+<p>Ici, les deux premiers axes cumulent plus de 98% de la variation totale. Nous pouvons donc continuer en toute confiance. Le <strong>biplot</strong> va ici projetter les individus sur la carte (les individus étant en fait les différents niveaux des deux variables, obtenus après réalisation de deux ACP, l’une sur les colonnes et l’autre sur les lignes). Les deux groupes sont représentés par des couleurs différentes, mais sur une même carte. C’erst la fonction <code>chart$biplot()</code> qui réalise ce graphique.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">biplot</span>(wg_b_edu, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
 <p><img src="07-acp-afc_files/figure-html/unnamed-chunk-62-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>L’interprétation se fait d’abord sur les points d’une couleur (niveau de la première variable), puis sur ceux de l’autre (niveaux de la seconde variable), et enfin, conjointement. Voici ce que cela donne ici :</p>
 <ul>
 <li><p>Les niveaux d’éducation en rouge sont globalement représentés essentiellement de gauche à droite dans un ordre croissant de “études primaires” jusqu’à “études universitaires de 2<sup>éme</sup> cycle ou plus”.</p></li>
-<li><p>Les réponses à la question B (en bleu turquoise) sont également rangés globalement de gauche à droite (avec une légère inversion entre <code>+</code> et <code>++</code>) depuis ceux qui sont tou-à-fait d’accord que la science moderne est néfaste jusqu’à ceux qui ne le sont pas du tout.</p></li>
-<li><p>Conjointement, on va comparer les points rouges et les bleus et regarder ceux qui se situent dans une direction similaire par rapport au centre d’inertie à la coordonnée {0, 0} matérialisée par la croix grise<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. Ainsi, nous constatons que ceux qui ont le niveau éducatif le plus faible (niveau primaire) ont globalement plut^to répondu qu’ils sont tout-à-fait d’accord (<code>++</code>), alors qu’à l’opposé, les universitaires ne sont pas du tous d’accord avec cette affirmation (<code>--</code>).</p></li>
+<li><p>Les réponses à la question B (en bleu turquoise) sont également rangés globalement de gauche à droite (avec une légère inversion entre <code>+</code> et <code>++</code>) depuis ceux qui sont tout-à-fait d’accord que la science moderne est néfaste à la gauche jusqu’à ceux qui ne le sont pas du tout à la droite.</p></li>
+<li><p>Conjointement, on va comparer les points rouges et les bleus et regarder ceux qui se situent dans une direction similaire par rapport au centre d’inertie à la coordonnée {0, 0} matérialisée par la croix grise<a href="#fn20" class="footnote-ref" id="fnref20"><sup>20</sup></a>. Ainsi, nous constatons que ceux qui ont le niveau éducatif le plus faible (niveau primaire) ont globalement plutôt répondu qu’ils sont tout-à-fait d’accord (<code>++</code>), alors qu’à l’opposé, les universitaires ne sont pas du tous d’accord avec l’affirmation (<code>--</code>).</p></li>
 </ul>
 <p>L’essentiel se lit ici effectivement sur un seul axe (dimension 1) qui capture environ 90% de la variation totale. Le second axe vient moduler légèrement ce classement avec 8,5% de variabilité, mais sans tout bouleverser.</p>
-<p>Ici la lecture de la carte générée par l’AFC est limpide… Et manifestement, nous pouvions légitimement conclure à l’époque qu’un effort éducatif et d’information est nécessaire auprès de la population la moins éduquée pour leur faire prendre conscience de l’intérêt de la science moderne (à moins que cette dernière remarque ne soit un parti pris… d’un universtaire :-).</p>
+<p>Ici la lecture de la carte générée par l’AFC est limpide… Et manifestement, nous pouvions légitimement conclure à l’époque qu’un effort éducatif et d’information était nécessaire auprès de la population la moins éduquée pour leur faire prendre conscience de l’intérêt de la science moderne (à moins que cette dernière remarque ne soit un parti pris… d’un universtaire :-).</p>
+</div>
+<div id="des-acariens-sinon-rien" class="section level3">
+<h3><span class="header-section-number">7.2.3</span> Des acariens sinon rien</h3>
+<p>Un deuxième exemple illustre une utilisation légèrement différente de l’AFC. Il s’agit des tableaux de type “espèces par stations”. Ces tableaux contiennent différentes espèces ou autres groupes taxonomiques dénombrés dans plusieurs échantillons prélevés à des stations différentes. Le dénombrement des espèces peut être quantitatif (nombre d’individus observés par unité de surface ou de volume), semi-quantitatif (peu, moyen, beaucoup), ou même binaire (présence ou absence de l’espèce). Ces tableaux sont assimilables, en réalité, à des tableaux de contingence à double entrée qui croisent deux variables qualitatives “espèce” et “station”. C’est comme si la première étape avait déjà été réalisée dans l’analyse précédente du jeu de données <code>wg</code>.</p>
+<p>Naturellement, comme il ne s’agit pas réellement d’un tableau de contingence, nous ne réaliserons pas le test Chi<sup>2</sup> d’indépendance ici, et nous passerons directement à l’étape de l’AFC. L’exemple choisi concerne des populations d’acariens dans de la litière (acarien se dit “mite” en anglais, d’où le nom du jeu de données issu du package <code>vegan</code>).</p>
+<pre class="sourceCode r"><code class="sourceCode r">mite &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="st">&quot;mite&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;vegan&quot;</span>)
+skimr<span class="op">::</span><span class="kw">skim</span>(mite)</code></pre>
+<pre><code># Skim summary statistics
+#  n obs: 70 
+#  n variables: 35 
+# 
+# ── Variable type:integer ────────────────────────────────────────────────────────────────────────────
+#  variable missing complete  n  mean    sd p0  p25  p50   p75 p100     hist
+#    Brachy       0       70 70  8.73 10.08  0 3     4.5 11.75   42 ▇▂▁▂▁▁▁▁
+#  Ceratoz1       0       70 70  1.29  1.46  0 0     1    2       5 ▇▆▁▃▁▁▁▁
+#  Ceratoz3       0       70 70  1.3   2.2   0 0     0    2       9 ▇▁▁▁▁▁▁▁
+#  Eupelops       0       70 70  0.64  0.99  0 0     0    1       4 ▇▃▁▁▁▁▁▁
+#      FSET       0       70 70  1.86  3.18  0 0     0    2      12 ▇▂▁▁▁▁▁▁
+#  Galumna1       0       70 70  0.96  1.73  0 0     0    1       8 ▇▁▁▁▁▁▁▁
+#      HMIN       0       70 70  4.91  8.47  0 0     0    4.75   36 ▇▁▁▁▁▁▁▁
+#     HMIN2       0       70 70  1.96  3.92  0 0     0    2.75   20 ▇▂▁▁▁▁▁▁
+#      HPAV       0       70 70  8.51  7.56  0 4     6.5 12      37 ▇▇▃▃▁▁▁▁
+#      HRUF       0       70 70  0.23  0.62  0 0     0    0       3 ▇▁▁▁▁▁▁▁
+#      LCIL       0       70 70 35.26 88.85  0 1.25 13   44     723 ▇▁▁▁▁▁▁▁
+#  Lepidzts       0       70 70  0.17  0.54  0 0     0    0       3 ▇▁▁▁▁▁▁▁
+#      LRUG       0       70 70 10.43 12.66  0 0     4.5 17.75   57 ▇▂▂▁▁▁▁▁
+#      MEGR       0       70 70  2.19  3.62  0 0     1    3      17 ▇▂▁▁▁▁▁▁
+#  Miniglmn       0       70 70  0.24  0.79  0 0     0    0       5 ▇▁▁▁▁▁▁▁
+#      MPRO       0       70 70  0.16  0.47  0 0     0    0       2 ▇▁▁▁▁▁▁▁
+#      NCOR       0       70 70  1.13  1.65  0 0     0.5  1.75    7 ▇▃▂▂▁▁▁▁
+#      NPRA       0       70 70  1.89  2.37  0 0     1    2.75   10 ▇▂▂▁▁▁▁▁
+#      ONOV       0       70 70 17.27 18.05  0 5    10.5 24.25   73 ▇▃▂▁▁▁▁▁
+#  Oppiminu       0       70 70  1.11  1.84  0 0     0    1.75    9 ▇▁▁▁▁▁▁▁
+#  Oribatl1       0       70 70  1.89  3.43  0 0     0    2.75   17 ▇▁▁▁▁▁▁▁
+#      PHTH       0       70 70  1.27  2.17  0 0     0    2       8 ▇▁▁▁▁▁▁▁
+#     PLAG2       0       70 70  0.8   1.79  0 0     0    1       9 ▇▁▁▁▁▁▁▁
+#      PPEL       0       70 70  0.17  0.54  0 0     0    0       3 ▇▁▁▁▁▁▁▁
+#   Protopl       0       70 70  0.37  1.61  0 0     0    0      13 ▇▁▁▁▁▁▁▁
+#      PWIL       0       70 70  1.09  1.71  0 0     0    1       8 ▇▁▁▁▁▁▁▁
+#      RARD       0       70 70  1.21  2.78  0 0     0    1      13 ▇▂▁▁▁▁▁▁
+#      SLAT       0       70 70  0.4   1.23  0 0     0    0       8 ▇▁▁▁▁▁▁▁
+#      SSTR       0       70 70  0.31  0.97  0 0     0    0       6 ▇▁▁▁▁▁▁▁
+#  Stgncrs2       0       70 70  0.73  1.83  0 0     0    0       9 ▇▁▁▁▁▁▁▁
+#      SUCT       0       70 70 16.96 13.89  0 7.25 13.5 24      63 ▇▇▆▅▂▁▁▁
+#  Trhypch1       0       70 70  2.61  6.14  0 0     0    2      29 ▇▁▁▁▁▁▁▁
+#  Trimalc2       0       70 70  2.07  5.79  0 0     0    0      33 ▇▁▁▁▁▁▁▁
+#      TVEL       0       70 70  9.06 10.93  0 0     3   19      42 ▇▁▁▂▁▁▁▁
+#      TVIE       0       70 70  0.83  1.47  0 0     0    1       7 ▇▁▁▁▁▁▁▁</code></pre>
+<p>35 espèces d’acariens sont dénombrés en 70 stations différentes, et il n’y a aucunes valeurs manquantes. Comme il ne peut y avoir aucun total de ligne ou de colonne égal à zéro pour le calcul des Chi<sup>2</sup> (sinon, on aurait une division par zéro), nous vérifions cela de la façon suivante :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rowSums</span>(mite)</code></pre>
+<pre><code>#  [1] 140 268 186 286 199 209 162 126 123 166 216 213 177 269 100  97  90
+# [18] 118 118 184 117 172  81  80 123 120 173 111 111  96 130  93 136 194
+# [35] 111 133 139 189  94 157  81 140 148  60 158 154 121 113 107 148  91
+# [52] 112 145  49  58 108   8 121  90 127  42  13  86  88 112 116 781 111
+# [69] 184 121</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colSums</span>(mite)</code></pre>
+<pre><code>#   Brachy     PHTH     HPAV     RARD     SSTR  Protopl     MEGR     MPRO 
+#      611       89      596       85       22       26      153       11 
+#     TVIE     HMIN    HMIN2     NPRA     TVEL     ONOV     SUCT     LCIL 
+#       58      344      137      132      634     1209     1187     2468 
+# Oribatl1 Ceratoz1     PWIL Galumna1 Stgncrs2     HRUF Trhypch1     PPEL 
+#      132       90       76       67       51       16      183       12 
+#     NCOR     SLAT     FSET Lepidzts Eupelops Miniglmn     LRUG    PLAG2 
+#       79       28      130       12       45       17      730       56 
+# Ceratoz3 Oppiminu Trimalc2 
+#       91       78      145</code></pre>
+<p>De plus, l’AFC est très sensible à la présence de valeurs extrêmes. Il faut être particulièrement attentif à ne pas avoir trop de disparité, surtout en présence d’espèces très abondantes <em>versus</em> d’autres très rares. Si quelques échantillons contiennent une quantité particulièrement large d’items, cela peut aussi être problématique. Pour des dénombrements ou du semi-quantitatif à plus d’une dizaine de niveaux, la boite de dispersion parallèle est un bon graphique, mais nous devons tronsformer le tableau de données en format long avec <code>gather()</code> pour pouvoir le faire, et ensuite, nous présentons les espèces sur l’axe des ordonnées avec <code>coord_flip()</code> :</p>
+<pre class="sourceCode r"><code class="sourceCode r">mite <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">gather</span>(., <span class="dt">key =</span> <span class="st">&quot;species&quot;</span>, <span class="dt">value =</span> <span class="st">&quot;n&quot;</span>) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(., n <span class="op">~</span><span class="st"> </span>species) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_flip</span>()</code></pre>
+<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-65-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Aïe ! Nous avons ici une magnifique valeur extrême, ainsi que des différences trop nettes entre les espèces les plus abondantes et les plus rares. Nous devons y remédier avant de faire notre AFC. Deux solutions sont possibles :</p>
+<ol style="list-style-type: decimal">
+<li>Soit nous dégradons l’information vers du semi-quantitatif en définissant des niveaux d’abondance, du genre 0, 1-10, 10-20, 20-30, 31+. Nous pouvons réaliser cela avec la fonction <code>cut()</code> illustrée ici sur un exemple fictif.</li>
+</ol>
+<pre class="sourceCode r"><code class="sourceCode r">sample &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">12</span>, <span class="dv">500</span>, <span class="dv">25</span>, <span class="dv">5</span>)
+<span class="kw">cut</span>(sample, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="ot">Inf</span>))</code></pre>
+<pre><code># [1] (-1,0]   (10,20]  (30,Inf] (20,30]  (0,10]  
+# Levels: (-1,0] (0,10] (10,20] (20,30] (30,Inf]</code></pre>
+<p>Nous voyons que <code>cut()</code> a ici remplacé nos données quantitatives dans <code>sample()</code> en une variable qualitative à cinq niveaux clairement libellés. Notez l’astuce du groupe <code>(-1,0]</code> pour capturer les valeurs nulles dans un groupe séparé.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Autre solution, nous transformons les données pour réduire l’écart entre les extrêmes. Typiquement, une transformation <span class="math inline">\(log(x + 1)\)</span> est efficace pour cela, et fonctionne bien en présence de valeurs nulles aussi. Nous utiliserons cette dernière technique pour notre jeu de données <code>mite</code>. Enfin, nous nous assurons que les station sont bien numérotées de 1 à 70 en lignes (<code>rownames()</code>).</li>
+</ol>
+<pre class="sourceCode r"><code class="sourceCode r">mite2 &lt;-<span class="st"> </span><span class="kw">log1p</span>(<span class="kw">as.data.frame</span>(mite))
+<span class="co"># Ajouter le numéro des stations explicitement</span>
+<span class="kw">rownames</span>(mite2) &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(mite2)</code></pre>
+<p>Le graphique boite de dispersion parallèle montre plus d’homogénéité maintenant :</p>
+<pre class="sourceCode r"><code class="sourceCode r">mite2 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">gather</span>(., <span class="dt">key =</span> <span class="st">&quot;species&quot;</span>, <span class="dt">value =</span> <span class="st">&quot;log_n_1&quot;</span>) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(., log_n_<span class="dv">1</span> <span class="op">~</span><span class="st"> </span>species) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>()</code></pre>
+<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-68-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>A noter que ce type de graphique ne convient pas pour les données semi-quantitatives ou qualitatives. Nous pouvons réaliser le graphique suivant à la place dans ce cas pour visualiser la distribution des espèces dans les différentes stations (qui fonctionne aussi en quantitatif) :</p>
+<pre class="sourceCode r"><code class="sourceCode r">mite2 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">gather</span>(., <span class="dt">key =</span> <span class="st">&quot;species&quot;</span>, <span class="dt">value =</span> <span class="st">&quot;n&quot;</span>) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">station =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(mite), <span class="kw">ncol</span>(mite))) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(., species <span class="op">~</span><span class="st"> </span>station <span class="op">%fill=%</span><span class="st"> </span>n) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_raster</span>()</code></pre>
+<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-69-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Maintenant que nos données sont vérifiées, nettoyées (phase de préparation), et décrites correctement (phase descriptive), nous pouvons réaliser notre AFC et explorer les particularités de ce jeu de données en vue d’une étude plus approfondie ultérieure (phase exploratoire). L’utilisation de <code>ca()</code> sur un tableau de type contingence à double entrée déjà prêt est ultra-simple. Il suffit de fournir le tableau en question comme seul argument à la fonction.</p>
+<pre class="sourceCode r"><code class="sourceCode r">mite2_ca &lt;-<span class="st"> </span><span class="kw">ca</span>(mite2)</code></pre>
+<p>Examinons la variabilité sur les différents axes, numériquement et à l’aide du graphe des éboulis :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(mite2_ca, <span class="dt">scree =</span> <span class="ot">TRUE</span>, <span class="dt">rows =</span> <span class="ot">FALSE</span>, <span class="dt">columns =</span> <span class="ot">FALSE</span>)</code></pre>
+<pre><code># 
+# Principal inertias (eigenvalues):
+# 
+#  dim    value      %   cum%   scree plot               
+#  1      0.366209  31.5  31.5  ********                 
+#  2      0.132783  11.4  42.9  ***                      
+#  3      0.072315   6.2  49.1  **                       
+#  4      0.065787   5.7  54.7  *                        
+#  5      0.055872   4.8  59.5  *                        
+#  6      0.048122   4.1  63.7  *                        
+#  7      0.041834   3.6  67.3  *                        
+#  8      0.039072   3.4  70.6  *                        
+#  9      0.032183   2.8  73.4  *                        
+#  10     0.031300   2.7  76.1  *                        
+#  11     0.028809   2.5  78.6  *                        
+#  12     0.026949   2.3  80.9  *                        
+#  13     0.024701   2.1  83.0  *                        
+#  14     0.022729   2.0  84.9                           
+#  15     0.020618   1.8  86.7                           
+#  16     0.018029   1.5  88.3                           
+#  17     0.016836   1.4  89.7                           
+#  18     0.014850   1.3  91.0                           
+#  19     0.014217   1.2  92.2                           
+#  20     0.012553   1.1  93.3                           
+#  21     0.010879   0.9  94.2                           
+#  22     0.010412   0.9  95.1                           
+#  23     0.009703   0.8  96.0                           
+#  24     0.008187   0.7  96.7                           
+#  25     0.007294   0.6  97.3                           
+#  26     0.006689   0.6  97.9                           
+#  27     0.005343   0.5  98.3                           
+#  28     0.004576   0.4  98.7                           
+#  29     0.004020   0.3  99.1                           
+#  30     0.003828   0.3  99.4                           
+#  31     0.002732   0.2  99.6                           
+#  32     0.001955   0.2  99.8                           
+#  33     0.001656   0.1  99.9                           
+#  34     0.000776   0.1 100.0                           
+#         -------- -----                                 
+#  Total: 1.163821 100.0</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">scree</span>(mite2_ca, <span class="dt">fill =</span> <span class="st">&quot;cornsilk&quot;</span>)</code></pre>
+<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-72-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>La variabilité décroit rapidement sur les deux premiers axes, et ensuite plus lentement. Les deux premières dimensions ne capturent qu’environ 43% de la variabilité totale. Toutefois, la variation moins brutale par après justifie de ne garder que deux axes. Malgré la représentativité relativement faible dans ce plan, nous verrons que l’AFC reste interprétable et peut fournir des informations utiles, même dans ce cas. Voici la carte (biplot) :</p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">biplot</span>(mite2_ca, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
+<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-73-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Nous observons une forme en fer à cheval de la distribution des points. Attention ! Ceci est un artéfact lié au fait que la distance du Chi<sup>2</sup> a tendance à rapprocher les extrêmes (“qui se ressemblent dans la différence”, en quelque sorte) alors que notre souhait aurait plutôt été de les placer aux extrémités du graphique. Il faut donc analyser les données comme une transition progressive d’un état A vers un état B le long de la forme en fer à cheval.</p>
+<p>Lorsqu’il y a beaucoup de points, ce graphique tend à être très encombré et illisible. L’argument <code>repel = TRUE</code> vient parfois aider en allant placer les labels de telle façon qu’ils se chevauchent le moins possible. Par contre, la forme du nuage de point est du coup un peu moins visible.</p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">biplot</span>(mite2_ca, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">repel =</span> <span class="ot">TRUE</span>)</code></pre>
+<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-74-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Nous vous laissons le soin d’effectuer l’analyse complète des points bleus (stations) entre eux, ensuite les points rouges (espèces) entre eux et enfin, conjointement. Notez les stations 44, 59, 65 et 67 qui se détachent et qui sont caractérisées par des espèces qu’on trouve préférentiellement là-bas : <code>Trhypch1</code> et <code>Trimalc2</code>. Les espèces et station proches du centre d’inertie, au contraire, ne montrent aucune particularité.</p>
+</div>
+<div id="principe-de-lafc" class="section level3">
+<h3><span class="header-section-number">7.2.4</span> Principe de l’AFC</h3>
+<p>Maintenant que nous avons découvert la façon de réaliser et d’interpréter une AFC, il est temps d’en comprendre les rouages. Rappelez-vous que la distance du Chi<sup>2</sup> quantifie l’écart entre des effectifs observés <span class="math inline">\(a_i\)</span> et des effectifs théoriques <span class="math inline">\(\alpha_i\)</span> comme :</p>
+<p><span class="math display">\[\chi^2=\sum{\frac{(a_i - \alpha_i)^2}{\alpha_i}}\]</span></p>
+<p>Il y a un terme par cellule du tableau de contingence (que nous appelerons les <em>contributions</em> au Chi<sup>2</sup>), et par ailleurs, sous l’hypothèse nulle d’indépendance des variables, les <span class="math inline">\(\alpha_i\)</span> sont connus et dépendent uniquement des sommes des lignes et des colonnes du tableau. En effet, nous avons :</p>
+<p><span class="math display">\[\alpha_i = \frac{\textrm{total ligne} . \textrm{total colonne}}{\textrm{total général}}\]</span></p>
+<p>Donc, lors du calcul du Chi<sup>2</sup>, nous passons par une étape de transformation du tableau de contingence à double entrée où nous substituons les effectifs observés (des entiers, donc du quantitatif discret) par les contributions respectives au Chi<sup>2</sup>. Or ces contributions sont des valeurs réelles (continues) nulles ou positives. Nous obtenons donc un tableau contenant des <em>valeurs numériques continues</em> qui peut être traité par une ACP classique.</p>
+<p>L’ACP va reprojetter les lignes du tableau (qui, rappelons-le, sont les différents niveaux d’une des deux variables qualitative étudiée) dans un espace réduit. Dans ce contexte, le graphique représentant les variables n’a pas grand intérêt, puique ces variables sont en réalité fictives, ou si vous préférez, “bricolées”. Par contre, la position des individus les uns par rapport aux autres, et par rapport au centre d’inertie du graphique a une signification importante et interprétable.</p>
+<p>Enfin, comme il n’y a aucune raison <em>a priori</em> d’utiliser une variable en ligne et l’autre en colonne, nous pouvons également transposer la table de contingence (les lignes deviennent les colonnes et <em>vice versa</em>). Si nous réalisons une nouvelle ACP sur ce tableau transposé, nous allons reprojetter les niveaux de l’<em>autre</em> variable qualitative sur un autre espace réduit.</p>
+<p>Si nous prenons le même nombre de composantes principales des deux côtés, nous aurons la même part de variance reprise dans les deux projections. De plus, nous pouvons <em>superposer</em> les deux représentations en faisant coïncider les deux centres d’inertie en {0, 0}. La difficulté, comme pour tout biplot, est d’arriver à mettre à l’échelle les points d’une représentation par rapport à ceux de l’autre. Cette mise à l’échelle permet d’interpréter les points de couleurs différentes conjointement : des points proches sur le biplot dénotent des <em>correspondances</em> entre les niveaux respectifs des deux variables étudiées, d’où le nom de la méthode, analyse factorielle des <em>correspondances</em>.</p>
+<p>Au final, l’AFC apparait donc comme une variante de l’ACP qui utilise la distance du Chi<sup>2</sup> à la place de la distance euclidienne dans l’ACP classique, et qui reflète la symétrie du tableau de contingence (lignes/colonnes <em>versus</em> colonnes/lignes). Il en résulte la possiblité d’analyser ainsi des données qualitatives pour lesquelles la distance et la statistique du Chi<sup>2</sup> ont précisément été inventées.</p>
+<div id="pour-en-savoir-plus-5" class="section level5 unnumbered">
+<h5>Pour en savoir plus</h5>
+<ul>
+<li><p>Une courte introduction de l’AFC en <a href="https://www.youtube.com/watch?v=tEc5cmlQVdI">vidéo</a> avec résolution d’un exemple volontairement simpliste pour faire comprendre la signification du graphique obtenu et la façon de l’interpréter.</p></li>
+<li><p>Une <a href="http://www.sthda.com/french/articles/38-methodes-des-composantes-principales-dans-r-guide-pratique/74-afc-analyse-factorielle-des-correspondances-avec-r-l-essentiel/">autre explication</a> qui utilise les packages <code>FactoMineR</code> et <code>factoextra</code> et qui va plus loin dans les concepts (notamment la qualité de la représentation des points via leur “cos<sup>2</sup>”, les différents types de biplots, et l’ajout de données supplémentaires).</p></li>
+</ul>
+</div>
 <div id="a-vous-de-jouer-19" class="section level5 unnumbered">
 <h5>A vous de jouer !</h5>
 <ul>
@@ -579,8 +755,8 @@ wg_b_edu</code></pre>
 <!-- </div> -->
 <div class="footnotes">
 <hr />
-<ol start="1">
-<li id="fn1"><p>Attention : les vlaeurs sur les axes ne sont pas ç-à interpréter. Elles ne portent pas une information utile ici.<a href="analyse-factorielle-des-correspondances.html#fnref1" class="footnote-back">↩</a></p></li>
+<ol start="20">
+<li id="fn20"><p>Attention : les valeurs sur les axes ne sont pas à interpréter quantitativement. Elles ne portent pas une information utile ici.<a href="analyse-factorielle-des-correspondances.html#fnref20" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>

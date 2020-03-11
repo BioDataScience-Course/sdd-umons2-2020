@@ -1078,11 +1078,14 @@ class(chart.ca) <- c("function", "subsettable_type")
 
 L'idée de départ de l'AFC est de pouvoir travailler sur des données qualitatives en les transformant en variables quantitatives via une astuce de calcul, et ensuite de réaliser une ACP sur ce tableau quantitatif pour en représenter l'information visuellement sur une carte. Les enquêtes (mais pas seulement) génèrent souvent des quantités importantes de variables qualitatives qu'il faut ensuite analyser. En effet, des sondage proposent la plupart du temps d'évaluer une question sur une échelle de plusieurs niveaux du genre "tout-à-fait d'accord", "d'accord", "pas d'accord", "pas du tout d'accord", ce qui donnerait une variable facteur à quatre niveaux ordonnés.
 
-Une grande nequête mondiale a été réalisée en 1993 pour déterminer (entre autre) ce que la population pense de la science en général. Quatre questions sont posées (section 4 de [ce questionnaire](https://dbk.gesis.org/dbksearch/download.asp?db=E&id=7987), voir aussi [ici](https://dbk.gesis.org/dbksearch/sdesc2.asp?no=2450&search=issp%201993&search2=&field=all&field2=&DB=e&tab=0&notabs=&nf=1&af=&ll=10))\ :
+Une grande enquête mondiale a été réalisée en 1993 pour déterminer (entre autre) ce que la population pense de la science en général. Quatre questions sont posées (section 4 de [ce questionnaire](https://dbk.gesis.org/dbksearch/download.asp?db=E&id=7987), voir aussi [ici](https://dbk.gesis.org/dbksearch/sdesc2.asp?no=2450&search=issp%201993&search2=&field=all&field2=&DB=e&tab=0&notabs=&nf=1&af=&ll=10))\ :
 
 A. Les gens croient trop souvent à la science, et pas assez aux sentiments et à la foi
+
 B. En général, la science moderne fait plus de mal que de bien
+
 C. Tout changement dans la nature apporté par les êtres humains risque d'empirer les choses
+
 D. La science moderne va résoudre nos problèmes relatifs à l'environement sans faire de grands changements à notre mode de vie
 
 Les réponses possibles sont\ : 1 = tout-à-fait d'accord à 5 = pas du tout d'accord. Le jeu de données `wg93` du package `ca` reprend les réponses données par les allemands de l'ouest à ces questions. De plus, les caractéristiques suivantes des répondants sont enregistrées\ :
@@ -1123,23 +1126,23 @@ Par exemple, si nous nous posons la question de l'impact de l'éducation sur l'i
 table(wg$B, wg$edu)
 ```
 
-- **Étape 2\ :** test de Chi^2^ d'indépendance, voir [section 8.2 du cours de SDD I](http://biodatascience-course.sciviews.org/sdd-umons/test-dhypothese.html#test-chi2-dindependance). L'hypothèse nulle du test est quel les deux variables sont indépendantes l'une de l'autre. L'hypothèse alternative est qu'une dépendance existe. Si la réponse aux questions est indépendante du niveau d'éducation (pas de rejet de H*0*), notre analyse est terminée, sinon, il faut approfondir... Choisissons notre seuil $\alpha$ à 5% avant de réaliser notre test.
+- **Étape 2\ :** test de Chi^2^ d'indépendance, voir [section 8.2 du cours de SDD I](http://biodatascience-course.sciviews.org/sdd-umons/test-dhypothese.html#test-chi2-dindependance). L'hypothèse nulle du test est quel les deux variables sont indépendantes l'une de l'autre. L'hypothèse alternative est qu'une dépendance existe. Si la réponse aux questions est indépendante du niveau d'éducation (pas de rejet de H~0~), notre analyse est terminée. Sinon, il faut approfondir... Choisissons notre seuil $\alpha$ à 5% avant de réaliser notre test.
 
 ```{r}
 chisq.test(wg$B, wg$edu)
 ```
 
-La valeur *p* de 0,2% est inférieure à $\alpha$. Il y a dépendance entre le niveau d'éducation et la réponse à la question B. OK, mais comment\ ?
+L'avertissement nous prévient qu'une approximation a du être réalisée, mais le test reste utilisable si la valeur est loin du seuil $/alpha$. La valeur *p* de 0,2% est très inférieure à $\alpha$. Nous rejettons H~0~. Il y a dépendance entre le niveau d'éducation et la réponse à la question B. OK, mais comment se fait cette dépendance\ ? C'est ici que l'AFC nous vient en aide.
 
 
--**Étape 3\ :** Si l'hypothèse nulle est rejettée, il faut analyser comment se fait la dépendance. L'AFC va présenter cela de manière claire. La fonction `ca()` accepte un jeu de données dans l'argument `data =` et une formule qui spéficie à sa droite les deux variables à croiser séparées par un signe + (`~ fact1 + fact2`). Donc\ :
+-**Étape 3\ :** Si l'hypothèse nulle est rejettée, il faut analyser plus en profondeur. L'AFC va présenter la dépendance de manière claire. La fonction `ca()` accepte un jeu de données dans l'argument `data =` et une formule qui spécifie dans le terme de droite les deux variables à croiser séparées par un signe + (`~ fact1 + fact2`). Donc\ :
 
 ```{r}
 wg_b_edu <- ca(data = wg, ~ B + edu)
 wg_b_edu
 ```
 
-Nous retrouvons les valeurs propres (`eigenvalues`) qui représentent l'inertie exprimée sur les différents axes, avec le pourcentage juste en dessous. Les deux tableaux suivants détaillent les calculs. Il n'est pas indispensable de comprendre tout ce qui s'y trouve, mais notez que les composantes du calcul du Chi^2^ pour chaque niveau des variables sont reprises à la ligne `ChiDist`. Nous y reviendrons. La méthode `summary()` ainsi que le graphique des éboulis via `chart$scree()` nous donnent une information plus claire sur la contribution de la variabilité totale sur les différents axes. Cela nous aide à décider si le plan réduit aux dux premiers axes que nous utiliserons ensuite est adéquat ou non (pourcentage suffisant = données bien représentées dans ce plan).
+Nous retrouvons les valeurs propres (`eigenvalues`) qui représentent l'inertie exprimée sur les différents axes, avec le pourcentage juste en dessous. Les deux tableaux suivants détaillent les calculs. Il n'est pas indispensable de comprendre tout ce qui s'y trouve, mais notez que les composantes du calcul du Chi^2^ pour chaque niveau des variables sont reprises à la ligne `ChiDist`. Nous y reviendrons. La méthode `summary()` ainsi que le graphique des éboulis via `chart$scree()` nous donnent une information plus claire sur la contribution de la variabilité totale sur les différents axes. Cela nous aide à décider si le plan réduit aux deux premiers axes que nous utiliserons ensuite est adéquat ou non (pourcentage suffisant = données bien représentées dans ce plan).
 
 ```{r}
 summary(wg_b_edu, scree = TRUE, rows = FALSE, columns = FALSE)
@@ -1149,7 +1152,7 @@ summary(wg_b_edu, scree = TRUE, rows = FALSE, columns = FALSE)
 chart$scree(wg_b_edu)
 ```
 
-Ici, les deux premiers axes cumulent plus de 98% de la variation totale. Nous povons donc continuer en toute confiance. Le **biplot()** va ici projetter les individus sur la carte (les individus étant en fait les différents niveaux des deux variables, obtenus après réalisation de deux ACP, l"une sur les colonnes et l'autre sur les lignes). Les deux groupes sont représentés par des couleurs différentes, mais sur une même carte. C'erst la fonction `chart$biplot()` qui réalise ce graphique.
+Ici, les deux premiers axes cumulent plus de 98% de la variation totale. Nous pouvons donc continuer en toute confiance. Le **biplot** va ici projetter les individus sur la carte (les individus étant en fait les différents niveaux des deux variables, obtenus après réalisation de deux ACP, l'une sur les colonnes et l'autre sur les lignes). Les deux groupes sont représentés par des couleurs différentes, mais sur une même carte. C'erst la fonction `chart$biplot()` qui réalise ce graphique.
 
 ```{r}
 chart$biplot(wg_b_edu, choices = c(1, 2))
@@ -1159,13 +1162,140 @@ L'interprétation se fait d'abord sur les points d'une couleur (niveau de la pre
 
 - Les niveaux d'éducation en rouge sont globalement représentés essentiellement de gauche à droite dans un ordre croissant de "études primaires" jusqu'à "études universitaires de 2^éme^ cycle ou plus".
 
-- Les réponses à la question B (en bleu turquoise) sont également rangés globalement de gauche à droite (avec une légère inversion entre `+` et `++`) depuis ceux qui sont tou-à-fait d'accord que la science moderne est néfaste jusqu'à ceux qui ne le sont pas du tout.
+- Les réponses à la question B (en bleu turquoise) sont également rangés globalement de gauche à droite (avec une légère inversion entre `+` et `++`) depuis ceux qui sont tout-à-fait d'accord que la science moderne est néfaste à la gauche jusqu'à ceux qui ne le sont pas du tout à la droite.
 
-- Conjointement, on va comparer les points rouges et les bleus et regarder ceux qui se situent dans une direction similaire par rapport au centre d'inertie à la coordonnée {0, 0} matérialisée par la croix grise^[Attention\ : les vlaeurs sur les axes ne sont pas ç-à interpréter. Elles ne portent pas une information utile ici.]. Ainsi, nous constatons que ceux qui ont le niveau éducatif le plus faible (niveau primaire) ont globalement plut^to répondu qu'ils sont tout-à-fait d'accord (`++`), alors qu'à l'opposé, les universitaires ne sont pas du tous d'accord avec cette affirmation (`--`).
+- Conjointement, on va comparer les points rouges et les bleus et regarder ceux qui se situent dans une direction similaire par rapport au centre d'inertie à la coordonnée {0, 0} matérialisée par la croix grise^[Attention\ : les valeurs sur les axes ne sont pas à interpréter quantitativement. Elles ne portent pas une information utile ici.]. Ainsi, nous constatons que ceux qui ont le niveau éducatif le plus faible (niveau primaire) ont globalement plutôt répondu qu'ils sont tout-à-fait d'accord (`++`), alors qu'à l'opposé, les universitaires ne sont pas du tous d'accord avec l'affirmation (`--`).
 
 L'essentiel se lit ici effectivement sur un seul axe (dimension 1) qui capture environ 90% de la variation totale. Le second axe vient moduler légèrement ce classement avec 8,5% de variabilité, mais sans tout bouleverser.
 
-Ici la lecture de la carte générée par l'AFC est limpide... Et manifestement, nous pouvions légitimement conclure à l'époque qu'un effort éducatif et d'information est nécessaire auprès de la population la moins éduquée pour leur faire prendre conscience de l'intérêt de la science moderne (à moins que cette dernière remarque ne soit un parti pris... d'un universtaire :-).
+Ici la lecture de la carte générée par l'AFC est limpide... Et manifestement, nous pouvions légitimement conclure à l'époque qu'un effort éducatif et d'information était nécessaire auprès de la population la moins éduquée pour leur faire prendre conscience de l'intérêt de la science moderne (à moins que cette dernière remarque ne soit un parti pris... d'un universtaire :-).
+
+
+### Des acariens sinon rien
+
+Un deuxième exemple illustre une utilisation légèrement différente de l'AFC. Il s'agit des tableaux de type "espèces par stations". Ces tableaux contiennent différentes espèces ou autres groupes taxonomiques dénombrés dans plusieurs échantillons prélevés à des stations différentes. Le dénombrement des espèces peut être quantitatif (nombre d'individus observés par unité de surface ou de volume), semi-quantitatif (peu, moyen, beaucoup), ou même binaire (présence ou absence de l'espèce). Ces tableaux sont assimilables, en réalité, à des tableaux de contingence à double entrée qui croisent deux variables qualitatives "espèce" et "station". C'est comme si la première étape avait déjà été réalisée dans l'analyse précédente du jeu de données `wg`.
+
+Naturellement, comme il ne s'agit pas réellement d'un tableau de contingence, nous ne réaliserons pas le test Chi^2^ d'indépendance ici, et nous passerons directement à l'étape de l'AFC. L'exemple choisi concerne des populations d'acariens dans de la litière (acarien se dit "mite" en anglais, d'où le nom du jeu de données issu du package `vegan`).
+
+```{r}
+mite <- read("mite", package = "vegan")
+skimr::skim(mite)
+```
+
+35 espèces d'acariens sont dénombrés en 70 stations différentes, et il n'y a aucunes valeurs manquantes. Comme il ne peut y avoir aucun total de ligne ou de colonne égal à zéro pour le calcul des Chi^2^ (sinon, on aurait une division par zéro), nous vérifions cela de la façon suivante\ :
+
+```{r}
+rowSums(mite)
+colSums(mite)
+```
+
+De plus, l'AFC est très sensible à la présence de valeurs extrêmes. Il faut être particulièrement attentif à ne pas avoir trop de disparité, surtout en présence d'espèces très abondantes *versus* d'autres très rares. Si quelques échantillons contiennent une quantité particulièrement large d'items, cela peut aussi être problématique. Pour des dénombrements ou du semi-quantitatif à plus d'une dizaine de niveaux, la boite de dispersion parallèle est un bon graphique, mais nous devons tronsformer le tableau de données en format long avec `gather()` pour pouvoir le faire, et ensuite, nous présentons les espèces sur l'axe des ordonnées avec `coord_flip()`\ :
+
+```{r}
+mite %>.%
+  gather(., key = "species", value = "n") %>.%
+  chart(., n ~ species) +
+    geom_boxplot() +
+  coord_flip()
+```
+
+Aïe\ ! Nous avons ici une magnifique valeur extrême, ainsi que des différences trop nettes entre les espèces les plus abondantes et les plus rares. Nous devons y remédier avant de faire notre AFC. Deux solutions sont possibles\ :
+
+(1) Soit nous dégradons l'information vers du semi-quantitatif en définissant des niveaux d'abondance, du genre 0, 1-10, 10-20, 20-30, 31+. Nous pouvons réaliser cela avec la fonction `cut()` illustrée ici sur un exemple fictif.
+
+```{r}
+sample <- c(0, 12, 500, 25, 5)
+cut(sample, breaks = c(-1, 0, 10, 20, 30, Inf))
+```
+
+Nous voyons que `cut()` a ici remplacé nos données quantitatives dans `sample()` en une variable qualitative à cinq niveaux clairement libellés. Notez l'astuce du groupe `(-1,0]` pour capturer les valeurs nulles dans un groupe séparé.
+
+(2) Autre solution, nous transformons les données pour réduire l'écart entre les extrêmes. Typiquement, une transformation $log(x + 1)$ est efficace pour cela, et fonctionne bien en présence de valeurs nulles aussi. Nous utiliserons cette dernière technique pour notre jeu de données `mite`. Enfin, nous nous assurons que les station sont bien numérotées de 1 à 70 en lignes (`rownames()`).
+
+```{r}
+mite2 <- log1p(as.data.frame(mite))
+# Ajouter le numéro des stations explicitement
+rownames(mite2) <- 1:nrow(mite2)
+```
+
+Le graphique boite de dispersion parallèle montre plus d'homogénéité maintenant\ :
+
+```{r}
+mite2 %>.%
+  gather(., key = "species", value = "log_n_1") %>.%
+  chart(., log_n_1 ~ species) +
+  geom_boxplot() + coord_flip()
+```
+
+A noter que ce type de graphique ne convient pas pour les données semi-quantitatives ou qualitatives. Nous pouvons réaliser le graphique suivant à la place dans ce cas pour visualiser la distribution des espèces dans les différentes stations (qui fonctionne aussi en quantitatif)\ :
+
+```{r}
+mite2 %>.%
+  gather(., key = "species", value = "n") %>.%
+  mutate(., station = rep(1:nrow(mite), ncol(mite))) %>.%
+  chart(., species ~ station %fill=% n) +
+  geom_raster()
+```
+
+Maintenant que nos données sont vérifiées, nettoyées (phase de préparation), et décrites correctement (phase descriptive), nous pouvons réaliser notre AFC et explorer les particularités de ce jeu de données en vue d'une étude plus approfondie ultérieure (phase exploratoire). L'utilisation de `ca()` sur un tableau de type contingence à double entrée déjà prêt est ultra-simple. Il suffit de fournir le tableau en question comme seul argument à la fonction.
+
+```{r}
+mite2_ca <- ca(mite2)
+```
+
+Examinons la variabilité sur les différents axes, numériquement et à l'aide du graphe des éboulis\ :
+
+```{r}
+summary(mite2_ca, scree = TRUE, rows = FALSE, columns = FALSE)
+```
+
+```{r}
+chart$scree(mite2_ca, fill = "cornsilk")
+```
+
+La variabilité décroit rapidement sur les deux premiers axes, et ensuite plus lentement. Les deux premières dimensions ne capturent qu'environ 43% de la variabilité totale. Toutefois, la variation moins brutale par après justifie de ne garder que deux axes. Malgré la représentativité relativement faible dans ce plan, nous verrons que l'AFC reste interprétable et peut fournir des informations utiles, même dans ce cas. Voici la carte (biplot)\ :
+
+```{r}
+chart$biplot(mite2_ca, choices = c(1, 2))
+```
+
+Nous observons une forme en fer à cheval de la distribution des points. Attention\ ! Ceci est un artéfact lié au fait que la distance du Chi^2^ a tendance à rapprocher les extrêmes ("qui se ressemblent dans la différence", en quelque sorte) alors que notre souhait aurait plutôt été de les placer aux extrémités du graphique. Il faut donc analyser les données comme une transition progressive d'un état A vers un état B le long de la forme en fer à cheval.
+
+Lorsqu'il y a beaucoup de points, ce graphique tend à être très encombré et illisible. L'argument `repel = TRUE` vient parfois aider en allant placer les labels de telle façon qu'ils se chevauchent le moins possible. Par contre, la forme du nuage de point est du coup un peu moins visible.
+
+```{r}
+chart$biplot(mite2_ca, choices = c(1, 2), repel = TRUE)
+```
+
+Nous vous laissons le soin d'effectuer l'analyse complète des points bleus (stations) entre eux, ensuite les points rouges (espèces) entre eux et enfin, conjointement. Notez les stations 44, 59, 65 et 67 qui se détachent et qui sont caractérisées par des espèces qu'on trouve préférentiellement là-bas\ : `Trhypch1` et `Trimalc2`. Les espèces et station proches du centre d'inertie, au contraire, ne montrent aucune particularité.
+
+
+### Principe de l'AFC
+
+Maintenant que nous avons découvert la façon de réaliser et d'interpréter une AFC, il est temps d'en comprendre les rouages. Rappelez-vous que la distance du Chi^2^ quantifie l'écart entre des effectifs observés $a_i$ et des effectifs théoriques $\alpha_i$ comme\ :
+
+$$\chi^2=\sum{\frac{(a_i - \alpha_i)^2}{\alpha_i}}$$
+
+Il y a un terme par cellule du tableau de contingence (que nous appelerons les *contributions* au Chi^2^), et par ailleurs, sous l'hypothèse nulle d'indépendance des variables, les $\alpha_i$ sont connus et dépendent uniquement des sommes des lignes et des colonnes du tableau. En effet, nous avons\ :
+
+$$\alpha_i = \frac{\textrm{total ligne} . \textrm{total colonne}}{\textrm{total général}}$$
+
+Donc, lors du calcul du Chi^2^, nous passons par une étape de transformation du tableau de contingence à double entrée où nous substituons les effectifs observés (des entiers, donc du quantitatif discret) par les contributions respectives au Chi^2^. Or ces contributions sont des valeurs réelles (continues) nulles ou positives. Nous obtenons donc un tableau contenant des *valeurs numériques continues* qui peut être traité par une ACP classique.
+
+L'ACP va reprojetter les lignes du tableau (qui, rappelons-le, sont les différents niveaux d'une des deux variables qualitative étudiée) dans un espace réduit. Dans ce contexte, le graphique représentant les variables n'a pas grand intérêt, puique ces variables sont en réalité fictives, ou si vous préférez, "bricolées". Par contre, la position des individus les uns par rapport aux autres, et par rapport au centre d'inertie du graphique a une signification importante et interprétable.
+
+Enfin, comme il n'y a aucune raison *a priori* d'utiliser une variable en ligne et l'autre en colonne, nous pouvons également transposer la table de contingence (les lignes deviennent les colonnes et *vice versa*). Si nous réalisons une nouvelle ACP sur ce tableau transposé, nous allons reprojetter les niveaux de l'*autre* variable qualitative sur un autre espace réduit.
+
+Si nous prenons le même nombre de composantes principales des deux côtés, nous aurons la même part de variance reprise dans les deux projections. De plus, nous pouvons *superposer* les deux représentations en faisant coïncider les deux centres d'inertie en {0, 0}. La difficulté, comme pour tout biplot, est d'arriver à mettre à l'échelle les points d'une représentation par rapport à ceux de l'autre. Cette mise à l'échelle permet d'interpréter les points de couleurs différentes conjointement\ : des points proches sur le biplot dénotent des *correspondances* entre les niveaux respectifs des deux variables étudiées, d'où le nom de la méthode, analyse factorielle des *correspondances*.
+
+Au final, l'AFC apparait donc comme une variante de l'ACP qui utilise la distance du Chi^2^ à la place de la distance euclidienne dans l'ACP classique, et qui reflète la symétrie du tableau de contingence (lignes/colonnes *versus* colonnes/lignes). Il en résulte la possiblité d'analyser ainsi des données qualitatives pour lesquelles la distance et la statistique du Chi^2^ ont précisément été inventées.
+
+
+##### Pour en savoir plus {-}
+
+- Une courte introduction de l'AFC en [vidéo](https://www.youtube.com/watch?v=tEc5cmlQVdI) avec résolution d'un exemple volontairement simpliste pour faire comprendre la signification du graphique obtenu et la façon de l'interpréter.
+
+- Une [autre explication](http://www.sthda.com/french/articles/38-methodes-des-composantes-principales-dans-r-guide-pratique/74-afc-analyse-factorielle-des-correspondances-avec-r-l-essentiel/) qui utilise les packages `FactoMineR` et `factoextra` et qui va plus loin dans les concepts (notamment la qualité de la représentation des points via leur "cos^2^", les différents types de biplots, et l'ajout de données supplémentaires).
 
 
 ##### A vous de jouer ! {-}
