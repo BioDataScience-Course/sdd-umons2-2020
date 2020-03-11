@@ -960,10 +960,10 @@ Comme l'ACP s'intéresse à des corrélations linéaires entre variables quantit
 
 ### AFC dans SciViews::R
 
-L'AFC utilises la fonction `ca()` du package `ca` dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documenbts R Markdown/Notebook.
+L'AFC utilises la fonction `ca()` du package `ca` dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documents R Markdown/Notebook.
 
 ```{r}
-SciViews::R
+SciViews::R()
 library(broom)
 
 # Au lieu de MASS::corresp(, nf = 2), nous préférons ca::ca()
@@ -1072,6 +1072,101 @@ type = c("screeplot", "altscreeplot", "boiplot"), env = parent.frame())
 class(chart.ca) <- c("function", "subsettable_type")
 
 ```
+
+
+### Enquête sur la science
+
+L'idée de départ de l'AFC est de pouvoir travailler sur des données qualitatives en les transformant en variables quantitatives via une astuce de calcul, et ensuite de réaliser une ACP sur ce tableau quantitatif pour en représenter l'information visuellement sur une carte. Les enquêtes (mais pas seulement) génèrent souvent des quantités importantes de variables qualitatives qu'il faut ensuite analyser. En effet, des sondage proposent la plupart du temps d'évaluer une question sur une échelle de plusieurs niveaux du genre "tout-à-fait d'accord", "d'accord", "pas d'accord", "pas du tout d'accord", ce qui donnerait une variable facteur à quatre niveaux ordonnés.
+
+Une grande nequête mondiale a été réalisée en 1993 pour déterminer (entre autre) ce que la population pense de la science en général. Quatre questions sont posées (section 4 de [ce questionnaire](https://dbk.gesis.org/dbksearch/download.asp?db=E&id=7987), voir aussi [ici](https://dbk.gesis.org/dbksearch/sdesc2.asp?no=2450&search=issp%201993&search2=&field=all&field2=&DB=e&tab=0&notabs=&nf=1&af=&ll=10))\ :
+
+A. Les gens croient trop souvent à la science, et pas assez aux sentiments et à la foi
+B. En général, la science moderne fait plus de mal que de bien
+C. Tout changement dans la nature apporté par les êtres humains risque d'empirer les choses
+D. La science moderne va résoudre nos problèmes relatifs à l'environement sans faire de grands changements à notre mode de vie
+
+Les réponses possibles sont\ : 1 = tout-à-fait d'accord à 5 = pas du tout d'accord. Le jeu de données `wg93` du package `ca` reprend les réponses données par les allemands de l'ouest à ces questions. De plus, les caractéristiques suivantes des répondants sont enregistrées\ :
+
+- le sexe (1 = homme, 2 = femme),
+- l'âge (1 = 18-24, 2 = 25-34, 3 = 35-44, 4 = 45-54, 5 = 55-64, 6 = 65+)
+- le niveau d'éducation (1 = primaire, 2 = second. partim, 3 = secondaire, 4 = univ. partim, 5 = univ. cycle 1, 6 = univ. cycle 2+)
+
+
+```{r}
+wg <- read("wg93", package = "ca")
+wg
+```
+
+Ceci est un tableau cas par variables avec sept variables facteurs et 871 cas. Nous commençons par réencoder les niveaux des variables pour plus de clarté\ :
+
+```{r}
+wg %>.%
+  mutate(.,
+    A = recode(A, `1` = "++", `2` = "+", `3` = "0", `4` = "-", `5` = "--"),
+    B = recode(B, `1` = "++", `2` = "+", `3` = "0", `4` = "-", `5` = "--"),
+    C = recode(C, `1` = "++", `2` = "+", `3` = "0", `4` = "-", `5` = "--"),
+    D = recode(D, `1` = "++", `2` = "+", `3` = "0", `4` = "-", `5` = "--"),
+    sex = recode(sex, `1` = "H", `2`= "F"),
+    age = recode(age, `1` = "18-24", `2` = "25-34", `3` = "35-44",
+      `4` = "45-54", `5` = "55-64", `6` = "65+"),
+    edu = recode(edu, `1` = "primaire", `2` = "sec. part", `3` = "secondaire",
+      `4` = "univ. part", `5` = "univ. cycle 1", `6` = "univ. cycle 2")
+  ) -> wg
+wg
+```
+
+Par exemple, si nous nous posons la question de l'impact de l'éducation sur l'impression que la science est néfaste (question B), nous pourrons faire l'analyse suivante\ :
+
+- **Étape 1\ :** calcul du tableau de contingence à double entrée croisant les réponses à la question B avec le niveau d'éducation des répondants\ :
+
+```{r}
+table(wg$B, wg$edu)
+```
+
+- **Étape 2\ :** test de Chi^2^ d'indépendance, voir [section 8.2 du cours de SDD I](http://biodatascience-course.sciviews.org/sdd-umons/test-dhypothese.html#test-chi2-dindependance). L'hypothèse nulle du test est quel les deux variables sont indépendantes l'une de l'autre. L'hypothèse alternative est qu'une dépendance existe. Si la réponse aux questions est indépendante du niveau d'éducation (pas de rejet de H*0*), notre analyse est terminée, sinon, il faut approfondir... Choisissons notre seuil $\alpha$ à 5% avant de réaliser notre test.
+
+```{r}
+chisq.test(wg$B, wg$edu)
+```
+
+La valeur *p* de 0,2% est inférieure à $\alpha$. Il y a dépendance entre le niveau d'éducation et la réponse à la question B. OK, mais comment\ ?
+
+
+-**Étape 3\ :** Si l'hypothèse nulle est rejettée, il faut analyser comment se fait la dépendance. L'AFC va présenter cela de manière claire. La fonction `ca()` accepte un jeu de données dans l'argument `data =` et une formule qui spéficie à sa droite les deux variables à croiser séparées par un signe + (`~ fact1 + fact2`). Donc\ :
+
+```{r}
+wg_b_edu <- ca(data = wg, ~ B + edu)
+wg_b_edu
+```
+
+Nous retrouvons les valeurs propres (`eigenvalues`) qui représentent l'inertie exprimée sur les différents axes, avec le pourcentage juste en dessous. Les deux tableaux suivants détaillent les calculs. Il n'est pas indispensable de comprendre tout ce qui s'y trouve, mais notez que les composantes du calcul du Chi^2^ pour chaque niveau des variables sont reprises à la ligne `ChiDist`. Nous y reviendrons. La méthode `summary()` ainsi que le graphique des éboulis via `chart$scree()` nous donnent une information plus claire sur la contribution de la variabilité totale sur les différents axes. Cela nous aide à décider si le plan réduit aux dux premiers axes que nous utiliserons ensuite est adéquat ou non (pourcentage suffisant = données bien représentées dans ce plan).
+
+```{r}
+summary(wg_b_edu, scree = TRUE, rows = FALSE, columns = FALSE)
+```
+
+```{r}
+chart$scree(wg_b_edu)
+```
+
+Ici, les deux premiers axes cumulent plus de 98% de la variation totale. Nous povons donc continuer en toute confiance. Le **biplot()** va ici projetter les individus sur la carte (les individus étant en fait les différents niveaux des deux variables, obtenus après réalisation de deux ACP, l"une sur les colonnes et l'autre sur les lignes). Les deux groupes sont représentés par des couleurs différentes, mais sur une même carte. C'erst la fonction `chart$biplot()` qui réalise ce graphique.
+
+```{r}
+chart$biplot(wg_b_edu, choices = c(1, 2))
+```
+
+L'interprétation se fait d'abord sur les points d'une couleur (niveau de la première variable), puis sur ceux de l'autre (niveaux de la seconde variable), et enfin, conjointement. Voici ce que cela donne ici\ :
+
+- Les niveaux d'éducation en rouge sont globalement représentés essentiellement de gauche à droite dans un ordre croissant de "études primaires" jusqu'à "études universitaires de 2^éme^ cycle ou plus".
+
+- Les réponses à la question B (en bleu turquoise) sont également rangés globalement de gauche à droite (avec une légère inversion entre `+` et `++`) depuis ceux qui sont tou-à-fait d'accord que la science moderne est néfaste jusqu'à ceux qui ne le sont pas du tout.
+
+- Conjointement, on va comparer les points rouges et les bleus et regarder ceux qui se situent dans une direction similaire par rapport au centre d'inertie à la coordonnée {0, 0} matérialisée par la croix grise^[Attention\ : les vlaeurs sur les axes ne sont pas ç-à interpréter. Elles ne portent pas une information utile ici.]. Ainsi, nous constatons que ceux qui ont le niveau éducatif le plus faible (niveau primaire) ont globalement plut^to répondu qu'ils sont tout-à-fait d'accord (`++`), alors qu'à l'opposé, les universitaires ne sont pas du tous d'accord avec cette affirmation (`--`).
+
+L'essentiel se lit ici effectivement sur un seul axe (dimension 1) qui capture environ 90% de la variation totale. Le second axe vient moduler légèrement ce classement avec 8,5% de variabilité, mais sans tout bouleverser.
+
+Ici la lecture de la carte générée par l'AFC est limpide... Et manifestement, nous pouvions légitimement conclure à l'époque qu'un effort éducatif et d'information est nécessaire auprès de la population la moins éduquée pour leur faire prendre conscience de l'intérêt de la science moderne (à moins que cette dernière remarque ne soit un parti pris... d'un universtaire :-).
+
 
 ##### A vous de jouer ! {-}
 
