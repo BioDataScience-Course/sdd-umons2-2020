@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-03-11">
+<meta name="date" content="2020-03-12">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -33,7 +33,7 @@
   
   
 <link rel="prev" href="analyse-en-composantes-principales.html">
-<link rel="next" href="afm.html">
+<link rel="next" href="acces-aux-bases-de-donnees.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -259,6 +259,14 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="7.2.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#enquete-sur-la-science"><i class="fa fa-check"></i><b>7.2.2</b> Enquête sur la science</a></li>
 <li class="chapter" data-level="7.2.3" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#des-acariens-sinon-rien"><i class="fa fa-check"></i><b>7.2.3</b> Des acariens sinon rien</a></li>
 <li class="chapter" data-level="7.2.4" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#principe-de-lafc"><i class="fa fa-check"></i><b>7.2.4</b> Principe de l’AFC</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html"><i class="fa fa-check"></i><b>7.3</b> Accès aux bases de données</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#installation-de-sqlite"><i class="fa fa-check"></i><b>7.3.1</b> Installation de SQLite</a></li>
+<li class="chapter" data-level="7.3.2" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#base-de-donnees-en-memoire"><i class="fa fa-check"></i><b>7.3.2</b> Base de données en mémoire</a></li>
+<li class="chapter" data-level="7.3.3" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#base-de-donnees-dans-un-fichier"><i class="fa fa-check"></i><b>7.3.3</b> Base de données dans un fichier</a></li>
+<li class="chapter" data-level="7.3.4" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#driver-odbc-dans-rstudio"><i class="fa fa-check"></i><b>7.3.4</b> Driver ODBC dans RStudio</a></li>
+<li class="chapter" data-level="7.3.5" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-db-browser"><i class="fa fa-check"></i><b>7.3.5</b> Utilisation de DB Browser</a></li>
+<li class="chapter" data-level="7.3.6" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-dplyr"><i class="fa fa-check"></i><b>7.3.6</b> Utilisation de dplyr</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM</a><ul>
@@ -544,7 +552,7 @@ wg_b_edu</code></pre>
 <ul>
 <li><p>Les niveaux d’éducation en rouge sont globalement représentés essentiellement de gauche à droite dans un ordre croissant de “études primaires” jusqu’à “études universitaires de 2<sup>éme</sup> cycle ou plus”.</p></li>
 <li><p>Les réponses à la question B (en bleu turquoise) sont également rangés globalement de gauche à droite (avec une légère inversion entre <code>+</code> et <code>++</code>) depuis ceux qui sont tout-à-fait d’accord que la science moderne est néfaste à la gauche jusqu’à ceux qui ne le sont pas du tout à la droite.</p></li>
-<li><p>Conjointement, on va comparer les points rouges et les bleus et regarder ceux qui se situent dans une direction similaire par rapport au centre d’inertie à la coordonnée {0, 0} matérialisée par la croix grise<a href="#fn20" class="footnote-ref" id="fnref20"><sup>20</sup></a>. Ainsi, nous constatons que ceux qui ont le niveau éducatif le plus faible (niveau primaire) ont globalement plutôt répondu qu’ils sont tout-à-fait d’accord (<code>++</code>), alors qu’à l’opposé, les universitaires ne sont pas du tous d’accord avec l’affirmation (<code>--</code>).</p></li>
+<li><p>Conjointement, on va comparer les points rouges et les bleus et regarder ceux qui se situent dans une direction similaire par rapport au centre d’inertie à la coordonnée {0, 0} matérialisée par la croix grise<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. Ainsi, nous constatons que ceux qui ont le niveau éducatif le plus faible (niveau primaire) ont globalement plutôt répondu qu’ils sont tout-à-fait d’accord (<code>++</code>), alors qu’à l’opposé, les universitaires ne sont pas du tous d’accord avec l’affirmation (<code>--</code>).</p></li>
 </ul>
 <p>L’essentiel se lit ici effectivement sur un seul axe (dimension 1) qui capture environ 90% de la variation totale. Le second axe vient moduler légèrement ce classement avec 8,5% de variabilité, mais sans tout bouleverser.</p>
 <p>Ici la lecture de la carte générée par l’AFC est limpide… Et manifestement, nous pouvions légitimement conclure à l’époque qu’un effort éducatif et d’information était nécessaire auprès de la population la moins éduquée pour leur faire prendre conscience de l’intérêt de la science moderne (à moins que cette dernière remarque ne soit un parti pris… d’un universtaire :-).</p>
@@ -748,15 +756,13 @@ skimr<span class="op">::</span><span class="kw">skim</span>(mite)</code></pre>
 <li><a href="https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea" class="uri">https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea</a>
 </div></li>
 </ul>
-
 </div>
 </div>
 </div>
-<!-- </div> -->
 <div class="footnotes">
 <hr />
-<ol start="20">
-<li id="fn20"><p>Attention : les valeurs sur les axes ne sont pas à interpréter quantitativement. Elles ne portent pas une information utile ici.<a href="analyse-factorielle-des-correspondances.html#fnref20" class="footnote-back">↩</a></p></li>
+<ol start="1">
+<li id="fn1"><p>Attention : les valeurs sur les axes ne sont pas à interpréter quantitativement. Elles ne portent pas une information utile ici.<a href="analyse-factorielle-des-correspondances.html#fnref1" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>
@@ -785,7 +791,7 @@ s.setAttribute('data-timestamp', +new Date());
         </div>
       </div>
 <a href="analyse-en-composantes-principales.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="afm.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="acces-aux-bases-de-donnees.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

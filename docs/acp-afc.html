@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-03-11">
+<meta name="date" content="2020-03-12">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -260,6 +260,14 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="7.2.3" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#des-acariens-sinon-rien"><i class="fa fa-check"></i><b>7.2.3</b> Des acariens sinon rien</a></li>
 <li class="chapter" data-level="7.2.4" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#principe-de-lafc"><i class="fa fa-check"></i><b>7.2.4</b> Principe de l’AFC</a></li>
 </ul></li>
+<li class="chapter" data-level="7.3" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html"><i class="fa fa-check"></i><b>7.3</b> Accès aux bases de données</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#installation-de-sqlite"><i class="fa fa-check"></i><b>7.3.1</b> Installation de SQLite</a></li>
+<li class="chapter" data-level="7.3.2" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#base-de-donnees-en-memoire"><i class="fa fa-check"></i><b>7.3.2</b> Base de données en mémoire</a></li>
+<li class="chapter" data-level="7.3.3" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#base-de-donnees-dans-un-fichier"><i class="fa fa-check"></i><b>7.3.3</b> Base de données dans un fichier</a></li>
+<li class="chapter" data-level="7.3.4" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#driver-odbc-dans-rstudio"><i class="fa fa-check"></i><b>7.3.4</b> Driver ODBC dans RStudio</a></li>
+<li class="chapter" data-level="7.3.5" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-db-browser"><i class="fa fa-check"></i><b>7.3.5</b> Utilisation de DB Browser</a></li>
+<li class="chapter" data-level="7.3.6" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-dplyr"><i class="fa fa-check"></i><b>7.3.6</b> Utilisation de dplyr</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM</a><ul>
 <li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a></li>
@@ -301,7 +309,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <h5>Objectifs</h5>
 <ul>
 <li><p>Apprendre à réaliser une ordination de données quantitatives à l’aide de l’ACP.</p></li>
-<li><p>Savoir ordiner des variables qualitatives sous forme de tavbleaux cas par variables ou de tables de contingences à double entrée à l’aide de l’AFC.</p></li>
+<li><p>Savoir ordiner des variables qualitatives sous forme de tableaux cas par variables ou de tables de contingences à double entrée à l’aide de l’AFC.</p></li>
+<li><p>Appréhender l’accès aux bases de données depuis R et RStudio, en particulier via des requêtes SQL simples ou avec dbplyr.</p></li>
 </ul>
 </div>
 <div id="prerequis-6" class="section level5 unnumbered">
