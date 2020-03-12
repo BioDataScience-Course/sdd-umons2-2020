@@ -19,6 +19,24 @@ SciViews::R
 
 - Le module 6, et en particulier la partie sur le MDS doivent être assimilés avant d'attaquer le présent module.
 
+##### A vous de jouer ! {-}
+
+En lien avec ce module vous avez une série d’exercices à réaliser. Vous avez à :
+
+- Réaliser un projet spécifique et dédié uniquement au module 07. Ce module couvre l'ensemble de la matière du module 7. 
+
+```{block2, type='bdd'}
+Ce projet individuel est accessible via le lien suivant : 
+Suite à la lecture de l’AcC, completez ce projet individuel pour appliquer vos nouvelles connaissances.
+
+- <https://classroom.github.com/a/sWXOnhcQ>
+  
+Le README peut évoluer au cours du temps. N'hésitez pas à consulter la dernière version disponible via le lien suivant\ :
+  
+- <https://github.com/BioDataScience-Course/sdd2_module07>
+
+*Ce projet doit être terminé à la fin de ce module*
+```
 
 ## Analyse en composantes principales
 
@@ -232,7 +250,6 @@ chart.pcomp <- function(data, choices = 1L:2L, name = deparse(substitute(data)),
   autoplot.pcomp(data, choices = choices, name = name, ..., type = type, env = env)
 class(chart.pcomp) <- c("function", "subsettable_type")
 ```
-
 
 ### Indiens diabétiques
 
@@ -943,6 +960,19 @@ Lisez attentivement le README
 *Ce projet doit être terminé à la fin de ce module*
 ```
 
+##### A vous de jouer ! {-}
+
+- Réalisez le début de cette assignation. Ce projet est spécifique et dédié uniquement au module 07. Ce module couvre la matière entière du module 7. 
+
+```{block2, type='bdd'}
+Suite à la lecture de l’AcC, completez ce projet individuel pour appliquer vos nouvelles connaissances.
+
+La dernière version du README est disponible via le lien suivant\ :
+  
+- <https://github.com/BioDataScience-Course/sdd2_module07>
+
+*Ce projet doit être terminé à la fin de ce module*
+```
 
 - Complétez votre projet sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).
 
@@ -1474,6 +1504,11 @@ Lancez **DB Browser**. Connectez-vous à `/home/sv/shared/database.sqlite` Vous 
 
 ### Utilisation de dplyr
 
+```{r, echo=FALSE}
+#dbWriteTable(con, "iris", iris, overwrite = TRUE)
+```
+
+
 Les fonctions du package `dplyr` fonctionnent aussi très bien sur des bases de données. Les commandes sont converties en interne en requêtes SQL. Il suffit d'utiliser `collect()` à la fin pour exécuter la requête.
 
 ```{r dplyr1}
@@ -1542,3 +1577,17 @@ Voilà pour ce très rapide tour d'horizon des différentes façons de manipuler
 - Un autre [tutorial complet sur SQL](http://blog.paumard.org/cours/sql/). Remarquez qu'il en existe beaucoup. Faites une recherche via Google et choisissez le tutorial qui vous plait le plus.
 
 - Les [dix commandements d'une base de données réussie](https://thinkr.fr/base-de-donnees-reussie/). Il s'agit ici plutôt de la création d'une base de données que de la requête sur une base de données existante... mais tôt ou tard, vous créerez vos propres bases de données et ces conseils vous seront alors utiles.
+
+##### A vous de jouer ! {-}
+
+- Réalisez la suite du projet spécifique et dédié uniquement au module 07. Ce module couvre la matière entière du module 7. 
+
+```{block2, type='bdd'}
+Suite à la lecture de l’AFC, completez ce projet individuel pour appliquer vos nouvelles connaissances.
+
+La dernière version du README est disponible via le lien suivant\ :
+  
+- <https://github.com/BioDataScience-Course/sdd2_module07>
+
+*Ce projet doit être terminé à la fin de ce module*
+```
