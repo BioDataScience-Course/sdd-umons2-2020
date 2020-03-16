@@ -20,4 +20,23 @@ L'analyse factorielle multiple (AFM) se nomme *principal component analysis* (PC
 
 ## Open Data & Open Science
 
+### Qu'est ce que l'Open Data
+
+### Checklist des données
+
+#### But des données
+#### License des données
+#### Format des données
+#### Qualité des données
+
+##### Pour en savoir plus {-}
+
+- [Qu'est ce que l'Open data ?](https://www.europeandataportal.eu/fr/training/what-open-data). 
+
+- [Aide sur l'interprétation et le choix des licenses](https://www.europeandataportal.eu/en/training/licensing-assistant)
 TODO
+
+- Il existe une multitude de sites qui recense les données qualifiées de Open Data comme le [Portail européen de données](https://www.europeandataportal.eu/fr), [Portail belge de données](https://data.gov.be/fr),...
+
+- Des stockages spécifiques ont été mis en place pour les données scientifiques comme [zenodo (dépot des données hebergé par le CERN)](https://zenodo.org) ou encore [Figshare](https://figshare.com)
+
