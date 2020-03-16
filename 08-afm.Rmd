@@ -17,3 +17,7 @@ TODO
 ## Analyse factorielle multiple (AFM)
 
 L'analyse factorielle multiple (AFM) se nomme *principal component analysis* (PCA) en anglais. 
+
+## Open Data & Open Science
+
+TODO

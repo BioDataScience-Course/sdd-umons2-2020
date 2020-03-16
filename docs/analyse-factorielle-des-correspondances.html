@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-03-12">
+<meta name="date" content="2020-03-16">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -271,6 +271,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 <li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM</a><ul>
 <li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a></li>
+<li class="chapter" data-level="8.2" data-path="open-data-open-science.html"><a href="open-data-open-science.html"><i class="fa fa-check"></i><b>8.2</b> Open Data &amp; Open Science</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="A" data-path="svbox.html"><a href="svbox.html"><i class="fa fa-check"></i><b>A</b> Installation de la SciViews Box</a><ul>
@@ -544,10 +545,10 @@ wg_b_edu</code></pre>
 #         -------- -----                                 
 #  Total: 0.049097 100.0</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">scree</span>(wg_b_edu)</code></pre>
-<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-63-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-62-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Ici, les deux premiers axes cumulent plus de 98% de la variation totale. Nous pouvons donc continuer en toute confiance. Le <strong>biplot</strong> va ici projetter les individus sur la carte (les individus étant en fait les différents niveaux des deux variables, obtenus après réalisation de deux ACP, l’une sur les colonnes et l’autre sur les lignes). Les deux groupes sont représentés par des couleurs différentes, mais sur une même carte. C’erst la fonction <code>chart$biplot()</code> qui réalise ce graphique.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">biplot</span>(wg_b_edu, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
-<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-64-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-63-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>L’interprétation se fait d’abord sur les points d’une couleur (niveau de la première variable), puis sur ceux de l’autre (niveaux de la seconde variable), et enfin, conjointement. Voici ce que cela donne ici :</p>
 <ul>
 <li><p>Les niveaux d’éducation en rouge sont globalement représentés essentiellement de gauche à droite dans un ordre croissant de “études primaires” jusqu’à “études universitaires de 2<sup>éme</sup> cycle ou plus”.</p></li>
@@ -567,7 +568,7 @@ skimr<span class="op">::</span><span class="kw">skim</span>(mite)</code></pre>
 #  n obs: 70 
 #  n variables: 35 
 # 
-# ── Variable type:integer ───────────────────────────────────────────────────────────────────────
+# ── Variable type:integer ────────────────────────────────────────────────────────────────────────────────────
 #  variable missing complete  n  mean    sd p0  p25  p50   p75 p100     hist
 #    Brachy       0       70 70  8.73 10.08  0 3     4.5 11.75   42 ▇▂▁▂▁▁▁▁
 #  Ceratoz1       0       70 70  1.29  1.46  0 0     1    2       5 ▇▆▁▃▁▁▁▁
@@ -628,7 +629,7 @@ skimr<span class="op">::</span><span class="kw">skim</span>(mite)</code></pre>
 <span class="st">  </span><span class="kw">chart</span>(., n <span class="op">~</span><span class="st"> </span>species) <span class="op">+</span>
 <span class="st">    </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">coord_flip</span>()</code></pre>
-<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-67-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-66-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Aïe ! Nous avons ici une magnifique valeur extrême, ainsi que des différences trop nettes entre les espèces les plus abondantes et les plus rares. Nous devons y remédier avant de faire notre AFC. Deux solutions sont possibles :</p>
 <ol style="list-style-type: decimal">
 <li>Soit nous dégradons l’information vers du semi-quantitatif en définissant des niveaux d’abondance, du genre 0, 1-10, 10-20, 20-30, 31+. Nous pouvons réaliser cela avec la fonction <code>cut()</code> illustrée ici sur un exemple fictif.</li>
@@ -649,14 +650,14 @@ skimr<span class="op">::</span><span class="kw">skim</span>(mite)</code></pre>
 <span class="st">  </span><span class="kw">gather</span>(., <span class="dt">key =</span> <span class="st">&quot;species&quot;</span>, <span class="dt">value =</span> <span class="st">&quot;log_n_1&quot;</span>) <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(., log_n_<span class="dv">1</span> <span class="op">~</span><span class="st"> </span>species) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>()</code></pre>
-<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-70-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-69-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>A noter que ce type de graphique ne convient pas pour les données semi-quantitatives ou qualitatives. Nous pouvons réaliser le graphique suivant à la place dans ce cas pour visualiser la distribution des espèces dans les différentes stations (qui fonctionne aussi en quantitatif) :</p>
 <pre class="sourceCode r"><code class="sourceCode r">mite2 <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">gather</span>(., <span class="dt">key =</span> <span class="st">&quot;species&quot;</span>, <span class="dt">value =</span> <span class="st">&quot;n&quot;</span>) <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">station =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(mite), <span class="kw">ncol</span>(mite))) <span class="op">%&gt;.%</span>
 <span class="st">  </span><span class="kw">chart</span>(., species <span class="op">~</span><span class="st"> </span>station <span class="op">%fill=%</span><span class="st"> </span>n) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_raster</span>()</code></pre>
-<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-71-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-70-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Maintenant que nos données sont vérifiées, nettoyées (phase de préparation), et décrites correctement (phase descriptive), nous pouvons réaliser notre AFC et explorer les particularités de ce jeu de données en vue d’une étude plus approfondie ultérieure (phase exploratoire). L’utilisation de <code>ca()</code> sur un tableau de type contingence à double entrée déjà prêt est ultra-simple. Il suffit de fournir le tableau en question comme seul argument à la fonction.</p>
 <pre class="sourceCode r"><code class="sourceCode r">mite2_ca &lt;-<span class="st"> </span><span class="kw">ca</span>(mite2)</code></pre>
 <p>Examinons la variabilité sur les différents axes, numériquement et à l’aide du graphe des éboulis :</p>
@@ -702,14 +703,14 @@ skimr<span class="op">::</span><span class="kw">skim</span>(mite)</code></pre>
 #         -------- -----                                 
 #  Total: 1.163821 100.0</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">scree</span>(mite2_ca, <span class="dt">fill =</span> <span class="st">&quot;cornsilk&quot;</span>)</code></pre>
-<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-74-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-73-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>La variabilité décroit rapidement sur les deux premiers axes, et ensuite plus lentement. Les deux premières dimensions ne capturent qu’environ 43% de la variabilité totale. Toutefois, la variation moins brutale par après justifie de ne garder que deux axes. Malgré la représentativité relativement faible dans ce plan, nous verrons que l’AFC reste interprétable et peut fournir des informations utiles, même dans ce cas. Voici la carte (biplot) :</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">biplot</span>(mite2_ca, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
-<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-75-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-74-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Nous observons une forme en fer à cheval de la distribution des points. Attention ! Ceci est un artéfact lié au fait que la distance du Chi<sup>2</sup> a tendance à rapprocher les extrêmes (“qui se ressemblent dans la différence”, en quelque sorte) alors que notre souhait aurait plutôt été de les placer aux extrémités du graphique. Il faut donc analyser les données comme une transition progressive d’un état A vers un état B le long de la forme en fer à cheval.</p>
 <p>Lorsqu’il y a beaucoup de points, ce graphique tend à être très encombré et illisible. L’argument <code>repel = TRUE</code> vient parfois aider en allant placer les labels de telle façon qu’ils se chevauchent le moins possible. Par contre, la forme du nuage de point est du coup un peu moins visible.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">biplot</span>(mite2_ca, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">repel =</span> <span class="ot">TRUE</span>)</code></pre>
-<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-76-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="07-acp-afc_files/figure-html/unnamed-chunk-75-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Nous vous laissons le soin d’effectuer l’analyse complète des points bleus (stations) entre eux, ensuite les points rouges (espèces) entre eux et enfin, conjointement. Notez les stations 44, 59, 65 et 67 qui se détachent et qui sont caractérisées par des espèces qu’on trouve préférentiellement là-bas : <code>Trhypch1</code> et <code>Trimalc2</code>. Les espèces et station proches du centre d’inertie, au contraire, ne montrent aucune particularité.</p>
 </div>
 <div id="principe-de-lafc" class="section level3">
@@ -730,18 +731,14 @@ skimr<span class="op">::</span><span class="kw">skim</span>(mite)</code></pre>
 <li><p>Une <a href="http://www.sthda.com/french/articles/38-methodes-des-composantes-principales-dans-r-guide-pratique/74-afc-analyse-factorielle-des-correspondances-avec-r-l-essentiel/">autre explication</a> qui utilise les packages <code>FactoMineR</code> et <code>factoextra</code> et qui va plus loin dans les concepts (notamment la qualité de la représentation des points via leur “cos<sup>2</sup>”, les différents types de biplots, et l’ajout de données supplémentaires).</p></li>
 </ul>
 </div>
-<div id="a-vous-de-jouer-21" class="section level5 unnumbered">
+<div id="a-vous-de-jouer-20" class="section level5 unnumbered">
 <h5>A vous de jouer !</h5>
 <ul>
-<li>Réalisez la suite du projet spécifique et dédié uniquement au module 07. Ce module couvre la matière entière du module 7.</li>
+<li>Réalisez le début du projet spécifique lié au module 7. Ce module couvre la matière entière du module 7.</li>
 </ul>
 
 <div class="bdd">
-<p>Suite à la lecture de l’AFC, completez ce projet individuel pour appliquer vos nouvelles connaissances.</p>
-<p>La dernière version du README est disponible via le lien suivant :</p>
-<ul>
-<li><a href="https://github.com/BioDataScience-Course/sdd2_module07" class="uri">https://github.com/BioDataScience-Course/sdd2_module07</a></li>
-</ul>
+<p><strong>Le lien pour réaliser ce projet se trouve en début du module 7</strong></p>
 <em>Ce projet doit être terminé à la fin de ce module</em>
 </div>
 
@@ -750,12 +747,14 @@ skimr<span class="op">::</span><span class="kw">skim</span>(mite)</code></pre>
 </ul>
 
 <div class="bdd">
-<p>Completez votre projet. Lisez attentivement le README.</p>
+<p>Complétez votre projet. Lisez attentivement le README.</p>
 <p>La dernière version du README est disponible via le lien suivant :</p>
 <ul>
-<li><a href="https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea" class="uri">https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea</a>
-</div></li>
+<li><a href="https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea/blob/master/README.md" class="uri">https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea/blob/master/README.md</a></li>
 </ul>
+<em>Le README est un rappel des consignes, il ne s’agit aucunement du lien pour débuter le travail</em>
+</div>
+
 </div>
 </div>
 </div>
