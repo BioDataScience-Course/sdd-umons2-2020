@@ -1,19 +1,264 @@
-# AFM {#afm}
+# AFM, biodiversité et Open Data {#afm}
 
 
 
 
 ##### Objectifs {-}
 
-- TODO
+- Être capable d'analyser des données présentes dans des tableaux multiples et/ou hétérogènes simultanément à l'aide de l'analyse factorielle multiple
+
+- Comprendre et pouvoir utiliser en pratique les principaux indices de biodiversité
+
+- Se sensibiliser à l'"Open Data"\ : quand et pourquoi rendre ses données ouvertes\ ? Comment le faire correctement (format, métadonnées, dictionnaire des données, licences, principe FAIR, DMP, ...)
+
 
 ##### Prérequis {-}
 
-TODO
+- Les modules 5, 6 et 7 doivent être assimilés avant d'attaquer le présent module.
+
 
 ## Analyse factorielle multiple (AFM)
 
-L'analyse factorielle multiple (AFM) se nomme *principal component analysis* (PCA) en anglais. 
+Jusqu'ici nous avons étudié différentes techniques pour explorer des données multivariées *soit* quantitatives (ACP), *soit* qualitatives (AFC). Nous n'avons pas abordé encore la question de données *mixtes* avec des tableaux qui contiennent *à la fois* des variables quantitatives et des données qualitatives.
+
+Une première approche consiste à convertir des variables afin d'homogénéiser le tableau. La conversion ne peut se faire qu'en dégradant l'information, soit dans le sens quantitatif continu -> quantitatif discret -> qualitatif ordonné -> qualitatif non ordonné -> binaire. Ainsi, dans un tableau contenant quelques variables quantitives, nous pouvons créer des classes pour convertir les variables quantitatives en qualitatives. C'est par exemple ce que nous faisons quand nous remplaçons les indices de masse corporelle IMC dans nos données de biométrie humaine (quantitatif) en classes (tableau des classes proposées par l'OMS^[OMS = Organisation Mondiale de la Santé, voir [ici](https://apps.who.int/bmi/index.jsp?introPage=intro_3.html).]).
+
+| IMC [kg/m^2^]   | Classification OMS |
+|:---------------:|:------------------ |
+| < 16,5          | sous-poids sévère  |
+| 16 - 17         | sous-poids modéré  |
+| 17 - 18,5       | sous-poids léger   |
+| 18.5 - 25       | normal             |
+| 25 - 30         | préobésité         |
+| 30 - 35         | obésité classe I   |
+| 35 - 40         | obésité classe II  |
+| > 40            | obésité classe III |
+
+A l'extrême, il est toujours possible d'encoder n'importe quelle variable sous forme binaire. C'est ce qu'on appelle le **codage disjonctif complet** (voir, par exemple, [ici](https://mtes-mct.github.io/parcours-r/m4/lacm.html)). Cette approche a non seulement l'avantage de transformer des variables différentes en 0 ou 1 dans un tableau homogène, mais permet aussi de comparer plus de deux variables qualitatives selon une extension de l'AFC dit **Analyse en Composantes Multiples** ou ACM que nous ne verrons pas dans ce cours mais qu'il est important de mentionner pour mémo ici^[Si vous êtes intéressé par l'ACM et le codage disjonctif complet, voyez [cette vidéo](https://www.youtube.com/watch?v=bihScz3OXbw).].
+
+L'analyse factorielle multiple (AFM) se nomme *multiple factorial analysis* (MFA) en anglais. 
+
+
+## Indices de biodiversité 
+
+Au premier abord, la notion de biodiversité et quelque chose de simple. Elle représente toute la variété des formes de la vie des gènes jusqu’à l'écosystème. Cependant réduire toute cette richesse à un seul chiffre n'est pas quelque chose d’évident. Les scientifiques vont donc avoir recours à ce que l’on appelle des **indices de diversité** pour tenter de la quantifier. Ces indices sont des paramètres qui sont fréquemment utilisés pour obtenir des informations sur l’état de la végétation, sa viabilité ou son évolution dans le temps par exemple. Ils permettront également d’apprécier la diversité qui peut exister entre des zones ou des milieux différents. Le choix d’un indice dépendra de la taille de l’échantillon, du type de données et de la résolution spatiale. Dès lors, il existe différentes expressions de la diversité : 
+
+- la **diversité alpha** ($\alpha$) ou diversité locale, entre les différents relevés à l’intérieur d’une zone (diversité intrazone)
+- la **diversité bêta** ($\beta$) : diversité de relevé entre des zones différentes (diversité interzone)
+- la **diversité gamma** ($\gamma$) qui représente la richesse spécifique globale
+
+### Diversité ($\alpha$)
+
+#### Richesse spécifique
+
+Le premier indice et le plus simple à calculer correspond à la **richesse spécifique** (S) et représente le nombre d’espèce que compte une communauté sans tenir compte de l’abondance relative de chacune des espèces. Vous pouvez l’obtenir très facilement avec la fonction `specnumber()`du package `vegan`.
+
+Le jeu de donnée BCI contient les valeurs de dénombrement obtenues suite au recensement des arbres sur 50 parcelles de 1 hectare sur l’île de Barro Colorado (BCI : Barro Colorado Island). Le nombre total d’espèces recensée sur les 50 parcelles est de 225. Prenons, un sous-ensemble de 5 parcelles de ce jeu de données et cherchons à identifier la richesse spécifique pour chacune d’entre-elles. 
+
+
+
+```r
+SciViews::R
+
+library(vegan)
+```
+
+```
+# Loading required package: permute
+```
+
+```
+# This is vegan 2.5-4
+```
+
+```
+# 
+# Attaching package: 'vegan'
+```
+
+```
+# The following object is masked from 'package:SciViews':
+# 
+#     scores
+```
+
+```r
+data("BCI")
+
+set.seed(2003)
+sample_n(BCI, 5) -> BCI_sub
+# Visualisation partielle des données
+BCI_sub[,1:10]
+```
+
+```
+#   Abarema.macradenia Vachellia.melanoceras Acalypha.diversifolia
+# 1                  0                     0                     0
+# 2                  0                     0                     0
+# 3                  0                     0                     0
+# 4                  0                     0                     0
+# 5                  0                     0                     0
+#   Acalypha.macrostachya Adelia.triloba Aegiphila.panamensis
+# 1                     0              2                    0
+# 2                     0              0                    0
+# 3                     0              1                    1
+# 4                     0              0                    0
+# 5                     0              0                    1
+#   Alchornea.costaricensis Alchornea.latifolia Alibertia.edulis
+# 1                       1                   0                0
+# 2                      10                   0                0
+# 3                       3                   0                0
+# 4                       1                   0                0
+# 5                       1                   0                0
+#   Allophylus.psilospermus
+# 1                       1
+# 2                       0
+# 3                       2
+# 4                       0
+# 5                       1
+```
+
+```r
+# Calcul de la Richesse spécifique pour chacunes des parcelles
+specnumber(BCI_sub)
+```
+
+```
+# [1] 102  87  84  84 109
+```
+
+Comme on peut le voir, cet indice permet de connaitre le nombre d’espèce présent sur chaque parcelle. Mais est-ce que chaque espèce est présente de manière équitable ? Ou est-ce que certaines espèces sont plus abondante que d’autres ? Cet indice ne tient pas compte de cette abondance dans son calcul et ne permet donc pas de répondre à ces questions. 
+
+#### Indice de Shannon 
+
+Par contre, l’**indice de Shannon** ou de Shannon-Weaver peut nous aider à répondre à cette question. Cet indice, introduit en écologie comme une mesure de la stabilité des communautés, prend en compte lors de son calcul la richesse et l’abondance relative des espèces contrairement à la richesse spécifique. La formule mathématique de l’indice de Shannon est la suivante :  
+
+$$H = - \sum_{i=1}^S p_i \ log_b\ p_i$$
+où : 
+- $p_i$ représente l'abondance proportionnelle de l'espèce et est compris entre 0 et 1 : $p_i = \frac{n_i}{N}$
+- $S$ est la richesse spécifique
+- $b$ la base du logarithme
+- $n_i$ est le nombre d'individus d'une espèce dans l'échantillon 
+- $N$ est le nombre total d'individu de toutes les espèces dans l'échantillon : $N = \sum_{i=1}^S n_i$
+
+L’indice H de Shannon varie donc en fonction du nombre d’espèce et de la proportion relative du recouvrement de ces différentes espèces. H vaudra 0 quand l’échantillon ne contient qu’une seule espèce et augmente lorsque le nombre d’espèce grandit. Plus l’indice H est élevé, plus la diversité est grande. H sera maximal et vaudra $log_b S$ quand toutes les espèces sont également représentées. 
+
+Pour calculer l’indice de Shannon avec R, vous pouvez utiliser la fonction `diversity()`du package `vegan`. Celle-ci demande comme argument :
+
+- x : des données sur une communauté sous la forme d’un vecteur ou d’une matrice
+- index : le choix d’un indice de biodiversité
+- base : la base du logarithme lors du calcul de l’indice de Shannon. Par défaut, la fonction utilise le logarithme népérien. 
+
+
+```r
+H <- diversity(x = BCI_sub, index = "shannon")
+H
+```
+
+```
+# [1] 3.920918 3.859814 3.698414 3.848471 4.013094
+```
+
+#### Indice d’équitabilité de Piélou
+
+L’indice de Shannon est rarement utilisé seul. Il est souvent accompagné de l’**indice d’équitabilité de Piélou** qui permet de mesurer la répartition des individus au sein des espèce. Il s’agit là d’un paramètre plus rigoureux et très utile pour comparer des dominances potentielles entre sites puisqu’il est indépendant de la richesse spécifique. Il traduit donc le degré de diversité qui est atteint par un peuplement et se calcul comme suit :
+
+$$J = \frac{H}{H_{max}}$$
+
+où: 
+- $H$ correspond à l'indice de Shannon 
+- $H_{max}$ correspond à la valeur de la diversité théorique maximale ($log_b\ S$)
+- $S$ est la richesse spécifique
+
+La valeur de l'indice d’équitabilité de Piélou (J) varie donc entre 0 et 1 où 0 correspond à la dominance d’une des espèces et 1 à l’équirépartition des individus entre les différentes espèces. 
+
+Il n'existe pas de fonction pour calculer cette indice dans R mais on peut le calculer facilement à partir de l'indice de Shannon que l'on vient de calculer et avec la fonction `specnumber()` pour connaitre la richesse spécifique.  
+
+
+```r
+S <- specnumber(BCI_sub)
+S
+```
+
+```
+# [1] 102  87  84  84 109
+```
+
+```r
+J <- H/ln(S)
+J 
+```
+
+```
+# [1] 0.8477709 0.8642843 0.8347024 0.8685692 0.8554245
+```
+
+Il est important de noter que ces deux indices restent dépendants de la taille des échantillons et sont sensibles aux espèces rares
+
+
+#### Indice de Simpson
+
+Il existe plusieurs indices permettant d’évaluer la biodiversité parmi lesquels on retrouve l’**indice de Simpson**. Cet indice aussi appelé indice de dominance mesure la probabilité que deux individus tirés au hasard à partir d’un échantillon appartiennent à la même espèce. Avec cet indice, on donne plus de poids aux espèces abondantes par rapport aux espèces rares. Dès lors, l’ajout d’une espèce rare à un échantillon ne modifiera pratiquement pas la valeur de l’indice de diversité. 
+
+$$D = \sum_{i=1}^S p_i^2$$
+
+où : 
+
+- $p_i$ représente l'abondance proportionnelle de l'espèce et est compris entre 0 et 1 : $p_i = \frac{n_i}{N}$
+- $S$ est la richesse spécifique
+
+Sous cette forme, l’indice est inversement proportionnel à la diversité. La formulation suivante a donc été proposée pour que l’indice soit directement représentatif de la diversité. 
+
+$$E = 1 - \sum_{i=1}^S p_i^2$$ 
+
+L’indice de Simpson varie dans l’intervalle $[0 ;1[. Cet indice tend donc vers 0 lorsque la diversité est minimal et vers $1 - \frac{1}{S}$ lorsque la diversité est maximale. Il vaudra donc 0 si une seule espèce est présente et donc une probabilité de $p_i = 1$ et $1 - \frac{1}{S}$ si les différentes espèces présentes ont la même probabilité $p_i = \frac{1}{S}$. 
+
+Le calcul de cet indice dans R se fait aussi avec la fonction `diversity()`en spécifiant « simpson » à l’argument `index =`. 
+
+
+```r
+E <- diversity(x = BCI_sub, index = "simpson")
+E
+```
+
+```
+# [1] 0.9672083 0.9658398 0.9550599 0.9683393 0.9655820
+```
+
+### Diversité $\beta$
+
+La diversité $\beta$ traduit la diversité inter-formation. Pour identifier le degré de similarité, d’association entre des groupes ou la diversité de différenciation des espèces entre différents habitas, on utilise les coefficient ou indice de similarité ou de similitude. Le choix adéquat d’un indice de similarité, n’est pas évident et la question à se poser est de savoir si le fait qu’une espèce soit absente ou non contribue à augmenter la dissimilarité. Il existe plusieurs indices de similarité qui s’appliquent sur des données de présence-absence comme l’**indice de Jaccard** que nous allons vous présenter ici. 
+
+Cet indice permet une comparaison entre 2 sites car il évalue la ressemblance en calculant le rapport entre les espèces communes aux deux sites et celles propre à chaque relevé. La formule est la suivante :
+
+$$I = \frac{N_c}{N_1 + N2 – N_c}$$
+
+Où : 
+
+- $N_c$ correspond au nombre de taxon commun entre les 2 sites
+- $N_1$ et $N_2$ le nombre de taxons présents sur le site 1 et 2, respectivement
+
+Les valeurs de l’indice varient entre 0 lorsque les deux sites n’ont aucune espèce en commun, et 1 quand les deux sites ont toutes leurs espèce en commun. Dès lors plus la valeur est proches de 1, plus les sites sont similaire. 
+
+Dans R, l’indice qui est calculé avec la fonction `vegdist()` est un indice de dissimilarité. L’indice de similarité est complémentaire à l’indice de dissimilarité et se calcule comme suit : 
+
+$$ similarité = 1 – dissimilarité$$
+
+Regardons comment colculer l'indice de jaccard pour nos 5 parcelles avec R :
+
+
+```r
+1 - vegdist(BCI_sub, method = "jaccard", binary = TRUE)
+```
+
+```
+#           1         2         3         4
+# 2 0.4765625                              
+# 3 0.5000000 0.4869565                    
+# 4 0.4418605 0.6132075 0.4867257          
+# 5 0.5629630 0.5193798 0.5196850 0.5078125
+```
+
 
 ## Open Data
 

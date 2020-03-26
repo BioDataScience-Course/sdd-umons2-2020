@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-03-17">
+<meta name="date" content="2020-03-26">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -269,11 +269,15 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="7.3.6" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-dplyr"><i class="fa fa-check"></i><b>7.3.6</b> Utilisation de dplyr</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM</a><ul>
+<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM, biodiversité et Open Data</a><ul>
 <li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a></li>
-<li class="chapter" data-level="8.2" data-path="open-data.html"><a href="open-data.html"><i class="fa fa-check"></i><b>8.2</b> Open Data</a><ul>
-<li class="chapter" data-level="8.2.1" data-path="open-data.html"><a href="open-data.html#gestion-des-donnees"><i class="fa fa-check"></i><b>8.2.1</b> Gestion des données</a></li>
-<li class="chapter" data-level="8.2.2" data-path="open-data.html"><a href="open-data.html#utilisation-de-donnees-ouvertes-open-data"><i class="fa fa-check"></i><b>8.2.2</b> Utilisation de données ouvertes (<em>Open Data</em>)</a></li>
+<li class="chapter" data-level="8.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html"><i class="fa fa-check"></i><b>8.2</b> Indices de biodiversité</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-alpha"><i class="fa fa-check"></i><b>8.2.1</b> Diversité (<span class="math inline">\(\alpha\)</span>)</a></li>
+<li class="chapter" data-level="8.2.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-beta"><i class="fa fa-check"></i><b>8.2.2</b> Diversité <span class="math inline">\(\beta\)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="open-data.html"><a href="open-data.html"><i class="fa fa-check"></i><b>8.3</b> Open Data</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="open-data.html"><a href="open-data.html#gestion-des-donnees"><i class="fa fa-check"></i><b>8.3.1</b> Gestion des données</a></li>
+<li class="chapter" data-level="8.3.2" data-path="open-data.html"><a href="open-data.html#utilisation-de-donnees-ouvertes-open-data"><i class="fa fa-check"></i><b>8.3.2</b> Utilisation de données ouvertes (<em>Open Data</em>)</a></li>
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
@@ -416,7 +420,7 @@ con &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(<span class=
 <p>Voici quelques instructions typiques pour interroger cette base de données depuis R :</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Liste les tables présentes dans la base de données</span>
 <span class="kw">dbListTables</span>(con)</code></pre>
-<pre><code># [1] &quot;iris&quot;   &quot;mtcars&quot;</code></pre>
+<pre><code># [1] &quot;iris&quot;       &quot;mtcars&quot;     &quot;versicolor&quot;</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Extraction de données à l&#39;aide d&#39;une requête SQL</span>
 (setosa &lt;-<span class="st"> </span><span class="kw">dbGetQuery</span>(con, <span class="st">&quot;SELECT * FROM iris WHERE Species is &#39;setosa&#39;&quot;</span>))</code></pre>
 <pre><code>#    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
@@ -612,7 +616,7 @@ con &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(odbc<span cl
 my_db &lt;-<span class="st"> </span><span class="kw">src_sqlite</span>(dbfile) <span class="co"># Utiliser create = TRUE pour la créer</span>
 my_db</code></pre>
 <pre><code># src:  sqlite 3.22.0 [/media/sf_shared/database.sqlite]
-# tbls: iris, mtcars</code></pre>
+# tbls: iris, mtcars, versicolor</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">my_table &lt;-<span class="st"> </span><span class="kw">tbl</span>(my_db, <span class="kw">sql</span>(<span class="st">&quot;SELECT * FROM iris&quot;</span>))
 (df2 &lt;-<span class="st"> </span><span class="kw">collect</span>(my_table))</code></pre>
 <pre><code># # A tibble: 150 x 5
@@ -719,7 +723,7 @@ my_db</code></pre>
 # 10    9         Copy  1  4  0           00      NA
 # 11   10    ResultRow  4  1  0           00      NA
 # 12   11         Halt  0  0  0           00      NA
-# 13   12  Transaction  0  0  2         0 01      NA
+# 13   12  Transaction  0  0 45         0 01      NA
 # 14   13         Goto  0  1  0           00      NA</code></pre>
 <p>Il est possible de réaliser des choses plus complexes ! On peut naturellement chainer tout cela avec le pipe <code>%&gt;.%</code>, ou combiner les requêtes comme on veut. Rien n’est fait avant de <code>collect()</code>er les résultats.</p>
 <pre class="sourceCode r"><code class="sourceCode r">my_table <span class="op">%&gt;.%</span>

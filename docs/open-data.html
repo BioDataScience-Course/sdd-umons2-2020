@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>8.2 Open Data | Science des données biologiques 2</title>
+  <title>8.3 Open Data | Science des données biologiques 2</title>
   <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="8.2 Open Data | Science des données biologiques 2" />
+  <meta property="og:title" content="8.3 Open Data | Science des données biologiques 2" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
   <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="8.2 Open Data | Science des données biologiques 2" />
+  <meta name="twitter:title" content="8.3 Open Data | Science des données biologiques 2" />
   
   <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
   <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
@@ -25,14 +25,14 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-03-17">
+<meta name="date" content="2020-03-26">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="analyse-factorielle-multiple-afm.html">
+<link rel="prev" href="indices-de-biodiversite.html">
 <link rel="next" href="svbox.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -61,6 +61,72 @@
 <script src="libs/rglWebGL-binding-0.100.19/rglWebGL.js"></script>
 
 
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -203,11 +269,15 @@
 <li class="chapter" data-level="7.3.6" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-dplyr"><i class="fa fa-check"></i><b>7.3.6</b> Utilisation de dplyr</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM</a><ul>
+<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM, biodiversité et Open Data</a><ul>
 <li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a></li>
-<li class="chapter" data-level="8.2" data-path="open-data.html"><a href="open-data.html"><i class="fa fa-check"></i><b>8.2</b> Open Data</a><ul>
-<li class="chapter" data-level="8.2.1" data-path="open-data.html"><a href="open-data.html#gestion-des-donnees"><i class="fa fa-check"></i><b>8.2.1</b> Gestion des données</a></li>
-<li class="chapter" data-level="8.2.2" data-path="open-data.html"><a href="open-data.html#utilisation-de-donnees-ouvertes-open-data"><i class="fa fa-check"></i><b>8.2.2</b> Utilisation de données ouvertes (<em>Open Data</em>)</a></li>
+<li class="chapter" data-level="8.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html"><i class="fa fa-check"></i><b>8.2</b> Indices de biodiversité</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-alpha"><i class="fa fa-check"></i><b>8.2.1</b> Diversité (<span class="math inline">\(\alpha\)</span>)</a></li>
+<li class="chapter" data-level="8.2.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-beta"><i class="fa fa-check"></i><b>8.2.2</b> Diversité <span class="math inline">\(\beta\)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="open-data.html"><a href="open-data.html"><i class="fa fa-check"></i><b>8.3</b> Open Data</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="open-data.html"><a href="open-data.html#gestion-des-donnees"><i class="fa fa-check"></i><b>8.3.1</b> Gestion des données</a></li>
+<li class="chapter" data-level="8.3.2" data-path="open-data.html"><a href="open-data.html#utilisation-de-donnees-ouvertes-open-data"><i class="fa fa-check"></i><b>8.3.2</b> Utilisation de données ouvertes (<em>Open Data</em>)</a></li>
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
@@ -242,12 +312,12 @@
 
             <section class="normal" id="section-">
 <div id="open-data" class="section level2">
-<h2><span class="header-section-number">8.2</span> Open Data</h2>
+<h2><span class="header-section-number">8.3</span> Open Data</h2>
 <div id="gestion-des-donnees" class="section level3">
-<h3><span class="header-section-number">8.2.1</span> Gestion des données</h3>
+<h3><span class="header-section-number">8.3.1</span> Gestion des données</h3>
 <p>Lors de la préparation d’une expérience, vous devez réfléchir à un plan d’expérience. Vous avez donc défini des protocoles d’expérience, le nombre de réplicas,… Vous devez cependant intégrer à votre réflexion, un plan de gestion de vos données. Dans ce plan, vous aurez à définir l’acquisition, la description ou encore le partage des données.</p>
 <div id="principe-fair" class="section level4">
-<h4><span class="header-section-number">8.2.1.1</span> Principe FAIR</h4>
+<h4><span class="header-section-number">8.3.1.1</span> Principe FAIR</h4>
 <p>Pour assurer une gestion cohérente des données scientifiques, il faut respecter le plus possible l’acronyme en anglais <strong>FAIR</strong> : Findable Accessible Interoperable Reusable <span class="citation">(Wilkinson et al. <a href="#ref-Wilkinson2016">2016</a>)</span>.</p>
 <table>
 <colgroup>
@@ -286,7 +356,7 @@
 </tbody>
 </table>
 <div id="facile-a-retrouver-findable" class="section level5">
-<h5><span class="header-section-number">8.2.1.1.1</span> Facile à retrouver (<em>Findable</em>)</h5>
+<h5><span class="header-section-number">8.3.1.1.1</span> Facile à retrouver (<em>Findable</em>)</h5>
 <p>Vos données et vos métadonnées détaillées doivent être facile à retrouver. Vous devez donc fournir un identifiant <strong>unique et permanent</strong>. Il existe de nombreux identifiants comme ISBN, ISSN, DOI,…</p>
 <p>Dans le cadre de la recherche scientifique, Le Digital Object Identifier (<em>DOI</em>) est la méthode standardisée conseillée.</p>
 <p>Vous avez déjà été confronté à des DOI. Par exemple, le DOI suivant <a href="https://doi.org/10.1038/sdata.2016.18" class="uri">https://doi.org/10.1038/sdata.2016.18</a> fait référence à l’article <em>The FAIR Guiding Principles for scientific data management and stewardship</em>. Ce code est unique et persistant. Ce code va toujours renvoyer vers cet article de Scientific Data.</p>
@@ -294,7 +364,7 @@
 <p>Le DOI ne couvre pas que les articles scientifiques, il est également utilisé pour les données. Par exemple, le DOI suivant <a href="https://doi.org/10.5281/zenodo.3711592" class="uri">https://doi.org/10.5281/zenodo.3711592</a> fait référence au données intitulé. <em>Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands</em>. Nous reviendrons dans les sections suivantes sur <a href="https://zenodo.org">zenodo</a>.</p>
 </div>
 <div id="accessible-accessible" class="section level5">
-<h5><span class="header-section-number">8.2.1.1.2</span> Accessible (<em>Accessible</em>)</h5>
+<h5><span class="header-section-number">8.3.1.1.2</span> Accessible (<em>Accessible</em>)</h5>
 <p>Les données et les métadonnées que vous collectez doivent de plus en plus souvent être rendue disponible. Certaines revues scientifiques requierent la mise à disposition des données. Les recherches financées par des fonds publics (nationaux, Européen,…) requierent également la mise à disposition des données.</p>
 <p>Les données ne doivent pas être disponible à tous. Par contre les métadonnées doivent l’être. Il est de plus important de préciser la procédure afin d’obtenir les données.</p>
 <p>Il parait presque logique et évident de mettre à disposition ces données afin d’en faire profiter la recherche académique dans son ensemble. La recherche va progresser plus rapidement si les chercheurs collaborent. Un scientifique seul dans son laboratoire ne peut pas espérer progresser plus rapidement que 20 scientifiques qui collaborent et utilisent les données.</p>
@@ -328,11 +398,11 @@
 <p>Il existe également des licenses plus spécifiques aux bases de données, de la moins contraignante à la plus contraingante <a href="https://opendatacommons.org/licenses/pddl/">PDDL</a> , <a href="https://opendatacommons.org/licenses/by/">ODC-by</a> et <a href="https://opendatacommons.org/licenses/odbl/">ODbL</a></p>
 </div>
 <div id="interoperable-interoperable" class="section level5">
-<h5><span class="header-section-number">8.2.1.1.3</span> Intéropérable (<em>Interoperable</em>)</h5>
+<h5><span class="header-section-number">8.3.1.1.3</span> Intéropérable (<em>Interoperable</em>)</h5>
 <p>Les données sont associées à des métadonnées riches. Sur base des métadonnées, les données doivent être utilisable, compréhensible et combinable avec d’autres données. Ce principe est très compliqué à mettre en place et requiert une réflexion approfondie.</p>
 </div>
 <div id="reutilisable-reusable" class="section level5">
-<h5><span class="header-section-number">8.2.1.1.4</span> Réutilisable (<em>Reusable</em>)</h5>
+<h5><span class="header-section-number">8.3.1.1.4</span> Réutilisable (<em>Reusable</em>)</h5>
 <p>Les données doivent tant que possible être associées à des métadonnées riches avec une licence claire afin de pouvoir être réutilisé.</p>
 <p>Vous avez certainement le sentiment que ces 4 principes se mélangent un peu. En effet, ils insistent avec des petites nuances sur des concepts particuliers.</p>
 <p>En Résumé :</p>
@@ -349,7 +419,7 @@
 </div>
 </div>
 <div id="dmp" class="section level4">
-<h4><span class="header-section-number">8.2.1.2</span> DMP</h4>
+<h4><span class="header-section-number">8.3.1.2</span> DMP</h4>
 <p>Afin de respecter ces principes <strong>FAIR</strong>, des outils ont été développés. Il s’agit des plans de gestion des données (ou Data Management Plan : <strong>DMP</strong>). L’université de Mons dispose d’un <a href="https://dmponline.be">DMP</a>. Cet outil est partagé par l’ensemble des universités de Belgique.</p>
 <p>Lorsque vous allez concevoir un plan d’expérience, n’oubliez pas de concevoir votre plan de gestion des données.</p>
 <p>Voici une checklist pour un plan de gestion des données efficaces <a href="http://www.dcc.ac.uk/sites/default/files/documents/resource/DMP_Checklist_2013.pdf" class="uri">http://www.dcc.ac.uk/sites/default/files/documents/resource/DMP_Checklist_2013.pdf</a></p>
@@ -370,7 +440,7 @@
 </div>
 </div>
 <div id="utilisation-de-donnees-ouvertes-open-data" class="section level3">
-<h3><span class="header-section-number">8.2.2</span> Utilisation de données ouvertes (<em>Open Data</em>)</h3>
+<h3><span class="header-section-number">8.3.2</span> Utilisation de données ouvertes (<em>Open Data</em>)</h3>
 <p>Il existe de nombreux sites qui regroupent un ensemble de données que nous allons appeler <em>Open Data</em>. Nous avons parlé précédement de Zenodo mais de nombreuses bases de données sont égalemement disponible comme comme le <a href="https://www.europeandataportal.eu/fr">Portail européen de données</a>, <a href="https://data.gov.be/fr">Portail belge de données</a>,…</p>
 <p>Afin de connaitre la qualité des données voici une checklist très utile pour appréhender des données ouvertes</p>
 <p>Vous devez être capable de trouver facilement</p>
@@ -456,7 +526,7 @@ s.setAttribute('data-timestamp', +new Date());
           </div>
         </div>
       </div>
-<a href="analyse-factorielle-multiple-afm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="indices-de-biodiversite.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="svbox.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>

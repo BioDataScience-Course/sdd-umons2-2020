@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
 
 
-<meta name="date" content="2020-03-17">
+<meta name="date" content="2020-03-26">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -269,11 +269,15 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="7.3.6" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-dplyr"><i class="fa fa-check"></i><b>7.3.6</b> Utilisation de dplyr</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM</a><ul>
+<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM, biodiversité et Open Data</a><ul>
 <li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a></li>
-<li class="chapter" data-level="8.2" data-path="open-data.html"><a href="open-data.html"><i class="fa fa-check"></i><b>8.2</b> Open Data</a><ul>
-<li class="chapter" data-level="8.2.1" data-path="open-data.html"><a href="open-data.html#gestion-des-donnees"><i class="fa fa-check"></i><b>8.2.1</b> Gestion des données</a></li>
-<li class="chapter" data-level="8.2.2" data-path="open-data.html"><a href="open-data.html#utilisation-de-donnees-ouvertes-open-data"><i class="fa fa-check"></i><b>8.2.2</b> Utilisation de données ouvertes (<em>Open Data</em>)</a></li>
+<li class="chapter" data-level="8.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html"><i class="fa fa-check"></i><b>8.2</b> Indices de biodiversité</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-alpha"><i class="fa fa-check"></i><b>8.2.1</b> Diversité (<span class="math inline">\(\alpha\)</span>)</a></li>
+<li class="chapter" data-level="8.2.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-beta"><i class="fa fa-check"></i><b>8.2.2</b> Diversité <span class="math inline">\(\beta\)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="open-data.html"><a href="open-data.html"><i class="fa fa-check"></i><b>8.3</b> Open Data</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="open-data.html"><a href="open-data.html#gestion-des-donnees"><i class="fa fa-check"></i><b>8.3.1</b> Gestion des données</a></li>
+<li class="chapter" data-level="8.3.2" data-path="open-data.html"><a href="open-data.html#utilisation-de-donnees-ouvertes-open-data"><i class="fa fa-check"></i><b>8.3.2</b> Utilisation de données ouvertes (<em>Open Data</em>)</a></li>
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
@@ -321,7 +325,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <li><p>Rendez votre login invariable dans le temps. Par exemple, n’utilisez pas un login lié à votre université (numéro de matricule, ou nom de l’université inclue dans le login). Si tout va bien votre login vous suivra dans votre carrière, … donc, potentiellement loin de l’université où vous avez fait vos études.</p></li>
 <li><p>N’utilisez pas de logins qui sont aussi des mots ayant une signification particulière en programmation, par exemple, n’utilisez pas <code>NA</code>, même si c’est vos initiales !</p></li>
 </ul>
-<p>Une fois votre compte Github créé, et votre login/email pour votre identification Git correctement enregistrés dans la SciViews Box, vous devez pouvoir travailler, faire des “pushs”, des “pulls” et des “commits”<a href="#fn21" class="footnote-ref" id="fnref21"><sup>21</sup></a>. Cependant, RStudio vous demandera constamment vos logins et mots de passe… à la longue, c’est lassant ! La procédure ci-dessous vous enregistre une fois pour toutes sur votre compte Github dans RStudio.</p>
+<p>Une fois votre compte Github créé, et votre login/email pour votre identification Git correctement enregistrés dans la SciViews Box, vous devez pouvoir travailler, faire des “pushs”, des “pulls” et des “commits”<a href="#fn22" class="footnote-ref" id="fnref22"><sup>22</sup></a>. Cependant, RStudio vous demandera constamment vos logins et mots de passe… à la longue, c’est lassant ! La procédure ci-dessous vous enregistre une fois pour toutes sur votre compte Github dans RStudio.</p>
 <div id="compte-github-dans-rstudio" class="section level3">
 <h3><span class="header-section-number">A.2.1</span> Compte Github dans RStudio</h3>
 <p>RStudio offre la possibilité d’enregistrer une clé publique/privée dans votre SciViews Box afin de vous enregistrer sur Github de manière permanente. L’avantage, c’est que vous ne devrez plus constamment entrer votre login et mot de passe à chaque opération sur Github ! Nous vous le conseillons donc vivement.</p>
@@ -367,8 +371,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <!-- </div> -->
 <div class="footnotes">
 <hr />
-<ol start="21">
-<li id="fn21"><p>Vérifiez <strong>toujours</strong> lors de votre premier commit que Github vous reconnait bien. Pour cela, naviguez vers le dépôt où vous avez commité avec votre explorateur web, et vérifiez l’identité prise en compte lors de votre commit.<a href="configuration-git-et-github.html#fnref21" class="footnote-back">↩</a></p></li>
+<ol start="22">
+<li id="fn22"><p>Vérifiez <strong>toujours</strong> lors de votre premier commit que Github vous reconnait bien. Pour cela, naviguez vers le dépôt où vous avez commité avec votre explorateur web, et vérifiez l’identité prise en compte lors de votre commit.<a href="configuration-git-et-github.html#fnref22" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 <div id="disqus_thread"></div>

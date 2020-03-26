@@ -1,4 +1,4 @@
-# AFM {#afm}
+# AFM, biodiversité et Open Data {#afm}
 
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
 knitr::opts_chunk$set(comment = '#', fig.align = "center")
@@ -8,15 +8,39 @@ SciViews::R
 
 ##### Objectifs {-}
 
-- TODO
+- Être capable d'analyser des données présentes dans des tableaux multiples et/ou hétérogènes simultanément à l'aide de l'analyse factorielle multiple
+
+- Comprendre et pouvoir utiliser en pratique les principaux indices de biodiversité
+
+- Se sensibiliser à l'"Open Data"\ : quand et pourquoi rendre ses données ouvertes\ ? Comment le faire correctement (format, métadonnées, dictionnaire des données, licences, principe FAIR, DMP, ...)
+
 
 ##### Prérequis {-}
 
-TODO
+- Les modules 5, 6 et 7 doivent être assimilés avant d'attaquer le présent module.
+
 
 ## Analyse factorielle multiple (AFM)
 
-L'analyse factorielle multiple (AFM) se nomme *principal component analysis* (PCA) en anglais. 
+Jusqu'ici nous avons étudié différentes techniques pour explorer des données multivariées *soit* quantitatives (ACP), *soit* qualitatives (AFC). Nous n'avons pas abordé encore la question de données *mixtes* avec des tableaux qui contiennent *à la fois* des variables quantitatives et des données qualitatives.
+
+Une première approche consiste à convertir des variables afin d'homogénéiser le tableau. La conversion ne peut se faire qu'en dégradant l'information, soit dans le sens quantitatif continu -> quantitatif discret -> qualitatif ordonné -> qualitatif non ordonné -> binaire. Ainsi, dans un tableau contenant quelques variables quantitives, nous pouvons créer des classes pour convertir les variables quantitatives en qualitatives. C'est par exemple ce que nous faisons quand nous remplaçons les indices de masse corporelle IMC dans nos données de biométrie humaine (quantitatif) en classes (tableau des classes proposées par l'OMS^[OMS = Organisation Mondiale de la Santé, voir [ici](https://apps.who.int/bmi/index.jsp?introPage=intro_3.html).]).
+
+| IMC [kg/m^2^]   | Classification OMS |
+|:---------------:|:------------------ |
+| < 16,5          | sous-poids sévère  |
+| 16 - 17         | sous-poids modéré  |
+| 17 - 18,5       | sous-poids léger   |
+| 18.5 - 25       | normal             |
+| 25 - 30         | préobésité         |
+| 30 - 35         | obésité classe I   |
+| 35 - 40         | obésité classe II  |
+| > 40            | obésité classe III |
+
+A l'extrême, il est toujours possible d'encoder n'importe quelle variable sous forme binaire. C'est ce qu'on appelle le **codage disjonctif complet** (voir, par exemple, [ici](https://mtes-mct.github.io/parcours-r/m4/lacm.html)). Cette approche a non seulement l'avantage de transformer des variables différentes en 0 ou 1 dans un tableau homogène, mais permet aussi de comparer plus de deux variables qualitatives selon une extension de l'AFC dit **Analyse en Composantes Multiples** ou ACM que nous ne verrons pas dans ce cours mais qu'il est important de mentionner pour mémo ici^[Si vous êtes intéressé par l'ACM et le codage disjonctif complet, voyez [cette vidéo](https://www.youtube.com/watch?v=bihScz3OXbw).].
+
+L'analyse factorielle multiple (AFM) se nomme *multiple factorial analysis* (MFA) en anglais. 
+
 
 ## Indices de biodiversité 
 
