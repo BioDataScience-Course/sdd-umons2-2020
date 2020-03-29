@@ -22,10 +22,10 @@
   <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
   <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
 
-<meta name="author" content="Philippe Grosjean &amp; Guyliann Engels">
+<meta name="author" content="Philippe Grosjean &amp; Guyliann Engels (avec des contributions de Raphaël Conotte)">
 
 
-<meta name="date" content="2020-03-26">
+<meta name="date" content="2020-03-29">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -270,10 +270,14 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM, biodiversité et Open Data</a><ul>
-<li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a></li>
+<li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#afm-dans-sciviewsr"><i class="fa fa-check"></i><b>8.1.1</b> AFM dans SciViews::R</a></li>
+<li class="chapter" data-level="8.1.2" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#plancton-en-mediterranee"><i class="fa fa-check"></i><b>8.1.2</b> Plancton en Méditerranée</a></li>
+<li class="chapter" data-level="8.1.3" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#afm-avec-donnees-mixtes"><i class="fa fa-check"></i><b>8.1.3</b> AFM avec données mixtes</a></li>
+</ul></li>
 <li class="chapter" data-level="8.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html"><i class="fa fa-check"></i><b>8.2</b> Indices de biodiversité</a><ul>
-<li class="chapter" data-level="8.2.1" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-alpha"><i class="fa fa-check"></i><b>8.2.1</b> Diversité (<span class="math inline">\(\alpha\)</span>)</a></li>
-<li class="chapter" data-level="8.2.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-beta"><i class="fa fa-check"></i><b>8.2.2</b> Diversité <span class="math inline">\(\beta\)</span></a></li>
+<li class="chapter" data-level="8.2.1" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-alpha"><i class="fa fa-check"></i><b>8.2.1</b> Diversité alpha</a></li>
+<li class="chapter" data-level="8.2.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-beta"><i class="fa fa-check"></i><b>8.2.2</b> Diversité beta</a></li>
 </ul></li>
 <li class="chapter" data-level="8.3" data-path="open-data.html"><a href="open-data.html"><i class="fa fa-check"></i><b>8.3</b> Open Data</a><ul>
 <li class="chapter" data-level="8.3.1" data-path="open-data.html"><a href="open-data.html#gestion-des-donnees"><i class="fa fa-check"></i><b>8.3.1</b> Gestion des données</a></li>
@@ -313,140 +317,157 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="indices-de-biodiversite" class="section level2">
 <h2><span class="header-section-number">8.2</span> Indices de biodiversité</h2>
-<p>Au premier abord, la notion de biodiversité et quelque chose de simple. Elle représente toute la variété des formes de la vie des gènes jusqu’à l’écosystème. Cependant réduire toute cette richesse à un seul chiffre n’est pas quelque chose d’évident. Les scientifiques vont donc avoir recours à ce que l’on appelle des <strong>indices de diversité</strong> pour tenter de la quantifier. Ces indices sont des paramètres qui sont fréquemment utilisés pour obtenir des informations sur l’état de la végétation, sa viabilité ou son évolution dans le temps par exemple. Ils permettront également d’apprécier la diversité qui peut exister entre des zones ou des milieux différents. Le choix d’un indice dépendra de la taille de l’échantillon, du type de données et de la résolution spatiale. Dès lors, il existe différentes expressions de la diversité :</p>
+<p>Au premier abord, la notion de biodiversité est simple. Elle représente toute la variété des formes de la vie des gènes jusqu’à l’écosystème. Cependant réduire toute cette richesse à un seul chiffre n’est pas quelque chose d’évident. Les scientifiques vont donc avoir recours à ce que l’on appelle des <strong>indices de diversité</strong> pour tenter de la quantifier. Ces indices sont des paramètres qui sont fréquemment utilisés pour obtenir des informations sur l’état de communautés végétales ou animales, leur viabilité ou leur évolution dans le temps par exemple. Ils permettront également d’apprécier la diversité qui peut exister entre des zones ou des milieux différents. Le choix d’un indice dépendra de la taille de l’échantillon, du type de données et de la résolution spatiale. Dès lors, il existe différentes expressions de la diversité :</p>
 <ul>
-<li>la <strong>diversité alpha</strong> (<span class="math inline">\(\alpha\)</span>) ou diversité locale, entre les différents relevés à l’intérieur d’une zone (diversité intrazone)</li>
-<li>la <strong>diversité bêta</strong> (<span class="math inline">\(\beta\)</span>) : diversité de relevé entre des zones différentes (diversité interzone)</li>
-<li>la <strong>diversité gamma</strong> (<span class="math inline">\(\gamma\)</span>) qui représente la richesse spécifique globale</li>
+<li>la <strong>diversité alpha</strong> (<span class="math inline">\(\alpha\)</span>) ou diversité locale, entre les différents relevés à l’intérieur d’une zone (diversité intrazone),</li>
+<li>la <strong>diversité bêta</strong> (<span class="math inline">\(\beta\)</span>) : diversité de relevé entre des zones différentes (diversité interzone),</li>
+<li>la <strong>diversité gamma</strong> (<span class="math inline">\(\gamma\)</span>) qui représente la richesse spécifique globale.</li>
 </ul>
 <div id="diversite-alpha" class="section level3">
-<h3><span class="header-section-number">8.2.1</span> Diversité (<span class="math inline">\(\alpha\)</span>)</h3>
+<h3><span class="header-section-number">8.2.1</span> Diversité alpha</h3>
 <div id="richesse-specifique" class="section level4">
 <h4><span class="header-section-number">8.2.1.1</span> Richesse spécifique</h4>
-<p>Le premier indice et le plus simple à calculer correspond à la <strong>richesse spécifique</strong> (S) et représente le nombre d’espèce que compte une communauté sans tenir compte de l’abondance relative de chacune des espèces. Vous pouvez l’obtenir très facilement avec la fonction <code>specnumber()</code>du package <code>vegan</code>.</p>
-<p>Le jeu de donnée BCI contient les valeurs de dénombrement obtenues suite au recensement des arbres sur 50 parcelles de 1 hectare sur l’île de Barro Colorado (BCI : Barro Colorado Island). Le nombre total d’espèces recensée sur les 50 parcelles est de 225. Prenons, un sous-ensemble de 5 parcelles de ce jeu de données et cherchons à identifier la richesse spécifique pour chacune d’entre-elles.</p>
+<p>Le premier indice et le plus simple à calculer correspond à la <strong>richesse spécifique</strong> (S) et représente le nombre d’espèce que compte une communauté sans tenir compte de l’abondance relative de chacune des espèces. Vous pouvez l’obtenir très facilement avec la fonction <code>vegan::specnumber()</code>.</p>
+<p>Le jeu de données <code>BCI</code> du package <code>vegan</code> contient les valeurs de dénombrement obtenues suite au recensement des arbres sur 50 parcelles de 1 hectare sur l’île de Barro Colorado (BCI = Barro Colorado Island). Le nombre total d’espèces recensée sur les 50 parcelles est de 225. Prenons, un sous-ensemble de cinq parcelles de ce jeu de données et cherchons à identifier la richesse spécifique pour chacune d’entre-elles.</p>
 <pre class="sourceCode r"><code class="sourceCode r">SciViews<span class="op">::</span>R
 
-<span class="kw">library</span>(vegan)</code></pre>
-<pre><code># Loading required package: permute</code></pre>
-<pre><code># This is vegan 2.5-4</code></pre>
-<pre><code># 
-# Attaching package: &#39;vegan&#39;</code></pre>
-<pre><code># The following object is masked from &#39;package:SciViews&#39;:
-# 
-#     scores</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;BCI&quot;</span>)
+bci &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="st">&quot;BCI&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;vegan&quot;</span>)
+
+<span class="co">#library(vegan)</span>
+<span class="co">#data(&quot;BCI&quot;)</span>
 
 <span class="kw">set.seed</span>(<span class="dv">2003</span>)
-<span class="kw">sample_n</span>(BCI, <span class="dv">5</span>) -&gt;<span class="st"> </span>BCI_sub
-<span class="co"># Visualisation partielle des données</span>
-BCI_sub[,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</code></pre>
-<pre><code>#   Abarema.macradenia Vachellia.melanoceras Acalypha.diversifolia
-# 1                  0                     0                     0
-# 2                  0                     0                     0
-# 3                  0                     0                     0
-# 4                  0                     0                     0
-# 5                  0                     0                     0
-#   Acalypha.macrostachya Adelia.triloba Aegiphila.panamensis
-# 1                     0              2                    0
-# 2                     0              0                    0
-# 3                     0              1                    1
-# 4                     0              0                    0
-# 5                     0              0                    1
-#   Alchornea.costaricensis Alchornea.latifolia Alibertia.edulis
-# 1                       1                   0                0
-# 2                      10                   0                0
-# 3                       3                   0                0
-# 4                       1                   0                0
-# 5                       1                   0                0
-#   Allophylus.psilospermus
-# 1                       1
-# 2                       0
-# 3                       2
-# 4                       0
-# 5                       1</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Calcul de la Richesse spécifique pour chacunes des parcelles</span>
-<span class="kw">specnumber</span>(BCI_sub)</code></pre>
+bci_sub &lt;-<span class="st"> </span><span class="kw">sample_n</span>(bci, <span class="dv">5</span>) 
+
+<span class="co"># Exploration partielle des données (15 premières espèces)</span>
+skimr<span class="op">::</span><span class="kw">skim</span>(bci_sub[, <span class="dv">1</span><span class="op">:</span><span class="dv">15</span>])</code></pre>
+<pre><code># Skim summary statistics
+#  n obs: 5 
+#  n variables: 15 
+# 
+# ── Variable type:integer ─────────────────────────────────────────────────────────────────────────────────────
+#                 variable missing complete n mean   sd p0 p25 p50 p75 p100
+#       Abarema.macradenia       0        5 5  0   0     0   0   0   0    0
+#    Acalypha.diversifolia       0        5 5  0   0     0   0   0   0    0
+#    Acalypha.macrostachya       0        5 5  0   0     0   0   0   0    0
+#           Adelia.triloba       0        5 5  0.6 0.89  0   0   0   1    2
+#     Aegiphila.panamensis       0        5 5  0.4 0.55  0   0   0   1    1
+#  Alchornea.costaricensis       0        5 5  3.2 3.9   1   1   1   3   10
+#      Alchornea.latifolia       0        5 5  0   0     0   0   0   0    0
+#         Alibertia.edulis       0        5 5  0   0     0   0   0   0    0
+#  Allophylus.psilospermus       0        5 5  0.8 0.84  0   0   1   1    2
+#         Alseis.blackiana       0        5 5 17.8 5.17 13  14  17  19   26
+#        Amaioua.corymbosa       0        5 5  0   0     0   0   0   0    0
+#      Anacardium.excelsum       0        5 5  0.2 0.45  0   0   0   0    1
+#           Andira.inermis       0        5 5  0.6 0.89  0   0   0   1    2
+#          Annona.spraguei       0        5 5  0.4 0.55  0   0   0   1    1
+#    Vachellia.melanoceras       0        5 5  0   0     0   0   0   0    0
+#      hist
+#  ▁▁▁▇▁▁▁▁
+#  ▁▁▁▇▁▁▁▁
+#  ▁▁▁▇▁▁▁▁
+#  ▇▁▁▂▁▁▁▂
+#  ▇▁▁▁▁▁▁▅
+#  ▇▂▁▁▁▁▁▂
+#  ▁▁▁▇▁▁▁▁
+#  ▁▁▁▇▁▁▁▁
+#  ▇▁▁▇▁▁▁▃
+#  ▇▁▃▃▁▁▁▃
+#  ▁▁▁▇▁▁▁▁
+#  ▇▁▁▁▁▁▁▂
+#  ▇▁▁▂▁▁▁▂
+#  ▇▁▁▁▁▁▁▅
+#  ▁▁▁▇▁▁▁▁</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Calcul de la Richesse spécifique pour chacune des parcelles</span>
+vegan<span class="op">::</span><span class="kw">specnumber</span>(bci_sub)</code></pre>
 <pre><code># [1] 102  87  84  84 109</code></pre>
-<p>Comme on peut le voir, cet indice permet de connaitre le nombre d’espèce présent sur chaque parcelle. Mais est-ce que chaque espèce est présente de manière équitable ? Ou est-ce que certaines espèces sont plus abondante que d’autres ? Cet indice ne tient pas compte de cette abondance dans son calcul et ne permet donc pas de répondre à ces questions.</p>
+<p>Comme on peut le voir, cet indice permet de connaitre le nombre d’espèce présent sur chaque parcelle. Mais est-ce que chaque espèce est présente de manière équitable ? Ou est-ce que certaines espèces sont plus abondante que d’autres ? Cet indice ne tient pas compte de cette abondance dans son calcul et ne permet donc pas de répondre à ces questions. Par contre, l’indice de Shannon peut nous aider à répondre à cette question.</p>
 </div>
 <div id="indice-de-shannon" class="section level4">
 <h4><span class="header-section-number">8.2.1.2</span> Indice de Shannon</h4>
-<p>Par contre, l’<strong>indice de Shannon</strong> ou de Shannon-Weaver peut nous aider à répondre à cette question. Cet indice, introduit en écologie comme une mesure de la stabilité des communautés, prend en compte lors de son calcul la richesse et l’abondance relative des espèces contrairement à la richesse spécifique. La formule mathématique de l’indice de Shannon est la suivante :</p>
+<p>L’<strong>indice de Shannon</strong> ou de Shannon-Weaver, introduit en écologie comme une mesure de la stabilité des communautés, prend en compte lors de son calcul la richesse et l’abondance relative des espèces contrairement à la richesse spécifique. La formule mathématique de l’indice de Shannon est la suivante :</p>
 <p><span class="math display">\[H = - \sum_{i=1}^S p_i \ log_b\ p_i\]</span>
-où :
-- <span class="math inline">\(p_i\)</span> représente l’abondance proportionnelle de l’espèce et est compris entre 0 et 1 : <span class="math inline">\(p_i = \frac{n_i}{N}\)</span>
+où :
+- <span class="math inline">\(p_i\)</span> représente l’abondance proportionnelle de l’espèce et est compris entre 0 et 1 : <span class="math inline">\(p_i = \frac{n_i}{N}\)</span>
 - <span class="math inline">\(S\)</span> est la richesse spécifique
 - <span class="math inline">\(b\)</span> la base du logarithme
 - <span class="math inline">\(n_i\)</span> est le nombre d’individus d’une espèce dans l’échantillon
 - <span class="math inline">\(N\)</span> est le nombre total d’individu de toutes les espèces dans l’échantillon : <span class="math inline">\(N = \sum_{i=1}^S n_i\)</span></p>
-<p>L’indice H de Shannon varie donc en fonction du nombre d’espèce et de la proportion relative du recouvrement de ces différentes espèces. H vaudra 0 quand l’échantillon ne contient qu’une seule espèce et augmente lorsque le nombre d’espèce grandit. Plus l’indice H est élevé, plus la diversité est grande. H sera maximal et vaudra <span class="math inline">\(log_b S\)</span> quand toutes les espèces sont également représentées.</p>
-<p>Pour calculer l’indice de Shannon avec R, vous pouvez utiliser la fonction <code>diversity()</code>du package <code>vegan</code>. Celle-ci demande comme argument :</p>
+<p>L’indice H de Shannon varie donc en fonction du nombre d’espèce et de la proportion relative de ces différentes espèces. H vaudra 0 quand l’échantillon ne contient qu’une seule espèce et augmente lorsque le nombre d’espèce augmente. Plus l’indice H est élevé, plus la diversité est grande. H sera maximal et vaudra <span class="math inline">\(log_b S\)</span> quand toutes les espèces sont également représentées.</p>
+<p>Pour calculer l’indice de Shannon avec R, vous pouvez utiliser la fonction <code>vegan::diversity()</code>. Celle-ci demande comme argument :</p>
 <ul>
-<li>x : des données sur une communauté sous la forme d’un vecteur ou d’une matrice</li>
-<li>index : le choix d’un indice de biodiversité</li>
-<li>base : la base du logarithme lors du calcul de l’indice de Shannon. Par défaut, la fonction utilise le logarithme népérien.</li>
+<li>x : des données sur une communauté sous la forme d’un vecteur ou d’une matrice</li>
+<li>index : le choix d’un indice de biodiversité, ici <code>&quot;shannon&quot;</code> (valeur pas défaut, donc, pouvant être omis ici)</li>
+<li>base : la base du logarithme lors du calcul de l’indice de Shannon. Par défaut, la fonction utilise le logarithme népérien.</li>
 </ul>
-<pre class="sourceCode r"><code class="sourceCode r">H &lt;-<span class="st"> </span><span class="kw">diversity</span>(<span class="dt">x =</span> BCI_sub, <span class="dt">index =</span> <span class="st">&quot;shannon&quot;</span>)
-H</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">bci_sub_h &lt;-<span class="st"> </span>vegan<span class="op">::</span><span class="kw">diversity</span>(bci_sub)
+bci_sub_h</code></pre>
 <pre><code># [1] 3.920918 3.859814 3.698414 3.848471 4.013094</code></pre>
 </div>
 <div id="indice-dequitabilite-de-pielou" class="section level4">
 <h4><span class="header-section-number">8.2.1.3</span> Indice d’équitabilité de Piélou</h4>
-<p>L’indice de Shannon est rarement utilisé seul. Il est souvent accompagné de l’<strong>indice d’équitabilité de Piélou</strong> qui permet de mesurer la répartition des individus au sein des espèce. Il s’agit là d’un paramètre plus rigoureux et très utile pour comparer des dominances potentielles entre sites puisqu’il est indépendant de la richesse spécifique. Il traduit donc le degré de diversité qui est atteint par un peuplement et se calcul comme suit :</p>
+<p>L’indice de Shannon est rarement utilisé seul. Il est souvent accompagné de l’<strong>indice d’équitabilité de Piélou</strong> qui permet de mesurer la répartition des individus au sein des espèce. Il s’agit là d’un paramètre plus rigoureux et très utile pour comparer des dominances potentielles entre sites puisqu’il est indépendant de la richesse spécifique. Il traduit donc le degré de diversité qui est atteint par un peuplement et se calcul comme suit :</p>
 <p><span class="math display">\[J = \frac{H}{H_{max}}\]</span></p>
-<p>où:
+<p>où :
 - <span class="math inline">\(H\)</span> correspond à l’indice de Shannon
 - <span class="math inline">\(H_{max}\)</span> correspond à la valeur de la diversité théorique maximale (<span class="math inline">\(log_b\ S\)</span>)
 - <span class="math inline">\(S\)</span> est la richesse spécifique</p>
 <p>La valeur de l’indice d’équitabilité de Piélou (J) varie donc entre 0 et 1 où 0 correspond à la dominance d’une des espèces et 1 à l’équirépartition des individus entre les différentes espèces.</p>
-<p>Il n’existe pas de fonction pour calculer cette indice dans R mais on peut le calculer facilement à partir de l’indice de Shannon que l’on vient de calculer et avec la fonction <code>specnumber()</code> pour connaitre la richesse spécifique.</p>
-<pre class="sourceCode r"><code class="sourceCode r">S &lt;-<span class="st"> </span><span class="kw">specnumber</span>(BCI_sub)
-S</code></pre>
+<p>Il n’existe pas de fonction pour calculer cette indice dans R mais on peut le calculer facilement à partir de l’indice de Shannon que l’on vient de calculer et avec la fonction <code>vegan::specnumber()</code> pour connaitre la richesse spécifique.</p>
+<pre class="sourceCode r"><code class="sourceCode r">bci_sub_s &lt;-<span class="st"> </span>vegan<span class="op">::</span><span class="kw">specnumber</span>(bci_sub)
+bci_sub_s</code></pre>
 <pre><code># [1] 102  87  84  84 109</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">J &lt;-<span class="st"> </span>H<span class="op">/</span><span class="kw">ln</span>(S)
-J </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">bci_sub_j &lt;-<span class="st"> </span>bci_sub_h <span class="op">/</span><span class="st"> </span><span class="kw">ln</span>(bci_sub_s)
+bci_sub_j  </code></pre>
 <pre><code># [1] 0.8477709 0.8642843 0.8347024 0.8685692 0.8554245</code></pre>
-<p>Il est important de noter que ces deux indices restent dépendants de la taille des échantillons et sont sensibles aux espèces rares</p>
+<p>Il est important de noter que ces deux indices restent dépendants de la taille des échantillons et sont sensibles aux espèces rares.</p>
 </div>
 <div id="indice-de-simpson" class="section level4">
 <h4><span class="header-section-number">8.2.1.4</span> Indice de Simpson</h4>
 <p>Il existe plusieurs indices permettant d’évaluer la biodiversité parmi lesquels on retrouve l’<strong>indice de Simpson</strong>. Cet indice aussi appelé indice de dominance mesure la probabilité que deux individus tirés au hasard à partir d’un échantillon appartiennent à la même espèce. Avec cet indice, on donne plus de poids aux espèces abondantes par rapport aux espèces rares. Dès lors, l’ajout d’une espèce rare à un échantillon ne modifiera pratiquement pas la valeur de l’indice de diversité.</p>
 <p><span class="math display">\[D = \sum_{i=1}^S p_i^2\]</span></p>
-<p>où :</p>
+<p>où :</p>
 <ul>
-<li><span class="math inline">\(p_i\)</span> représente l’abondance proportionnelle de l’espèce et est compris entre 0 et 1 : <span class="math inline">\(p_i = \frac{n_i}{N}\)</span></li>
+<li><span class="math inline">\(p_i\)</span> représente l’abondance proportionnelle de l’espèce et est compris entre 0 et 1 : <span class="math inline">\(p_i = \frac{n_i}{N}\)</span></li>
 <li><span class="math inline">\(S\)</span> est la richesse spécifique</li>
 </ul>
 <p>Sous cette forme, l’indice est inversement proportionnel à la diversité. La formulation suivante a donc été proposée pour que l’indice soit directement représentatif de la diversité.</p>
 <p><span class="math display">\[E = 1 - \sum_{i=1}^S p_i^2\]</span></p>
-<p>L’indice de Simpson varie dans l’intervalle $[0 ;1[. Cet indice tend donc vers 0 lorsque la diversité est minimal et vers <span class="math inline">\(1 - \frac{1}{S}\)</span> lorsque la diversité est maximale. Il vaudra donc 0 si une seule espèce est présente et donc une probabilité de <span class="math inline">\(p_i = 1\)</span> et <span class="math inline">\(1 - \frac{1}{S}\)</span> si les différentes espèces présentes ont la même probabilité <span class="math inline">\(p_i = \frac{1}{S}\)</span>.</p>
-<p>Le calcul de cet indice dans R se fait aussi avec la fonction <code>diversity()</code>en spécifiant « simpson » à l’argument <code>index =</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">E &lt;-<span class="st"> </span><span class="kw">diversity</span>(<span class="dt">x =</span> BCI_sub, <span class="dt">index =</span> <span class="st">&quot;simpson&quot;</span>)
-E</code></pre>
+<p>L’indice de Simpson varie dans l’intervalle <span class="math inline">\([0,1[\)</span>. Cet indice tend donc vers 0 lorsque la diversité est minimale et vers <span class="math inline">\(1 - \frac{1}{S}\)</span> lorsque la diversité est maximale. Il vaudra donc 0 si une seule espèce est présente et donc une probabilité de <span class="math inline">\(p_i = 1\)</span> et <span class="math inline">\(1 - \frac{1}{S}\)</span> si les différentes espèces présentes ont la même probabilité <span class="math inline">\(p_i = \frac{1}{S}\)</span>.</p>
+<p>Le calcul de cet indice dans R se fait aussi avec la fonction <code>vegan::diversity(, index = &quot;simpson&quot;)</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">bci_sub_e &lt;-<span class="st"> </span>vegan<span class="op">::</span><span class="kw">diversity</span>(bci_sub, <span class="dt">index =</span> <span class="st">&quot;simpson&quot;</span>)
+bci_sub_e</code></pre>
 <pre><code># [1] 0.9672083 0.9658398 0.9550599 0.9683393 0.9655820</code></pre>
 </div>
 </div>
 <div id="diversite-beta" class="section level3">
-<h3><span class="header-section-number">8.2.2</span> Diversité <span class="math inline">\(\beta\)</span></h3>
-<p>La diversité <span class="math inline">\(\beta\)</span> traduit la diversité inter-formation. Pour identifier le degré de similarité, d’association entre des groupes ou la diversité de différenciation des espèces entre différents habitas, on utilise les coefficient ou indice de similarité ou de similitude. Le choix adéquat d’un indice de similarité, n’est pas évident et la question à se poser est de savoir si le fait qu’une espèce soit absente ou non contribue à augmenter la dissimilarité. Il existe plusieurs indices de similarité qui s’appliquent sur des données de présence-absence comme l’<strong>indice de Jaccard</strong> que nous allons vous présenter ici.</p>
-<p>Cet indice permet une comparaison entre 2 sites car il évalue la ressemblance en calculant le rapport entre les espèces communes aux deux sites et celles propre à chaque relevé. La formule est la suivante :</p>
+<h3><span class="header-section-number">8.2.2</span> Diversité beta</h3>
+<p>La diversité <span class="math inline">\(\beta\)</span> traduit la diversité inter-formation. Pour identifier le degré de similarité, d’association entre des groupes ou la diversité de différenciation des espèces entre différents habitats, on utilise les coefficient ou indice de similarité ou de similitude. Le choix adéquat d’un indice de similarité, n’est pas évident et la question à se poser est de savoir si le fait qu’une espèce soit absente ou non contribue à augmenter la dissimilarité. Il existe plusieurs indices de similarité qui s’appliquent sur des données de présence-absence comme l’<strong>indice de Jaccard</strong> que nous allons vous présenter ici.</p>
+<p>Cet indice permet une comparaison entre deux sites car il évalue la ressemblance en calculant le rapport entre les espèces communes aux deux sites et celles propre à chaque relevé. La formule est la suivante :</p>
 <p><span class="math display">\[I = \frac{N_c}{N_1 + N2 – N_c}\]</span></p>
-<p>Où :</p>
+<p>où :</p>
 <ul>
-<li><span class="math inline">\(N_c\)</span> correspond au nombre de taxon commun entre les 2 sites</li>
+<li><span class="math inline">\(N_c\)</span> correspond au nombre de taxon commun entre les deux sites</li>
 <li><span class="math inline">\(N_1\)</span> et <span class="math inline">\(N_2\)</span> le nombre de taxons présents sur le site 1 et 2, respectivement</li>
 </ul>
 <p>Les valeurs de l’indice varient entre 0 lorsque les deux sites n’ont aucune espèce en commun, et 1 quand les deux sites ont toutes leurs espèce en commun. Dès lors plus la valeur est proches de 1, plus les sites sont similaire.</p>
-<p>Dans R, l’indice qui est calculé avec la fonction <code>vegdist()</code> est un indice de dissimilarité. L’indice de similarité est complémentaire à l’indice de dissimilarité et se calcule comme suit :</p>
+<p>Dans R, l’indice qui est calculé avec la fonction <code>vegan::vegdist()</code> est un indice de dissimilarité. L’indice de similarité est complémentaire à l’indice de dissimilarité et se calcule comme suit :</p>
 <p><span class="math display">\[ similarité = 1 – dissimilarité\]</span></p>
-<p>Regardons comment colculer l’indice de jaccard pour nos 5 parcelles avec R :</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">vegdist</span>(BCI_sub, <span class="dt">method =</span> <span class="st">&quot;jaccard&quot;</span>, <span class="dt">binary =</span> <span class="ot">TRUE</span>)</code></pre>
+<p>Regardons comment colculer l’indice de Jaccard pour nos cinq parcelles avec R :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="dv">1</span> <span class="op">-</span><span class="st"> </span>vegan<span class="op">::</span><span class="kw">vegdist</span>(bci_sub, <span class="dt">method =</span> <span class="st">&quot;jaccard&quot;</span>, <span class="dt">binary =</span> <span class="ot">TRUE</span>)</code></pre>
 <pre><code>#           1         2         3         4
 # 2 0.4765625                              
 # 3 0.5000000 0.4869565                    
 # 4 0.4418605 0.6132075 0.4867257          
 # 5 0.5629630 0.5193798 0.5196850 0.5078125</code></pre>
+<div id="pour-en-savoir-plus-8" class="section level5 unnumbered">
+<h5>Pour en savoir plus</h5>
+<ul>
+<li><p><a href="https://cran.r-project.org/web/packages/vegan/vignettes/diversity-vegan.pdf">L’introduction des indices de diversité</a> dans <code>vegan</code> par son auteur (en anglais),</p></li>
+<li><p>Un <a href="https://www.ecofog.gf/fr/enseignement/fth2010/Cours/4-Biodiversite/Mesures%20de%20la%20biodiversité.pdf">document très détaillé décrivant les différents indices de diversité</a> en français,</p></li>
+<li><p><a href="https://www.springer.com/gp/book/9781441979766">Numerical Ecology with R</a> traite en détail de nombreuses méthodes multivarées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).</p></li>
+</ul>
+</div>
 </div>
 </div>
 <div id="disqus_thread"></div>

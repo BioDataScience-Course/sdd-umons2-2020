@@ -1,6 +1,6 @@
 --- 
 title: "Science des données biologiques 2"
-author: "Philippe Grosjean & Guyliann Engels"
+author: "Philippe Grosjean & Guyliann Engels (avec des contributions de Raphaël Conotte)"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output:
