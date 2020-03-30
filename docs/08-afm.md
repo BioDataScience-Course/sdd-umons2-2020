@@ -45,6 +45,7 @@ L'AFM n'est pas encore intégrée dans `SciViews::R`. Le code suivant permet de 
 
 
 ```r
+# Code mfa() version 2
 SciViews::R()
 
 mfa <- function(data, formula, nd = 5, suprow = NA, ..., graph = FALSE) {
@@ -150,6 +151,7 @@ get_groups <- function(x) {
       x$suppl <- c(FALSE, x$suppl)
     # We need the group indices for the supplementary variables instead
     x$suppl <- (1:length(x$groups))[x$suppl]
+    if (!length(x$suppl)) x$suppl <- NULL
     # Fix names
     def_names <- paste("group", 1:length(x$groups), sep = ".")
     names <- x$names
@@ -645,7 +647,7 @@ skimr::skim(bci_sub[, 1:15])
 #  n obs: 5 
 #  n variables: 15 
 # 
-# ── Variable type:integer ─────────────────────────────────────────────────────────────────────────────────────
+# ── Variable type:integer ──────────────────────────────────────────────────────────────────────
 #                 variable missing complete n mean   sd p0 p25 p50 p75 p100
 #       Abarema.macradenia       0        5 5  0   0     0   0   0   0    0
 #    Acalypha.diversifolia       0        5 5  0   0     0   0   0   0    0

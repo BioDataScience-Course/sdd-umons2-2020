@@ -47,6 +47,7 @@ L'analyse factorielle multiple (AFM, *multiple factorial analysis* ou MFA en ang
 L'AFM n'est pas encore intégrée dans `SciViews::R`. Le code suivant permet de réaliser notre analyse via l'interface habituelle, soit `mfa(data = ...., formula)` pour construire l'analyse (calculs en internes basés sur `FactoMineR::MFA()`), et ensuite nous utiliserons `summary()` et `chart$type()` pour les graphiques, où type pourra être "screeplot", "altscreeplot", "loadings", "scores", "groups", "axes", "frequences" ou "ellipses" (nous verrons plus loin ce que représentent tous ces graphiques). Vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de vos documents R Markdown/Notebook pour l'utiliser.
 
 ```{r}
+# Code mfa() version 2
 SciViews::R()
 
 mfa <- function(data, formula, nd = 5, suprow = NA, ..., graph = FALSE) {
@@ -152,6 +153,7 @@ get_groups <- function(x) {
       x$suppl <- c(FALSE, x$suppl)
     # We need the group indices for the supplementary variables instead
     x$suppl <- (1:length(x$groups))[x$suppl]
+    if (!length(x$suppl)) x$suppl <- NULL
     # Fix names
     def_names <- paste("group", 1:length(x$groups), sep = ".")
     names <- x$names

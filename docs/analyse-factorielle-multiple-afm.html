@@ -25,7 +25,7 @@
 <meta name="author" content="Philippe Grosjean &amp; Guyliann Engels (avec des contributions de Raphaël Conotte)">
 
 
-<meta name="date" content="2020-03-29">
+<meta name="date" content="2020-03-30">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -366,7 +366,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <div id="afm-dans-sciviewsr" class="section level3">
 <h3><span class="header-section-number">8.1.1</span> AFM dans SciViews::R</h3>
 <p>L’AFM n’est pas encore intégrée dans <code>SciViews::R</code>. Le code suivant permet de réaliser notre analyse via l’interface habituelle, soit <code>mfa(data = ...., formula)</code> pour construire l’analyse (calculs en internes basés sur <code>FactoMineR::MFA()</code>), et ensuite nous utiliserons <code>summary()</code> et <code>chart$type()</code> pour les graphiques, où type pourra être “screeplot”, “altscreeplot”, “loadings”, “scores”, “groups”, “axes”, “frequences” ou “ellipses” (nous verrons plus loin ce que représentent tous ces graphiques). Vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de vos documents R Markdown/Notebook pour l’utiliser.</p>
-<pre class="sourceCode r"><code class="sourceCode r">SciViews<span class="op">::</span><span class="kw">R</span>()
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Code mfa() version 2</span>
+SciViews<span class="op">::</span><span class="kw">R</span>()
 
 mfa &lt;-<span class="st"> </span><span class="cf">function</span>(data, formula, <span class="dt">nd =</span> <span class="dv">5</span>, <span class="dt">suprow =</span> <span class="ot">NA</span>, ..., <span class="dt">graph =</span> <span class="ot">FALSE</span>) {
   <span class="co"># </span><span class="al">TODO</span><span class="co">: rework Call in the final MFA object</span>
@@ -471,6 +472,7 @@ get_groups &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
       x<span class="op">$</span>suppl &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">FALSE</span>, x<span class="op">$</span>suppl)
     <span class="co"># We need the group indices for the supplementary variables instead</span>
     x<span class="op">$</span>suppl &lt;-<span class="st"> </span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(x<span class="op">$</span>groups))[x<span class="op">$</span>suppl]
+    <span class="cf">if</span> (<span class="op">!</span><span class="kw">length</span>(x<span class="op">$</span>suppl)) x<span class="op">$</span>suppl &lt;-<span class="st"> </span><span class="ot">NULL</span>
     <span class="co"># Fix names</span>
     def_names &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;group&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(x<span class="op">$</span>groups), <span class="dt">sep =</span> <span class="st">&quot;.&quot;</span>)
     names &lt;-<span class="st"> </span>x<span class="op">$</span>names
