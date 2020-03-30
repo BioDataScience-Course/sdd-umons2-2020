@@ -19,6 +19,20 @@ SciViews::R
 
 - Les modules 5, 6 et 7 doivent être assimilés avant d'attaquer le présent module.
 
+##### A vous de jouer ! {-}
+
+En lien avec ce module vous avez une série d’exercices à réaliser. Vous avez à :
+
+- Réaliser un projet spécifique et dédié uniquement au module 08. Ce module couvre l'ensemble de la matière du module 08. 
+
+```{block2, type='bdd'}
+Ce projet individuel est accessible via le lien suivant : 
+Suite à la lecture du module, complétez ce projet individuel pour appliquer vos nouvelles connaissances.
+
+- <https://classroom.github.com/a/ytq74RNB>
+
+*Ce projet doit être terminé à la fin de ce module*
+```
 
 ## Analyse factorielle multiple (AFM)
 
@@ -432,6 +446,14 @@ Nous voyons ici que le traitement sous forme ACP ou sous forme AFC (pour le comp
 
 - [Numerical Ecology with R](https://www.springer.com/gp/book/9781441979766) traite en détail de nombreuses méthodes multivarées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).
 
+##### A vous de jouer ! {-}
+
+- Réalisez le début du projet spécifique lié au module 08.  
+
+```{block2, type='bdd'}
+**Le lien pour réaliser ce projet se trouve au début du module**
+*Ce projet doit être terminé à la fin de ce module*
+```
 
 ## Indices de biodiversité 
 
@@ -582,6 +604,27 @@ Regardons comment colculer l'indice de Jaccard pour nos cinq parcelles avec R\ :
 
 - [Numerical Ecology with R](https://www.springer.com/gp/book/9781441979766) traite en détail de nombreuses méthodes multivarées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).
 
+##### A vous de jouer ! {-}
+
+- Réalisez la suite du projet spécifique lié au module 08.  
+
+```{block2, type='bdd'}
+**Le lien pour réaliser ce projet se trouve au début du module**
+*Ce projet doit être terminé à la fin de ce module*
+```
+
+- Complétez votre projet sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour). Il serait intéressant de connaitre la station avec la haute diversité. Comment évolue la diversité le long du transect ? 
+
+```{block2, type='bdd'}
+Complétez votre projet. Lisez attentivement le README.
+
+La dernière version du README est disponible via le lien suivant\ :
+  
+- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea/blob/master/README.md>
+  
+*Le README est un rappel des consignes, il ne s'agit aucunement du lien pour débuter le travail*
+```
+
 
 ## Open Data
 
@@ -695,18 +738,12 @@ Lorsque vous allez concevoir un plan d'expérience, n'oubliez pas de concevoir v
 
 ##### A vous de jouer ! {-}
 
-**Cet exercice va être déplacé dans l'exercice spécifique du module 8**
+- Réalisez la fin  du projet spécifique lié au module 08.  
 
-Suite à la lecture de la section sur la gestion des données avec le principe *FAIR*, rédigez un document de synthèse de maximum deux pages au format PDF qui critique votre plan de gestion des données réalisée dans le cadre des données obtenues sur la biométrie humaine. 
-
-Dans le cadre du cours de science des données biologiques I, vous avez donc dû concevoir un plan d'expérience afin d'acquérir des données. Etant donnée que vous avez été des scientifiques consciencieux, vous avez collecté vos données en y associant des métadonnées. Les données ont été collectée via un document googlesheet dont l’url est le suivant\ :
-
-  - <https://docs.google.com/spreadsheets/d/1UfpZvx1_nd7d10vIMAfGVZ1vWyIuzeiKxPL0jfkNSQM/edit#gid=0>
-  
-Les métadonnées associées aux données ont été recensées dans un document googledoc dont l’url est la suivante\ :
-
-  - <https://docs.google.com/document/d/1lgYD39W7vmVYyS5ea0wEl9ArE1dhuDRkIIBzZ4K6d_o/edit>
-
+```{block2, type='bdd'}
+**Le lien pour réaliser ce projet se trouve au début du module**
+*Ce projet doit être terminé à la fin de ce module*
+```
 
 ### Utilisation de données ouvertes (*Open Data*)
 

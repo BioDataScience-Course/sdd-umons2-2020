@@ -749,7 +749,7 @@ veg_nmds <- mds$nonmetric(veg_dist) # Calcul
 # ... Procrustes: rmse 1.056302e-05  max resid 3.244521e-05 
 # ... Similar to previous best
 # Run 5 stress 0.1256617 
-# ... Procrustes: rmse 6.34123e-06  max resid 1.783762e-05 
+# ... Procrustes: rmse 6.341228e-06  max resid 1.783762e-05 
 # ... Similar to previous best
 # Run 6 stress 0.1256617 
 # ... Procrustes: rmse 1.768348e-05  max resid 4.243365e-05 
