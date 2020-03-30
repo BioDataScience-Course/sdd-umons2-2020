@@ -713,23 +713,23 @@ chart.MFA &lt;-<span class="st"> </span><span class="cf">function</span>(data, <
 # centrale         0.000 -0.002 |</code></pre>
 <p>Ne nous intéressons pour l’instant qu’au tableau <code>Eignenvalues</code> qui reprend les valeurs propres, c’est-à-dire, la part de variance sur les axes de l’ACP globale réalisée. Nous voyons qu’une vairance cumulée de 74% (<code>Cumulative % of var.</code>) est représentée sur les deux premiers axes <code>Dim.1</code> et <code>Dim.2</code>. Le graphe des éboulis nous représente la partition de la variance sur les différents axes comme pour l’ACP :</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">scree</span>(mar_mfa, <span class="dt">fill =</span> <span class="st">&quot;cornsilk&quot;</span>)</code></pre>
-<p><img src="08-afm_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Ici, on voit très clairement que deux axes suffisent. La suite de l’analyse se fait à peu près comme une ACP, mais des données et graphes supplémentaires nous permet d’interpréter les groupes de variables les uns par rapport aux autres. Le graphique des variables s’obtient comme pour l’ACP avec <code>chart$loadings()</code>. Il est ic plus encombré car nous avons 28 variables. La direction des différents vecteurs par rapport aux dimensions de l’AFM et entre eux nous indique la corrélation directe (même sens), inverse (opposition), ou l’absence de corrélation (vecteurs orthogonaux). Ce graphique permet aussi d’orienter le plan de l’AFM pour nos graphiques ultérieurs.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">loadings</span>(mar_mfa, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
-<p><img src="08-afm_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Toutes les variables environnementales sont très bien représentées dans le premier plan de l’AFM (normes quasiment de un). Nous observons une corrélation inverse entre la température (en bas à gauche du premier plan de l’AFM) et la fluorescence (qui pointe en haut à droite du plan). La salinité et la densité sont corrélées positivement entre elles, mais ne le sont pas avec les deux autres variables environnementales. Les salinités et densités élevées sont en bas à droite sur le plan de l’AFM.</p>
 <p>Pour le plancton, nous avons pas mal de choses car plusieurs vecteurs ont une norme importante (nous ignorons les autres, trop mal représentés dans le premier plan de l’AFM). Il faut pointer l’opposition entre des groupes comme GasteropodsLarvae, EchinodermLarvae, Cladocerans et Pteropods qui pointent vers la gauche, et les copépodes (Calanus, Clausocalanus, CopepoditsX, etc.) qui pointent vers la droite. Le découpage selon le second axe pour le plancton est moins net.</p>
 <p>D’autre part, les variables environnementales pour lesquelles deux dimensions fortes se dégagent sont placées en oblique par rapport à la dimension forte du plancton sur Dim 1. cela signifie que les deux dimensions environnementales sont partiellement corrélées avec la présence de ces groupes planctoniques.</p>
 <p>L’AFM est en fait un compromis réalisé entre des analyses indépendantes faites sur chaque groupe. Le graphique suivant montre comment ce compromis a été construit :</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">axes</span>(mar_mfa, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
-<p><img src="08-afm_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Ce graphique est similaire au précédent, si ce n’est qu’au lieu de projetter les variables initiales dans le plan de l’AFM, il projette les composantes principales des différentes ACP séparées dans ce même plan. Il montre comment un <em>compromis</em> entre les différentes ACP est réalisé dans l’AFM globale. Ici, nous voyons que ce compromis est relativement proche de l’ACP plancton (Dim.1 et Dim.2 plancton en vert pointant dans la même direction que les axes de l’AFM). Nous voyons aussi qie les deux premières dimensions de l’ACP environnement (Dim.1 et Dim.2 environnement en rouge) pointent en oblique par rapport à ces mêmes axes. La variable supplémentaire zone est également projettée, mais elle est moins corrélée avec les autres axes (sauf sa Dim. 5 avec l’axe 1).</p>
 <p>Tout comme pour l’ACP, nous pouvons maintenant interpréter le graphique dans l’espace des individus, normalement avec <code>chart$scores()</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">scores</span>(mar_mfa, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
-<p><img src="08-afm_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Cependant, nous pouvons aussi profiter de la variable supplémentaire zone pour colorer les points en fonction des masses d’eaux et représenter des ellipses pour chaque masse d’eau sur le graphique. La variante avec ces ellipses se réalise avec <code>chart$ellipses()</code> et il est plus clair dans pareil cas.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">ellipses</span>(mar_mfa, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">keepvar =</span> <span class="st">&quot;Zone&quot;</span>)</code></pre>
-<p><img src="08-afm_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Les différentes zones sont bien individualisées, à l’exception de :</p>
 <ul>
 <li><p>Certaines stations en bordure de zones (par exemple, la 16 est dans la zone de convergence1 sur le graphique alors qu’elle est libellée comme zone périphérique). La dynamique des masses d’eaux est complexe autour d’une zone frontale comme ici. Il y a des turbulences, et les frontières ne sont toujours très nettes. Ce graphique propose clairement un découpage légèrement différent… intéressant !</p></li>
@@ -745,7 +745,7 @@ chart.MFA &lt;-<span class="st"> </span><span class="cf">function</span>(data, <
 </ul>
 <p>Revenons sur la façon dans l’AFM est construite (le fameux “compromis”), et son interprétation par rapport aux masses d’eaux. Le graphique suivant montre les relations entre les groupes.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">groups</span>(mar_mfa, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
-<p><img src="08-afm_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Ce graphique représente les groupes proches des axes dont ils sont responsables dans la structure générale de l’AFM. Nous voyons ici plancton proche de l’axe 1. Part contre, environnement est bien représenté (car il est loind du centre), mais est entre l’axe 1 et l’axes 2. Nous avons déjà noté cela précédemment.</p>
 <p>La variable supplémentaire zone est aussi représentée à proximité de la structure qui lui correspond le mieux. Nous voyons que zone est plus proche d’environnement, ce qui signifie que les masses d’eau sont plutôt structurées en rapport avec les variables environnementales qu’en rapport avec les communautés planctoniques.</p>
 </div>
@@ -766,22 +766,22 @@ chart.MFA &lt;-<span class="st"> </span><span class="cf">function</span>(data, <
 # comp 6 0.08901514               2.357558                          88.21984</code></pre>
 <p>Ici, les deux premiers axes comptent pour 74,6% de variance cumulée. Le graphe des éboulis confirme que deux axes suffisent :</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">scree</span>(mar_mfa2, <span class="dt">fill =</span> <span class="st">&quot;cornsilk&quot;</span>)</code></pre>
-<p><img src="08-afm_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Le graphique des variables ne montre plus que celles relatives à l’ACP, donc seulement le groupe environnement. Les conclusions à leur sujet sont les mêmes, mais attention, le premier plan de la nouvelle AFM se présente en miroir haut-bas par rapport à notre première analyse<a href="#fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">loadings</span>(mar_mfa2, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
-<p><img src="08-afm_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">axes</span>(mar_mfa2, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
 <p><img src="08-afm_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">axes</span>(mar_mfa2, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Les conclusions sont similaires sur les axes. Voyons maintenant l’espace des individus, toujours avec les couleurs et les ellipses par zones :</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">ellipses</span>(mar_mfa2, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">keepvar =</span> <span class="st">&quot;Zone&quot;</span>)</code></pre>
-<p><img src="08-afm_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Encore une fois ici, le résultat est sensiblement le même (gardez à l’esprit que ce graphique est la visualisation en miroir haut-bas par rapport à l’analyse précédente).</p>
 <p>Les groupes montrent toujours le groupe zone plus proche d’environnement que de plancton.</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">groups</span>(mar_mfa2, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</code></pre>
-<p><img src="08-afm_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>La partie AFC de l’analyse est accessible via <code>chart$frequences()</code> :</p>
 <pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">frequences</span>(mar_mfa2, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
-<p><img src="08-afm_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Ici aussi les quatre classes de plancton EchinodermLarvae, GasteropodsLarvae, Clodocerans et Pteropods s’individualisent à gauche, contre tous les autres à droite. Également les stations proches de Nice se retrouvent à la gauche, et toutes les autres à droite.</p>
 
 <div class="note">
@@ -798,6 +798,18 @@ Nous voyons ici que le traitement sous forme ACP ou sous forme AFC (pour le comp
 <li><p>Un exemple d’<a href="https://link.springer.com/article/10.1186/s13059-017-1362-4">application en biologie avec des données de génomique</a> faisant intervenir une AFM,</p></li>
 <li><p><a href="https://www.springer.com/gp/book/9781441979766">Numerical Ecology with R</a> traite en détail de nombreuses méthodes multivarées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).</p></li>
 </ul>
+</div>
+<div id="a-vous-de-jouer-23" class="section level5 unnumbered">
+<h5>A vous de jouer !</h5>
+<ul>
+<li>Réalisez le début du projet spécifique lié au module 08.</li>
+</ul>
+
+<div class="bdd">
+<strong>Le lien pour réaliser ce projet se trouve au début du module</strong>
+<em>Ce projet doit être terminé à la fin de ce module</em>
+</div>
+
 </div>
 </div>
 </div>

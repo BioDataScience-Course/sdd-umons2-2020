@@ -16,6 +16,18 @@
 
 - Les modules 5, 6 et 7 doivent être assimilés avant d'attaquer le présent module.
 
+##### A vous de jouer ! {-}
+
+En lien avec ce module vous avez une série d’exercices à réaliser. Il vous faut réaliser un projet spécifique et dédié uniquement au module 08.
+
+\BeginKnitrBlock{bdd}<div class="bdd">Ce projet individuel est accessible via le lien suivant\ :
+
+- <https://classroom.github.com/a/ytq74RNB>
+
+Suite à la lecture du module, complétez ce projet individuel pour appliquer vos nouvelles connaissances.
+
+*Ce projet doit être terminé à la fin de ce module*</div>\EndKnitrBlock{bdd}
+
 
 ## Analyse factorielle multiple (AFM)
 
@@ -426,7 +438,7 @@ Ne nous intéressons pour l'instant qu'au tableau `Eignenvalues` qui reprend les
 chart$scree(mar_mfa, fill = "cornsilk")
 ```
 
-<img src="08-afm_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" />
+<img src="08-afm_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" />
 
 Ici, on voit très clairement que deux axes suffisent. La suite de l'analyse se fait à peu près comme une ACP, mais des données et graphes supplémentaires nous permet d'interpréter les groupes de variables les uns par rapport aux autres. Le graphique des variables s'obtient comme pour l'ACP avec `chart$loadings()`. Il est ic plus encombré car nous avons 28 variables. La direction des différents vecteurs par rapport aux dimensions de l'AFM et entre eux nous indique la corrélation directe (même sens), inverse (opposition), ou l'absence de corrélation (vecteurs orthogonaux). Ce graphique permet aussi d'orienter le plan de l'AFM pour nos graphiques ultérieurs.
 
@@ -435,7 +447,7 @@ Ici, on voit très clairement que deux axes suffisent. La suite de l'analyse se 
 chart$loadings(mar_mfa, choices = c(1, 2))
 ```
 
-<img src="08-afm_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" />
+<img src="08-afm_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" />
 
 Toutes les variables environnementales sont très bien représentées dans le premier plan de l'AFM (normes quasiment de un). Nous observons une corrélation inverse entre la température (en bas à gauche du premier plan de l'AFM) et la fluorescence (qui pointe en haut à droite du plan). La salinité et la densité sont corrélées positivement entre elles, mais ne le sont pas avec les deux autres variables environnementales. Les salinités et densités élevées sont en bas à droite sur le plan de l'AFM.
 
@@ -450,7 +462,7 @@ L'AFM est en fait un compromis réalisé entre des analyses indépendantes faite
 chart$axes(mar_mfa, choices = c(1, 2))
 ```
 
-<img src="08-afm_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" />
+<img src="08-afm_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" />
 
 Ce graphique est similaire au précédent, si ce n'est qu'au lieu de projetter les variables initiales dans le plan de l'AFM, il projette les composantes principales des différentes ACP séparées dans ce même plan. Il montre comment un *compromis* entre les différentes ACP est réalisé dans l'AFM globale. Ici, nous voyons que ce compromis est relativement proche de l'ACP plancton (Dim.1 et Dim.2 plancton en vert pointant dans la même direction que les axes de l'AFM). Nous voyons aussi qie les deux premières dimensions de l'ACP environnement (Dim.1 et Dim.2 environnement en rouge) pointent en oblique par rapport à ces mêmes axes. La variable supplémentaire zone est également projettée, mais elle est moins corrélée avec les autres axes (sauf sa Dim. 5 avec l'axe 1). 
 
@@ -461,7 +473,7 @@ Tout comme pour l'ACP, nous pouvons maintenant interpréter le graphique dans l'
 chart$scores(mar_mfa, choices = c(1, 2))
 ```
 
-<img src="08-afm_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" />
+<img src="08-afm_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" />
 
 Cependant, nous pouvons aussi profiter de la variable supplémentaire zone pour colorer les points en fonction des masses d'eaux et représenter des ellipses pour chaque masse d'eau sur le graphique. La variante avec ces ellipses se réalise avec `chart$ellipses()` et il est plus clair dans pareil cas.
 
@@ -470,7 +482,7 @@ Cependant, nous pouvons aussi profiter de la variable supplémentaire zone pour 
 chart$ellipses(mar_mfa, choices = c(1, 2), keepvar = "Zone")
 ```
 
-<img src="08-afm_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" />
+<img src="08-afm_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" />
 
 Les différentes zones sont bien individualisées, à l'exception de\ :
 
@@ -497,7 +509,7 @@ Revenons sur la façon dans l'AFM est construite (le fameux "compromis"), et son
 chart$groups(mar_mfa, choices = c(1, 2))
 ```
 
-<img src="08-afm_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" />
+<img src="08-afm_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" />
 
 Ce graphique représente les groupes proches des axes dont ils sont responsables dans la structure générale de l'AFM. Nous voyons ici plancton proche de l'axe 1. Part contre, environnement est bien représenté (car il est loind du centre), mais est entre l'axe 1 et l'axes 2. Nous avons déjà noté cela précédemment.
 
@@ -540,7 +552,7 @@ Ici, les deux premiers axes comptent pour 74,6% de variance cumulée. Le graphe 
 chart$scree(mar_mfa2, fill = "cornsilk")
 ```
 
-<img src="08-afm_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" />
+<img src="08-afm_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" />
 
 Le graphique des variables ne montre plus que celles relatives à l'ACP, donc seulement le groupe environnement. Les conclusions à leur sujet sont les mêmes, mais attention, le premier plan de la nouvelle AFM se présente en miroir haut-bas par rapport à notre première analyse^[Les ACP sont définies au signe près. or une inversion de signe dans une dimension a pour effet de faire apparaitre les graphiques en miroir.].
 
@@ -549,14 +561,14 @@ Le graphique des variables ne montre plus que celles relatives à l'ACP, donc se
 chart$loadings(mar_mfa2, choices = c(1, 2))
 ```
 
-<img src="08-afm_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" />
+<img src="08-afm_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" />
 
 
 ```r
 chart$axes(mar_mfa2, choices = c(1, 2))
 ```
 
-<img src="08-afm_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" />
+<img src="08-afm_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" />
 
 Les conclusions sont similaires sur les axes. Voyons maintenant l'espace des individus,  toujours avec les couleurs et les ellipses par zones\ :
 
@@ -565,7 +577,7 @@ Les conclusions sont similaires sur les axes. Voyons maintenant l'espace des ind
 chart$ellipses(mar_mfa2, choices = c(1, 2), keepvar = "Zone")
 ```
 
-<img src="08-afm_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" />
+<img src="08-afm_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" />
 
 Encore une fois ici, le résultat est sensiblement le même (gardez à l'esprit que ce graphique est la visualisation en miroir haut-bas par rapport à l'analyse précédente).
 
@@ -576,7 +588,7 @@ Les groupes montrent toujours le groupe zone plus proche d'environnement que de 
 chart$groups(mar_mfa2, choices = c(1,2))
 ```
 
-<img src="08-afm_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" />
+<img src="08-afm_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" />
 
 
 La partie AFC de l'analyse est accessible via `chart$frequences()`\ :
@@ -586,7 +598,7 @@ La partie AFC de l'analyse est accessible via `chart$frequences()`\ :
 chart$frequences(mar_mfa2, choices = c(1, 2))
 ```
 
-<img src="08-afm_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" />
+<img src="08-afm_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" />
 
 Ici aussi les quatre classes de plancton EchinodermLarvae, GasteropodsLarvae, Clodocerans et Pteropods s'individualisent à gauche, contre tous les autres à droite. Également les stations proches de Nice se retrouvent à la gauche, et toutes les autres à droite.
 
@@ -607,6 +619,12 @@ Ici aussi les quatre classes de plancton EchinodermLarvae, GasteropodsLarvae, Cl
 
 - [Numerical Ecology with R](https://www.springer.com/gp/book/9781441979766) traite en détail de nombreuses méthodes multivarées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).
 
+##### A vous de jouer ! {-}
+
+- Réalisez le début du projet spécifique lié au module 08.  
+
+\BeginKnitrBlock{bdd}<div class="bdd">**Le lien pour réaliser ce projet se trouve au début du module**
+*Ce projet doit être terminé à la fin de ce module*</div>\EndKnitrBlock{bdd}
 
 ## Indices de biodiversité 
 
@@ -835,6 +853,23 @@ Regardons comment colculer l'indice de Jaccard pour nos cinq parcelles avec R\ :
 
 - [Numerical Ecology with R](https://www.springer.com/gp/book/9781441979766) traite en détail de nombreuses méthodes multivarées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).
 
+##### A vous de jouer ! {-}
+
+- Réalisez la suite du projet spécifique lié au module 08.  
+
+\BeginKnitrBlock{bdd}<div class="bdd">**Le lien pour réaliser ce projet se trouve au début du module**
+*Ce projet doit être terminé à la fin de ce module*</div>\EndKnitrBlock{bdd}
+
+- Complétez votre projet sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour). Il serait intéressant de connaitre la station avec la haute diversité. Comment évolue la diversité le long du transect ? 
+
+\BeginKnitrBlock{bdd}<div class="bdd">Complétez votre projet. Lisez attentivement le README.
+
+La dernière version du README est disponible via le lien suivant\ :
+  
+- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea/blob/master/README.md>
+  
+*Le README est un rappel des consignes, il ne s'agit aucunement du lien pour débuter le travail*</div>\EndKnitrBlock{bdd}
+
 
 ## Open Data
 
@@ -948,18 +983,10 @@ Lorsque vous allez concevoir un plan d'expérience, n'oubliez pas de concevoir v
 
 ##### A vous de jouer ! {-}
 
-**Cet exercice va être déplacé dans l'exercice spécifique du module 8**
+- Réalisez la fin  du projet spécifique lié au module 08.  
 
-Suite à la lecture de la section sur la gestion des données avec le principe *FAIR*, rédigez un document de synthèse de maximum deux pages au format PDF qui critique votre plan de gestion des données réalisée dans le cadre des données obtenues sur la biométrie humaine. 
-
-Dans le cadre du cours de science des données biologiques I, vous avez donc dû concevoir un plan d'expérience afin d'acquérir des données. Etant donnée que vous avez été des scientifiques consciencieux, vous avez collecté vos données en y associant des métadonnées. Les données ont été collectée via un document googlesheet dont l’url est le suivant\ :
-
-  - <https://docs.google.com/spreadsheets/d/1UfpZvx1_nd7d10vIMAfGVZ1vWyIuzeiKxPL0jfkNSQM/edit#gid=0>
-  
-Les métadonnées associées aux données ont été recensées dans un document googledoc dont l’url est la suivante\ :
-
-  - <https://docs.google.com/document/d/1lgYD39W7vmVYyS5ea0wEl9ArE1dhuDRkIIBzZ4K6d_o/edit>
-
+\BeginKnitrBlock{bdd}<div class="bdd">**Le lien pour réaliser ce projet se trouve au début du module**
+*Ce projet doit être terminé à la fin de ce module*</div>\EndKnitrBlock{bdd}
 
 ### Utilisation de données ouvertes (*Open Data*)
 
