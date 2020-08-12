@@ -718,8 +718,13 @@ Vous avez des snippets à votre disposition pour ces deux fonctions\ :
 
 ```{block2, type='bdd'}
 
-Vous avez à votre disposition la première assignation GitHub Classroom : 
-  
-- <https://classroom.github.com/a/bvqsukEO>
-  
+Vous avez à votre disposition la première assignation GitHub Classroom.
+
+Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
+
+* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/bvqsukEO>
+
+* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [eucalyptus
+](https://github.com/BioDataScience-Course/eucalyptus). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
+
 ```

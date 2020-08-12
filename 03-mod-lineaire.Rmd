@@ -619,11 +619,17 @@ Nous voyons que le résumé de l'objet `glm` est très similaire à celui d'un o
 
 ```{block2, type='bdd'}
 
-Vous avez à votre disposition une assignation GitHub Classroom : 
-  
-- <https://classroom.github.com/a/mXAIu4Ir>
+Vous avez à votre disposition une assignation GitHub Classroom.
 
-Lisez le README afin de prendre connaissance de l'exercice
+Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
+
+* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/mXAIu4Ir>
+
+* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [
+ovocytes
+](https://github.com/BioDataScience-Course/ovocytes). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
+
+Lisez le README afin de prendre connaissance de l'exercice.
 
 ```
 
@@ -631,11 +637,17 @@ Lisez le README afin de prendre connaissance de l'exercice
 
 ```{block2, type='bdd'}
 
-Vous avez à votre disposition une assignation GitHub Classroom : 
-  
-- <https://classroom.github.com/a/hS069etL>
+Vous avez à votre disposition une assignation GitHub Classroom.
 
-Lisez le README afin de prendre connaissance de l'exercice
+Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
+
+* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/hS069etL>
+
+* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [
+human
+](https://github.com/BioDataScience-Course/human). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
+
+Lisez le README afin de prendre connaissance de l'exercice.
 
 ```
 

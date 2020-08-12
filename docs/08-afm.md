@@ -20,11 +20,16 @@
 
 En lien avec ce module vous avez une série d’exercices à réaliser. Il vous faut réaliser un projet spécifique et dédié uniquement au module 08.
 
-\BeginKnitrBlock{bdd}<div class="bdd">Ce projet individuel est accessible via le lien suivant\ :
+\BeginKnitrBlock{bdd}<div class="bdd">
+Vous avez à votre disposition une assignation GitHub Classroom.
 
-- <https://classroom.github.com/a/ytq74RNB>
+Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
 
-Suite à la lecture du module, complétez ce projet individuel pour appliquer vos nouvelles connaissances.
+* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/ytq74RNB>
+
+* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [sdd2_module08](https://github.com/BioDataScience-Course/sdd2_module08). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
+
+Lisez le README afin de prendre connaissance de l'exercice.
 
 *Ce projet doit être terminé à la fin de ce module*</div>\EndKnitrBlock{bdd}
 
@@ -665,7 +670,7 @@ skimr::skim(bci_sub[, 1:15])
 #  n obs: 5 
 #  n variables: 15 
 # 
-# ── Variable type:integer ──────────────────────────────────────────────────────────────────────
+# ── Variable type:integer ───────────────────────────────────────────────────
 #                 variable missing complete n mean   sd p0 p25 p50 p75 p100
 #       Abarema.macradenia       0        5 5  0   0     0   0   0   0    0
 #    Acalypha.diversifolia       0        5 5  0   0     0   0   0   0    0

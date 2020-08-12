@@ -194,10 +194,15 @@ Réalisez une nouvelle assignation individuelle :
 
 ```{block2, type='bdd'}
 
-Vous avez à votre disposition une assignation GitHub Classroom : 
-  
-- <https://classroom.github.com/a/jkh3ruyX>
-  
+Vous avez à votre disposition la première assignation GitHub Classroom.
+
+Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
+
+* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/jkh3ruyX>
+
+* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [anscombe
+](https://github.com/BioDataScience-Course/anscombe). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
+
 ```
 
 ## Régression linéaire multiple 
@@ -511,19 +516,28 @@ N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à
 
 ```{block2, type='bdd'}
 
-Vous avez à votre disposition une assignation GitHub Classroom : 
-  
-- <https://classroom.github.com/a/5hI-HSOv>
-  
+Vous avez à votre disposition une assignation GitHub Classroom.
+
+Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
+
+* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/5hI-HSOv>
+
+* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [urchin
+](https://github.com/BioDataScience-Course/urchin). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
+
 ```
 
 - Réalisez un rapport scientifique sur la croissance des escargots géants d'Afrique.
 
 ```{block2, type='bdd'}
 
-Vous avez à votre disposition une assignation GitHub Classroom : 
-  
-- <https://classroom.github.com/a/_wJZDbNp>
-  
+Vous avez à votre disposition une assignation GitHub Classroom.
+
+Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
+
+* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/_wJZDbNp>
+
+* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [achatina
+](https://github.com/BioDataScience-Course/achatina). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
 ```
 

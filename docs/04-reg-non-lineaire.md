@@ -274,11 +274,17 @@ Au final, l'ajustement d'un modèle non linéaire par les moindres carrés est u
 - Réalisez un rapport scientifique sur la vitesse d'une réaction chimique, en définissant un modèle non linéaire pertinent pour ces données.
 
 \BeginKnitrBlock{bdd}<div class="bdd">
-Vous avez à votre disposition une assignation GitHub Classroom : 
-  
-- <https://classroom.github.com/a/pa48JVSl>
+Vous avez à votre disposition une assignation GitHub Classroom.
 
-Lisez le README afin de prendre connaissance de l'exercice
+Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
+
+* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/pa48JVSl>
+
+* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [
+speed-reaction
+](https://github.com/BioDataScience-Course/speed-reaction). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
+
+Lisez le README afin de prendre connaissance de l'exercice.
 </div>\EndKnitrBlock{bdd}
 
 
@@ -1056,12 +1062,16 @@ Le choix final entre Gompertz ou Weibull dépend de l'usage que l'on veut faire 
 - Réalisez un cahier de laboratoire sur la croissance de bactérie en définissant un modèle non linéaire pertinent pour ces données.
 
 \BeginKnitrBlock{bdd}<div class="bdd">
-Vous avez à votre disposition une assignation GitHub Classroom : 
-  
-- <https://classroom.github.com/a/kSLMNWpw>
+Vous avez à votre disposition une assignation GitHub Classroom.
 
-Lisez le README afin de prendre connaissance de l'exercice
-</div>\EndKnitrBlock{bdd}
+Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
+
+* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/kSLMNWpw>
+
+* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [bacterial_growth
+](https://github.com/BioDataScience-Course/bacterial_growth). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
+
+Lisez le README afin de prendre connaissance de l'exercice.</div>\EndKnitrBlock{bdd}
 
 
 

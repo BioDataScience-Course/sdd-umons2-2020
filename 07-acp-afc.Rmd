@@ -26,11 +26,18 @@ En lien avec ce module vous avez une série d’exercices à réaliser. Vous ave
 - Réaliser un projet spécifique et dédié uniquement au module 07. Ce module couvre l'ensemble de la matière du module 7. 
 
 ```{block2, type='bdd'}
-Ce projet individuel est accessible via le lien suivant : 
-Suite à la lecture de l’AcC, completez ce projet individuel pour appliquer vos nouvelles connaissances.
 
-- <https://classroom.github.com/a/sWXOnhcQ>
+Vous avez à votre disposition une assignation GitHub Classroom.
 
+Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
+
+* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/sWXOnhcQ>
+
+* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [sdd2_module07](https://github.com/BioDataScience-Course/sdd2_module07). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
+
+Lisez le README afin de prendre connaissance de l'exercice.
+  
+  
 *Ce projet doit être terminé à la fin de ce module*
 ```
 

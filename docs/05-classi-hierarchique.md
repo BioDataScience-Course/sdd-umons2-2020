@@ -323,11 +323,16 @@ N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à
 - Réalisez un carnet de note par binôme sur le transect entre Nice et Calvi. Lisez attentivement le README
 
 \BeginKnitrBlock{bdd}<div class="bdd">
-Vous avez à votre disposition une assignation GitHub Classroom : 
-  
-- <https://classroom.github.com/g/R45egn-p>
+Vous avez à votre disposition une assignation GitHub Classroom.
 
-Lisez le README afin de prendre connaissance de l'exercice</div>\EndKnitrBlock{bdd}
+Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
+
+* Cours de Sciences des données II à Mons : <https://classroom.github.com/g/R45egn-p>
+
+* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [spatial_distribution_zooplankton_ligurian_sea](https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
+
+Lisez le README afin de prendre connaissance de l'exercice.
+</div>\EndKnitrBlock{bdd}
 
 
 ## Regroupement avec CAH
