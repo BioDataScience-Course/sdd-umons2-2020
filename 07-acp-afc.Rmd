@@ -1,7 +1,6 @@
 # ACP & AFC {#acp-afc}
 
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
-knitr::opts_chunk$set(comment = '#', fig.align = "center")
 SciViews::R
 ```
 
@@ -1400,12 +1399,12 @@ dbDisconnect(con)
 
 ### Base de données dans un fichier
 
-La SciViews Box contient une base de données test dans `/home/sv/shared/database.sqlite`. Vous pouvez facilement vous connecter dessus via l'onglet `Connections` de RStudio. Vous pouvez également vous y connecter via du code R directement. Notez que la même syntaxe est utilisée pour **créer une nouvelle base de données** si le fichier n'existe pas encore au moment de la connexion.
+La SciViews Box contient une base de données test dans `~/shared/database.sqlite`. Vous pouvez facilement vous connecter dessus via l'onglet `Connections` de RStudio. Vous pouvez également vous y connecter via du code R directement. Notez que la même syntaxe est utilisée pour **créer une nouvelle base de données** si le fichier n'existe pas encore au moment de la connexion.
 
 ```{r connection-sqlite}
 library('RSQLite')
 con <- dbConnect(SQLite(),
-  dbname = "/home/sv/shared/database.sqlite")
+  dbname = "~/shared/database.sqlite")
 ```
 
 Voici quelques instructions typiques pour interroger cette base de données depuis R\ :
@@ -1457,7 +1456,7 @@ Pour créer une nouvelle connection, sélectionnons **SQLite3**. Ensuite, nous r
 
 Le bouton **Test** permet de vérifier que R/RStudio peut se connecter à cette base de données. Ensuite, dans **Connect from:**, vous pouvez choisir où vous voulez placer l'instruction de connexion. L'option `Clipboard` est intéressante. Elle place l'instruction dans le presse-papier et vous pouvez alors décider vous-même où la placer. Nous la placerons dans un chunk R dans notre notebook.
 
-```{r}
+```{r, eval=FALSE}
 library(odbc)
 con <- dbConnect(odbc::odbc(), .connection_string = "Driver={SQLite3};Database=/home/sv/shared/database.sqlite")
 ```
@@ -1492,7 +1491,7 @@ Lancez **DB Browser**. Connectez-vous à `/home/sv/shared/database.sqlite` Vous 
 Les fonctions du package `dplyr` fonctionnent aussi très bien sur des bases de données. Les commandes sont converties en interne en requêtes SQL. Il suffit d'utiliser `collect()` à la fin pour exécuter la requête.
 
 ```{r dplyr1}
-dbfile <- "/home/sv/shared/database.sqlite"
+dbfile <- "~/shared/database.sqlite"
 my_db <- src_sqlite(dbfile) # Utiliser create = TRUE pour la créer
 my_db
 my_table <- tbl(my_db, sql("SELECT * FROM iris"))
@@ -1511,10 +1510,10 @@ arrange(my_table, Petal.Length, desc(Sepal.Width))
 # Créer une nouvelle variables
 mutate(my_table, logPL = log10(Petal.Length))
 # Résumer les données
-explain(summarise(my_table, taille = median(Petal.Length)))
+#explain(summarise(my_table, taille = median(Petal.Length)))
 ```
 
-Il est possible de réaliser des choses plus complexes\ ! On peut naturellement chainer tout cela avec le pipe `%>.%`, ou combiner les requêtes comme on veut. Rien n'est fait avant de `collect()`er les résultats.
+Il est possible de réaliser des choses plus complexes\ ! On peut naturellement chaîner tout cela avec le pipe `%>.%`, ou combiner les requêtes comme on veut. Rien n'est fait avant de `collect()`er les résultats.
 
 ```{r dplyr2}
 my_table %>.%

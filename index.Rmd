@@ -1,35 +1,39 @@
 --- 
-title: "Science des données biologiques 2"
+title: "Science des données biologiques II"
 author: "Philippe Grosjean & Guyliann Engels (avec des contributions de Raphaël Conotte)"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output:
   bookdown::gitbook:
+    info: yes
     includes:
-      after_body: disqus.html
+      in_header: header.html
+      after_body: footer.html
 documentclass: book
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
-github-repo: biodatascience-course/sdd-umons2
-url: 'https\://biodatascience-course.sciviews.org/sdd-umons2/'
-description: "Tutoriel interactif pour la science des données avec R & SciViews-R, partie 2."
+github-repo: 'BioDataScience-Course/sdd-umons2-2020'
+url: 'https\://wp.sciviews.org/sdd-umons2/'
+description: "Tutoriel interactif pour la science des données avec R & SciViews-R II."
 cover-image: "images/front-cover.png"
 ---
 
 # Préambule {-}
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(comment = "#", fig.align = "center")
-# Automatically create a bib database for R packages
 knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'), 'packages.bib')
 ```
 
-Cet ouvrage interactif est le second d'une série de trois ouvrages traitant de la science des données biologiques. L'écriture de cette suite de livres a débuté au cours de l'année académique 2018-2019. 
+`r learndown::diagnose_login(lang = "fr")`
 
-Pour l'année académique 2019-2020, cet ouvrage interactif sera le support du cours suivant :
+Cet ouvrage interactif est le second volume d'une série de trois ouvrages traitant de la science des données biologiques. L'écriture de cette suite de livres a débuté au cours de l'année académique 2018-2019. 
 
-- [Science des données II : Analyse et modélisation, UMONS](http://applications.umons.ac.be/web/fr/pde/2019-2020/ue/US-B3-SCBIOL-006-M.htm) dont le responsable est Grosjean Philippe
+Pour l'année académique 2020-2021, cet ouvrage interactif sera le support des cours suivants\ :
+
+- [Science des données II : analyse et modélisation](http://applications.umons.ac.be/web/fr/pde/2020-2021/ue/US-B3-SCBIOL-006-M.htm) UMONS à Mons dont le responsable est Philippe Grosjean
+
+- [Bio-informatique et science des données II](http://applications.umons.ac.be/web/fr/pde/2020-2021/ue/US-B3-SCBIOL-940-C.htm) UMONS-ULB à Charleroi dont le responsable est Raphaël Conotte
 
 Cet ouvrage est conçu pour être utilisé de manière interactive en ligne. En effet, nous y ajoutons des vidéos, des démonstrations interactives, et des exercices sous forme de questionnaires interactifs également. **Ces différents éléments ne sont, bien évidemment, utilisables qu'en ligne.**
 
@@ -41,12 +45,11 @@ _Le matériel dans cet ouvrage est distribué sous licence [CC BY-NC-SA 4.0](htt
 
 ----
 
-
 ## Vue générale des cours {-}
 
-Le cours de  **Science des données II: analyse et modélisation**  est dispensé aux biologistes de troisième Bachelier en Faculté des Sciences de l'Université de Mons à partir de l'année académique 2019-2020.
+Le cours de  **Science des données II : analyse et modélisation**  est dispensé aux biologistes de troisième Bachelier en Faculté des Sciences de l'Université de Mons à partir de l'année académique 2019-2020.
 
-La matière est divisée en huit modules de 6h chacun en présentiel. Il nécessitera environ un tiers de ce temps (voir plus, en fonction de votre rythme et de votre technique d'apprentissage) en travail à domicile. **Cette matière fait suite au premier cours dont le contenu est considéré comme assimilé (voir https://biodatascience-course.sciviews.org/sdd-umons/).**
+La matière est divisée en huit modules de 6h chacun en présentiel. Il nécessitera environ un tiers de ce temps (voir plus, en fonction de votre rythme et de votre technique d'apprentissage) en travail à domicile. **Cette matière fait suite au premier cours dont le contenu est considéré comme assimilé (voir https://wp.sciviews.org/sdd-umons).**
 
 <!-- A faire: un diagramme qui montre la relation entre ces différents modules, et avec les modules du cours 1 -->
 
@@ -54,10 +57,13 @@ La première moitié du cours est consacrée à la **modélisation**, un domaine
 
 La seconde moitié s'intéressera à l'**exploration des données**, encore appelée **analyse des données** qui vise à découvrir des caractéristiques intéressantes dans des très gros jeux de données. Ces techniques sont d'autant plus utiles que les données volumineuses deviennent de plus en plus courantes en biologie.
 
+Le cours de  **Bio-informatique et science des données II**  est dispensé aux biologistes de troisième Bachelier en Faculté des Sciences de l'Université de Mons et de l'Université Libre de Bruxelles sur le campus de Charleroi à partir de l'année académique 2020-2021.
+
+Ce dernier cours reprends les mêmes 8 modules que le cours de Mons, mais y rajoute 4 modules plus psécifiquement dédiés à la bioinformatique.
 
 ## Matériel pédagogique {-}
 
-Le matériel pédagogique, rassemblé dans ce syllabus interactif est aussi varié que possible. Vous pourrez ainsi piocher dans l'offre en fonction de vos envies et de votre profil d'apprenant pour optimiser votre travail. Vous trouverez:
+Le matériel pédagogique, rassemblé dans ce syllabus interactif est aussi varié que possible. Vous pourrez ainsi piocher dans l'offre en fonction de vos envies et de votre profil d'apprenant pour optimiser votre travail. Vous trouverez\ :
 
 - le présent ouvrage en ligne,
 
@@ -67,15 +73,14 @@ Le matériel pédagogique, rassemblé dans ce syllabus interactif est aussi vari
 
 - des dépôts Github Classroom dans la section `BioDataScience-Course` pour réaliser et documenter vos travaux personnels.
 
-- des renvois vers des documents externes en ligne, types vidéos youtube ou vimeo, des ouvrages en ligne en anglais ou en français, des blogs, des tutoriaux, des parties gratuites de cours Datacamp ou équivalents, des questions sur des sites comme "Stackoverflow" ou issues des "mailing lists" R, ...
+- des renvois vers des documents externes en ligne, types vidéos youtube ou vimeo, des ouvrages en ligne en anglais ou en français, des blogs, des tutoriaux, des questions sur des sites comme "Stackoverflow" ou issues des "mailing lists" R, ...
 
 ```{block, type='info'}
-Tout ce matériel est accessible à partir du [site Web du cours](http://biodatascience-course.sciviews.org), du présent syllabus interactif (et de Moodle pour les étudiants de l'UMONS). Ces derniers ont aussi accès au dossier ` SDD` sur `StudentTemp` en Intranet à l'UMONS. Les aspects pratiques seront à réaliser en utilisant la **'SciViews Box'**, une machine virtuelle préconfigurée. Nous installerons ensemble la nouvelle version de cette SciViews Box au premier cours. Il est donc très important que vous soyez présent à ce cours, et vous pouvez venir aussi si vous le souhaitez avec votre propre ordinateur portable comme pour le cours 1. Enfin, vous pourrez poser vos questions par mail à l'adresse `sdd@sciviews.org`.
+Tout ce matériel est accessible à partir du [site Web du cours](https://wp.sciviews.org), du présent syllabus interactif (et de Moodle pour les étudiants de l'UMONS). Ces derniers ont aussi accès au dossier ` SDD` sur `StudentTemp` en Intranet à l'UMONS. Les aspects pratiques seront à réaliser en utilisant la **'SciViews Box 2020'**, une machine virtuelle préconfigurée. Nous installerons ensemble la nouvelle version 2020 de cette SciViews Box au premier cours. Il est donc très important que vous soyez présent à ce cours, et vous pouvez venir aussi si vous le souhaitez avec votre propre ordinateur portable comme pour le cours 1. Enfin, vous pourrez toujours poser vos questions par mail à l'adresse `sdd@sciviews.org`.
 ```
-
 
 ##### System information {-}
 
-```{r}
+```{r, class.source='hidden-code'}
 sessioninfo::session_info()
 ```

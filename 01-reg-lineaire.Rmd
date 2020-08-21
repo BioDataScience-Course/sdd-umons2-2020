@@ -3,7 +3,6 @@
 # Régression linéaire I {#lm}
 
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE, results='hide'}
-knitr::opts_chunk$set(comment = '#', fig.align = "center")
 SciViews::R
 library(modelr)
 ```
