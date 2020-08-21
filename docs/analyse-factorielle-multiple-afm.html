@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html >
+
 <head>
 
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>8.1 Analyse factorielle multiple (AFM) | Science des données biologiques 2</title>
-  <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
-  <meta name="generator" content="bookdown 0.10 and GitBook 2.6.7" />
+  <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
   <meta property="og:title" content="8.1 Analyse factorielle multiple (AFM) | Science des données biologiques 2" />
   <meta property="og:type" content="book" />
@@ -21,18 +22,18 @@
   <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
   <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
 
-<meta name="author" content="Philippe Grosjean &amp; Guyliann Engels" />
+<meta name="author" content="Philippe Grosjean &amp; Guyliann Engels (avec des contributions de Raphaël Conotte)">
 
 
-<meta name="date" content="2019-09-02" />
+<meta name="date" content="2020-08-12">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
 <link rel="prev" href="afm.html">
-<link rel="next" href="svbox.html">
+<link rel="next" href="indices-de-biodiversite.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -47,6 +48,17 @@
 
 
 
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.8.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.39.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.39.2/plotly-latest.min.js"></script>
+<link href="libs/rglwidgetClass-2/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-2/rglClass.src.js"></script>
+<script src="libs/CanvasMatrix4-2016/CanvasMatrix.src.js"></script>
+<script src="libs/rglWebGL-binding-0.100.19/rglWebGL.js"></script>
 
 
 <style type="text/css">
@@ -135,30 +147,149 @@ code span.wa { color: #bf0303; } /* Warning */
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Préambule</a><ul>
 <li class="chapter" data-level="" data-path="vue-generale-des-cours.html"><a href="vue-generale-des-cours.html"><i class="fa fa-check"></i>Vue générale des cours</a></li>
 <li class="chapter" data-level="" data-path="materiel-pedagogique.html"><a href="materiel-pedagogique.html"><i class="fa fa-check"></i>Matériel pédagogique</a></li>
-<li class="chapter" data-level="" data-path="comment-apprendre.html"><a href="comment-apprendre.html"><i class="fa fa-check"></i>Comment apprendre?</a></li>
-<li class="chapter" data-level="" data-path="evaluation.html"><a href="evaluation.html"><i class="fa fa-check"></i>Evaluation</a></li>
 </ul></li>
-<li class="part"><span><b>I Cours II: analyse et modélisation</b></span></li>
-<li class="chapter" data-level="1" data-path="lm.html"><a href="lm.html"><i class="fa fa-check"></i><b>1</b> Modèle linéaire</a></li>
-<li class="chapter" data-level="2" data-path="glm.html"><a href="glm.html"><i class="fa fa-check"></i><b>2</b> Modèle linéaire généralisé</a></li>
-<li class="chapter" data-level="3" data-path="non-lineaire.html"><a href="non-lineaire.html"><i class="fa fa-check"></i><b>3</b> Modèle non linéaire</a></li>
-<li class="chapter" data-level="4" data-path="robuste-survie.html"><a href="robuste-survie.html"><i class="fa fa-check"></i><b>4</b> Régression robuste/quantile &amp; analyse de survie</a></li>
-<li class="chapter" data-level="5" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>5</b> Classification hiérarchique</a></li>
-<li class="chapter" data-level="6" data-path="k-moyenne-som.html"><a href="k-moyenne-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne &amp; SOM</a><ul>
-<li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a></li>
-<li class="chapter" data-level="6.2" data-path="cartes-auto-adaptatives.html"><a href="cartes-auto-adaptatives.html"><i class="fa fa-check"></i><b>6.2</b> Cartes auto adaptatives</a></li>
+<li class="part"><span><b>I Cours II: modélisation</b></span></li>
+<li class="chapter" data-level="1" data-path="lm.html"><a href="lm.html"><i class="fa fa-check"></i><b>1</b> Régression linéaire I</a><ul>
+<li class="chapter" data-level="1.1" data-path="modele.html"><a href="modele.html"><i class="fa fa-check"></i><b>1.1</b> Modèle</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="modele.html"><a href="modele.html#pourquoi-modeliser"><i class="fa fa-check"></i><b>1.1.1</b> Pourquoi modéliser ?</a></li>
+<li class="chapter" data-level="1.1.2" data-path="modele.html"><a href="modele.html#quand-modeliser"><i class="fa fa-check"></i><b>1.1.2</b> Quand modéliser ?</a></li>
+<li class="chapter" data-level="1.1.3" data-path="modele.html"><a href="modele.html#entrainement-et-confirmation"><i class="fa fa-check"></i><b>1.1.3</b> Entraînement et confirmation</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html"><i class="fa fa-check"></i><b>1.2</b> Régression linéaire simple</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#quantifier-lajustement-dun-modele"><i class="fa fa-check"></i><b>1.2.1</b> Quantifier l’ajustement d’un modèle</a></li>
+<li class="chapter" data-level="1.2.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#trouver-la-meilleure-droite"><i class="fa fa-check"></i><b>1.2.2</b> Trouver la meilleure droite</a></li>
+<li class="chapter" data-level="1.2.3" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#la-fonction-lm"><i class="fa fa-check"></i><b>1.2.3</b> La fonction <code>lm()</code></a></li>
+<li class="chapter" data-level="1.2.4" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#resume-avec-summary"><i class="fa fa-check"></i><b>1.2.4</b> Résumé avec <code>summary()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html"><i class="fa fa-check"></i><b>1.3</b> Outils de diagnostic</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#analyse-des-residus"><i class="fa fa-check"></i><b>1.3.1</b> Analyse des résidus</a></li>
+<li class="chapter" data-level="1.3.2" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#enveloppe-de-confiance"><i class="fa fa-check"></i><b>1.3.2</b> Enveloppe de confiance</a></li>
+<li class="chapter" data-level="1.3.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#extraire-les-donnees-dun-modele"><i class="fa fa-check"></i><b>1.3.3</b> Extraire les données d’un modèle</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="lm2.html"><a href="lm2.html"><i class="fa fa-check"></i><b>2</b> Régression linéaire II</a><ul>
+<li class="chapter" data-level="2.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html"><i class="fa fa-check"></i><b>2.1</b> Outils de diagnostic (suite)</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#resume-avec-summarysuite"><i class="fa fa-check"></i><b>2.1.1</b> Résumé avec <code>summary()</code>(suite)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#comparaison-de-regressions"><i class="fa fa-check"></i><b>2.1.2</b> Comparaison de régressions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="regression-lineaire-multiple.html"><a href="regression-lineaire-multiple.html"><i class="fa fa-check"></i><b>2.2</b> Régression linéaire multiple</a></li>
+<li class="chapter" data-level="2.3" data-path="regression-lineaire-polynomiale.html"><a href="regression-lineaire-polynomiale.html"><i class="fa fa-check"></i><b>2.3</b> Régression linéaire polynomiale</a></li>
+<li class="chapter" data-level="2.4" data-path="rmse-critere-dakaike.html"><a href="rmse-critere-dakaike.html"><i class="fa fa-check"></i><b>2.4</b> RMSE &amp; critère d’Akaike</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="mod-lineaire.html"><a href="mod-lineaire.html"><i class="fa fa-check"></i><b>3</b> Modèle linéaire</a><ul>
+<li class="chapter" data-level="3.1" data-path="variables-numeriques-ou-facteurs.html"><a href="variables-numeriques-ou-facteurs.html"><i class="fa fa-check"></i><b>3.1</b> Variables numériques ou facteurs</a></li>
+<li class="chapter" data-level="3.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html"><i class="fa fa-check"></i><b>3.2</b> ANOVA et régression linéaire</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#modele-lineaire-commun"><i class="fa fa-check"></i><b>3.2.1</b> Modèle linéaire commun</a></li>
+<li class="chapter" data-level="3.2.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#reencodage-des-variables-de-lanova"><i class="fa fa-check"></i><b>3.2.2</b> Réencodage des variables de l’ANOVA</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html"><i class="fa fa-check"></i><b>3.3</b> Matrice de contraste</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#contraste-orthogonaux"><i class="fa fa-check"></i><b>3.3.1</b> Contraste orthogonaux</a></li>
+<li class="chapter" data-level="3.3.2" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#autres-matrices-de-contrastes-courantes"><i class="fa fa-check"></i><b>3.3.2</b> Autres matrices de contrastes courantes</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="ancova.html"><a href="ancova.html"><i class="fa fa-check"></i><b>3.4</b> ANCOVA</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="ancova.html"><a href="ancova.html#bebes-a-la-naissance"><i class="fa fa-check"></i><b>3.4.1</b> Bébés à la naissance</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html"><i class="fa fa-check"></i><b>3.5</b> Modèle linéaire généralisé</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html#exemple"><i class="fa fa-check"></i><b>3.5.1</b> Exemple</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="reg-non-lin.html"><a href="reg-non-lin.html"><i class="fa fa-check"></i><b>4</b> Régression non linéaire</a><ul>
+<li class="chapter" data-level="4.1" data-path="rendement-photosynthetique.html"><a href="rendement-photosynthetique.html"><i class="fa fa-check"></i><b>4.1</b> Rendement photosynthétique</a></li>
+<li class="chapter" data-level="4.2" data-path="principe.html"><a href="principe.html"><i class="fa fa-check"></i><b>4.2</b> Principe</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="principe.html"><a href="principe.html#fonction-objective"><i class="fa fa-check"></i><b>4.2.1</b> Fonction objective</a></li>
+<li class="chapter" data-level="4.2.2" data-path="principe.html"><a href="principe.html#calcul-iteratif"><i class="fa fa-check"></i><b>4.2.2</b> Calcul itératif</a></li>
+<li class="chapter" data-level="4.2.3" data-path="principe.html"><a href="principe.html#pieges-et-difficultes"><i class="fa fa-check"></i><b>4.2.3</b> Pièges et difficultés</a></li>
+<li class="chapter" data-level="4.2.4" data-path="principe.html"><a href="principe.html#modeles-selfstart-dans-r"><i class="fa fa-check"></i><b>4.2.4</b> Modèles ‘selfStart’ dans R</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html"><i class="fa fa-check"></i><b>4.3</b> Modèles courants en biologie</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-michaelis-menten"><i class="fa fa-check"></i><b>4.3.1</b> Modèle de Michaelis-Menten</a></li>
+<li class="chapter" data-level="4.3.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-croissance"><i class="fa fa-check"></i><b>4.3.2</b> Modèles de croissance</a></li>
+<li class="chapter" data-level="4.3.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#courbe-exponentielle"><i class="fa fa-check"></i><b>4.3.3</b> Courbe exponentielle</a></li>
+<li class="chapter" data-level="4.3.4" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#courbe-logistique"><i class="fa fa-check"></i><b>4.3.4</b> Courbe logistique</a></li>
+<li class="chapter" data-level="4.3.5" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-gompertz"><i class="fa fa-check"></i><b>4.3.5</b> Modèle de Gompertz</a></li>
+<li class="chapter" data-level="4.3.6" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-von-bertalanffy"><i class="fa fa-check"></i><b>4.3.6</b> Modèles de von Bertalanffy</a></li>
+<li class="chapter" data-level="4.3.7" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-richards"><i class="fa fa-check"></i><b>4.3.7</b> Modèle de Richards</a></li>
+<li class="chapter" data-level="4.3.8" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-weibull"><i class="fa fa-check"></i><b>4.3.8</b> Modèle de Weibull</a></li>
+<li class="chapter" data-level="4.3.9" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-preece-baines-1"><i class="fa fa-check"></i><b>4.3.9</b> Modèle Preece-Baines 1</a></li>
+<li class="chapter" data-level="4.3.10" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-tanaka"><i class="fa fa-check"></i><b>4.3.10</b> Modèle de Tanaka</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="choix-du-modele.html"><a href="choix-du-modele.html"><i class="fa fa-check"></i><b>4.4</b> Choix du modèle</a></li>
+</ul></li>
+<li class="part"><span><b>II Cours II: analyse</b></span></li>
+<li class="chapter" data-level="5" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>5</b> Classification hiérarchique</a><ul>
+<li class="chapter" data-level="5.1" data-path="analyse-de-donnees.html"><a href="analyse-de-donnees.html"><i class="fa fa-check"></i><b>5.1</b> Analyse de données</a></li>
+<li class="chapter" data-level="5.2" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html"><i class="fa fa-check"></i><b>5.2</b> Distance entre individus</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#matrice-de-distances"><i class="fa fa-check"></i><b>5.2.1</b> Matrice de distances</a></li>
+<li class="chapter" data-level="5.2.2" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#indices-de-dissimilarite"><i class="fa fa-check"></i><b>5.2.2</b> Indices de (dis)similarité</a></li>
+<li class="chapter" data-level="5.2.3" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#utilisation-des-indices"><i class="fa fa-check"></i><b>5.2.3</b> Utilisation des indices</a></li>
+<li class="chapter" data-level="5.2.4" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#proprietes-des-indices"><i class="fa fa-check"></i><b>5.2.4</b> Propriétés des indices</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html"><i class="fa fa-check"></i><b>5.3</b> Regroupement avec CAH</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#dendrogramme"><i class="fa fa-check"></i><b>5.3.1</b> Dendrogramme</a></li>
+<li class="chapter" data-level="5.3.2" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#separer-les-groupes"><i class="fa fa-check"></i><b>5.3.2</b> Séparer les groupes</a></li>
+<li class="chapter" data-level="5.3.3" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#etude-complete"><i class="fa fa-check"></i><b>5.3.3</b> Étude complète</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="k-moyenne-mds-som.html"><a href="k-moyenne-mds-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne, MDS &amp; SOM</a><ul>
+<li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="k-moyennes.html"><a href="k-moyennes.html#exemple-simple"><i class="fa fa-check"></i><b>6.1.1</b> Exemple simple</a></li>
+<li class="chapter" data-level="6.1.2" data-path="k-moyennes.html"><a href="k-moyennes.html#classification-du-zooplancton"><i class="fa fa-check"></i><b>6.1.2</b> Classification du zooplancton</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html"><i class="fa fa-check"></i><b>6.2</b> Positionnement multidimensionnel (MDS)</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-simplifiee-sous-sciviewsr"><i class="fa fa-check"></i><b>6.2.1</b> MDS simplifiée sous SciViews::R</a></li>
+<li class="chapter" data-level="6.2.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-metrique-ou-pcoa"><i class="fa fa-check"></i><b>6.2.2</b> MDS métrique ou PCoA</a></li>
+<li class="chapter" data-level="6.2.3" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-non-metrique"><i class="fa fa-check"></i><b>6.2.3</b> MDS non métrique</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html"><i class="fa fa-check"></i><b>6.3</b> Cartes auto-adaptatives (SOM)</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html#som-sur-le-zooplancton"><i class="fa fa-check"></i><b>6.3.1</b> SOM sur le zooplancton</a></li>
+<li class="chapter" data-level="6.3.2" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html#interpretation-dun-som"><i class="fa fa-check"></i><b>6.3.2</b> Interprétation d’un SOM</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
-<li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a></li>
-<li class="chapter" data-level="7.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>7.2</b> Analyse factorielle des correspondances</a></li>
+<li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#acp-dans-sciviewsr"><i class="fa fa-check"></i><b>7.1.1</b> ACP dans SciViews::R</a></li>
+<li class="chapter" data-level="7.1.2" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#indiens-diabetiques"><i class="fa fa-check"></i><b>7.1.2</b> Indiens diabétiques</a></li>
+<li class="chapter" data-level="7.1.3" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#biometrie-doursin"><i class="fa fa-check"></i><b>7.1.3</b> Biométrie d’oursin</a></li>
+<li class="chapter" data-level="7.1.4" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#visualisation-de-donnees-quantitatives"><i class="fa fa-check"></i><b>7.1.4</b> Visualisation de données quantitatives</a></li>
+<li class="chapter" data-level="7.1.5" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#acp-mecanisme"><i class="fa fa-check"></i><b>7.1.5</b> ACP : mécanisme</a></li>
+<li class="chapter" data-level="7.1.6" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#calcul-matriciel-acp"><i class="fa fa-check"></i><b>7.1.6</b> Calcul matriciel ACP</a></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM</a><ul>
-<li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a></li>
+<li class="chapter" data-level="7.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>7.2</b> Analyse factorielle des correspondances</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#afc-dans-sciviewsr"><i class="fa fa-check"></i><b>7.2.1</b> AFC dans SciViews::R</a></li>
+<li class="chapter" data-level="7.2.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#enquete-sur-la-science"><i class="fa fa-check"></i><b>7.2.2</b> Enquête sur la science</a></li>
+<li class="chapter" data-level="7.2.3" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#des-acariens-sinon-rien"><i class="fa fa-check"></i><b>7.2.3</b> Des acariens sinon rien</a></li>
+<li class="chapter" data-level="7.2.4" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#principe-de-lafc"><i class="fa fa-check"></i><b>7.2.4</b> Principe de l’AFC</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html"><i class="fa fa-check"></i><b>7.3</b> Accès aux bases de données</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#installation-de-sqlite"><i class="fa fa-check"></i><b>7.3.1</b> Installation de SQLite</a></li>
+<li class="chapter" data-level="7.3.2" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#base-de-donnees-en-memoire"><i class="fa fa-check"></i><b>7.3.2</b> Base de données en mémoire</a></li>
+<li class="chapter" data-level="7.3.3" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#base-de-donnees-dans-un-fichier"><i class="fa fa-check"></i><b>7.3.3</b> Base de données dans un fichier</a></li>
+<li class="chapter" data-level="7.3.4" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#driver-odbc-dans-rstudio"><i class="fa fa-check"></i><b>7.3.4</b> Driver ODBC dans RStudio</a></li>
+<li class="chapter" data-level="7.3.5" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-db-browser"><i class="fa fa-check"></i><b>7.3.5</b> Utilisation de DB Browser</a></li>
+<li class="chapter" data-level="7.3.6" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-dplyr"><i class="fa fa-check"></i><b>7.3.6</b> Utilisation de dplyr</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM, biodiversité et Open Data</a><ul>
+<li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#afm-dans-sciviewsr"><i class="fa fa-check"></i><b>8.1.1</b> AFM dans SciViews::R</a></li>
+<li class="chapter" data-level="8.1.2" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#plancton-en-mediterranee"><i class="fa fa-check"></i><b>8.1.2</b> Plancton en Méditerranée</a></li>
+<li class="chapter" data-level="8.1.3" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#afm-avec-donnees-mixtes"><i class="fa fa-check"></i><b>8.1.3</b> AFM avec données mixtes</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html"><i class="fa fa-check"></i><b>8.2</b> Indices de biodiversité</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-alpha"><i class="fa fa-check"></i><b>8.2.1</b> Diversité alpha</a></li>
+<li class="chapter" data-level="8.2.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-beta"><i class="fa fa-check"></i><b>8.2.2</b> Diversité beta</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="open-data.html"><a href="open-data.html"><i class="fa fa-check"></i><b>8.3</b> Open Data</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="open-data.html"><a href="open-data.html#gestion-des-donnees"><i class="fa fa-check"></i><b>8.3.1</b> Gestion des données</a></li>
+<li class="chapter" data-level="8.3.2" data-path="open-data.html"><a href="open-data.html#utilisation-de-donnees-ouvertes-open-data"><i class="fa fa-check"></i><b>8.3.2</b> Utilisation de données ouvertes (<em>Open Data</em>)</a></li>
+</ul></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="A" data-path="svbox.html"><a href="svbox.html"><i class="fa fa-check"></i><b>A</b> Installation de la SciViews Box</a><ul>
 <li class="chapter" data-level="A.1" data-path="migration-des-projets.html"><a href="migration-des-projets.html"><i class="fa fa-check"></i><b>A.1</b> Migration des projets</a></li>
-<li class="chapter" data-level="A.2" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html"><i class="fa fa-check"></i><b>A.2</b> Configuration Git et Github</a></li>
+<li class="chapter" data-level="A.2" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html"><i class="fa fa-check"></i><b>A.2</b> Configuration Git et Github</a><ul>
+<li class="chapter" data-level="A.2.1" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html#compte-github-dans-rstudio"><i class="fa fa-check"></i><b>A.2.1</b> Compte Github dans RStudio</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>Références</a></li>
 <li class="divider"></li>
@@ -186,13 +317,510 @@ code span.wa { color: #bf0303; } /* Warning */
             <section class="normal" id="section-">
 <div id="analyse-factorielle-multiple-afm" class="section level2">
 <h2><span class="header-section-number">8.1</span> Analyse factorielle multiple (AFM)</h2>
-<p>L’analyse factorielle multiple (AFM) se nomme <em>principal component analysis</em> (PCA) en anglais.</p>
+<p>Jusqu’ici nous avons étudié différentes techniques pour explorer des données multivariées <em>soit</em> quantitatives (ACP), <em>soit</em> qualitatives (AFC). Nous n’avons pas abordé encore la question de données <em>mixtes</em> avec des tableaux qui contiennent <em>à la fois</em> des variables quantitatives et des données qualitatives.</p>
+<p>Une première approche consiste à convertir des variables afin d’homogénéiser le tableau. La conversion ne peut se faire qu’en dégradant l’information, soit dans le sens quantitatif continu -&gt; quantitatif discret -&gt; qualitatif ordonné -&gt; qualitatif non ordonné -&gt; binaire. Ainsi, dans un tableau contenant quelques variables quantitives, nous pouvons créer des classes pour convertir les variables quantitatives en qualitatives. C’est par exemple ce que nous faisons quand nous remplaçons les indices de masse corporelle IMC dans nos données de biométrie humaine (quantitatif) en classes (tableau des classes proposées par l’OMS<a href="#fn21" class="footnote-ref" id="fnref21"><sup>21</sup></a>).</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">IMC [kg/m<sup>2</sup>]</th>
+<th align="left">Classification OMS</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">&lt; 16,5</td>
+<td align="left">sous-poids sévère</td>
+</tr>
+<tr class="even">
+<td align="center">16 - 17</td>
+<td align="left">sous-poids modéré</td>
+</tr>
+<tr class="odd">
+<td align="center">17 - 18,5</td>
+<td align="left">sous-poids léger</td>
+</tr>
+<tr class="even">
+<td align="center">18.5 - 25</td>
+<td align="left">normal</td>
+</tr>
+<tr class="odd">
+<td align="center">25 - 30</td>
+<td align="left">préobésité</td>
+</tr>
+<tr class="even">
+<td align="center">30 - 35</td>
+<td align="left">obésité classe I</td>
+</tr>
+<tr class="odd">
+<td align="center">35 - 40</td>
+<td align="left">obésité classe II</td>
+</tr>
+<tr class="even">
+<td align="center">&gt; 40</td>
+<td align="left">obésité classe III</td>
+</tr>
+</tbody>
+</table>
+<p>A l’extrême, il est toujours possible d’encoder n’importe quelle variable sous forme binaire. C’est ce qu’on appelle le <strong>codage disjonctif complet</strong> (voir, par exemple, <a href="https://mtes-mct.github.io/parcours-r/m4/lacm.html">ici</a>). Cette approche a non seulement l’avantage de transformer des variables différentes en 0 ou 1 dans un tableau homogène, mais permet aussi de comparer plus de deux variables qualitatives selon une extension de l’AFC dit <strong>Analyse en Composantes Multiples</strong> ou ACM que nous ne verrons pas dans ce cours mais qu’il est important de mentionner pour mémo ici<a href="#fn22" class="footnote-ref" id="fnref22"><sup>22</sup></a>.</p>
+<p>L’analyse factorielle multiple (AFM, <em>multiple factorial analysis</em> ou MFA en anglais) va permettre d’analyser simultanément plusieurs tableaux de données multivariés, et éventuellement mélanger des tableaux quantititfs et qualitatifs (pour autant que les variables soient homogènes au sein de chaque tableau).</p>
+<div id="afm-dans-sciviewsr" class="section level3">
+<h3><span class="header-section-number">8.1.1</span> AFM dans SciViews::R</h3>
+<p>L’AFM n’est pas encore intégrée dans <code>SciViews::R</code>. Le code suivant permet de réaliser notre analyse via l’interface habituelle, soit <code>mfa(data = ...., formula)</code> pour construire l’analyse (calculs en internes basés sur <code>FactoMineR::MFA()</code>), et ensuite nous utiliserons <code>summary()</code> et <code>chart$type()</code> pour les graphiques, où type pourra être “screeplot”, “altscreeplot”, “loadings”, “scores”, “groups”, “axes”, “frequences” ou “ellipses” (nous verrons plus loin ce que représentent tous ces graphiques). Vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de vos documents R Markdown/Notebook pour l’utiliser.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Code mfa() version 2</span>
+SciViews<span class="op">::</span><span class="kw">R</span>()
+
+mfa &lt;-<span class="st"> </span><span class="cf">function</span>(data, formula, <span class="dt">nd =</span> <span class="dv">5</span>, <span class="dt">suprow =</span> <span class="ot">NA</span>, ..., <span class="dt">graph =</span> <span class="ot">FALSE</span>) {
+  <span class="co"># </span><span class="al">TODO</span><span class="co">: rework Call in the final MFA object</span>
+  <span class="cf">if</span> (<span class="kw">is.na</span>(suprow)) suprow &lt;-<span class="st"> </span><span class="ot">NULL</span> <span class="co"># MFA uses NULL instead of NA!</span>
+  <span class="cf">if</span> (<span class="op">!</span>rlang<span class="op">::</span><span class="kw">is_formula</span>(formula))
+    <span class="kw">stop</span>(<span class="st">&quot;&#39;formula&#39; must be a formula object&quot;</span>)
+  <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(rlang<span class="op">::</span><span class="kw">f_lhs</span>(formula)))
+    <span class="kw">stop</span>(<span class="st">&quot;&#39;formula cannot have left-hand side (must be ~ n1 * type...&quot;</span>)
+  params &lt;-<span class="st"> </span><span class="kw">get_groups</span>(<span class="kw">list</span>(<span class="dt">expr =</span> rlang<span class="op">::</span><span class="kw">f_rhs</span>(formula)))
+  
+  <span class="co"># data must be a data frame</span>
+  <span class="cf">if</span> (<span class="op">!</span><span class="kw">inherits</span>(data, <span class="st">&quot;data.frame&quot;</span>))
+    <span class="kw">stop</span>(<span class="st">&quot;&#39;data&#39; must be a data.frame&quot;</span>)
+  data &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(data) <span class="co"># No tibble or data.table!</span>
+  <span class="co"># Number of columns in  data must match specifications in the formula</span>
+  <span class="cf">if</span> (<span class="kw">ncol</span>(data) <span class="op">!=</span><span class="st"> </span><span class="kw">sum</span>(params<span class="op">$</span>groups))
+    <span class="kw">stop</span>(<span class="st">&quot;You must specify groups in &#39;formula&#39; for all the columns in &#39;data&#39;&quot;</span>)
+  
+  <span class="co"># Call FactoMineR::MFA() with corresponding arguments</span>
+  FactoMineR<span class="op">::</span><span class="kw">MFA</span>(<span class="dt">base =</span> data, <span class="dt">group =</span> params<span class="op">$</span>groups, <span class="dt">type =</span> params<span class="op">$</span>types,
+    <span class="dt">ind.sup =</span> suprow, <span class="dt">ncp =</span> nd, <span class="dt">name.group =</span> params<span class="op">$</span>names,
+    <span class="dt">num.group.sup =</span> params<span class="op">$</span>suppl, ..., <span class="dt">graph =</span> graph)
+}
+
+<span class="co"># x is a list with: expr, groups, types, names, suppl</span>
+<span class="co"># Note: this is a mess, I need to clean up this code!</span>
+get_groups &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
+  items &lt;-<span class="st"> </span><span class="kw">as.list</span>(x<span class="op">$</span>expr)
+  <span class="co"># We should have here &#39;+&#39;, &#39;-&#39; or something else in case of last expression</span>
+  <span class="cf">if</span> (items[[<span class="dv">1</span>]] <span class="op">==</span><span class="st"> &quot;+&quot;</span>) {
+    x<span class="op">$</span>suppl &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">FALSE</span>, x<span class="op">$</span>suppl) <span class="co"># Not a supplementary variable</span>
+    x<span class="op">$</span>expr &lt;-<span class="st"> </span>items[[<span class="dv">2</span>]] <span class="co"># Second item is next expression</span>
+    <span class="co"># Third item is the information for that group</span>
+    <span class="co"># (n, or n * type, or n * type %as% name)</span>
+    item &lt;-<span class="st"> </span><span class="kw">as.list</span>(items[[<span class="dv">3</span>]])
+  } <span class="cf">else</span> <span class="cf">if</span> (items[[<span class="dv">1</span>]] <span class="op">==</span><span class="st"> &quot;-&quot;</span>) {
+    x<span class="op">$</span>suppl &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">TRUE</span>, x<span class="op">$</span>suppl) <span class="co"># A supplementary variable</span>
+    x<span class="op">$</span>expr &lt;-<span class="st"> </span>items[[<span class="dv">2</span>]] <span class="co"># Second item is next expression</span>
+    <span class="co"># Third item is the information for that group</span>
+    <span class="co"># (n, or n * type, or n * type %as% name)</span>
+    item &lt;-<span class="st"> </span><span class="kw">as.list</span>(items[[<span class="dv">3</span>]])
+  } <span class="cf">else</span> {
+    <span class="co"># Last expression</span>
+    x<span class="op">$</span>expr &lt;-<span class="st"> </span><span class="ot">NULL</span>
+    item &lt;-<span class="st"> </span>items
+  }
+  <span class="cf">if</span> (<span class="kw">length</span>(item) <span class="op">&lt;</span><span class="st"> </span><span class="dv">3</span>) { <span class="co"># either n, or +n or -n</span>
+    <span class="cf">if</span> (<span class="kw">length</span>(item) <span class="op">==</span><span class="st"> </span><span class="dv">2</span>) {
+      x<span class="op">$</span>suppl &lt;-<span class="st"> </span><span class="cf">switch</span>(<span class="kw">as.character</span>(item[[<span class="dv">1</span>]]),
+        <span class="st">&quot;-&quot;</span> =<span class="st"> </span><span class="kw">c</span>(<span class="ot">TRUE</span>, x<span class="op">$</span>suppl),
+        <span class="st">&quot;+&quot;</span> =<span class="st"> </span><span class="kw">c</span>(<span class="ot">FALSE</span>, x<span class="op">$</span>suppl),
+        <span class="kw">stop</span>(<span class="st">&quot;Bad &#39;formula&#39;, see help&quot;</span>))
+      n &lt;-<span class="st"> </span>item[[<span class="dv">2</span>]]
+    } <span class="cf">else</span> n &lt;-<span class="st"> </span>item[[<span class="dv">1</span>]]
+    <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.numeric</span>(n)) 
+      <span class="kw">stop</span>(<span class="st">&quot;Bad &#39;formula&#39;, see help&quot;</span>)
+    x<span class="op">$</span>groups &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">as.integer</span>(n, x<span class="op">$</span>groups))
+    x<span class="op">$</span>types &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;s&quot;</span>, x<span class="op">$</span>types)
+    x<span class="op">$</span>names &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">NA</span>, x<span class="op">$</span>names)
+  } <span class="cf">else</span> <span class="cf">if</span> (item[[<span class="dv">1</span>]] <span class="op">==</span><span class="st"> &quot;*&quot;</span>) { <span class="co"># n * type or n * type %as% name</span>
+    <span class="cf">if</span> (<span class="kw">length</span>(item[[<span class="dv">2</span>]]) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>)
+      <span class="kw">stop</span>(<span class="st">&quot;Bad &#39;formula&#39;, see help&quot;</span>)
+    <span class="cf">if</span> (<span class="kw">length</span>(item[[<span class="dv">2</span>]]) <span class="op">==</span><span class="st"> </span><span class="dv">2</span>) {
+      x<span class="op">$</span>suppl &lt;-<span class="st"> </span><span class="cf">switch</span>(<span class="kw">as.character</span>(item[[<span class="dv">2</span>]][[<span class="dv">1</span>]]),
+        <span class="st">&quot;-&quot;</span> =<span class="st"> </span><span class="kw">c</span>(<span class="ot">TRUE</span>, x<span class="op">$</span>suppl),
+        <span class="st">&quot;+&quot;</span> =<span class="st"> </span><span class="kw">c</span>(<span class="ot">FALSE</span>, x<span class="op">$</span>suppl),
+        <span class="kw">stop</span>(<span class="st">&quot;Bad &#39;formula&#39;, see help&quot;</span>))
+      n &lt;-<span class="st"> </span>item[[<span class="dv">2</span>]][[<span class="dv">2</span>]]
+    } <span class="cf">else</span> n &lt;-<span class="st"> </span>item[[<span class="dv">2</span>]]
+    <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.numeric</span>(n))
+      <span class="kw">stop</span>(<span class="st">&quot;Bad &#39;formula&#39;, see help&quot;</span>)
+    x<span class="op">$</span>groups &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">as.integer</span>(n), x<span class="op">$</span>groups)
+    <span class="co"># Right-hand side after &#39;*&#39;: type or type %as% name</span>
+    subitem &lt;-<span class="st"> </span><span class="kw">as.list</span>(item[[<span class="dv">3</span>]])
+    <span class="cf">if</span> (subitem[[<span class="dv">1</span>]] <span class="op">==</span><span class="st"> &quot;%as%&quot;</span>) { <span class="co"># type %as name</span>
+      x<span class="op">$</span>types &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">as.character</span>(subitem[[<span class="dv">2</span>]]), x<span class="op">$</span>types)
+      x<span class="op">$</span>names &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">as.character</span>(subitem[[<span class="dv">3</span>]]), x<span class="op">$</span>names)
+    } <span class="cf">else</span> <span class="cf">if</span> (<span class="kw">length</span>(subitem) <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;&amp;</span><span class="st"> </span><span class="kw">is.name</span>(subitem[[<span class="dv">1</span>]])) { <span class="co"># type only</span>
+      x<span class="op">$</span>types &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">as.character</span>(subitem[[<span class="dv">1</span>]]), x<span class="op">$</span>types)
+      x<span class="op">$</span>names &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">NA</span>, x<span class="op">$</span>names)
+    } <span class="cf">else</span> <span class="kw">stop</span>(<span class="st">&quot;Bad &#39;formula&#39;, see help&quot;</span>) <span class="co"># Error</span>
+  } <span class="cf">else</span> <span class="cf">if</span> (item[[<span class="dv">1</span>]] <span class="op">==</span><span class="st"> &quot;%as%&quot;</span>) { <span class="co"># n %as% name</span>
+    <span class="cf">if</span> (<span class="kw">length</span>(item[[<span class="dv">2</span>]]) <span class="op">==</span><span class="st"> </span><span class="dv">2</span>) {
+      x<span class="op">$</span>suppl &lt;-<span class="st"> </span><span class="cf">switch</span>(<span class="kw">as.character</span>(item[[<span class="dv">2</span>]][[<span class="dv">1</span>]]),
+        <span class="st">&quot;-&quot;</span> =<span class="st"> </span><span class="kw">c</span>(<span class="ot">TRUE</span>, x<span class="op">$</span>suppl),
+        <span class="st">&quot;+&quot;</span> =<span class="st"> </span><span class="kw">c</span>(<span class="ot">FALSE</span>, x<span class="op">$</span>suppl),
+        <span class="kw">stop</span>(<span class="st">&quot;Bad &#39;formula&#39;, see help&quot;</span>))
+      n &lt;-<span class="st"> </span>item[[<span class="dv">2</span>]][[<span class="dv">2</span>]]
+    } <span class="cf">else</span> n &lt;-<span class="st"> </span>item[[<span class="dv">2</span>]]
+    <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.numeric</span>(n))
+      <span class="kw">stop</span>(<span class="st">&quot;Bad &#39;formula&#39;, see help&quot;</span>)
+    x<span class="op">$</span>groups &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">as.integer</span>(n), x<span class="op">$</span>groups)
+    x<span class="op">$</span>types &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;s&quot;</span>, x<span class="op">$</span>types) <span class="co"># type by default (s)</span>
+    x<span class="op">$</span>names &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">as.character</span>(item[[<span class="dv">3</span>]]), x<span class="op">$</span>names)
+  } <span class="cf">else</span> <span class="kw">stop</span>(<span class="st">&quot;Bad &#39;formula&#39;, see help&quot;</span>) <span class="co"># Error</span>
+  <span class="co"># Is there another expression to evaluate?</span>
+  <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(x<span class="op">$</span>expr)) {
+    x &lt;-<span class="st"> </span><span class="kw">get_groups</span>(x)
+  } <span class="cf">else</span> {
+    <span class="co"># Get correct vector for suppl</span>
+    <span class="cf">if</span> (<span class="kw">length</span>(x<span class="op">$</span>suppl) <span class="op">&lt;</span><span class="st"> </span><span class="kw">length</span>(x<span class="op">$</span>groups))
+      x<span class="op">$</span>suppl &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">FALSE</span>, x<span class="op">$</span>suppl)
+    <span class="co"># We need the group indices for the supplementary variables instead</span>
+    x<span class="op">$</span>suppl &lt;-<span class="st"> </span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(x<span class="op">$</span>groups))[x<span class="op">$</span>suppl]
+    <span class="cf">if</span> (<span class="op">!</span><span class="kw">length</span>(x<span class="op">$</span>suppl)) x<span class="op">$</span>suppl &lt;-<span class="st"> </span><span class="ot">NULL</span>
+    <span class="co"># Fix names</span>
+    def_names &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;group&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(x<span class="op">$</span>groups), <span class="dt">sep =</span> <span class="st">&quot;.&quot;</span>)
+    names &lt;-<span class="st"> </span>x<span class="op">$</span>names
+    names[<span class="kw">is.na</span>(names)] &lt;-<span class="st"> </span>def_names[<span class="kw">is.na</span>(names)]
+    x<span class="op">$</span>names &lt;-<span class="st"> </span>names
+  }
+  x
+}
+<span class="co">#form &lt;- ~ -4 %as% Environnement -24*f %as% Plancton +1*f +18</span>
+<span class="co">#get_groups(list(expr = rlang::f_rhs(form)))</span>
+
+<span class="co"># </span><span class="al">TODO</span><span class="co">: methods for broom...</span>
+
+autoplot.MFA &lt;-<span class="st"> </span><span class="cf">function</span>(object,
+<span class="dt">type =</span> <span class="kw">c</span>(<span class="st">&quot;screeplot&quot;</span>, <span class="st">&quot;altscreeplot&quot;</span>, <span class="st">&quot;loadings&quot;</span>, <span class="st">&quot;scores&quot;</span>, <span class="st">&quot;groups&quot;</span>, <span class="st">&quot;axes&quot;</span>, <span class="st">&quot;frequences&quot;</span>, <span class="st">&quot;ellipses&quot;</span>),
+<span class="dt">choices =</span> 1L<span class="op">:</span>2L, <span class="dt">name =</span> <span class="kw">deparse</span>(<span class="kw">substitute</span>(object)), <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>,
+<span class="dt">fill =</span> <span class="st">&quot;gray&quot;</span>, title, ..., env) {
+  type =<span class="st"> </span><span class="kw">match.arg</span>(type)
+
+  <span class="cf">if</span> (<span class="kw">missing</span>(title))
+    title &lt;-<span class="st"> </span><span class="kw">paste</span>(name, type, <span class="dt">sep =</span> <span class="st">&quot; - &quot;</span>)
+
+  res &lt;-<span class="st"> </span><span class="cf">switch</span>(type,
+    <span class="dt">screeplot =</span> object <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Classical screeplot</span>
+<span class="st">      </span>tibble<span class="op">::</span><span class="kw">tibble</span>(<span class="dt">eig =</span> .<span class="op">$</span>eig[, <span class="dv">1</span>], <span class="dt">PC =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(.<span class="op">$</span>eig)) <span class="op">%&gt;.%</span>
+<span class="st">      </span><span class="kw">chart</span>(<span class="dt">data =</span> ., eig <span class="op">~</span><span class="st"> </span>PC) <span class="op">+</span>
+<span class="st">      </span><span class="kw">geom_col</span>(<span class="dt">col =</span> col, <span class="dt">fill =</span> fill) <span class="op">+</span>
+<span class="st">      </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;Eigenvalues&quot;</span>, <span class="dt">title =</span> title),
+
+    <span class="dt">altscreeplot =</span> object <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># screeplot represented by dots and lines</span>
+<span class="st">      </span>tibble<span class="op">::</span><span class="kw">tibble</span>(<span class="dt">eig =</span> .<span class="op">$</span>eig[, <span class="dv">1</span>], <span class="dt">PC =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(.<span class="op">$</span>eig)) <span class="op">%&gt;.%</span>
+<span class="st">      </span><span class="kw">chart</span>(<span class="dt">data =</span> ., eig <span class="op">~</span><span class="st"> </span>PC) <span class="op">+</span>
+<span class="st">      </span><span class="kw">geom_line</span>(<span class="dt">col =</span> col) <span class="op">+</span>
+<span class="st">      </span><span class="kw">geom_point</span>(<span class="dt">col =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">fill =</span> col, <span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">shape =</span> <span class="dv">21</span>, <span class="dt">stroke =</span> <span class="dv">3</span>) <span class="op">+</span>
+<span class="st">      </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;Eigenvalues&quot;</span>, <span class="dt">title =</span> title),
+
+    <span class="dt">loadings =</span> object <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Plots of the variables</span>
+<span class="st">      </span><span class="kw">plot</span>(., <span class="dt">axes =</span> choices, <span class="dt">choix =</span> <span class="st">&quot;var&quot;</span>, <span class="dt">title =</span> title, ...),
+
+    <span class="dt">scores =</span> object <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Plot of the individuals</span>
+<span class="st">      </span><span class="kw">plot</span>(., <span class="dt">axes =</span> choices, <span class="dt">choix =</span> <span class="st">&quot;ind&quot;</span>, <span class="dt">title =</span> title, ...),
+
+    <span class="dt">groups =</span> object <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Plot of the groups</span>
+<span class="st">      </span><span class="kw">plot</span>(., <span class="dt">axes =</span> choices, <span class="dt">choix =</span> <span class="st">&quot;group&quot;</span>, <span class="dt">title =</span> title, ...),
+    
+    <span class="dt">axes =</span> object <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Plot of the loadings for the various groups</span>
+<span class="st">      </span><span class="kw">plot</span>(., <span class="dt">axes =</span> choices, <span class="dt">choix =</span> <span class="st">&quot;axes&quot;</span>, <span class="dt">title =</span> title, ...),
+    
+    <span class="dt">frequences =</span> object <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Plot of the correpondance analyses</span>
+<span class="st">      </span><span class="kw">plot</span>(., <span class="dt">axes =</span> choices, <span class="dt">choix =</span> <span class="st">&quot;freq&quot;</span>, <span class="dt">title =</span> title, ...),
+    
+    <span class="dt">ellipses =</span> object <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Plot of the individuals with ellipses</span>
+<span class="st">      </span>FactoMineR<span class="op">::</span><span class="kw">plotellipses</span>(., <span class="dt">axes =</span> choices, <span class="dt">title =</span> title, ...),
+
+    <span class="kw">stop</span>(<span class="st">&quot;Unrecognized type, must be &#39;screeplot&#39;, &#39;altscreeplot&#39;,</span>
+<span class="st">      &#39;loadings&#39;, &#39;scores&#39;, &#39;groups&#39;, &#39;axes&#39;, &#39;frequences&#39;, or &#39;ellipses&#39;&quot;</span>)
+  )
+  <span class="cf">if</span> (<span class="kw">inherits</span>(res, <span class="st">&quot;ggplot&quot;</span>)) {
+    res
+  } <span class="cf">else</span> {
+    <span class="kw">invisible</span>(res)
+  }
+}
+
+chart.MFA &lt;-<span class="st"> </span><span class="cf">function</span>(data, <span class="dt">choices =</span> 1L<span class="op">:</span>2L, <span class="dt">name =</span> <span class="kw">deparse</span>(<span class="kw">substitute</span>(data)),
+..., <span class="dt">type =</span> <span class="ot">NULL</span>, <span class="dt">env =</span> <span class="kw">parent.frame</span>())
+  <span class="kw">autoplot.MFA</span>(data, <span class="dt">choices =</span> choices, <span class="dt">name =</span> name, ..., <span class="dt">type =</span> type, <span class="dt">env =</span> env)
+<span class="kw">class</span>(chart.MFA) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;function&quot;</span>, <span class="st">&quot;subsettable_type&quot;</span>)</code></pre>
+<p>Nous allons aborder cette technique puissante mais un peu plus complexe qu’est l’AFM sur la base d’un jeu de données que nous connaissons bien maintenant via nos exercices précédents : la communauté de plancton le long d’un transect entre Nice et la Corse.</p>
+</div>
+<div id="plancton-en-mediterranee" class="section level3">
+<h3><span class="header-section-number">8.1.2</span> Plancton en Méditerranée</h3>
+<p>Les jeux de données <code>marphy</code> et <code>marbio</code> dans le package R <code>pastecs</code> présentent deux tableaux de données complémentaires. Le premier, <code>marphy</code> reprend les mesures environnementales de base (température, salinité et densité des masses d’eaux), ainsi qu’une information indirecte sur la concentration en phytoplancton : la fluorescence de la chlorophylle. Le second tableau <code>marbio</code> reprend les effectifs observés dans 24 groupes de zooplancton mesurés sur des échantillons issus des mêmes stations que <code>marphy</code>. Ces stations sont réparties de manière équidistante le long d’un transect entre le continent (vers Nice, station n°1) et la Corse (à Calvi, station n°68).</p>
+<div class="figure">
+<img src="images/sdd2_08/zooplankton.jpg" alt="Exemple d’organismes appartenant au zooplancton (Matt Wilson &amp; Jay Clark, NOAA NMFS AFSC, licence : domaine public)" />
+<p class="caption">Exemple d’organismes appartenant au zooplancton (Matt Wilson &amp; Jay Clark, NOAA NMFS AFSC, licence : domaine public)</p>
+</div>
+<p>Jusqu’à présent, nous avions utilisé ces deux tableaux séparément. Notre objectif ici est de les analyser ensemble. Nous allons commencer par considérer ces deux tableaux comme <strong>quantitatifs</strong>. Dans ce cas, l’AFM réalisera deux ACP, une par tableau. Ensuite, elle pondèrera les données de chacun en fonction de la part de variance sur le premier axe respectif. Pour finir, elle réalisera une ACP globale avec toutes les données qui conservera la structure de chacun des deux tableaux initiaux grâce à la pondération appliquée en interne.</p>
+<p>Les données environmentales dans <code>marphy</code> étant mesurées dans des unités différentes, nous les standardiserons. Concernant le plancton dans <code>marbio</code>, nous allons pondérer les espèces rares par rapport aux espèces abondantes en tranformant <span class="math inline">\(log(x + 1)\)</span> les abondances observées avec la fonction <code>log1p()</code>. Enfin, nous rajouterons les différentes masses d’eaux identifiées par ailleurs (voir l’aide <code>?pastecs::marphy</code>) dans <code>marzones</code> que nous utiliserons comme troisième tableau de <strong>variables supplémentaires</strong> (un tableau que nous n’utilisons <em>pas</em> dans l’analyse, mais que nous représenterons dans les graphiques afin d’aider à leur interprétation). Voici donc la constitution d’un gros tableau qui reprend toutes les données dans la variable <code>mar</code> :</p>
+<pre class="sourceCode r"><code class="sourceCode r">marzones &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(
+  <span class="kw">rep</span>(<span class="st">&quot;périphérique&quot;</span>, <span class="dv">16</span>),
+  <span class="kw">rep</span>(<span class="st">&quot;divergente1&quot;</span>, <span class="dv">8</span>),
+  <span class="kw">rep</span>(<span class="st">&quot;convergente&quot;</span>, <span class="dv">5</span>),
+  <span class="kw">rep</span>(<span class="st">&quot;frontale&quot;</span>, <span class="dv">11</span>),
+  <span class="kw">rep</span>(<span class="st">&quot;divergente2&quot;</span>, <span class="dv">5</span>),
+  <span class="kw">rep</span>(<span class="st">&quot;centrale&quot;</span>, <span class="dv">23</span>)),
+  <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;périphérique&quot;</span>, <span class="st">&quot;divergente1&quot;</span>, <span class="st">&quot;convergente&quot;</span>,
+    <span class="st">&quot;frontale&quot;</span>, <span class="st">&quot;divergente2&quot;</span>, <span class="st">&quot;centrale&quot;</span>))
+
+<span class="kw">bind_cols</span>(
+  <span class="kw">read</span>(<span class="st">&quot;marphy&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;pastecs&quot;</span>),
+  <span class="kw">log1p</span>(<span class="kw">read</span>(<span class="st">&quot;marbio&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;pastecs&quot;</span>))) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">Zone =</span> marzones) -&gt;
+<span class="st">  </span>mar</code></pre>
+<p>Ce tableau n’a aucunes valeurs manquantes et il contient 29 variables :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(mar)</code></pre>
+<pre><code>#  [1] &quot;Temperature&quot;            &quot;Salinity&quot;              
+#  [3] &quot;Fluorescence&quot;           &quot;Density&quot;               
+#  [5] &quot;Acartia&quot;                &quot;AdultsOfCalanus&quot;       
+#  [7] &quot;Copepodits1&quot;            &quot;Copepodits2&quot;           
+#  [9] &quot;Copepodits3&quot;            &quot;Copepodits4&quot;           
+# [11] &quot;Copepodits5&quot;            &quot;ClausocalanusA&quot;        
+# [13] &quot;ClausocalanusB&quot;         &quot;ClausocalanusC&quot;        
+# [15] &quot;AdultsOfCentropages&quot;    &quot;JuvenilesOfCentropages&quot;
+# [17] &quot;Nauplii&quot;                &quot;Oithona&quot;               
+# [19] &quot;Acanthaires&quot;            &quot;Cladocerans&quot;           
+# [21] &quot;EchinodermsLarvae&quot;      &quot;DecapodsLarvae&quot;        
+# [23] &quot;GasteropodsLarvae&quot;      &quot;EggsOfCrustaceans&quot;     
+# [25] &quot;Ostracods&quot;              &quot;Pteropods&quot;             
+# [27] &quot;Siphonophores&quot;          &quot;BellsOfCalycophores&quot;   
+# [29] &quot;Zone&quot;</code></pre>
+<p>Il y a trois groupes distrincts :</p>
+<ul>
+<li>les 4 premières colonnes comme variables quantitatives continues pour l’<strong>environnement</strong>,</li>
+<li>les 24 colonnes suivantes comme quantitatives pour le <strong>plancton</strong>,</li>
+<li>la dernière colonne qui caractérise les masses d’eaux (<strong>zone</strong>) comme variable qualitative supplémentaire.</li>
+</ul>
+<div class="figure">
+<img src="images/sdd2_08/groupes_mfa.png" alt="Représentation des trois groupes du tableau dans les couleurs qui seront utilisées ensuite dans l’AFM." />
+<p class="caption">Représentation des trois groupes du tableau dans les couleurs qui seront utilisées ensuite dans l’AFM.</p>
+</div>
+<p>Avant de pouvoir réaliser notre AFM, nous devons comprendre comment écrire la formule qui va décrire nos données. Pour chaque groupe, nous ajouterons un terme à la formule qui contient trois composante :</p>
+<ol style="list-style-type: decimal">
+<li>Le nombre <code>n</code> de colonnes constituant le groupe (les colonnes du tableau composite sont comptées de gauche à droite),</li>
+<li>Le <code>type</code> de variable considérée. Quatre types sont possibles. Les variables continues à standardiser avant d’être utilisées dans une ACP sont de type <strong>s</strong>. Les variables quantitative également à utiliser selon l’ACP mais <em>sans</em> standardisation sont de type <strong>c</strong>. Les données qualitatives assimilables à un tableau de contingence à double entrée (données de fréquences d’observations, dénombrements, etc.) sont de type <strong>f</strong> et seront traitées comme une AFC, et enfin, les variables qualitatives classiques sont de type <strong>n</strong> et seront traitées selon une analyse factorielle multiple AFM.</li>
+<li>Le <code>nom</code> que l’on veut donner à chaque groupe de variables pour l’identifier dans l’analyse.</li>
+</ol>
+<p>Un groupe est décrit dans la formule comme <code>n * type %as% nom</code> (donc avec les opérateurs <code>*</code> et <code>%as%</code>). Chaque groupe inclu dans l’analyse est précédé d’un signe plus <code>+</code> (le premier plus peut être omis de la formule). Les groupes supplémentaires (à soustraire à l’analyse) sont précédés d’un signe moins <code>-</code>. Et enfin, tous les groupes sont décrits à la droite de la formule, donc, après le <code>~</code>. Dans notre cas concret ici, cela donne :</p>
+<pre><code>~ 4*s %as% environnement + 24*c %as% plancton - 1*n %as% zone</code></pre>
+<p>L’analyse se fait en appelant <code>mfa(data = ...., formula)</code>. Nous assignons le résultat du calcul à <code>mar_mfa</code> :</p>
+<pre class="sourceCode r"><code class="sourceCode r">mar_mfa &lt;-<span class="st"> </span><span class="kw">mfa</span>(<span class="dt">data =</span> mar,
+  <span class="op">~</span><span class="st"> </span><span class="dv">4</span><span class="op">*</span>s <span class="op">%as%</span><span class="st"> </span>environment <span class="op">+</span><span class="st"> </span><span class="dv">24</span><span class="op">*</span>c <span class="op">%as%</span><span class="st"> </span>plancton <span class="op">-</span><span class="st"> </span><span class="dv">1</span><span class="op">*</span>n <span class="op">%as%</span><span class="st"> </span>zone)</code></pre>
+<p>Le résumé de l’analyse renvoyé par <code>summary()</code> donne beaucoup d’information.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(mar_mfa)</code></pre>
+<pre><code># 
+# Call:
+# FactoMineR::MFA(base = data, group = params$groups, type = params$types,  
+#      ind.sup = suprow, ncp = nd, name.group = params$names, num.group.sup = params$suppl,  
+#      graph = graph) 
+# 
+# 
+# Eigenvalues
+#                        Dim.1   Dim.2   Dim.3   Dim.4   Dim.5   Dim.6
+# Variance               1.801   1.145   0.215   0.121   0.116   0.103
+# % of var.             45.228  28.768   5.409   3.047   2.908   2.575
+# Cumulative % of var.  45.228  73.996  79.405  82.452  85.360  87.935
+#                        Dim.7   Dim.8   Dim.9  Dim.10  Dim.11  Dim.12
+# Variance               0.092   0.063   0.057   0.047   0.032   0.030
+# % of var.              2.320   1.578   1.430   1.179   0.804   0.754
+# Cumulative % of var.  90.256  91.834  93.264  94.443  95.247  96.001
+#                       Dim.13  Dim.14  Dim.15  Dim.16  Dim.17  Dim.18
+# Variance               0.028   0.021   0.019   0.016   0.013   0.012
+# % of var.              0.710   0.537   0.477   0.397   0.328   0.298
+# Cumulative % of var.  96.712  97.249  97.726  98.124  98.452  98.750
+#                       Dim.19  Dim.20  Dim.21  Dim.22  Dim.23  Dim.24
+# Variance               0.011   0.010   0.008   0.005   0.005   0.004
+# % of var.              0.276   0.242   0.211   0.123   0.115   0.097
+# Cumulative % of var.  99.026  99.267  99.479  99.602  99.717  99.814
+#                       Dim.25  Dim.26  Dim.27  Dim.28
+# Variance               0.003   0.003   0.001   0.000
+# % of var.              0.080   0.070   0.037   0.000
+# Cumulative % of var.  99.893  99.963 100.000 100.000
+# 
+# Groups
+#                    Dim.1    ctr   cos2    Dim.2    ctr   cos2    Dim.3
+# environment     |  0.864 47.958  0.408 |  0.967 84.430  0.511 |  0.056
+# plancton        |  0.937 52.042  0.781 |  0.178 15.570  0.028 |  0.160
+#                    ctr   cos2  
+# environment     25.844  0.002 |
+# plancton        74.156  0.023 |
+# 
+# Supplementary group
+#                   Dim.1  cos2   Dim.2  cos2   Dim.3  cos2  
+# zone            | 0.849 0.144 | 0.753 0.113 | 0.220 0.010 |
+# 
+# Individuals (the 10 first)
+#                    Dim.1    ctr   cos2    Dim.2    ctr   cos2    Dim.3
+# 1               | -3.029  7.493  0.788 | -0.153  0.030  0.002 | -1.203
+# 2               | -2.826  6.522  0.907 |  0.100  0.013  0.001 | -0.613
+# 3               | -2.986  7.280  0.923 | -0.015  0.000  0.000 | -0.558
+# 4               | -2.817  6.479  0.917 | -0.040  0.002  0.000 | -0.324
+# 5               | -2.988  7.290  0.913 |  0.116  0.017  0.001 | -0.530
+# 6               | -2.850  6.635  0.889 |  0.319  0.131  0.011 | -0.470
+# 7               | -2.561  5.357  0.796 |  0.807  0.835  0.079 | -0.306
+# 8               | -2.434  4.837  0.761 |  0.676  0.586  0.059 | -0.012
+# 9               | -2.192  3.923  0.651 |  0.832  0.889  0.094 |  0.200
+# 10              | -1.526  1.902  0.708 |  0.355  0.161  0.038 |  0.642
+#                    ctr   cos2  
+# 1                9.881  0.124 |
+# 2                2.569  0.043 |
+# 3                2.126  0.032 |
+# 4                0.716  0.012 |
+# 5                1.915  0.029 |
+# 6                1.511  0.024 |
+# 7                0.638  0.011 |
+# 8                0.001  0.000 |
+# 9                0.272  0.005 |
+# 10               2.815  0.125 |
+# 
+# Continuous variables (the 10 first)
+#                    Dim.1    ctr   cos2    Dim.2    ctr   cos2    Dim.3
+# Temperature     | -0.526  7.649  0.277 | -0.756 24.810  0.571 |  0.281
+# Salinity        |  0.676 12.621  0.457 | -0.718 22.364  0.515 | -0.084
+# Fluorescence    |  0.600  9.929  0.359 |  0.737 23.603  0.544 | -0.065
+# Density         |  0.802 17.758  0.643 | -0.561 13.654  0.314 | -0.147
+# Acartia         |  0.007  0.000  0.000 |  0.711  2.381  0.384 |  0.410
+# AdultsOfCalanus |  1.721  8.883  0.873 | -0.084  0.033  0.002 |  0.102
+# Copepodits1     |  1.662  8.288  0.866 | -0.245  0.283  0.019 |  0.265
+# Copepodits2     |  0.708  1.503  0.381 | -0.041  0.008  0.001 |  0.400
+# Copepodits3     |  0.764  1.750  0.625 |  0.272  0.349  0.079 |  0.104
+# Copepodits4     |  0.801  1.925  0.654 |  0.229  0.246  0.053 |  0.147
+#                    ctr   cos2  
+# Temperature     18.192  0.079 |
+# Salinity         1.641  0.007 |
+# Fluorescence     0.989  0.004 |
+# Density          5.022  0.022 |
+# Acartia          4.215  0.128 |
+# AdultsOfCalanus  0.262  0.003 |
+# Copepodits1      1.764  0.022 |
+# Copepodits2      4.003  0.121 |
+# Copepodits3      0.271  0.012 |
+# Copepodits4      0.544  0.022 |
+# 
+# Supplementary categories
+#                    Dim.1   cos2 v.test    Dim.2   cos2 v.test    Dim.3
+# périphérique    | -2.084  0.974 -7.052 |  0.257  0.015  1.090 |  0.117
+# divergente1     | -0.404  0.291 -0.900 |  0.185  0.061  0.516 |  0.306
+# convergente     |  0.558  0.083  0.959 |  1.747  0.810  3.765 |  0.246
+# frontale        |  1.225  0.484  3.282 |  1.181  0.450  3.968 | -0.313
+# divergente2     |  0.478  0.129  0.822 | -0.918  0.474 -1.978 | -0.419
+# centrale        |  0.779  0.373  3.399 | -0.988  0.599 -5.403 |  0.000
+#                   cos2 v.test  
+# périphérique     0.003  1.143 |
+# divergente1      0.166  1.968 |
+# convergente      0.016  1.221 |
+# frontale         0.032 -2.424 |
+# divergente2      0.099 -2.084 |
+# centrale         0.000 -0.002 |</code></pre>
+<p>Ne nous intéressons pour l’instant qu’au tableau <code>Eignenvalues</code> qui reprend les valeurs propres, c’est-à-dire, la part de variance sur les axes de l’ACP globale réalisée. Nous voyons qu’une vairance cumulée de 74% (<code>Cumulative % of var.</code>) est représentée sur les deux premiers axes <code>Dim.1</code> et <code>Dim.2</code>. Le graphe des éboulis nous représente la partition de la variance sur les différents axes comme pour l’ACP :</p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">scree</span>(mar_mfa, <span class="dt">fill =</span> <span class="st">&quot;cornsilk&quot;</span>)</code></pre>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ici, on voit très clairement que deux axes suffisent. La suite de l’analyse se fait à peu près comme une ACP, mais des données et graphes supplémentaires nous permet d’interpréter les groupes de variables les uns par rapport aux autres. Le graphique des variables s’obtient comme pour l’ACP avec <code>chart$loadings()</code>. Il est ic plus encombré car nous avons 28 variables. La direction des différents vecteurs par rapport aux dimensions de l’AFM et entre eux nous indique la corrélation directe (même sens), inverse (opposition), ou l’absence de corrélation (vecteurs orthogonaux). Ce graphique permet aussi d’orienter le plan de l’AFM pour nos graphiques ultérieurs.</p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">loadings</span>(mar_mfa, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Toutes les variables environnementales sont très bien représentées dans le premier plan de l’AFM (normes quasiment de un). Nous observons une corrélation inverse entre la température (en bas à gauche du premier plan de l’AFM) et la fluorescence (qui pointe en haut à droite du plan). La salinité et la densité sont corrélées positivement entre elles, mais ne le sont pas avec les deux autres variables environnementales. Les salinités et densités élevées sont en bas à droite sur le plan de l’AFM.</p>
+<p>Pour le plancton, nous avons pas mal de choses car plusieurs vecteurs ont une norme importante (nous ignorons les autres, trop mal représentés dans le premier plan de l’AFM). Il faut pointer l’opposition entre des groupes comme GasteropodsLarvae, EchinodermLarvae, Cladocerans et Pteropods qui pointent vers la gauche, et les copépodes (Calanus, Clausocalanus, CopepoditsX, etc.) qui pointent vers la droite. Le découpage selon le second axe pour le plancton est moins net.</p>
+<p>D’autre part, les variables environnementales pour lesquelles deux dimensions fortes se dégagent sont placées en oblique par rapport à la dimension forte du plancton sur Dim 1. cela signifie que les deux dimensions environnementales sont partiellement corrélées avec la présence de ces groupes planctoniques.</p>
+<p>L’AFM est en fait un compromis réalisé entre des analyses indépendantes faites sur chaque groupe. Le graphique suivant montre comment ce compromis a été construit :</p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">axes</span>(mar_mfa, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ce graphique est similaire au précédent, si ce n’est qu’au lieu de projetter les variables initiales dans le plan de l’AFM, il projette les composantes principales des différentes ACP séparées dans ce même plan. Il montre comment un <em>compromis</em> entre les différentes ACP est réalisé dans l’AFM globale. Ici, nous voyons que ce compromis est relativement proche de l’ACP plancton (Dim.1 et Dim.2 plancton en vert pointant dans la même direction que les axes de l’AFM). Nous voyons aussi qie les deux premières dimensions de l’ACP environnement (Dim.1 et Dim.2 environnement en rouge) pointent en oblique par rapport à ces mêmes axes. La variable supplémentaire zone est également projettée, mais elle est moins corrélée avec les autres axes (sauf sa Dim. 5 avec l’axe 1).</p>
+<p>Tout comme pour l’ACP, nous pouvons maintenant interpréter le graphique dans l’espace des individus, normalement avec <code>chart$scores()</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">scores</span>(mar_mfa, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Cependant, nous pouvons aussi profiter de la variable supplémentaire zone pour colorer les points en fonction des masses d’eaux et représenter des ellipses pour chaque masse d’eau sur le graphique. La variante avec ces ellipses se réalise avec <code>chart$ellipses()</code> et il est plus clair dans pareil cas.</p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">ellipses</span>(mar_mfa, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">keepvar =</span> <span class="st">&quot;Zone&quot;</span>)</code></pre>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Les différentes zones sont bien individualisées, à l’exception de :</p>
+<ul>
+<li><p>Certaines stations en bordure de zones (par exemple, la 16 est dans la zone de convergence1 sur le graphique alors qu’elle est libellée comme zone périphérique). La dynamique des masses d’eaux est complexe autour d’une zone frontale comme ici. Il y a des turbulences, et les frontières ne sont toujours très nettes. Ce graphique propose clairement un découpage légèrement différent… intéressant !</p></li>
+<li><p>La zone de divergence2 n’est pas fondamentalement différente de la zone centrale.</p></li>
+</ul>
+<p>Notez qu’on a une progression le long du transect de la gauche (Nice) vers le centre, puis vers le haut à droite (le front) et puis vers le bas à droite (Calvi).</p>
+<p>Si on interpète ce graphique des individus en fonction de l’orientation donnée sur base des variables, on peut dire que :</p>
+<ul>
+<li><p>Nice (zone périphérique) s’individualise très fort du reste, et c’est le plancton qui explique essentiellement cette différence avec les groupes identifiés tirant vers la gauche (GasteropodsLarvae, EchinodermLarvae, Cladocerans et Pteropods). Nice est aussi à une température et fluorescence moyenne.</p></li>
+<li><p>Toutes les autres zones sont caractérisées par une communauté planctonique différente de Nice, mais homogène, avec la zone divergente1 qui est logiquement intermédiaire (zone de mélange des masses d’eaux périphérique et frontale).</p></li>
+<li><p>La zone frontale est caractérisée par la température la plus basse et la fluorescence la plus élevée alors que la salinité est moyenne. C’est logique : on a une remontée d’eaux froides des profondeurs riches en nutriments que le phytoplancton utilise (fluorescence élevée signifie phytoplancton élevé).</p></li>
+<li><p>La zone centrale en Corse à Calvi est caractérisée par la salinité la plus élevée, une température élevée et une fluorescence basse, caractéristiques d’une zone oligothrophe. Comme nous l’avons déjà noté, la communauté planctonique est similaire à ce qu’on rencontre au large au milieu du transect, et elle tranche sensiblement avec celle rencontrée du côté niçois.</p></li>
+</ul>
+<p>Revenons sur la façon dans l’AFM est construite (le fameux “compromis”), et son interprétation par rapport aux masses d’eaux. Le graphique suivant montre les relations entre les groupes.</p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">groups</span>(mar_mfa, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ce graphique représente les groupes proches des axes dont ils sont responsables dans la structure générale de l’AFM. Nous voyons ici plancton proche de l’axe 1. Part contre, environnement est bien représenté (car il est loind du centre), mais est entre l’axe 1 et l’axes 2. Nous avons déjà noté cela précédemment.</p>
+<p>La variable supplémentaire zone est aussi représentée à proximité de la structure qui lui correspond le mieux. Nous voyons que zone est plus proche d’environnement, ce qui signifie que les masses d’eau sont plutôt structurées en rapport avec les variables environnementales qu’en rapport avec les communautés planctoniques.</p>
+</div>
+<div id="afm-avec-donnees-mixtes" class="section level3">
+<h3><span class="header-section-number">8.1.3</span> AFM avec données mixtes</h3>
+<p>Jusqu’ici, nous avons réalisé une AFM avec uniquement des données quantitatives, mais l’AFM peut aussi traiter des données qualitatives, sous forme de tableaux de contingence à double entrée, ou sous forme de variables facteurs. Nous allons tester cette variante sans sortir de notre exemple du plancton méditerranéen. En effet, le tableau plancton peut <em>aussi</em> être considéré comme un tableau de contingence à double entrée. Il nous suffit de changer le type de <strong>c</strong> à <strong>f</strong> (pour l’analyse des fréquences) dans la formule pour traiter à présent le plancton sous la forme d’une AFC dans <code>mar_mfa2</code> :</p>
+<pre class="sourceCode r"><code class="sourceCode r">mar_mfa2 &lt;-<span class="st"> </span><span class="kw">mfa</span>(<span class="dt">data =</span> mar,
+  <span class="op">~</span><span class="st"> </span><span class="dv">4</span><span class="op">*</span>s <span class="op">%as%</span><span class="st"> </span>environment <span class="op">+</span><span class="st"> </span><span class="dv">24</span><span class="op">*</span>f <span class="op">%as%</span><span class="st"> </span>plancton <span class="op">-</span><span class="st"> </span><span class="dv">1</span><span class="op">*</span>n <span class="op">%as%</span><span class="st"> </span>zone)</code></pre>
+<p>Rappelons-nous que l’AFC se ramène à une étape de son analyse à une ACP. C’est comme cela qu’il est possible de l’introduire dans l’AFM : à partir de l’étape ACP, les pondérations sont calculées et ajustées, et ensuite, une ACP globale est réalisée en la mélangeant avec les autres ACP.</p>
+<p>Au lieu d’imprimer tout à l’aide de <code>summary()</code>, si nous souhaitons seulement les premières valeurs propres, nous pouvons aussi les extraire de l’objet comme ceci :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(mar_mfa2<span class="op">$</span>eig)</code></pre>
+<pre><code>#        eigenvalue percentage of variance cumulative percentage of variance
+# comp 1 1.78441859              47.260175                          47.26017
+# comp 2 1.03313254              27.362427                          74.62260
+# comp 3 0.18926229               5.012596                          79.63520
+# comp 4 0.12752685               3.377538                          83.01274
+# comp 5 0.10759137               2.849548                          85.86228
+# comp 6 0.08901514               2.357558                          88.21984</code></pre>
+<p>Ici, les deux premiers axes comptent pour 74,6% de variance cumulée. Le graphe des éboulis confirme que deux axes suffisent :</p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">scree</span>(mar_mfa2, <span class="dt">fill =</span> <span class="st">&quot;cornsilk&quot;</span>)</code></pre>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Le graphique des variables ne montre plus que celles relatives à l’ACP, donc seulement le groupe environnement. Les conclusions à leur sujet sont les mêmes, mais attention, le premier plan de la nouvelle AFM se présente en miroir haut-bas par rapport à notre première analyse<a href="#fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">loadings</span>(mar_mfa2, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">axes</span>(mar_mfa2, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Les conclusions sont similaires sur les axes. Voyons maintenant l’espace des individus, toujours avec les couleurs et les ellipses par zones :</p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">ellipses</span>(mar_mfa2, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">keepvar =</span> <span class="st">&quot;Zone&quot;</span>)</code></pre>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Encore une fois ici, le résultat est sensiblement le même (gardez à l’esprit que ce graphique est la visualisation en miroir haut-bas par rapport à l’analyse précédente).</p>
+<p>Les groupes montrent toujours le groupe zone plus proche d’environnement que de plancton.</p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">groups</span>(mar_mfa2, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</code></pre>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>La partie AFC de l’analyse est accessible via <code>chart$frequences()</code> :</p>
+<pre class="sourceCode r"><code class="sourceCode r">chart<span class="op">$</span><span class="kw">frequences</span>(mar_mfa2, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre>
+<p><img src="08-afm_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ici aussi les quatre classes de plancton EchinodermLarvae, GasteropodsLarvae, Clodocerans et Pteropods s’individualisent à gauche, contre tous les autres à droite. Également les stations proches de Nice se retrouvent à la gauche, et toutes les autres à droite.</p>
+
+<div class="note">
+Nous voyons ici que le traitement sous forme ACP ou sous forme AFC (pour le comptage exhaustif d’espèces ou de classes taxonomiques par station, les deux sont envisageables) ne donne pas de résultats franchement différents ici. Il n’en est pas forcément toujours le cas. Veuillez à bien choisir vos types de variables dans l’AFM.
+</div>
+
+<div id="pour-en-savoir-plus-7" class="section level5 unnumbered">
+<h5>Pour en savoir plus</h5>
+<ul>
+<li><p>Des <a href="http://factominer.free.fr/more/tutorial_2010_MFA.pdf">slides</a> (en anglais) qui détaillent les calculs sous-jacents à l’AFM, ainsi que d’autres calculs non abordés ici (le RV, les points partiels, …),</p></li>
+<li><p>Une <a href="https://www.youtube.com/watch?v=1U-s8u1rcpo">vidéo d’introduction à l’AFM</a> en français (8:37, première partie d’une série de 4 vidéos),</p></li>
+<li><p>La <a href="http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/116-mfa-multiple-factor-analysis-in-r-essentials/">résolution de l’exemple sur les vins de Loire</a> présenté dans la vidéo ci-dessus dans R (en anglais).</p></li>
+<li><p>Le site de <a href="http://factominer.free.fr/index.html">FactoMineR</a> qui implménete la fonction <code>MFA()</code> sur laquelle notre analyse se base,</p></li>
+<li><p>Un exemple d’<a href="https://link.springer.com/article/10.1186/s13059-017-1362-4">application en biologie avec des données de génomique</a> faisant intervenir une AFM,</p></li>
+<li><p><a href="https://www.springer.com/gp/book/9781441979766">Numerical Ecology with R</a> traite en détail de nombreuses méthodes multivarées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).</p></li>
+</ul>
+</div>
+<div id="a-vous-de-jouer-23" class="section level5 unnumbered">
+<h5>A vous de jouer !</h5>
+<ul>
+<li>Réalisez le début du projet spécifique lié au module 08.</li>
+</ul>
+
+<div class="bdd">
+<strong>Le lien pour réaliser ce projet se trouve au début du module</strong>
+<em>Ce projet doit être terminé à la fin de ce module</em>
+</div>
 
 </div>
-<!-- </div> -->
-
-
-
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="21">
+<li id="fn21"><p>OMS = Organisation Mondiale de la Santé, voir <a href="https://apps.who.int/bmi/index.jsp?introPage=intro_3.html">ici</a>.<a href="analyse-factorielle-multiple-afm.html#fnref21" class="footnote-back">↩</a></p></li>
+<li id="fn22"><p>Si vous êtes intéressé par l’ACM et le codage disjonctif complet, voyez <a href="https://www.youtube.com/watch?v=bihScz3OXbw">cette vidéo</a>.<a href="analyse-factorielle-multiple-afm.html#fnref22" class="footnote-back">↩</a></p></li>
+<li id="fn23"><p>Les ACP sont définies au signe près. or une inversion de signe dans une dimension a pour effet de faire apparaitre les graphiques en miroir.<a href="analyse-factorielle-multiple-afm.html#fnref23" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
 <div id="disqus_thread"></div>
 <script>
 
@@ -219,7 +847,7 @@ s.setAttribute('data-timestamp', +new Date());
         </div>
       </div>
 <a href="afm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="svbox.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="indices-de-biodiversite.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -264,6 +892,19 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

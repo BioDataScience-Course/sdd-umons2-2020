@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>2.3 Régression linéaire polynomiale | Science des données biologiques 2</title>
+  <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="2.3 Régression linéaire polynomiale | Science des données biologiques 2" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
+  <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+  <meta property="og:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2.3 Régression linéaire polynomiale | Science des données biologiques 2" />
+  
+  <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+
+<meta name="author" content="Philippe Grosjean &amp; Guyliann Engels (avec des contributions de Raphaël Conotte)">
+
+
+<meta name="date" content="2020-08-12">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="regression-lineaire-multiple.html">
+<link rel="next" href="rmse-critere-dakaike.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.8.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.39.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.39.2/plotly-latest.min.js"></script>
+<link href="libs/rglwidgetClass-2/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-2/rglClass.src.js"></script>
+<script src="libs/CanvasMatrix4-2016/CanvasMatrix.src.js"></script>
+<script src="libs/rglWebGL-binding-0.100.19/rglWebGL.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Science des données biologiques 2</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Préambule</a><ul>
+<li class="chapter" data-level="" data-path="vue-generale-des-cours.html"><a href="vue-generale-des-cours.html"><i class="fa fa-check"></i>Vue générale des cours</a></li>
+<li class="chapter" data-level="" data-path="materiel-pedagogique.html"><a href="materiel-pedagogique.html"><i class="fa fa-check"></i>Matériel pédagogique</a></li>
+</ul></li>
+<li class="part"><span><b>I Cours II: modélisation</b></span></li>
+<li class="chapter" data-level="1" data-path="lm.html"><a href="lm.html"><i class="fa fa-check"></i><b>1</b> Régression linéaire I</a><ul>
+<li class="chapter" data-level="1.1" data-path="modele.html"><a href="modele.html"><i class="fa fa-check"></i><b>1.1</b> Modèle</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="modele.html"><a href="modele.html#pourquoi-modeliser"><i class="fa fa-check"></i><b>1.1.1</b> Pourquoi modéliser ?</a></li>
+<li class="chapter" data-level="1.1.2" data-path="modele.html"><a href="modele.html#quand-modeliser"><i class="fa fa-check"></i><b>1.1.2</b> Quand modéliser ?</a></li>
+<li class="chapter" data-level="1.1.3" data-path="modele.html"><a href="modele.html#entrainement-et-confirmation"><i class="fa fa-check"></i><b>1.1.3</b> Entraînement et confirmation</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html"><i class="fa fa-check"></i><b>1.2</b> Régression linéaire simple</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#quantifier-lajustement-dun-modele"><i class="fa fa-check"></i><b>1.2.1</b> Quantifier l’ajustement d’un modèle</a></li>
+<li class="chapter" data-level="1.2.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#trouver-la-meilleure-droite"><i class="fa fa-check"></i><b>1.2.2</b> Trouver la meilleure droite</a></li>
+<li class="chapter" data-level="1.2.3" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#la-fonction-lm"><i class="fa fa-check"></i><b>1.2.3</b> La fonction <code>lm()</code></a></li>
+<li class="chapter" data-level="1.2.4" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#resume-avec-summary"><i class="fa fa-check"></i><b>1.2.4</b> Résumé avec <code>summary()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html"><i class="fa fa-check"></i><b>1.3</b> Outils de diagnostic</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#analyse-des-residus"><i class="fa fa-check"></i><b>1.3.1</b> Analyse des résidus</a></li>
+<li class="chapter" data-level="1.3.2" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#enveloppe-de-confiance"><i class="fa fa-check"></i><b>1.3.2</b> Enveloppe de confiance</a></li>
+<li class="chapter" data-level="1.3.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#extraire-les-donnees-dun-modele"><i class="fa fa-check"></i><b>1.3.3</b> Extraire les données d’un modèle</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="lm2.html"><a href="lm2.html"><i class="fa fa-check"></i><b>2</b> Régression linéaire II</a><ul>
+<li class="chapter" data-level="2.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html"><i class="fa fa-check"></i><b>2.1</b> Outils de diagnostic (suite)</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#resume-avec-summarysuite"><i class="fa fa-check"></i><b>2.1.1</b> Résumé avec <code>summary()</code>(suite)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#comparaison-de-regressions"><i class="fa fa-check"></i><b>2.1.2</b> Comparaison de régressions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="regression-lineaire-multiple.html"><a href="regression-lineaire-multiple.html"><i class="fa fa-check"></i><b>2.2</b> Régression linéaire multiple</a></li>
+<li class="chapter" data-level="2.3" data-path="regression-lineaire-polynomiale.html"><a href="regression-lineaire-polynomiale.html"><i class="fa fa-check"></i><b>2.3</b> Régression linéaire polynomiale</a></li>
+<li class="chapter" data-level="2.4" data-path="rmse-critere-dakaike.html"><a href="rmse-critere-dakaike.html"><i class="fa fa-check"></i><b>2.4</b> RMSE &amp; critère d’Akaike</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="mod-lineaire.html"><a href="mod-lineaire.html"><i class="fa fa-check"></i><b>3</b> Modèle linéaire</a><ul>
+<li class="chapter" data-level="3.1" data-path="variables-numeriques-ou-facteurs.html"><a href="variables-numeriques-ou-facteurs.html"><i class="fa fa-check"></i><b>3.1</b> Variables numériques ou facteurs</a></li>
+<li class="chapter" data-level="3.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html"><i class="fa fa-check"></i><b>3.2</b> ANOVA et régression linéaire</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#modele-lineaire-commun"><i class="fa fa-check"></i><b>3.2.1</b> Modèle linéaire commun</a></li>
+<li class="chapter" data-level="3.2.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#reencodage-des-variables-de-lanova"><i class="fa fa-check"></i><b>3.2.2</b> Réencodage des variables de l’ANOVA</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html"><i class="fa fa-check"></i><b>3.3</b> Matrice de contraste</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#contraste-orthogonaux"><i class="fa fa-check"></i><b>3.3.1</b> Contraste orthogonaux</a></li>
+<li class="chapter" data-level="3.3.2" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#autres-matrices-de-contrastes-courantes"><i class="fa fa-check"></i><b>3.3.2</b> Autres matrices de contrastes courantes</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="ancova.html"><a href="ancova.html"><i class="fa fa-check"></i><b>3.4</b> ANCOVA</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="ancova.html"><a href="ancova.html#bebes-a-la-naissance"><i class="fa fa-check"></i><b>3.4.1</b> Bébés à la naissance</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html"><i class="fa fa-check"></i><b>3.5</b> Modèle linéaire généralisé</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html#exemple"><i class="fa fa-check"></i><b>3.5.1</b> Exemple</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="reg-non-lin.html"><a href="reg-non-lin.html"><i class="fa fa-check"></i><b>4</b> Régression non linéaire</a><ul>
+<li class="chapter" data-level="4.1" data-path="rendement-photosynthetique.html"><a href="rendement-photosynthetique.html"><i class="fa fa-check"></i><b>4.1</b> Rendement photosynthétique</a></li>
+<li class="chapter" data-level="4.2" data-path="principe.html"><a href="principe.html"><i class="fa fa-check"></i><b>4.2</b> Principe</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="principe.html"><a href="principe.html#fonction-objective"><i class="fa fa-check"></i><b>4.2.1</b> Fonction objective</a></li>
+<li class="chapter" data-level="4.2.2" data-path="principe.html"><a href="principe.html#calcul-iteratif"><i class="fa fa-check"></i><b>4.2.2</b> Calcul itératif</a></li>
+<li class="chapter" data-level="4.2.3" data-path="principe.html"><a href="principe.html#pieges-et-difficultes"><i class="fa fa-check"></i><b>4.2.3</b> Pièges et difficultés</a></li>
+<li class="chapter" data-level="4.2.4" data-path="principe.html"><a href="principe.html#modeles-selfstart-dans-r"><i class="fa fa-check"></i><b>4.2.4</b> Modèles ‘selfStart’ dans R</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html"><i class="fa fa-check"></i><b>4.3</b> Modèles courants en biologie</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-michaelis-menten"><i class="fa fa-check"></i><b>4.3.1</b> Modèle de Michaelis-Menten</a></li>
+<li class="chapter" data-level="4.3.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-croissance"><i class="fa fa-check"></i><b>4.3.2</b> Modèles de croissance</a></li>
+<li class="chapter" data-level="4.3.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#courbe-exponentielle"><i class="fa fa-check"></i><b>4.3.3</b> Courbe exponentielle</a></li>
+<li class="chapter" data-level="4.3.4" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#courbe-logistique"><i class="fa fa-check"></i><b>4.3.4</b> Courbe logistique</a></li>
+<li class="chapter" data-level="4.3.5" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-gompertz"><i class="fa fa-check"></i><b>4.3.5</b> Modèle de Gompertz</a></li>
+<li class="chapter" data-level="4.3.6" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-von-bertalanffy"><i class="fa fa-check"></i><b>4.3.6</b> Modèles de von Bertalanffy</a></li>
+<li class="chapter" data-level="4.3.7" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-richards"><i class="fa fa-check"></i><b>4.3.7</b> Modèle de Richards</a></li>
+<li class="chapter" data-level="4.3.8" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-weibull"><i class="fa fa-check"></i><b>4.3.8</b> Modèle de Weibull</a></li>
+<li class="chapter" data-level="4.3.9" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-preece-baines-1"><i class="fa fa-check"></i><b>4.3.9</b> Modèle Preece-Baines 1</a></li>
+<li class="chapter" data-level="4.3.10" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-tanaka"><i class="fa fa-check"></i><b>4.3.10</b> Modèle de Tanaka</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="choix-du-modele.html"><a href="choix-du-modele.html"><i class="fa fa-check"></i><b>4.4</b> Choix du modèle</a></li>
+</ul></li>
+<li class="part"><span><b>II Cours II: analyse</b></span></li>
+<li class="chapter" data-level="5" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>5</b> Classification hiérarchique</a><ul>
+<li class="chapter" data-level="5.1" data-path="analyse-de-donnees.html"><a href="analyse-de-donnees.html"><i class="fa fa-check"></i><b>5.1</b> Analyse de données</a></li>
+<li class="chapter" data-level="5.2" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html"><i class="fa fa-check"></i><b>5.2</b> Distance entre individus</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#matrice-de-distances"><i class="fa fa-check"></i><b>5.2.1</b> Matrice de distances</a></li>
+<li class="chapter" data-level="5.2.2" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#indices-de-dissimilarite"><i class="fa fa-check"></i><b>5.2.2</b> Indices de (dis)similarité</a></li>
+<li class="chapter" data-level="5.2.3" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#utilisation-des-indices"><i class="fa fa-check"></i><b>5.2.3</b> Utilisation des indices</a></li>
+<li class="chapter" data-level="5.2.4" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#proprietes-des-indices"><i class="fa fa-check"></i><b>5.2.4</b> Propriétés des indices</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html"><i class="fa fa-check"></i><b>5.3</b> Regroupement avec CAH</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#dendrogramme"><i class="fa fa-check"></i><b>5.3.1</b> Dendrogramme</a></li>
+<li class="chapter" data-level="5.3.2" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#separer-les-groupes"><i class="fa fa-check"></i><b>5.3.2</b> Séparer les groupes</a></li>
+<li class="chapter" data-level="5.3.3" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#etude-complete"><i class="fa fa-check"></i><b>5.3.3</b> Étude complète</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="k-moyenne-mds-som.html"><a href="k-moyenne-mds-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne, MDS &amp; SOM</a><ul>
+<li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="k-moyennes.html"><a href="k-moyennes.html#exemple-simple"><i class="fa fa-check"></i><b>6.1.1</b> Exemple simple</a></li>
+<li class="chapter" data-level="6.1.2" data-path="k-moyennes.html"><a href="k-moyennes.html#classification-du-zooplancton"><i class="fa fa-check"></i><b>6.1.2</b> Classification du zooplancton</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html"><i class="fa fa-check"></i><b>6.2</b> Positionnement multidimensionnel (MDS)</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-simplifiee-sous-sciviewsr"><i class="fa fa-check"></i><b>6.2.1</b> MDS simplifiée sous SciViews::R</a></li>
+<li class="chapter" data-level="6.2.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-metrique-ou-pcoa"><i class="fa fa-check"></i><b>6.2.2</b> MDS métrique ou PCoA</a></li>
+<li class="chapter" data-level="6.2.3" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-non-metrique"><i class="fa fa-check"></i><b>6.2.3</b> MDS non métrique</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html"><i class="fa fa-check"></i><b>6.3</b> Cartes auto-adaptatives (SOM)</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html#som-sur-le-zooplancton"><i class="fa fa-check"></i><b>6.3.1</b> SOM sur le zooplancton</a></li>
+<li class="chapter" data-level="6.3.2" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html#interpretation-dun-som"><i class="fa fa-check"></i><b>6.3.2</b> Interprétation d’un SOM</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
+<li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#acp-dans-sciviewsr"><i class="fa fa-check"></i><b>7.1.1</b> ACP dans SciViews::R</a></li>
+<li class="chapter" data-level="7.1.2" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#indiens-diabetiques"><i class="fa fa-check"></i><b>7.1.2</b> Indiens diabétiques</a></li>
+<li class="chapter" data-level="7.1.3" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#biometrie-doursin"><i class="fa fa-check"></i><b>7.1.3</b> Biométrie d’oursin</a></li>
+<li class="chapter" data-level="7.1.4" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#visualisation-de-donnees-quantitatives"><i class="fa fa-check"></i><b>7.1.4</b> Visualisation de données quantitatives</a></li>
+<li class="chapter" data-level="7.1.5" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#acp-mecanisme"><i class="fa fa-check"></i><b>7.1.5</b> ACP : mécanisme</a></li>
+<li class="chapter" data-level="7.1.6" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#calcul-matriciel-acp"><i class="fa fa-check"></i><b>7.1.6</b> Calcul matriciel ACP</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>7.2</b> Analyse factorielle des correspondances</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#afc-dans-sciviewsr"><i class="fa fa-check"></i><b>7.2.1</b> AFC dans SciViews::R</a></li>
+<li class="chapter" data-level="7.2.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#enquete-sur-la-science"><i class="fa fa-check"></i><b>7.2.2</b> Enquête sur la science</a></li>
+<li class="chapter" data-level="7.2.3" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#des-acariens-sinon-rien"><i class="fa fa-check"></i><b>7.2.3</b> Des acariens sinon rien</a></li>
+<li class="chapter" data-level="7.2.4" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#principe-de-lafc"><i class="fa fa-check"></i><b>7.2.4</b> Principe de l’AFC</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html"><i class="fa fa-check"></i><b>7.3</b> Accès aux bases de données</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#installation-de-sqlite"><i class="fa fa-check"></i><b>7.3.1</b> Installation de SQLite</a></li>
+<li class="chapter" data-level="7.3.2" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#base-de-donnees-en-memoire"><i class="fa fa-check"></i><b>7.3.2</b> Base de données en mémoire</a></li>
+<li class="chapter" data-level="7.3.3" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#base-de-donnees-dans-un-fichier"><i class="fa fa-check"></i><b>7.3.3</b> Base de données dans un fichier</a></li>
+<li class="chapter" data-level="7.3.4" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#driver-odbc-dans-rstudio"><i class="fa fa-check"></i><b>7.3.4</b> Driver ODBC dans RStudio</a></li>
+<li class="chapter" data-level="7.3.5" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-db-browser"><i class="fa fa-check"></i><b>7.3.5</b> Utilisation de DB Browser</a></li>
+<li class="chapter" data-level="7.3.6" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-dplyr"><i class="fa fa-check"></i><b>7.3.6</b> Utilisation de dplyr</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM, biodiversité et Open Data</a><ul>
+<li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#afm-dans-sciviewsr"><i class="fa fa-check"></i><b>8.1.1</b> AFM dans SciViews::R</a></li>
+<li class="chapter" data-level="8.1.2" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#plancton-en-mediterranee"><i class="fa fa-check"></i><b>8.1.2</b> Plancton en Méditerranée</a></li>
+<li class="chapter" data-level="8.1.3" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#afm-avec-donnees-mixtes"><i class="fa fa-check"></i><b>8.1.3</b> AFM avec données mixtes</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html"><i class="fa fa-check"></i><b>8.2</b> Indices de biodiversité</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-alpha"><i class="fa fa-check"></i><b>8.2.1</b> Diversité alpha</a></li>
+<li class="chapter" data-level="8.2.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-beta"><i class="fa fa-check"></i><b>8.2.2</b> Diversité beta</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="open-data.html"><a href="open-data.html"><i class="fa fa-check"></i><b>8.3</b> Open Data</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="open-data.html"><a href="open-data.html#gestion-des-donnees"><i class="fa fa-check"></i><b>8.3.1</b> Gestion des données</a></li>
+<li class="chapter" data-level="8.3.2" data-path="open-data.html"><a href="open-data.html#utilisation-de-donnees-ouvertes-open-data"><i class="fa fa-check"></i><b>8.3.2</b> Utilisation de données ouvertes (<em>Open Data</em>)</a></li>
+</ul></li>
+</ul></li>
+<li class="appendix"><span><b>Appendices</b></span></li>
+<li class="chapter" data-level="A" data-path="svbox.html"><a href="svbox.html"><i class="fa fa-check"></i><b>A</b> Installation de la SciViews Box</a><ul>
+<li class="chapter" data-level="A.1" data-path="migration-des-projets.html"><a href="migration-des-projets.html"><i class="fa fa-check"></i><b>A.1</b> Migration des projets</a></li>
+<li class="chapter" data-level="A.2" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html"><i class="fa fa-check"></i><b>A.2</b> Configuration Git et Github</a><ul>
+<li class="chapter" data-level="A.2.1" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html#compte-github-dans-rstudio"><i class="fa fa-check"></i><b>A.2.1</b> Compte Github dans RStudio</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>Références</a></li>
+<li class="divider"></li>
+<li><a href="http://biodatascience-course.sciviews.org">Site Web du cours</a></li>
+<li><a href="https://github.com/BioDataScience-Course">Site Github du cours</a></li>
+<br/>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Science des données biologiques 2</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="regression-lineaire-polynomiale" class="section level2">
+<h2><span class="header-section-number">2.3</span> Régression linéaire polynomiale</h2>
+<p>Pour rappel, un polynome est une expression mathématique du type (<em>notez la ressemblance avec l’équation de la régression multiple</em>) :</p>
+<p><span class="math display">\[
+a_0 + a_1 . x + a_2 . x^2 + ... + a_n . x^n
+\]</span></p>
+<p>Un polynome d’ordre 2 (terme jusqu’au <span class="math inline">\(x^2\)</span>) correspond à une parabole dans le plan <em>xy</em>. Que se passe-t-il si nous calculons une variable <code>diametre2</code> qui est le carré du diamètre et que nous prétendons faire une régression multiple en utilisant à la fois <code>diamètre</code> et <code>diamètre2</code>/ ?</p>
+<pre class="sourceCode r"><code class="sourceCode r">trees <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">diameter2 =</span> diameter<span class="op">^</span><span class="dv">2</span>) -&gt;<span class="st"> </span>trees
+<span class="kw">summary</span>(<span class="kw">lm</span>(<span class="dt">data =</span> trees, volume <span class="op">~</span><span class="st"> </span>diameter <span class="op">+</span><span class="st"> </span>diameter2))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = volume ~ diameter + diameter2, data = trees)
+# 
+# Residuals:
+#       Min        1Q    Median        3Q       Max 
+# -0.157938 -0.068324 -0.009027  0.060611  0.214988 
+# 
+# Coefficients:
+#             Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)   0.3111     0.3180   0.978 0.336293    
+# diameter     -2.3718     1.8381  -1.290 0.207489    
+# diameter2    11.2363     2.5563   4.396 0.000144 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.09441 on 28 degrees of freedom
+# Multiple R-squared:  0.9616,  Adjusted R-squared:  0.9589 
+# F-statistic: 350.5 on 2 and 28 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Il semble que R ait pu réaliser cette analyse. Cette fois-ci, nous n’avons cependant pas une droite ou un plan ajusté, mais par ce subterfuge, nous avons pu ajuster une <strong>courbe</strong> dans les données ! Nous pourrions augmenter le degré du polynome (ajouter un terme en <code>diameter^3</code>, voire encore des puissance supérieures). Dans ce cas, nous obtiendrons une courbe de plus en plus flexible, toujours dans le plan <code>xy</code>. Ceci illustre parfaitement d’ailleurs l’ambiguité de la complexité du modèle qui s’ajuste de mieux en mieux dans les données, mais qui ce faisant, perd également progressivement son pouvoir explicatif. En effet, on sait qu’il existe toujours une droite qui passe entre deux points dans le plan. De même, il existe toujours une parabole qui passe par 3 points quelconques dans le plan. Et par extension, il existe une courbe correspondant à un polynome d’ordre <em>n</em> - 1 qui passe par n’importe quel ensemble de <em>n</em> points dans le plan. Un modèle construit à l’aide d’un tel polynome aura <strong>toujours</strong> un <em>R<sup>2</sup></em> égal à un, … mais en même temps ce modèle ne sera d’<strong>aucune</strong> utilité car il ne contient plus aucune information pertinente. C’est ce qu’on appelle le <strong>surajustement</strong> (overfitting en anglais). La figure ci-dessous (issue d’un article écrit par Anup Bhande <a href="https://medium.com/greyatom/what-is-underfitting-and-overfitting-in-machine-learning-and-how-to-deal-with-it-6803a989c76">ici</a>) illuste bien ce phénomène.</p>
+<p><img src="images/sdd2_02/under_overfitting.png" /></p>
+<p>Devoir calculer les différentes puissance des variables au préalable devient rapidement fastidieux. Heureusement, R autorise de glisser ce cacul <em>directement dans la formule</em>, mais à condition de lui indiquer qu’il ne s’agit pas du nom d’une variable <code>diameter^2</code>, mais d’un calcul effectué sur <code>diameter</code> en utilisant la fonction, d’identité <code>I()</code>. Ainsi, sans rien calculer au préalable, nous pouvons utiliser la formule <code>volume ~ diameter + I(diameter^2)</code>. Un snippet est d’ailleurs disponible pour ajuster un polynome d’ordre 2 ou d’ordre 3, et il est accompagné du code nécessaire pour représenter également graphiquement cette régression polynomiale. Le code ci-dessous qui construit le modèle <code>lm3</code> l’utilise.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm3 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> trees,
+  volume <span class="op">~</span><span class="st">  </span>diameter <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(diameter<span class="op">^</span><span class="dv">2</span>)))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = volume ~ diameter + I(diameter^2), data = trees)
+# 
+# Residuals:
+#       Min        1Q    Median        3Q       Max 
+# -0.157938 -0.068324 -0.009027  0.060611  0.214988 
+# 
+# Coefficients:
+#               Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)     0.3111     0.3180   0.978 0.336293    
+# diameter       -2.3718     1.8381  -1.290 0.207489    
+# I(diameter^2)  11.2363     2.5563   4.396 0.000144 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.09441 on 28 degrees of freedom
+# Multiple R-squared:  0.9616,  Adjusted R-squared:  0.9589 
+# F-statistic: 350.5 on 2 and 28 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">lm3 <span class="op">%&gt;.%</span><span class="st"> </span>(<span class="cf">function</span>(lm, <span class="dt">model =</span> lm[[<span class="st">&quot;model&quot;</span>]], <span class="dt">vars =</span> <span class="kw">names</span>(model))
+  <span class="kw">chart</span>(model, <span class="kw">aes_string</span>(<span class="dt">x =</span> vars[<span class="dv">2</span>], <span class="dt">y =</span> vars[<span class="dv">1</span>])) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(x<span class="op">^</span><span class="dv">2</span>)))(.)</code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Remarquez sur le graphique comment, à présent, la courbe s’ajuste bien mieux dans le nuage de point et comme l’arbre le plus grand avec un diamètre supérieur à 0,5m est à présent presque parfaitement ajusté par le modèle. <strong>Faites donc très attention que des points influents ou extrêmes peuvent apparaitre également comme tel à cause d’un mauvais choix de modèle !</strong></p>
+<p>L’analyse des résidus nous montre aussi un comportement plus sain.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm3, which = 1)</span>
+lm3 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .resid <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Residuals&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Residuals vs Fitted&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm3, which = 2)</span>
+lm3 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">aes</span>(<span class="dt">sample =</span> .std.resid)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_qq</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_qq_line</span>(<span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Theoretical quantiles&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Standardized residuals&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Normal Q-Q&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-16-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm3, which = 3)</span>
+lm3 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">sqrt</span>(<span class="kw">abs</span>(.std.resid)) <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>,
+    <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">bold</span>(<span class="kw">sqrt</span>(<span class="kw">abs</span>(<span class="st">&quot;Standardized residuals&quot;</span>))))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Scale-Location&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-16-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(lm3, which = 4)</span>
+lm3 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .cooksd <span class="op">~</span><span class="st"> </span><span class="kw">seq_along</span>(.cooksd)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="dt">by =</span> <span class="fl">0.05</span>), <span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Obs. number&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Cook&#39;s distance&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Cook&#39;s distance&quot;</span>) </code></pre>
+<p><img src="02-reg-lineaire-2_files/figure-html/unnamed-chunk-16-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Revenons un instant sur le résumé de ce modèle.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm3)</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = volume ~ diameter + I(diameter^2), data = trees)
+# 
+# Residuals:
+#       Min        1Q    Median        3Q       Max 
+# -0.157938 -0.068324 -0.009027  0.060611  0.214988 
+# 
+# Coefficients:
+#               Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)     0.3111     0.3180   0.978 0.336293    
+# diameter       -2.3718     1.8381  -1.290 0.207489    
+# I(diameter^2)  11.2363     2.5563   4.396 0.000144 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.09441 on 28 degrees of freedom
+# Multiple R-squared:  0.9616,  Adjusted R-squared:  0.9589 
+# F-statistic: 350.5 on 2 and 28 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>La pente relative au <code>diameter</code> nécessite quelques éléments d’explication. En effet, que signifie une pente pour une courbe dont la dérivée première (“pente locale”) change constamment ? En fait, il faut comprendre ce paramètre comme étant la pente de la courbe au point <em>x</em> = 0.</p>
+<p>Si le modèle est très nettement significatif (ANOVA, valeur <em>p</em> &lt;&lt;&lt; 0,001), et si le <em>R<sup>2</sup></em> ajusté grimpe maintenant à 0,959, seul le paramètre relatif au diamètre<sup>2</sup> est significatif cette fois-ci. Ce résultat suggère que ce modèle pourrait êtrte simplifié en considérant que l’ordonnée à l’origine et la pente pour le terme <code>diameter</code> valent zéro. Cela peut être tenté, mais <strong>à condition de refaire l’analyse</strong>. On ne peut jamais laisser tomber un paramètre dans une analyse et considérer que les autres sont utilisable tels quels. tous les paramètres caculés sont interconnectés.</p>
+<p>Voyons ce que cela donne (la formule devient <code>volume ~ I(diameter^2) - 1</code> ou <code>volume ~ I(diameter^2) + 0</code>, ce qui est identique) :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm4 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> trees, volume <span class="op">~</span><span class="st">  </span><span class="kw">I</span>(diameter<span class="op">^</span><span class="dv">2</span>) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = volume ~ I(diameter^2) - 1, data = trees)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -0.19474 -0.07234 -0.04120  0.04522  0.18240 
+# 
+# Coefficients:
+#               Estimate Std. Error t value Pr(&gt;|t|)    
+# I(diameter^2)   7.3031     0.1397   52.26   &lt;2e-16 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.1027 on 30 degrees of freedom
+# Multiple R-squared:  0.9891,  Adjusted R-squared:  0.9888 
+# F-statistic:  2731 on 1 and 30 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Notez bien que quand on réajuste un modèle simplifié, les paramètres restants doivent être recalculés. En effet, le paramètre relatif au diamètre<sup>2</sup> vallait 11,2 dans le modèle <code>lm3</code> plus haut. Un fois les autres termes éliminés, ce paramètre devient 7,30 dans ce modèle <code>lm4</code> simplifié.</p>
+<p>Le modèle <code>lm4</code> revient aussi (autre point de vue) à transformer d’abord le diamètre en diamètre<sup>2</sup> et à effectuer ensuite une régression linéaire simple entre deux variables, <code>volume</code> et <code>diametre2</code> :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm4bis &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> trees, volume <span class="op">~</span><span class="st"> </span>diameter2 <span class="op">-</span><span class="st"> </span><span class="dv">1</span>))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = volume ~ diameter2 - 1, data = trees)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -0.19474 -0.07234 -0.04120  0.04522  0.18240 
+# 
+# Coefficients:
+#           Estimate Std. Error t value Pr(&gt;|t|)    
+# diameter2   7.3031     0.1397   52.26   &lt;2e-16 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.1027 on 30 degrees of freedom
+# Multiple R-squared:  0.9891,  Adjusted R-squared:  0.9888 
+# F-statistic:  2731 on 1 and 30 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Notez qu’on obtient bien évidemment exactement les mêmes résultats si nous transformons <em>d’abord</em> les données ou si nous intégrons le calcul à l’intérieur de la formule qui décrit le modèle.</p>
+<p>Faites bien attention de ne pas comparer le <em>R<sup>2</sup></em> acvec ordonnée à l’origine fixée à zéro ici dans notre modèle <code>lm4</code> avec les <em>R<sup>2</sup></em> des modèles <code>lm.</code> ou <code>lm3</code> qui ont ce paramètre estimé. Rappelez-vous que le <em>R<sup>2</sup></em> est calculé différemment dans les deux cas ! Donc, nous voilà une fois de plus face à un nouveau modèle pour lequel il nous est difficile de décider s’il est meilleur que les précédents. Avant de comparer, élaborons un tout dernier modèle, le plus complexe, qui reprend à la fois notre régression polynomiale d’ordre 2 sur le diamètre <strong>et</strong> la hauteur. Autrement dit, une régression à la fois multiple et polynomiale.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lm5 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> trees, volume <span class="op">~</span><span class="st">  </span>diameter <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(diameter<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span>height))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = volume ~ diameter + I(diameter^2) + height, data = trees)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -0.12169 -0.04806 -0.00237  0.05156  0.12559 
+# 
+# Coefficients:
+#                Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)   -0.267097   0.284895  -0.938 0.356798    
+# diameter      -3.281421   1.463401  -2.242 0.033354 *  
+# I(diameter^2) 11.891724   2.019252   5.889 2.83e-06 ***
+# height         0.034788   0.008169   4.259 0.000223 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.07436 on 27 degrees of freedom
+# Multiple R-squared:  0.977,   Adjusted R-squared:  0.9745 
+# F-statistic: 382.8 on 3 and 27 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Ah ha, ceci est bizarre ! Le <em>R<sup>2</sup></em> ajusté nous indique que le modèle serait très bon puisqu’il grimpe à 0,975. Le terme en diamètre<sup>2</sup> reste très significatif, … mais la pente relative à la hauteur est maintenant elle aussi très significative alors que dans le modèle multiple <code>lm2</code> ce n’était pas le cas. De plus, la pente à l’origine en face du diamètre semble devenir un peu plus significative. Bienvenue dans les instabilités liées aux intercorrelations entre paramètres dans les modèles linéaires complexes.</p>
+</div>
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://sddb.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="regression-lineaire-multiple.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="rmse-critere-dakaike.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/BioDataScience-Course/sdd-umons2/edit/master/02-reg-lineaire-2.Rmd",
+"text": "Editer"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

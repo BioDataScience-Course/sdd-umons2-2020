@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>8.3 Open Data | Science des données biologiques 2</title>
+  <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="8.3 Open Data | Science des données biologiques 2" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
+  <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+  <meta property="og:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="8.3 Open Data | Science des données biologiques 2" />
+  
+  <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+
+<meta name="author" content="Philippe Grosjean &amp; Guyliann Engels (avec des contributions de Raphaël Conotte)">
+
+
+<meta name="date" content="2020-08-12">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="indices-de-biodiversite.html">
+<link rel="next" href="svbox.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.8.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.39.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.39.2/plotly-latest.min.js"></script>
+<link href="libs/rglwidgetClass-2/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-2/rglClass.src.js"></script>
+<script src="libs/CanvasMatrix4-2016/CanvasMatrix.src.js"></script>
+<script src="libs/rglWebGL-binding-0.100.19/rglWebGL.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Science des données biologiques 2</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Préambule</a><ul>
+<li class="chapter" data-level="" data-path="vue-generale-des-cours.html"><a href="vue-generale-des-cours.html"><i class="fa fa-check"></i>Vue générale des cours</a></li>
+<li class="chapter" data-level="" data-path="materiel-pedagogique.html"><a href="materiel-pedagogique.html"><i class="fa fa-check"></i>Matériel pédagogique</a></li>
+</ul></li>
+<li class="part"><span><b>I Cours II: modélisation</b></span></li>
+<li class="chapter" data-level="1" data-path="lm.html"><a href="lm.html"><i class="fa fa-check"></i><b>1</b> Régression linéaire I</a><ul>
+<li class="chapter" data-level="1.1" data-path="modele.html"><a href="modele.html"><i class="fa fa-check"></i><b>1.1</b> Modèle</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="modele.html"><a href="modele.html#pourquoi-modeliser"><i class="fa fa-check"></i><b>1.1.1</b> Pourquoi modéliser ?</a></li>
+<li class="chapter" data-level="1.1.2" data-path="modele.html"><a href="modele.html#quand-modeliser"><i class="fa fa-check"></i><b>1.1.2</b> Quand modéliser ?</a></li>
+<li class="chapter" data-level="1.1.3" data-path="modele.html"><a href="modele.html#entrainement-et-confirmation"><i class="fa fa-check"></i><b>1.1.3</b> Entraînement et confirmation</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html"><i class="fa fa-check"></i><b>1.2</b> Régression linéaire simple</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#quantifier-lajustement-dun-modele"><i class="fa fa-check"></i><b>1.2.1</b> Quantifier l’ajustement d’un modèle</a></li>
+<li class="chapter" data-level="1.2.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#trouver-la-meilleure-droite"><i class="fa fa-check"></i><b>1.2.2</b> Trouver la meilleure droite</a></li>
+<li class="chapter" data-level="1.2.3" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#la-fonction-lm"><i class="fa fa-check"></i><b>1.2.3</b> La fonction <code>lm()</code></a></li>
+<li class="chapter" data-level="1.2.4" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#resume-avec-summary"><i class="fa fa-check"></i><b>1.2.4</b> Résumé avec <code>summary()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html"><i class="fa fa-check"></i><b>1.3</b> Outils de diagnostic</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#analyse-des-residus"><i class="fa fa-check"></i><b>1.3.1</b> Analyse des résidus</a></li>
+<li class="chapter" data-level="1.3.2" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#enveloppe-de-confiance"><i class="fa fa-check"></i><b>1.3.2</b> Enveloppe de confiance</a></li>
+<li class="chapter" data-level="1.3.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#extraire-les-donnees-dun-modele"><i class="fa fa-check"></i><b>1.3.3</b> Extraire les données d’un modèle</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="lm2.html"><a href="lm2.html"><i class="fa fa-check"></i><b>2</b> Régression linéaire II</a><ul>
+<li class="chapter" data-level="2.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html"><i class="fa fa-check"></i><b>2.1</b> Outils de diagnostic (suite)</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#resume-avec-summarysuite"><i class="fa fa-check"></i><b>2.1.1</b> Résumé avec <code>summary()</code>(suite)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#comparaison-de-regressions"><i class="fa fa-check"></i><b>2.1.2</b> Comparaison de régressions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="regression-lineaire-multiple.html"><a href="regression-lineaire-multiple.html"><i class="fa fa-check"></i><b>2.2</b> Régression linéaire multiple</a></li>
+<li class="chapter" data-level="2.3" data-path="regression-lineaire-polynomiale.html"><a href="regression-lineaire-polynomiale.html"><i class="fa fa-check"></i><b>2.3</b> Régression linéaire polynomiale</a></li>
+<li class="chapter" data-level="2.4" data-path="rmse-critere-dakaike.html"><a href="rmse-critere-dakaike.html"><i class="fa fa-check"></i><b>2.4</b> RMSE &amp; critère d’Akaike</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="mod-lineaire.html"><a href="mod-lineaire.html"><i class="fa fa-check"></i><b>3</b> Modèle linéaire</a><ul>
+<li class="chapter" data-level="3.1" data-path="variables-numeriques-ou-facteurs.html"><a href="variables-numeriques-ou-facteurs.html"><i class="fa fa-check"></i><b>3.1</b> Variables numériques ou facteurs</a></li>
+<li class="chapter" data-level="3.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html"><i class="fa fa-check"></i><b>3.2</b> ANOVA et régression linéaire</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#modele-lineaire-commun"><i class="fa fa-check"></i><b>3.2.1</b> Modèle linéaire commun</a></li>
+<li class="chapter" data-level="3.2.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#reencodage-des-variables-de-lanova"><i class="fa fa-check"></i><b>3.2.2</b> Réencodage des variables de l’ANOVA</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html"><i class="fa fa-check"></i><b>3.3</b> Matrice de contraste</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#contraste-orthogonaux"><i class="fa fa-check"></i><b>3.3.1</b> Contraste orthogonaux</a></li>
+<li class="chapter" data-level="3.3.2" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#autres-matrices-de-contrastes-courantes"><i class="fa fa-check"></i><b>3.3.2</b> Autres matrices de contrastes courantes</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="ancova.html"><a href="ancova.html"><i class="fa fa-check"></i><b>3.4</b> ANCOVA</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="ancova.html"><a href="ancova.html#bebes-a-la-naissance"><i class="fa fa-check"></i><b>3.4.1</b> Bébés à la naissance</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html"><i class="fa fa-check"></i><b>3.5</b> Modèle linéaire généralisé</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html#exemple"><i class="fa fa-check"></i><b>3.5.1</b> Exemple</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="reg-non-lin.html"><a href="reg-non-lin.html"><i class="fa fa-check"></i><b>4</b> Régression non linéaire</a><ul>
+<li class="chapter" data-level="4.1" data-path="rendement-photosynthetique.html"><a href="rendement-photosynthetique.html"><i class="fa fa-check"></i><b>4.1</b> Rendement photosynthétique</a></li>
+<li class="chapter" data-level="4.2" data-path="principe.html"><a href="principe.html"><i class="fa fa-check"></i><b>4.2</b> Principe</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="principe.html"><a href="principe.html#fonction-objective"><i class="fa fa-check"></i><b>4.2.1</b> Fonction objective</a></li>
+<li class="chapter" data-level="4.2.2" data-path="principe.html"><a href="principe.html#calcul-iteratif"><i class="fa fa-check"></i><b>4.2.2</b> Calcul itératif</a></li>
+<li class="chapter" data-level="4.2.3" data-path="principe.html"><a href="principe.html#pieges-et-difficultes"><i class="fa fa-check"></i><b>4.2.3</b> Pièges et difficultés</a></li>
+<li class="chapter" data-level="4.2.4" data-path="principe.html"><a href="principe.html#modeles-selfstart-dans-r"><i class="fa fa-check"></i><b>4.2.4</b> Modèles ‘selfStart’ dans R</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html"><i class="fa fa-check"></i><b>4.3</b> Modèles courants en biologie</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-michaelis-menten"><i class="fa fa-check"></i><b>4.3.1</b> Modèle de Michaelis-Menten</a></li>
+<li class="chapter" data-level="4.3.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-croissance"><i class="fa fa-check"></i><b>4.3.2</b> Modèles de croissance</a></li>
+<li class="chapter" data-level="4.3.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#courbe-exponentielle"><i class="fa fa-check"></i><b>4.3.3</b> Courbe exponentielle</a></li>
+<li class="chapter" data-level="4.3.4" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#courbe-logistique"><i class="fa fa-check"></i><b>4.3.4</b> Courbe logistique</a></li>
+<li class="chapter" data-level="4.3.5" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-gompertz"><i class="fa fa-check"></i><b>4.3.5</b> Modèle de Gompertz</a></li>
+<li class="chapter" data-level="4.3.6" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-von-bertalanffy"><i class="fa fa-check"></i><b>4.3.6</b> Modèles de von Bertalanffy</a></li>
+<li class="chapter" data-level="4.3.7" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-richards"><i class="fa fa-check"></i><b>4.3.7</b> Modèle de Richards</a></li>
+<li class="chapter" data-level="4.3.8" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-weibull"><i class="fa fa-check"></i><b>4.3.8</b> Modèle de Weibull</a></li>
+<li class="chapter" data-level="4.3.9" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-preece-baines-1"><i class="fa fa-check"></i><b>4.3.9</b> Modèle Preece-Baines 1</a></li>
+<li class="chapter" data-level="4.3.10" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-tanaka"><i class="fa fa-check"></i><b>4.3.10</b> Modèle de Tanaka</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="choix-du-modele.html"><a href="choix-du-modele.html"><i class="fa fa-check"></i><b>4.4</b> Choix du modèle</a></li>
+</ul></li>
+<li class="part"><span><b>II Cours II: analyse</b></span></li>
+<li class="chapter" data-level="5" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>5</b> Classification hiérarchique</a><ul>
+<li class="chapter" data-level="5.1" data-path="analyse-de-donnees.html"><a href="analyse-de-donnees.html"><i class="fa fa-check"></i><b>5.1</b> Analyse de données</a></li>
+<li class="chapter" data-level="5.2" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html"><i class="fa fa-check"></i><b>5.2</b> Distance entre individus</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#matrice-de-distances"><i class="fa fa-check"></i><b>5.2.1</b> Matrice de distances</a></li>
+<li class="chapter" data-level="5.2.2" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#indices-de-dissimilarite"><i class="fa fa-check"></i><b>5.2.2</b> Indices de (dis)similarité</a></li>
+<li class="chapter" data-level="5.2.3" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#utilisation-des-indices"><i class="fa fa-check"></i><b>5.2.3</b> Utilisation des indices</a></li>
+<li class="chapter" data-level="5.2.4" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#proprietes-des-indices"><i class="fa fa-check"></i><b>5.2.4</b> Propriétés des indices</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html"><i class="fa fa-check"></i><b>5.3</b> Regroupement avec CAH</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#dendrogramme"><i class="fa fa-check"></i><b>5.3.1</b> Dendrogramme</a></li>
+<li class="chapter" data-level="5.3.2" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#separer-les-groupes"><i class="fa fa-check"></i><b>5.3.2</b> Séparer les groupes</a></li>
+<li class="chapter" data-level="5.3.3" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#etude-complete"><i class="fa fa-check"></i><b>5.3.3</b> Étude complète</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="k-moyenne-mds-som.html"><a href="k-moyenne-mds-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne, MDS &amp; SOM</a><ul>
+<li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="k-moyennes.html"><a href="k-moyennes.html#exemple-simple"><i class="fa fa-check"></i><b>6.1.1</b> Exemple simple</a></li>
+<li class="chapter" data-level="6.1.2" data-path="k-moyennes.html"><a href="k-moyennes.html#classification-du-zooplancton"><i class="fa fa-check"></i><b>6.1.2</b> Classification du zooplancton</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html"><i class="fa fa-check"></i><b>6.2</b> Positionnement multidimensionnel (MDS)</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-simplifiee-sous-sciviewsr"><i class="fa fa-check"></i><b>6.2.1</b> MDS simplifiée sous SciViews::R</a></li>
+<li class="chapter" data-level="6.2.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-metrique-ou-pcoa"><i class="fa fa-check"></i><b>6.2.2</b> MDS métrique ou PCoA</a></li>
+<li class="chapter" data-level="6.2.3" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-non-metrique"><i class="fa fa-check"></i><b>6.2.3</b> MDS non métrique</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html"><i class="fa fa-check"></i><b>6.3</b> Cartes auto-adaptatives (SOM)</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html#som-sur-le-zooplancton"><i class="fa fa-check"></i><b>6.3.1</b> SOM sur le zooplancton</a></li>
+<li class="chapter" data-level="6.3.2" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html#interpretation-dun-som"><i class="fa fa-check"></i><b>6.3.2</b> Interprétation d’un SOM</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
+<li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#acp-dans-sciviewsr"><i class="fa fa-check"></i><b>7.1.1</b> ACP dans SciViews::R</a></li>
+<li class="chapter" data-level="7.1.2" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#indiens-diabetiques"><i class="fa fa-check"></i><b>7.1.2</b> Indiens diabétiques</a></li>
+<li class="chapter" data-level="7.1.3" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#biometrie-doursin"><i class="fa fa-check"></i><b>7.1.3</b> Biométrie d’oursin</a></li>
+<li class="chapter" data-level="7.1.4" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#visualisation-de-donnees-quantitatives"><i class="fa fa-check"></i><b>7.1.4</b> Visualisation de données quantitatives</a></li>
+<li class="chapter" data-level="7.1.5" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#acp-mecanisme"><i class="fa fa-check"></i><b>7.1.5</b> ACP : mécanisme</a></li>
+<li class="chapter" data-level="7.1.6" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#calcul-matriciel-acp"><i class="fa fa-check"></i><b>7.1.6</b> Calcul matriciel ACP</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>7.2</b> Analyse factorielle des correspondances</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#afc-dans-sciviewsr"><i class="fa fa-check"></i><b>7.2.1</b> AFC dans SciViews::R</a></li>
+<li class="chapter" data-level="7.2.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#enquete-sur-la-science"><i class="fa fa-check"></i><b>7.2.2</b> Enquête sur la science</a></li>
+<li class="chapter" data-level="7.2.3" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#des-acariens-sinon-rien"><i class="fa fa-check"></i><b>7.2.3</b> Des acariens sinon rien</a></li>
+<li class="chapter" data-level="7.2.4" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#principe-de-lafc"><i class="fa fa-check"></i><b>7.2.4</b> Principe de l’AFC</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html"><i class="fa fa-check"></i><b>7.3</b> Accès aux bases de données</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#installation-de-sqlite"><i class="fa fa-check"></i><b>7.3.1</b> Installation de SQLite</a></li>
+<li class="chapter" data-level="7.3.2" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#base-de-donnees-en-memoire"><i class="fa fa-check"></i><b>7.3.2</b> Base de données en mémoire</a></li>
+<li class="chapter" data-level="7.3.3" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#base-de-donnees-dans-un-fichier"><i class="fa fa-check"></i><b>7.3.3</b> Base de données dans un fichier</a></li>
+<li class="chapter" data-level="7.3.4" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#driver-odbc-dans-rstudio"><i class="fa fa-check"></i><b>7.3.4</b> Driver ODBC dans RStudio</a></li>
+<li class="chapter" data-level="7.3.5" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-db-browser"><i class="fa fa-check"></i><b>7.3.5</b> Utilisation de DB Browser</a></li>
+<li class="chapter" data-level="7.3.6" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-dplyr"><i class="fa fa-check"></i><b>7.3.6</b> Utilisation de dplyr</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM, biodiversité et Open Data</a><ul>
+<li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#afm-dans-sciviewsr"><i class="fa fa-check"></i><b>8.1.1</b> AFM dans SciViews::R</a></li>
+<li class="chapter" data-level="8.1.2" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#plancton-en-mediterranee"><i class="fa fa-check"></i><b>8.1.2</b> Plancton en Méditerranée</a></li>
+<li class="chapter" data-level="8.1.3" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#afm-avec-donnees-mixtes"><i class="fa fa-check"></i><b>8.1.3</b> AFM avec données mixtes</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html"><i class="fa fa-check"></i><b>8.2</b> Indices de biodiversité</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-alpha"><i class="fa fa-check"></i><b>8.2.1</b> Diversité alpha</a></li>
+<li class="chapter" data-level="8.2.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-beta"><i class="fa fa-check"></i><b>8.2.2</b> Diversité beta</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="open-data.html"><a href="open-data.html"><i class="fa fa-check"></i><b>8.3</b> Open Data</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="open-data.html"><a href="open-data.html#gestion-des-donnees"><i class="fa fa-check"></i><b>8.3.1</b> Gestion des données</a></li>
+<li class="chapter" data-level="8.3.2" data-path="open-data.html"><a href="open-data.html#utilisation-de-donnees-ouvertes-open-data"><i class="fa fa-check"></i><b>8.3.2</b> Utilisation de données ouvertes (<em>Open Data</em>)</a></li>
+</ul></li>
+</ul></li>
+<li class="appendix"><span><b>Appendices</b></span></li>
+<li class="chapter" data-level="A" data-path="svbox.html"><a href="svbox.html"><i class="fa fa-check"></i><b>A</b> Installation de la SciViews Box</a><ul>
+<li class="chapter" data-level="A.1" data-path="migration-des-projets.html"><a href="migration-des-projets.html"><i class="fa fa-check"></i><b>A.1</b> Migration des projets</a></li>
+<li class="chapter" data-level="A.2" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html"><i class="fa fa-check"></i><b>A.2</b> Configuration Git et Github</a><ul>
+<li class="chapter" data-level="A.2.1" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html#compte-github-dans-rstudio"><i class="fa fa-check"></i><b>A.2.1</b> Compte Github dans RStudio</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>Références</a></li>
+<li class="divider"></li>
+<li><a href="http://biodatascience-course.sciviews.org">Site Web du cours</a></li>
+<li><a href="https://github.com/BioDataScience-Course">Site Github du cours</a></li>
+<br/>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Science des données biologiques 2</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="open-data" class="section level2">
+<h2><span class="header-section-number">8.3</span> Open Data</h2>
+<p>L’“Open Data” ou données ouvertes est un phénomène en pleine expansion. Vous y serez certainement confrontés dans votre carrière. Autant bien comprendre de quoi il s’agit et rendre vos données accessibles et publiques de la meilleure façon qui soit. Cette dernière partie est une brève introduction en la matière, qui devrait vous permettre de bien démarrer.</p>
+<div id="gestion-des-donnees" class="section level3">
+<h3><span class="header-section-number">8.3.1</span> Gestion des données</h3>
+<p>Lors de la préparation d’une expérience, vous devez réfléchir à un plan d’expérience. Vous avez donc défini des protocoles d’expérience, le nombre de réplicas,… Vous devez cependant intégrer à votre réflexion, un plan de gestion de vos données. Dans ce plan, vous aurez à définir l’acquisition, la description ou encore le partage des données.</p>
+<div id="principe-fair" class="section level4">
+<h4><span class="header-section-number">8.3.1.1</span> Principe FAIR</h4>
+<p>Pour assurer une gestion cohérente des données scientifiques, il faut respecter le plus possible l’acronyme en anglais <strong>FAIR</strong> : <em>Findable, Accessible, Interoperable, Reusable</em> <span class="citation">(Wilkinson et al. <a href="#ref-Wilkinson2016">2016</a>)</span>.</p>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="15%" />
+<col width="68%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Acronyme en anglais</th>
+<th>Acronyme en français</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Findable</td>
+<td>Facile à trouver</td>
+<td>Les données ont besoin d’un code unique et persistant pour les retrouver</td>
+</tr>
+<tr class="even">
+<td>Accessible</td>
+<td>Accessible</td>
+<td>Les données et surtout les métadonnées avec une license sont mises à disposition.</td>
+</tr>
+<tr class="odd">
+<td>Interoperable</td>
+<td>Intéropérable</td>
+<td>Les données et les métadonnées doivent respecter les standards internationaux</td>
+</tr>
+<tr class="even">
+<td>Reusable</td>
+<td>Réutilisable</td>
+<td>Les données doivent être réutilisable grâce à des métadonnées riches et des licenses claires</td>
+</tr>
+</tbody>
+</table>
+<div id="facile-a-retrouver-findable" class="section level5">
+<h5><span class="header-section-number">8.3.1.1.1</span> Facile à retrouver (<em>Findable</em>)</h5>
+<p>Vos données et vos métadonnées détaillées doivent être facile à retrouver. Vous devez donc fournir un identifiant <strong>unique et permanent</strong>. Il existe de nombreux identifiants comme ISBN, ISSN, DOI, …</p>
+<p>Dans le cadre de la recherche scientifique, Le Digital Object Identifier (<em>DOI</em>) est la méthode standardisée conseillée. Vous avez déjà été confronté à des DOI. Par exemple, le DOI suivant <a href="https://doi.org/10.1038/sdata.2016.18" class="uri">https://doi.org/10.1038/sdata.2016.18</a> fait référence à l’article <em>The FAIR Guiding Principles for scientific data management and stewardship</em>. Ce code est unique et persistant. Ce code va toujours renvoyer vers cet article de la revue Scientific Data. Imaginons que la revue Scientific Data disparaissent, le DOI sera toujours associé à cet article. Ainsi, la publication pourra être retrouvée ailleurs sur Internet grâce à ce DOI.</p>
+<p>Le DOI ne couvre pas que les articles scientifiques, il est également utilisé pour les données. Par exemple, le DOI suivant <a href="https://doi.org/10.5281/zenodo.3711592" class="uri">https://doi.org/10.5281/zenodo.3711592</a> fait référence au données intitulé. <em>Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands</em> publié par Zenodo. Nous reviendrons dans les sections suivantes sur <a href="https://zenodo.org">zenodo</a>.</p>
+</div>
+<div id="accessible-accessible" class="section level5">
+<h5><span class="header-section-number">8.3.1.1.2</span> Accessible (<em>Accessible</em>)</h5>
+<p>Les données et les métadonnées que vous collectez doivent de plus en plus souvent être rendue disponible. Certaines revues scientifiques requièrent la mise à disposition des données. Les recherches financées par des fonds publics (nationaux, Européen,…) requièrent également la mise à disposition des données. Les données ne doivent pas être disponible à tous. Par contre les métadonnées doivent l’être. Il est, de plus, important de préciser la procédure afin d’obtenir les données.</p>
+<p>Il parait presque logique et évident de mettre à disposition ces données afin d’en faire profiter la recherche académique dans son ensemble. La recherche va progresser plus rapidement si les chercheurs collaborent. Un scientifique seul dans son laboratoire ne peut pas espérer progresser plus rapidement que 20 scientifiques qui collaborent et utilisent les données.</p>
+<p>Il ne s’agit cependant pas de donner ces données sans aucune sécurité. En effet, il serait frustrant de travailler très dur sur un sujet précis et qu’un autre scientifique vole le fruit de ces nombreuses heures de travail et publie un article avant vous. Il existe une solution pour spécifier les droits d’utilisation de vos données. Vous devez associer une <strong>licence</strong> à vos données et métadonnées.</p>
+<p>Vous avez très certainement déjà entendu parlé des licences <a href="https://creativecommons.org">Creative Commons</a>. Il est de plus en plus courant de voir apparaitre ce genre d’information sur des sites web comme <a href="https://creativecommons.org/share-your-work/public-domain/cc0">CC0</a>, <a href="https://creativecommons.org/licenses/by/4.0/">CC-by</a>, ou encore <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-by-sa</a>.</p>
+<p>Vous êtes peut être plus familié avec les logos ci-dessous :</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Licence Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a></p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Licence Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a></p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Licence Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a></p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Licence Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a>.</p>
+<p><strong>Que se cache-t’il derrière ces logos ? Nous allons détailler ensemble ces abréviations.</strong> Nous pouvons résumer cela de manière simple en se posant deux questions :</p>
+<ul>
+<li>Souhaitez-vous autoriser le partage des adaptations de votre œuvre ?
+<ul>
+<li>Oui</li>
+<li>Non</li>
+<li>Oui, sous condition de partage dans les mêmes conditions.</li>
+</ul></li>
+<li>Autorisez-vous les utilisations commerciales de votre œuvre ?
+<ul>
+<li>Oui</li>
+<li>Non</li>
+</ul></li>
+</ul>
+<p>Ces deux questions proviennent de l’outil mis à disposition sur le site creative commons <a href="https://creativecommons.org/choose/" class="uri">https://creativecommons.org/choose/</a> pour définir la licence la plus adaptée pour vous.</p>
+<p>Dans le cadre de la recherche, tout n’est pas si simple. Vous devez tenir compte l’avis de vos supérieurs hiérarchiques, de votre institution et de la ou des institutions qui financent le travail. La bonne pratique est donc de discuter avec l’ensemble des acteurs pour décider de la bonne licence à employer, <em>le plus tôt possible, c’est-à-dire, déjà lors de l’élaboration du projet de recherche</em>.</p>
+<p>Repartons de notre jeu de données sur le COVID-19 : <a href="https://doi.org/10.5281/zenodo.3711592">Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands</a>. Nous pouvons voir que l’auteur a décidé d’employer la licence</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Licence Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />Ce(tte) œuvre est mise à disposition selon les termes de la <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Licence Creative Commons Attribution 4.0 International</a>.</p>
+<p>Il est donc autorisé d’adapter l’œuvre et de l’utiliser à des fins commerciales. Il s’agit d’une licence très peu contraignantes. Il suffit simplement de créditer l’auteur de l’oœuvre originale.</p>
+<p>Il existe également des licences plus spécifiques aux bases de données, de la moins contraignante à la plus contraingante <a href="https://opendatacommons.org/licenses/pddl/">PDDL</a> , <a href="https://opendatacommons.org/licenses/by/">ODC-by</a> et <a href="https://opendatacommons.org/licenses/odbl/">ODbL</a></p>
+</div>
+<div id="interoperable-interoperable" class="section level5">
+<h5><span class="header-section-number">8.3.1.1.3</span> Intéropérable (<em>Interoperable</em>)</h5>
+<p>Les données sont associées à des métadonnées riches. Sur base des métadonnées, les données doivent être utilisable, compréhensible et <em>combinable avec d’autres données</em>. Ce principe est difficile à mettre en place et requiert donc une réflexion approfondie.</p>
+</div>
+<div id="reutilisable-reusable" class="section level5">
+<h5><span class="header-section-number">8.3.1.1.4</span> Réutilisable (<em>Reusable</em>)</h5>
+<p>Les données doivent autant que possible être associées à des métadonnées riches avec une licence claire afin de pouvoir être <em>réutilisées</em>, nous l’avons déjà vu.</p>
+<p>Vous avez certainement le sentiment que ces quatre principes se mélangent un peu. En effet, ils insistent avec des petites nuances sur des concepts particuliers.</p>
+<p>En Résumé :</p>
+<p><span class="math display">\[Données \ inutilisables = données \ seules\]</span></p>
+<p><span class="math display">\[Données \ utilisables = données + contexte\]</span></p>
+<p>Le contexte c’est :</p>
+<ul>
+<li>un code unique et persistant associé aux données et au contexte,</li>
+<li>une description du projet associée aux données,</li>
+<li>des metodonnées riches (y compris un dictionnaire des données<a href="#fn24" class="footnote-ref" id="fnref24"><sup>24</sup></a>),</li>
+<li>la licence associée aux données?</li>
+</ul>
+<p>Dans le cadre de vos futures recherches, un outil comme Zenodo est très intéressant pour publier vos donnes sur l’Internet tout en suivant au mieux le principe <strong>FAIR</strong></p>
+</div>
+</div>
+<div id="dmp" class="section level4">
+<h4><span class="header-section-number">8.3.1.2</span> DMP</h4>
+<p>Afin de respecter ces principes <strong>FAIR</strong>, des outils ont été développés. Il s’agit des plans de gestion des données (ou Data Management Plan, <strong>DMP</strong>). L’Université de Mons dispose d’un <a href="https://dmponline.be">DMP</a>. Cet outil est partagé par l’ensemble des universités de Belgique.</p>
+<p>Lorsque vous allez concevoir un plan d’expérience, n’oubliez pas de concevoir votre plan de gestion des données en même temps. Voici une checklist pour un plan de gestion des données efficaces <a href="http://www.dcc.ac.uk/sites/default/files/documents/resource/DMP_Checklist_2013.pdf" class="uri">http://www.dcc.ac.uk/sites/default/files/documents/resource/DMP_Checklist_2013.pdf</a></p>
+<div id="a-vous-de-jouer-25" class="section level5 unnumbered">
+<h5>A vous de jouer !</h5>
+<ul>
+<li>Réalisez la fin du projet spécifique lié au module 08.</li>
+</ul>
+
+<div class="bdd">
+<strong>Le lien pour réaliser ce projet se trouve au début du module</strong>
+<em>Ce projet doit être terminé à la fin de ce module</em>
+</div>
+
+</div>
+</div>
+</div>
+<div id="utilisation-de-donnees-ouvertes-open-data" class="section level3">
+<h3><span class="header-section-number">8.3.2</span> Utilisation de données ouvertes (<em>Open Data</em>)</h3>
+<p>Il existe de nombreux sites qui regroupent un ensemble de données que nous allons appeler <em>Open Data</em>. Nous avons parlé précédemment de Zenodo mais de nombreuses bases de données sont également disponibles comme le <a href="https://www.europeandataportal.eu/fr">Portail européen de données</a>, <a href="https://data.gov.be/fr">Portail belge de données</a>, …</p>
+<p>Afin de connaitre la qualité des données voici une checklist très utile pour appréhender des données ouvertes. Vous devez être capable de trouver facilement :</p>
+<ul>
+<li>But des données</li>
+<li>Code unique et persistant des données</li>
+<li>Licence des données</li>
+<li>Format des données</li>
+<li>Qualité des données</li>
+</ul>
+<p><strong>A nouveau, vous vous rendez compte que nous revenons à notre principe FAIR expliqué plus haut.</strong> Prenons notre exemple sur le <em>Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands</em> et appliquons notre checklist.</p>
+<ul>
+<li>Le but des données</li>
+</ul>
+<p>Une description des données est proposée. Le nom de l’auteur est spécifié. Il est également précisé la date de publication avec la version des données. Le 16 mars 2020, la version est <code>v2020.3.16</code>. Les données sont également associées à un dépôt Github qui les traitent : <a href="https://github.com/J535D165/CoronaWatchNL">J535D165/CoronaWatchNL</a></p>
+<ul>
+<li>Un code unique et persistant</li>
+</ul>
+<p>Ces données ont un DOI : <a href="https://doi.org/10.5281/zenodo.3711592"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.3711592.svg" alt="DOI" /></a></p>
+<ul>
+<li>La licence</li>
+</ul>
+<p>Les données sont mise à disposition avec la licence <a href="https://creativecommons.org/licenses/by/4.0/legalcode">Creative Commons Attribution 4.0 International</a></p>
+<ul>
+<li>le format</li>
+</ul>
+<p>Les données sont proposées sous le format <code>csv</code>. Ce format est un standard très employé. Il est à privilégier par rapport au format <code>.xls</code> ou <code>.xlsx</code>. Il est à la fois interopérable et réutilisable facilement.</p>
+<ul>
+<li>La qualité</li>
+</ul>
+<p>Ce dernier critère est le plus difficile à déterminer. Une première chose à vérifier concerne les métadonnées associées à chaque variable. Nous pouvons voir que l’auteur peut encore améliorer les métadonnées associées à ses données. Le nom des variables reste cependant tout à fait compréhensible.</p>
+<p>Comme vous venez de le voir, Zenodo de part sa structuration permet de remplir très simplement cette checklist.</p>
+<div id="pour-en-savoir-plus-9" class="section level5 unnumbered">
+<h5>Pour en savoir plus</h5>
+<ul>
+<li><p><a href="https://www.europeandataportal.eu/fr/training/what-open-data">Qu’est ce que l’Open Data ?</a></p></li>
+<li><p><a href="https://www.europeandataportal.eu/en/training/licensing-assistant">Aide sur l’interprétation et le choix des licences</a></p></li>
+<li><p><a href="https://choosealicense.com">Choisir la bonne licence Open Source</a></p></li>
+<li><p><a href="https://theodi.org/article/publishers-guide-to-open-data-licensing/">Guide sur les licences open data</a></p></li>
+<li><p>Des stockages spécifiques ont été mis en place pour les données scientifiques comme <a href="https://zenodo.org">Zenodo (dépot des données hebergé par le CERN)</a>, <a href="https://dataverse.org">Dataverse</a>, ou encore <a href="https://figshare.com">Figshare</a></p></li>
+<li><p><a href="https://www.unil.ch/openscience/fr/home/menuinst/open-research-data/gerer-ses-donnees-de-recherche/data-management-plan-dmp.html">Data Management Plan</a></p></li>
+<li><p>Le <a href="https://ogsl.ca/fr/principes-fair">Principe FAIR</a> expliqué par l’Observatoire Global du Saint-Laurent.</p></li>
+<li><p>Article scientifique sur le FAIR plan : <a href="https://www.nature.com/articles/sdata201618">The FAIR Guiding Principles for scientific data management and stewardship</a></p></li>
+<li><p>L’outil institutionnel de l’Université de Mons afin de réaliser un plan de gestion de données est disponible <a href="https://dmponline.be">DMPonline.be</a></p></li>
+</ul>
+
+</div>
+</div>
+</div>
+<!-- </div> -->
+
+
+
+<h3>Références</h3>
+<div id="refs" class="references">
+<div id="ref-Wilkinson2016">
+<p>Wilkinson, Mark D, Michel Dumontier, IJsbrand Jan Aalbersberg, Gabrielle Appleton, Myles Axton, Arie Baak, Niklas Blomberg, et al. 2016. “The FAIR Guiding Principles for scientific data management and stewardship.” <em>Scientific Data</em> 3 (1): 160018. <a href="https://doi.org/10.1038/sdata.2016.18">https://doi.org/10.1038/sdata.2016.18</a>.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="24">
+<li id="fn24"><p>Vous avez déjà rédigé un dictionnaire des données lorsque vous avez plannifié vos mesures concernant la biométrie humaine l’an dernier au cours de science des données biologiques I.<a href="open-data.html#fnref24" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://sddb.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="indices-de-biodiversite.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="svbox.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/BioDataScience-Course/sdd-umons2/edit/master/08-afm.Rmd",
+"text": "Editer"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

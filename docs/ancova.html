@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>3.4 ANCOVA | Science des données biologiques 2</title>
+  <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="3.4 ANCOVA | Science des données biologiques 2" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
+  <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+  <meta property="og:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3.4 ANCOVA | Science des données biologiques 2" />
+  
+  <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+
+<meta name="author" content="Philippe Grosjean &amp; Guyliann Engels (avec des contributions de Raphaël Conotte)">
+
+
+<meta name="date" content="2020-08-12">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="matrice-de-contraste.html">
+<link rel="next" href="modele-lineaire-generalise.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.8.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.39.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.39.2/plotly-latest.min.js"></script>
+<link href="libs/rglwidgetClass-2/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-2/rglClass.src.js"></script>
+<script src="libs/CanvasMatrix4-2016/CanvasMatrix.src.js"></script>
+<script src="libs/rglWebGL-binding-0.100.19/rglWebGL.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Science des données biologiques 2</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Préambule</a><ul>
+<li class="chapter" data-level="" data-path="vue-generale-des-cours.html"><a href="vue-generale-des-cours.html"><i class="fa fa-check"></i>Vue générale des cours</a></li>
+<li class="chapter" data-level="" data-path="materiel-pedagogique.html"><a href="materiel-pedagogique.html"><i class="fa fa-check"></i>Matériel pédagogique</a></li>
+</ul></li>
+<li class="part"><span><b>I Cours II: modélisation</b></span></li>
+<li class="chapter" data-level="1" data-path="lm.html"><a href="lm.html"><i class="fa fa-check"></i><b>1</b> Régression linéaire I</a><ul>
+<li class="chapter" data-level="1.1" data-path="modele.html"><a href="modele.html"><i class="fa fa-check"></i><b>1.1</b> Modèle</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="modele.html"><a href="modele.html#pourquoi-modeliser"><i class="fa fa-check"></i><b>1.1.1</b> Pourquoi modéliser ?</a></li>
+<li class="chapter" data-level="1.1.2" data-path="modele.html"><a href="modele.html#quand-modeliser"><i class="fa fa-check"></i><b>1.1.2</b> Quand modéliser ?</a></li>
+<li class="chapter" data-level="1.1.3" data-path="modele.html"><a href="modele.html#entrainement-et-confirmation"><i class="fa fa-check"></i><b>1.1.3</b> Entraînement et confirmation</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html"><i class="fa fa-check"></i><b>1.2</b> Régression linéaire simple</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#quantifier-lajustement-dun-modele"><i class="fa fa-check"></i><b>1.2.1</b> Quantifier l’ajustement d’un modèle</a></li>
+<li class="chapter" data-level="1.2.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#trouver-la-meilleure-droite"><i class="fa fa-check"></i><b>1.2.2</b> Trouver la meilleure droite</a></li>
+<li class="chapter" data-level="1.2.3" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#la-fonction-lm"><i class="fa fa-check"></i><b>1.2.3</b> La fonction <code>lm()</code></a></li>
+<li class="chapter" data-level="1.2.4" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#resume-avec-summary"><i class="fa fa-check"></i><b>1.2.4</b> Résumé avec <code>summary()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html"><i class="fa fa-check"></i><b>1.3</b> Outils de diagnostic</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#analyse-des-residus"><i class="fa fa-check"></i><b>1.3.1</b> Analyse des résidus</a></li>
+<li class="chapter" data-level="1.3.2" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#enveloppe-de-confiance"><i class="fa fa-check"></i><b>1.3.2</b> Enveloppe de confiance</a></li>
+<li class="chapter" data-level="1.3.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#extraire-les-donnees-dun-modele"><i class="fa fa-check"></i><b>1.3.3</b> Extraire les données d’un modèle</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="lm2.html"><a href="lm2.html"><i class="fa fa-check"></i><b>2</b> Régression linéaire II</a><ul>
+<li class="chapter" data-level="2.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html"><i class="fa fa-check"></i><b>2.1</b> Outils de diagnostic (suite)</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#resume-avec-summarysuite"><i class="fa fa-check"></i><b>2.1.1</b> Résumé avec <code>summary()</code>(suite)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#comparaison-de-regressions"><i class="fa fa-check"></i><b>2.1.2</b> Comparaison de régressions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="regression-lineaire-multiple.html"><a href="regression-lineaire-multiple.html"><i class="fa fa-check"></i><b>2.2</b> Régression linéaire multiple</a></li>
+<li class="chapter" data-level="2.3" data-path="regression-lineaire-polynomiale.html"><a href="regression-lineaire-polynomiale.html"><i class="fa fa-check"></i><b>2.3</b> Régression linéaire polynomiale</a></li>
+<li class="chapter" data-level="2.4" data-path="rmse-critere-dakaike.html"><a href="rmse-critere-dakaike.html"><i class="fa fa-check"></i><b>2.4</b> RMSE &amp; critère d’Akaike</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="mod-lineaire.html"><a href="mod-lineaire.html"><i class="fa fa-check"></i><b>3</b> Modèle linéaire</a><ul>
+<li class="chapter" data-level="3.1" data-path="variables-numeriques-ou-facteurs.html"><a href="variables-numeriques-ou-facteurs.html"><i class="fa fa-check"></i><b>3.1</b> Variables numériques ou facteurs</a></li>
+<li class="chapter" data-level="3.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html"><i class="fa fa-check"></i><b>3.2</b> ANOVA et régression linéaire</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#modele-lineaire-commun"><i class="fa fa-check"></i><b>3.2.1</b> Modèle linéaire commun</a></li>
+<li class="chapter" data-level="3.2.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#reencodage-des-variables-de-lanova"><i class="fa fa-check"></i><b>3.2.2</b> Réencodage des variables de l’ANOVA</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html"><i class="fa fa-check"></i><b>3.3</b> Matrice de contraste</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#contraste-orthogonaux"><i class="fa fa-check"></i><b>3.3.1</b> Contraste orthogonaux</a></li>
+<li class="chapter" data-level="3.3.2" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#autres-matrices-de-contrastes-courantes"><i class="fa fa-check"></i><b>3.3.2</b> Autres matrices de contrastes courantes</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="ancova.html"><a href="ancova.html"><i class="fa fa-check"></i><b>3.4</b> ANCOVA</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="ancova.html"><a href="ancova.html#bebes-a-la-naissance"><i class="fa fa-check"></i><b>3.4.1</b> Bébés à la naissance</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html"><i class="fa fa-check"></i><b>3.5</b> Modèle linéaire généralisé</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html#exemple"><i class="fa fa-check"></i><b>3.5.1</b> Exemple</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="reg-non-lin.html"><a href="reg-non-lin.html"><i class="fa fa-check"></i><b>4</b> Régression non linéaire</a><ul>
+<li class="chapter" data-level="4.1" data-path="rendement-photosynthetique.html"><a href="rendement-photosynthetique.html"><i class="fa fa-check"></i><b>4.1</b> Rendement photosynthétique</a></li>
+<li class="chapter" data-level="4.2" data-path="principe.html"><a href="principe.html"><i class="fa fa-check"></i><b>4.2</b> Principe</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="principe.html"><a href="principe.html#fonction-objective"><i class="fa fa-check"></i><b>4.2.1</b> Fonction objective</a></li>
+<li class="chapter" data-level="4.2.2" data-path="principe.html"><a href="principe.html#calcul-iteratif"><i class="fa fa-check"></i><b>4.2.2</b> Calcul itératif</a></li>
+<li class="chapter" data-level="4.2.3" data-path="principe.html"><a href="principe.html#pieges-et-difficultes"><i class="fa fa-check"></i><b>4.2.3</b> Pièges et difficultés</a></li>
+<li class="chapter" data-level="4.2.4" data-path="principe.html"><a href="principe.html#modeles-selfstart-dans-r"><i class="fa fa-check"></i><b>4.2.4</b> Modèles ‘selfStart’ dans R</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html"><i class="fa fa-check"></i><b>4.3</b> Modèles courants en biologie</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-michaelis-menten"><i class="fa fa-check"></i><b>4.3.1</b> Modèle de Michaelis-Menten</a></li>
+<li class="chapter" data-level="4.3.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-croissance"><i class="fa fa-check"></i><b>4.3.2</b> Modèles de croissance</a></li>
+<li class="chapter" data-level="4.3.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#courbe-exponentielle"><i class="fa fa-check"></i><b>4.3.3</b> Courbe exponentielle</a></li>
+<li class="chapter" data-level="4.3.4" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#courbe-logistique"><i class="fa fa-check"></i><b>4.3.4</b> Courbe logistique</a></li>
+<li class="chapter" data-level="4.3.5" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-gompertz"><i class="fa fa-check"></i><b>4.3.5</b> Modèle de Gompertz</a></li>
+<li class="chapter" data-level="4.3.6" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-von-bertalanffy"><i class="fa fa-check"></i><b>4.3.6</b> Modèles de von Bertalanffy</a></li>
+<li class="chapter" data-level="4.3.7" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-richards"><i class="fa fa-check"></i><b>4.3.7</b> Modèle de Richards</a></li>
+<li class="chapter" data-level="4.3.8" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-weibull"><i class="fa fa-check"></i><b>4.3.8</b> Modèle de Weibull</a></li>
+<li class="chapter" data-level="4.3.9" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-preece-baines-1"><i class="fa fa-check"></i><b>4.3.9</b> Modèle Preece-Baines 1</a></li>
+<li class="chapter" data-level="4.3.10" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-tanaka"><i class="fa fa-check"></i><b>4.3.10</b> Modèle de Tanaka</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="choix-du-modele.html"><a href="choix-du-modele.html"><i class="fa fa-check"></i><b>4.4</b> Choix du modèle</a></li>
+</ul></li>
+<li class="part"><span><b>II Cours II: analyse</b></span></li>
+<li class="chapter" data-level="5" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>5</b> Classification hiérarchique</a><ul>
+<li class="chapter" data-level="5.1" data-path="analyse-de-donnees.html"><a href="analyse-de-donnees.html"><i class="fa fa-check"></i><b>5.1</b> Analyse de données</a></li>
+<li class="chapter" data-level="5.2" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html"><i class="fa fa-check"></i><b>5.2</b> Distance entre individus</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#matrice-de-distances"><i class="fa fa-check"></i><b>5.2.1</b> Matrice de distances</a></li>
+<li class="chapter" data-level="5.2.2" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#indices-de-dissimilarite"><i class="fa fa-check"></i><b>5.2.2</b> Indices de (dis)similarité</a></li>
+<li class="chapter" data-level="5.2.3" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#utilisation-des-indices"><i class="fa fa-check"></i><b>5.2.3</b> Utilisation des indices</a></li>
+<li class="chapter" data-level="5.2.4" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#proprietes-des-indices"><i class="fa fa-check"></i><b>5.2.4</b> Propriétés des indices</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html"><i class="fa fa-check"></i><b>5.3</b> Regroupement avec CAH</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#dendrogramme"><i class="fa fa-check"></i><b>5.3.1</b> Dendrogramme</a></li>
+<li class="chapter" data-level="5.3.2" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#separer-les-groupes"><i class="fa fa-check"></i><b>5.3.2</b> Séparer les groupes</a></li>
+<li class="chapter" data-level="5.3.3" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#etude-complete"><i class="fa fa-check"></i><b>5.3.3</b> Étude complète</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="k-moyenne-mds-som.html"><a href="k-moyenne-mds-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne, MDS &amp; SOM</a><ul>
+<li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="k-moyennes.html"><a href="k-moyennes.html#exemple-simple"><i class="fa fa-check"></i><b>6.1.1</b> Exemple simple</a></li>
+<li class="chapter" data-level="6.1.2" data-path="k-moyennes.html"><a href="k-moyennes.html#classification-du-zooplancton"><i class="fa fa-check"></i><b>6.1.2</b> Classification du zooplancton</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html"><i class="fa fa-check"></i><b>6.2</b> Positionnement multidimensionnel (MDS)</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-simplifiee-sous-sciviewsr"><i class="fa fa-check"></i><b>6.2.1</b> MDS simplifiée sous SciViews::R</a></li>
+<li class="chapter" data-level="6.2.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-metrique-ou-pcoa"><i class="fa fa-check"></i><b>6.2.2</b> MDS métrique ou PCoA</a></li>
+<li class="chapter" data-level="6.2.3" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-non-metrique"><i class="fa fa-check"></i><b>6.2.3</b> MDS non métrique</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html"><i class="fa fa-check"></i><b>6.3</b> Cartes auto-adaptatives (SOM)</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html#som-sur-le-zooplancton"><i class="fa fa-check"></i><b>6.3.1</b> SOM sur le zooplancton</a></li>
+<li class="chapter" data-level="6.3.2" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html#interpretation-dun-som"><i class="fa fa-check"></i><b>6.3.2</b> Interprétation d’un SOM</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
+<li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#acp-dans-sciviewsr"><i class="fa fa-check"></i><b>7.1.1</b> ACP dans SciViews::R</a></li>
+<li class="chapter" data-level="7.1.2" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#indiens-diabetiques"><i class="fa fa-check"></i><b>7.1.2</b> Indiens diabétiques</a></li>
+<li class="chapter" data-level="7.1.3" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#biometrie-doursin"><i class="fa fa-check"></i><b>7.1.3</b> Biométrie d’oursin</a></li>
+<li class="chapter" data-level="7.1.4" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#visualisation-de-donnees-quantitatives"><i class="fa fa-check"></i><b>7.1.4</b> Visualisation de données quantitatives</a></li>
+<li class="chapter" data-level="7.1.5" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#acp-mecanisme"><i class="fa fa-check"></i><b>7.1.5</b> ACP : mécanisme</a></li>
+<li class="chapter" data-level="7.1.6" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#calcul-matriciel-acp"><i class="fa fa-check"></i><b>7.1.6</b> Calcul matriciel ACP</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>7.2</b> Analyse factorielle des correspondances</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#afc-dans-sciviewsr"><i class="fa fa-check"></i><b>7.2.1</b> AFC dans SciViews::R</a></li>
+<li class="chapter" data-level="7.2.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#enquete-sur-la-science"><i class="fa fa-check"></i><b>7.2.2</b> Enquête sur la science</a></li>
+<li class="chapter" data-level="7.2.3" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#des-acariens-sinon-rien"><i class="fa fa-check"></i><b>7.2.3</b> Des acariens sinon rien</a></li>
+<li class="chapter" data-level="7.2.4" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#principe-de-lafc"><i class="fa fa-check"></i><b>7.2.4</b> Principe de l’AFC</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html"><i class="fa fa-check"></i><b>7.3</b> Accès aux bases de données</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#installation-de-sqlite"><i class="fa fa-check"></i><b>7.3.1</b> Installation de SQLite</a></li>
+<li class="chapter" data-level="7.3.2" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#base-de-donnees-en-memoire"><i class="fa fa-check"></i><b>7.3.2</b> Base de données en mémoire</a></li>
+<li class="chapter" data-level="7.3.3" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#base-de-donnees-dans-un-fichier"><i class="fa fa-check"></i><b>7.3.3</b> Base de données dans un fichier</a></li>
+<li class="chapter" data-level="7.3.4" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#driver-odbc-dans-rstudio"><i class="fa fa-check"></i><b>7.3.4</b> Driver ODBC dans RStudio</a></li>
+<li class="chapter" data-level="7.3.5" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-db-browser"><i class="fa fa-check"></i><b>7.3.5</b> Utilisation de DB Browser</a></li>
+<li class="chapter" data-level="7.3.6" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-dplyr"><i class="fa fa-check"></i><b>7.3.6</b> Utilisation de dplyr</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM, biodiversité et Open Data</a><ul>
+<li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#afm-dans-sciviewsr"><i class="fa fa-check"></i><b>8.1.1</b> AFM dans SciViews::R</a></li>
+<li class="chapter" data-level="8.1.2" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#plancton-en-mediterranee"><i class="fa fa-check"></i><b>8.1.2</b> Plancton en Méditerranée</a></li>
+<li class="chapter" data-level="8.1.3" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#afm-avec-donnees-mixtes"><i class="fa fa-check"></i><b>8.1.3</b> AFM avec données mixtes</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html"><i class="fa fa-check"></i><b>8.2</b> Indices de biodiversité</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-alpha"><i class="fa fa-check"></i><b>8.2.1</b> Diversité alpha</a></li>
+<li class="chapter" data-level="8.2.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-beta"><i class="fa fa-check"></i><b>8.2.2</b> Diversité beta</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="open-data.html"><a href="open-data.html"><i class="fa fa-check"></i><b>8.3</b> Open Data</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="open-data.html"><a href="open-data.html#gestion-des-donnees"><i class="fa fa-check"></i><b>8.3.1</b> Gestion des données</a></li>
+<li class="chapter" data-level="8.3.2" data-path="open-data.html"><a href="open-data.html#utilisation-de-donnees-ouvertes-open-data"><i class="fa fa-check"></i><b>8.3.2</b> Utilisation de données ouvertes (<em>Open Data</em>)</a></li>
+</ul></li>
+</ul></li>
+<li class="appendix"><span><b>Appendices</b></span></li>
+<li class="chapter" data-level="A" data-path="svbox.html"><a href="svbox.html"><i class="fa fa-check"></i><b>A</b> Installation de la SciViews Box</a><ul>
+<li class="chapter" data-level="A.1" data-path="migration-des-projets.html"><a href="migration-des-projets.html"><i class="fa fa-check"></i><b>A.1</b> Migration des projets</a></li>
+<li class="chapter" data-level="A.2" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html"><i class="fa fa-check"></i><b>A.2</b> Configuration Git et Github</a><ul>
+<li class="chapter" data-level="A.2.1" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html#compte-github-dans-rstudio"><i class="fa fa-check"></i><b>A.2.1</b> Compte Github dans RStudio</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>Références</a></li>
+<li class="divider"></li>
+<li><a href="http://biodatascience-course.sciviews.org">Site Web du cours</a></li>
+<li><a href="https://github.com/BioDataScience-Course">Site Github du cours</a></li>
+<br/>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Science des données biologiques 2</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="ancova" class="section level2">
+<h2><span class="header-section-number">3.4</span> ANCOVA</h2>
+<p>Avant l’apparition du modèle linéaire, une version particulière d’un mélange de régression linéaire et d’une ANOVA avec une variable indépendante quantitative et une autre variable indépendante qualitative s’appelait une ANCOVA (ANalyse de la COVariance). Un tel modèle d’ANCOVA peut naturellement également se résoudre à l’aide de la fonction <code>lm()</code> qui, en outre, peut faire bien plus. Nous allons maintenant ajuster un tel modèle à titre de première application concrète de tout ce que nous venons de voir sur le modèle linéaire et sur les matrices de contrastes associées.</p>
+<div id="bebes-a-la-naissance" class="section level3">
+<h3><span class="header-section-number">3.4.1</span> Bébés à la naissance</h3>
+<p>Nous étudions la masse de nouveaux nés en fonction du poids de la mère et du fait qu’elle fume ou non. Cette analyse s’inspire de <span class="citation">Verzani (<a href="#ref-verzani2005">2005</a>)</span>. Nous avons donc ici une variable dépendante <code>wt</code>, la masse des bébés qui est quantitative, et deux variables indépendantes ou prédictives <code>wt1</code>, la masse de la mère, et <code>smoke</code> le fait que la mère fume ou non. Or la première de ces variables explicatives est quantitative (<code>wt1</code>) et l’autre (<code>smoke</code>) est une variable facteur à quatre niveaux (0 = la mère n’a jamais fumé, 1 = elle fume y compris pendant la grossesse, 2 = elle fumait mais a arrêté à la grossesses, et 3 = la mère a fumé, mais a arrêté, et ce, bien avant la grossesse. Un dernier niveau 9 = inconnu encode de manière non orthodoxe les valeurs manquantes dans notre tableau de données (valeurs que nous éliminerons). De même les masses des nouveaux nés et des mères sont des des unités impériales (américaines) respectivement en “onces” et en “livres”. Enfin, nous devons prendre soin de bien encoder la variable <code>smoke</code> comme une variable <code>factor</code> (ici nous ne considèrerons pas qu’il s’agit d’un facteur ordonné et nous voulons faire un contraste de type traitement avec comparaison à des mères qui n’ont jamais fumé). <strong>Un reminement soigneux des données est donc nécessaire avant de pouvoir appliquer notre modèle !</strong></p>
+<pre class="sourceCode r"><code class="sourceCode r">SciViews<span class="op">::</span>R
+babies &lt;-<span class="st"> </span><span class="kw">read</span>(<span class="st">&quot;babies&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;UsingR&quot;</span>)
+knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">head</span>(babies))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">id</th>
+<th align="right">pluralty</th>
+<th align="right">outcome</th>
+<th align="right">date</th>
+<th align="right">gestation</th>
+<th align="right">sex</th>
+<th align="right">wt</th>
+<th align="right">parity</th>
+<th align="right">race</th>
+<th align="right">age</th>
+<th align="right">ed</th>
+<th align="right">ht</th>
+<th align="right">wt1</th>
+<th align="right">drace</th>
+<th align="right">dage</th>
+<th align="right">ded</th>
+<th align="right">dht</th>
+<th align="right">dwt</th>
+<th align="right">marital</th>
+<th align="right">inc</th>
+<th align="right">smoke</th>
+<th align="right">time</th>
+<th align="right">number</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">15</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="right">1411</td>
+<td align="right">284</td>
+<td align="right">1</td>
+<td align="right">120</td>
+<td align="right">1</td>
+<td align="right">8</td>
+<td align="right">27</td>
+<td align="right">5</td>
+<td align="right">62</td>
+<td align="right">100</td>
+<td align="right">8</td>
+<td align="right">31</td>
+<td align="right">5</td>
+<td align="right">65</td>
+<td align="right">110</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="right">20</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="right">1499</td>
+<td align="right">282</td>
+<td align="right">1</td>
+<td align="right">113</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">33</td>
+<td align="right">5</td>
+<td align="right">64</td>
+<td align="right">135</td>
+<td align="right">0</td>
+<td align="right">38</td>
+<td align="right">5</td>
+<td align="right">70</td>
+<td align="right">148</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="right">58</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="right">1576</td>
+<td align="right">279</td>
+<td align="right">1</td>
+<td align="right">128</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">28</td>
+<td align="right">2</td>
+<td align="right">64</td>
+<td align="right">115</td>
+<td align="right">5</td>
+<td align="right">32</td>
+<td align="right">1</td>
+<td align="right">99</td>
+<td align="right">999</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">61</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="right">1504</td>
+<td align="right">999</td>
+<td align="right">1</td>
+<td align="right">123</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">36</td>
+<td align="right">5</td>
+<td align="right">69</td>
+<td align="right">190</td>
+<td align="right">3</td>
+<td align="right">43</td>
+<td align="right">4</td>
+<td align="right">68</td>
+<td align="right">197</td>
+<td align="right">1</td>
+<td align="right">8</td>
+<td align="right">3</td>
+<td align="right">5</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="right">72</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="right">1425</td>
+<td align="right">282</td>
+<td align="right">1</td>
+<td align="right">108</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">23</td>
+<td align="right">5</td>
+<td align="right">67</td>
+<td align="right">125</td>
+<td align="right">0</td>
+<td align="right">24</td>
+<td align="right">5</td>
+<td align="right">99</td>
+<td align="right">999</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="right">100</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="right">1673</td>
+<td align="right">286</td>
+<td align="right">1</td>
+<td align="right">136</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">25</td>
+<td align="right">2</td>
+<td align="right">62</td>
+<td align="right">93</td>
+<td align="right">3</td>
+<td align="right">28</td>
+<td align="right">2</td>
+<td align="right">64</td>
+<td align="right">130</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+<p>Ce tableau est “brut de décoffrage”. Voyez <code>help(&quot;babies&quot;, package = &quot;UsingR&quot;)</code> pour de plus amples informations. Nous allons maintenant remanier tout cela correctement.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># wt = masse du bébé à la naissance en onces et 999 = valeur manquante</span>
+<span class="co"># wt1 = masse de la mère à la naissance en livres et 999 = valeur manquante</span>
+<span class="co"># smoke = 0 (non), = 1 (oui), = 2 (jusqu&#39;à grossesse),</span>
+<span class="co">#       = 3 (plus depuis un certain temps) and = 9 (inconnu)</span>
+babies <span class="op">%&gt;.%</span><span class="st"> </span><span class="kw">select</span>(., wt, wt1, smoke) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Garder seulement wt, wt1 &amp; smoke</span>
+<span class="st">  </span><span class="kw">filter</span>(., wt1 <span class="op">&lt;</span><span class="st"> </span><span class="dv">999</span>, wt <span class="op">&lt;</span><span class="st"> </span><span class="dv">999</span>, smoke <span class="op">&lt;</span><span class="st"> </span><span class="dv">9</span>) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Eliminer les valeurs manquantes</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">wt =</span> wt <span class="op">*</span><span class="st"> </span><span class="fl">0.02835</span>) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Transformer le poids en kg</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">wt1 =</span> wt1 <span class="op">*</span><span class="st"> </span><span class="fl">0.4536</span>) <span class="op">%&gt;.%</span><span class="st"> </span><span class="co"># Idem</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">smoke =</span> <span class="kw">as.factor</span>(smoke)) -&gt;<span class="st"> </span><span class="co"># S&#39;assurer d&#39;avoir une variable factor</span>
+<span class="st">  </span>Babies <span class="co"># Enregistrer le résultat dans Babies</span>
+
+knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">head</span>(Babies))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">wt</th>
+<th align="right">wt1</th>
+<th align="left">smoke</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">3.40200</td>
+<td align="right">45.3600</td>
+<td align="left">0</td>
+</tr>
+<tr class="even">
+<td align="right">3.20355</td>
+<td align="right">61.2360</td>
+<td align="left">0</td>
+</tr>
+<tr class="odd">
+<td align="right">3.62880</td>
+<td align="right">52.1640</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="right">3.48705</td>
+<td align="right">86.1840</td>
+<td align="left">3</td>
+</tr>
+<tr class="odd">
+<td align="right">3.06180</td>
+<td align="right">56.7000</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="right">3.85560</td>
+<td align="right">42.1848</td>
+<td align="left">2</td>
+</tr>
+</tbody>
+</table>
+<p>Description des données :</p>
+<pre class="sourceCode r"><code class="sourceCode r">skimr<span class="op">::</span><span class="kw">skim</span>(Babies)</code></pre>
+<pre><code># Skim summary statistics
+#  n obs: 1190 
+#  n variables: 3 
+# 
+# ── Variable type:factor ────────────────────────────────────────────────────
+#  variable missing complete    n n_unique                    top_counts
+#     smoke       0     1190 1190        4 0: 531, 1: 465, 3: 102, 2: 92
+#  ordered
+#    FALSE
+# 
+# ── Variable type:numeric ───────────────────────────────────────────────────
+#  variable missing complete    n  mean   sd    p0   p25  p50   p75   p100
+#        wt       0     1190 1190  3.39 0.52  1.56  3.06  3.4  3.71   4.99
+#       wt1       0     1190 1190 58.3  9.49 39.46 51.82 56.7 62.6  113.4 
+#      hist
+#  ▁▁▂▆▇▅▁▁
+#  ▂▇▆▂▁▁▁▁</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>wt1 <span class="op">%col=%</span><span class="st"> </span>smoke) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Masse de la mère [kg]&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Masse du bébé [kg]&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>smoke) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Masse du bébé [kg]&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(<span class="dt">data =</span> Babies, wt1 <span class="op">~</span><span class="st"> </span>smoke) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Masse de la mère [kg]&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Visuellement, nous ne voyons pas d’effet marquant. Peut-être la condition 1 de <code>smoke</code> (mère qui fume pendant la grossesse) mène-t-il à des bébés moins gros, mais est-ce significatif ? Pour cela, ajustons notre modèle ANCOVA avec matrice traitement (choix par défaut pour une la variable <code>factor</code> <code>smoke</code>). Comme nous savons déjà utiliser <code>lm()</code>, c’est très simple. Cela fonctionne exactement comme avant<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ANCOVA</span>
+Babies_lm &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>smoke <span class="op">*</span><span class="st"> </span>wt1)
+<span class="kw">summary</span>(Babies_lm)</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = wt ~ smoke * wt1, data = Babies)
+# 
+# Residuals:
+#     Min      1Q  Median      3Q     Max 
+# -1.9568 -0.3105  0.0133  0.3136  1.4989 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)  3.000663   0.128333  23.382  &lt; 2e-16 ***
+# smoke1      -0.303614   0.196930  -1.542 0.123405    
+# smoke2       0.901888   0.371393   2.428 0.015314 *  
+# smoke3      -0.035502   0.371379  -0.096 0.923858    
+# wt1          0.008117   0.002149   3.777 0.000167 ***
+# smoke1:wt1   0.001153   0.003346   0.345 0.730444    
+# smoke2:wt1  -0.015340   0.006390  -2.401 0.016523 *  
+# smoke3:wt1   0.001177   0.006147   0.191 0.848258    
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.4992 on 1182 degrees of freedom
+# Multiple R-squared:  0.08248, Adjusted R-squared:  0.07705 
+# F-statistic: 15.18 on 7 and 1182 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(Babies_lm)</code></pre>
+<pre><code># Analysis of Variance Table
+# 
+# Response: wt
+#             Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+# smoke        3  18.659  6.2197 24.9636 1.158e-15 ***
+# wt1          1   6.162  6.1621 24.7325 7.559e-07 ***
+# smoke:wt1    3   1.653  0.5511  2.2117   0.08507 .  
+# Residuals 1182 294.497  0.2492                      
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>L’analyse de variance montre que la masse de la mère a un effet significatif au seuil alpha de 5%, de même si la mère fume. Par contre, il n’y a pas d’<strong>interactions</strong> entre les deux. Le fait de pouvoir meurer des interactions entre variables qualitatives et quantitatives est ici bien évidemment un plus du modèle linéaire par rapport à ce qu’on pouvait faire avant !</p>
+<p>Le résumé de l’analyse nous montre que la régression de la masse des bébés en fonction de la masse de la mère (ligne <code>wt1</code> dans le tableau des coefficients), bien qu’étant significative, n’explique que 8% de la variance totale (le <span class="math inline">\(R^2\)</span>). Les termes <code>smoke1</code>, <code>smoke2</code> et <code>smoke3</code> sont les contrastes appliqués par rapport au contrôle (<code>smoke == 0</code>). On voit ici qu’aucun de ces contrastes n’est significatif au seuil alpha de 5%. Cela signifie que le seul effet significatif est celui lié à une ordonnée à l’origine non nulle <code>(Intercept)</code> matérialisant la condition <code>smoke == 0</code>. Cela signifie que des mères de masse nulle n’ayant jamais fumé engendreraient des bébés pesant environ 3kg. Dans le contexte présent, cette constatation n’a bien sûr aucun sens, et l’interprétation de l’ordonnée à l’origine ne doit pas être faite. Donc, le modèle linéaire, en offrant plus de contrôle dans notre ajustement et une définition de contrastes “utiles” matérialisés par les lignes <code>smoke1</code>, <code>smoke2</code> et <code>smoke3</code> du tableau nous permet de faire des tests plus utiles dans le contexte de notre analyse.</p>
+<p>N’oublions pas non plus la possibilité de déterminer si des interactions entre <code>smoke</code> et <code>wt1</code> existent pour ces différents contrastes, interactions testées respectivements aux lignes <code>smoke1:wt1</code>, <code>smoke2:wt1</code>, et <code>smoke3:wt1</code>du tableau des coefficients. Dans le cas présent, aucune de ces interactions n’est siginificative au seuil alpha de 5%.</p>
+<p>Pour comprendre à quoi tout cela fait référence, il faut considérer le modèle de base comme une droite de régression ajustée entre <code>wt</code> et <code>wt1</code> pour la population de référence <code>smoke == 0</code>. Ainsi, si nous faisons :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">lm</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>wt1, <span class="dt">subset =</span> smoke <span class="op">==</span><span class="st"> </span><span class="dv">0</span>))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = wt ~ wt1, data = Babies, subset = smoke == 0)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.95685 -0.25825  0.01476  0.25464  1.49890 
+# 
+# Coefficients:
+#             Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept) 3.000663   0.123572  24.283  &lt; 2e-16 ***
+# wt1         0.008117   0.002069   3.922 9.92e-05 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.4806 on 529 degrees of freedom
+# Multiple R-squared:  0.02826, Adjusted R-squared:  0.02642 
+# F-statistic: 15.38 on 1 and 529 DF,  p-value: 9.924e-05</code></pre>
+<p>Nous voyons en effet que les pentes et ordonnées à l’origine sont ici parfaitement identiques au modèle ANCOVA complet (mais pas les tests associés).</p>
+<p>Maintenant plus difficile : à quoi correspond une régression entre <code>wt</code> et <code>wt1</code> pour <code>smoke == 1</code> ?</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">lm</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>wt1, <span class="dt">subset =</span> smoke <span class="op">==</span><span class="st"> </span><span class="dv">1</span>))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = wt ~ wt1, data = Babies, subset = smoke == 1)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.70870 -0.35089  0.01034  0.33576  1.39420 
+# 
+# Coefficients:
+#             Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept) 2.697048   0.153270  17.597  &lt; 2e-16 ***
+# wt1         0.009270   0.002632   3.522 0.000471 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.5122 on 463 degrees of freedom
+# Multiple R-squared:  0.02609, Adjusted R-squared:  0.02399 
+# F-statistic:  12.4 on 1 and 463 DF,  p-value: 0.0004711</code></pre>
+<p>Nous avons une ordonnées à l’origine qui vaut 2,70 ici. Notons que cela correspond aussi à <code>(Intercept)</code> + <code>smoke1</code> = 3,00 - 0,30 = 2,70. Donc, l’ordonnées à l’origine pour <code>smoke == 1</code> est bien la valeur de référence additionnée de la valeur fournie à la ligne <code>smoke1</code> dans l’ANCOVA. Cela se vérifie aussi pour les deux autres droites pour <code>smoke2</code> et <code>smoke3</code>.</p>
+<p>Maintenant, la pente pour notre droite ajustée sur la population <code>smoke == 1</code> uniquement vaut 0,00927. Dans l’ANCOVA, nous avions une pente <code>wt1</code> de 0,00812 et une interaction <code>smoke1:wt1</code> claculée comme 0,00115. Notez alors que la pente de la droite seule 0,00927 = 0,00812 + 0,00115. Donc, tout comme <code>smoke1</code> correspond au décalage de l’ordonnée à l’origine du modèle de référence, les interactions <code>smoke1:wt1</code> correspondent au décalage de la pente par rapport au modèle de référence. Cela se vérifie également pour <code>smoke2:wt1</code> et <code>smoke3:wt1</code>.</p>
+<p>Donc, notre modèle complet ne fait rien d’autre que d’ajuster les quatre droites correspondant aux relations linéaires entre <code>wt</code> et <code>wt1</code>, <strong>mais en décompose les effets, niveau par niveau de la variable qualitative <code>smoke</code></strong> en fonction de la matrice de contraste que l’on a choisie. En bonnus, nous avons la possibilité de tester si chacune des composantes (tableau coefficient de <code>summary()</code>) ou si globalement chacune des variables (tableau obtenu avec <code>anova()</code>) a un effet significatif ou non dans le modèle.</p>
+<p>Le graphique correspondant est le même que si nous avions ajusté les 4 régressions linéaires indépendamment l’une de l’autre (mais les tests et les enveloppes de confiance diffèrent).</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>wt1 <span class="op">%col=%</span><span class="st"> </span>smoke) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Masse de la mère [kg]&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Masse du bébé [kg]&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chart</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>wt1 <span class="op">|</span><span class="st"> </span>smoke) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Masse de la mère [kg]&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Masse du bébé [kg]&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Comme toujours, lorsqu’un effet n’est pas siugnificatif, nous pouvons décider de <em>simplifier</em> le modèle. <strong>Mais attention ! Toujours considérer que les composantes sont interdépendantes.</strong> Donc, éliminer une composante du modèle peut avoir des effets parfois surprenants sur les autres.</p>
+<p>Voyons ce que cela donne si nous éliminons les interactions. Dans ce cas, nous ajustons des droites toutes parallèles avec uniquement un décalage de leur ordonnée à l’origine matérialisé par <code>smoke1</code>, <code>smoke2</code> et <code>smoke3</code> par rapport au modèle de référence ajusté pour la population <code>smoke == 0</code> (notez l’utilisation, du signe <code>+</code> dans la formuile, là où nous utilisions le signe <code>*</code> dans la modèle précédent).</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ANCOVA</span>
+Babies_lm2 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>smoke <span class="op">+</span><span class="st"> </span>wt1)
+<span class="kw">summary</span>(Babies_lm2)</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = wt ~ smoke + wt1, data = Babies)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.95453 -0.30780  0.01289  0.31108  1.49443 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)  3.030052   0.092861  32.630  &lt; 2e-16 ***
+# smoke1      -0.237938   0.031816  -7.478 1.46e-13 ***
+# smoke2       0.022666   0.056508   0.401    0.688    
+# smoke3       0.035486   0.054068   0.656    0.512    
+# wt1          0.007617   0.001534   4.966 7.85e-07 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.4999 on 1185 degrees of freedom
+# Multiple R-squared:  0.07733, Adjusted R-squared:  0.07422 
+# F-statistic: 24.83 on 4 and 1185 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(Babies_lm2)</code></pre>
+<pre><code># Analysis of Variance Table
+# 
+# Response: wt
+#             Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+# smoke        3  18.659  6.2197  24.887 1.285e-15 ***
+# wt1          1   6.162  6.1621  24.657 7.853e-07 ***
+# Residuals 1185 296.150  0.2499                      
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Hé, ça c’est intéressant ! Maintenant que nous avons éliminé les interactions qui apparaissent non pertinentes ici, nous avons toujours une régression significative entre <code>wt</code> et <code>wt1</code> (mais avec un <span class="math inline">\(R^2\)</span> très faible de 7,7%, attention), mais maintenant, nous faisons apparaitre un effet signicfication du contraste avec <code>smoke1</code> au seuil alpha de 5%. Et du coup, les effets des deux variables deviennent plus clairs dans notre tableau de l’ANOVA.</p>
+<p>Le graphique correspondant est l’ajustement de droites parallèles les unes aux autres pour les 4 sous-populations en fonction de <code>smoke</code>. Ce graphique est difficile à réaliser. Il faut ruser, et les détails du code vont au delà de ce cours (il n’est pas nécessaire de les comprendre à ce stade).</p>
+<pre class="sourceCode r"><code class="sourceCode r">cols &lt;-<span class="st"> </span>iterators<span class="op">::</span><span class="kw">iter</span>(scales<span class="op">::</span><span class="kw">hue_pal</span>()(<span class="dv">4</span>)) <span class="co"># Get colors for lines</span>
+<span class="kw">chart</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>wt1) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">col =</span> smoke)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">lapply</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">-0.238</span>, <span class="fl">0.0227</span>, <span class="fl">0.0355</span>), <span class="cf">function</span>(offset)
+    <span class="kw">geom_smooth</span>(<span class="dt">method =</span> lm, <span class="dt">formula =</span> y <span class="op">+</span><span class="st"> </span>offset <span class="op">~</span><span class="st"> </span>x,
+      <span class="dt">col =</span> iterators<span class="op">::</span><span class="kw">nextElem</span>(cols))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Masse de la mère [kg]&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Masse du bébé [kg]&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Voyons ce que donne l’analyse <em>post hoc</em> des comparaisons multiples (nous utilisons ici simplement le snippet disponible à partir de <code>...</code> -&gt; <code>hypothesis tests</code> -&gt; <code>hypothesis tests: means</code> -&gt; <code>hmanovamult : anova - multiple comparaisons [multcomp]</code>) que nous avons déjà employé et qui reste valable ici.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(anovaComp. &lt;-<span class="st"> </span><span class="kw">confint</span>(multcomp<span class="op">::</span><span class="kw">glht</span>(Babies_lm2,
+  <span class="dt">linfct =</span> multcomp<span class="op">::</span><span class="kw">mcp</span>(<span class="dt">smoke =</span> <span class="st">&quot;Tukey&quot;</span>))))</code></pre>
+<pre><code># 
+#    Simultaneous Tests for General Linear Hypotheses
+# 
+# Multiple Comparisons of Means: Tukey Contrasts
+# 
+# 
+# Fit: lm(formula = wt ~ smoke + wt1, data = Babies)
+# 
+# Linear Hypotheses:
+#            Estimate Std. Error t value Pr(&gt;|t|)    
+# 1 - 0 == 0 -0.23794    0.03182  -7.478  &lt; 1e-05 ***
+# 2 - 0 == 0  0.02267    0.05651   0.401    0.977    
+# 3 - 0 == 0  0.03549    0.05407   0.656    0.908    
+# 2 - 1 == 0  0.26060    0.05704   4.568 2.19e-05 ***
+# 3 - 1 == 0  0.27342    0.05478   4.991  &lt; 1e-05 ***
+# 3 - 2 == 0  0.01282    0.07199   0.178    0.998    
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# (Adjusted p values reported -- single-step method)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">.oma &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">oma =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">5.1</span>, <span class="dv">0</span>, <span class="dv">0</span>)); <span class="kw">plot</span>(anovaComp.); <span class="kw">par</span>(.oma); <span class="kw">rm</span>(.oma)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ici, comme nous testons tous les contrastes, nous pouvons dire que la population des mères qui ont fumé pendant la grossesse <code>smoke == 1</code> donne des bébés significativement moins gros au seuil alpha de 5%, et ce, en comparaison de tous les autres niveaux (mère n’ayant jamais fumé, ou ayant fumé mais arrêté avant la grossesse, que ce soit longtemps avant ou juste avant).</p>
+<p>Il semble évident maintenant qu’il n’est pas utile de préciser si la mère a fumé ou non avant sa grossesse. L’élément déterminant est uniquement le fait de fumer <em>pendant</em> la grossesse ou non. Nous pouvons le montrer également en utilisant des contrastes de Helmert, à condition de recoder <code>smoke</code> avec des niveaux de “gravité” croissants (“0” = n’a jamais fumé, “1” = a arrêté il y a longtemps, “2” = a arrêté juste avant la grossesse et finalement, “1” = a continué à fumé à la grossesse). Il faut donc intervertir les cas “1” et “3”. Nous pouvons utiliser <code>recode()</code> pour cela, mais attention, nous avons ici une variable <code>factor</code>, donc, ce ne sont pas des nombres mais des chaines de caractères (à placer entre guillements). Une fois le recodage réalisé, il faut aussi retrier les niveaux en appelant <code>factor(..., levels = c(&quot;0&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;))</code> sinon l’ancien ordre est conservé.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Babies <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">smoke =</span> <span class="kw">recode</span>(smoke, <span class="st">&quot;0&quot;</span> =<span class="st"> &quot;0&quot;</span>, <span class="st">&quot;1&quot;</span> =<span class="st"> &quot;3&quot;</span>, <span class="st">&quot;2&quot;</span> =<span class="st"> &quot;2&quot;</span>, <span class="st">&quot;3&quot;</span> =<span class="st"> &quot;1&quot;</span>)) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">smoke =</span> <span class="kw">factor</span>(smoke, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;0&quot;</span>, <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2&quot;</span>, <span class="st">&quot;3&quot;</span>))) -&gt;
+<span class="st">  </span>Babies2</code></pre>
+<p>Si cela semble trop compliqué, vous pouvez aussi utiliser l’addins de réencodage dans R (<code>QUESTIONR</code> -&gt; <code>Levels Recoding</code> or <code>Levels Ordering</code>). A présent que l’encodage de <code>smoke</code> est corrigé dans <code>Babies2</code>, nous pouvons modéliser à nouveau, mais cette fois-ci avec des contrastes de Helmert (notez la façon particulière de spécifier des contrastes différents de la valeur pas défaut pour une variable <code>factor</code>) :</p>
+<pre class="sourceCode r"><code class="sourceCode r">Babies_lm3 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> Babies2, wt <span class="op">~</span><span class="st"> </span>smoke <span class="op">+</span><span class="st"> </span>wt1,
+  <span class="dt">contrasts =</span> <span class="kw">list</span>(<span class="dt">smoke =</span> <span class="st">&quot;contr.helmert&quot;</span>))
+<span class="kw">summary</span>(Babies_lm3)</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = wt ~ smoke + wt1, data = Babies2, contrasts = list(smoke = &quot;contr.helmert&quot;))
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.95453 -0.30780  0.01289  0.31108  1.49443 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)  2.985106   0.091695  32.555  &lt; 2e-16 ***
+# smoke1       0.017743   0.027034   0.656    0.512    
+# smoke2       0.001641   0.019599   0.084    0.933    
+# smoke3      -0.064330   0.008540  -7.533 9.82e-14 ***
+# wt1          0.007617   0.001534   4.966 7.85e-07 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.4999 on 1185 degrees of freedom
+# Multiple R-squared:  0.07733, Adjusted R-squared:  0.07422 
+# F-statistic: 24.83 on 4 and 1185 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(Babies_lm3)</code></pre>
+<pre><code># Analysis of Variance Table
+# 
+# Response: wt
+#             Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+# smoke        3  18.659  6.2197  24.887 1.285e-15 ***
+# wt1          1   6.162  6.1621  24.657 7.853e-07 ***
+# Residuals 1185 296.150  0.2499                      
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Ici les valeurs estimées pour <code>smoke1-3</code> sont à interpréter en fonction des contrastes utilisés, soit :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">contr.helmert</span>(<span class="dv">4</span>)</code></pre>
+<pre><code>#   [,1] [,2] [,3]
+# 1   -1   -1   -1
+# 2    1   -1   -1
+# 3    0    2   -1
+# 4    0    0    3</code></pre>
+<ul>
+<li><code>smoke1</code> est le décalage de l’ordonnée à l’origine entre la modèle moyen établi avec les données <code>smoke == 0</code> et <code>smoke == 1</code> et celui pour <code>smoke == 1</code> (non significatif au seuil alpha de 5%),</li>
+<li><code>smoke2</code> est le décalage de l’ordonnée à l’origine pour <code>smoke == 2</code> <em>par rapport au modèle ajusté sur <code>smoke == 0</code>, <code>smoke == 1</code> <strong>et</strong> <code>smoke == 2</code> avec des pondérations respectives de -1, -1, et 2</em> (non significatif au seuil alpha de 5%),</li>
+<li><code>smoke3</code> est le décalage de l’ordonnée à l’origine par rapport au modèle ajusté sur l’ensemble des autres observations, donc, avec <code>smoke</code> valant 0, 1, ou 2, et des pondérations respectives comme dans la dernière colonne de la matrice de contraste.. Donc, ce dernier contraste est celui qui nous intéresse car il compare les cas où la mère n’a pas fumé pendant la grossesse avec le cas <code>smoke == 3</code> où la mère a fumé pendant la grossesse, et il est significatif au seuil alpha de 5%. L’interprétation des vlauers estimées est plus complexe ici. Comparer ce résultat avec le modèle ajusté avec les contrastes traitement par défaut avec <code>smoke</code> réencodé :</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">lm</span>(<span class="dt">data =</span> Babies2, wt <span class="op">~</span><span class="st"> </span>smoke <span class="op">+</span><span class="st"> </span>wt1))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = wt ~ smoke + wt1, data = Babies2)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.95453 -0.30780  0.01289  0.31108  1.49443 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)  3.030052   0.092861  32.630  &lt; 2e-16 ***
+# smoke1       0.035486   0.054068   0.656    0.512    
+# smoke2       0.022666   0.056508   0.401    0.688    
+# smoke3      -0.237938   0.031816  -7.478 1.46e-13 ***
+# wt1          0.007617   0.001534   4.966 7.85e-07 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.4999 on 1185 degrees of freedom
+# Multiple R-squared:  0.07733, Adjusted R-squared:  0.07422 
+# F-statistic: 24.83 on 4 and 1185 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Les conclusions sont les mêmes, mais la valeurs estimées pour <code>smoke1</code>, <code>smoke2</code> et <code>smoke3</code> diffèrent. Par exemple, dans ce dernier cas, <code>smoke1</code> est double de la valeur avec les contrastes Helmert, ce qui est logique puisque la référence est ici la droite ajustée pour la sous-population <code>smoke == 0</code> là où dans le modèle avec les contrastes de Helmert, le décalage est mesuré par rapport au modèle moyen (donc à “mi-chemin” entre les deux droites pour <code>smoke == 0</code> et <code>smoke == 1</code>).</p>
+<p>Naturellement, nous pouvons aussi considérer la variable <code>smoke</code> réencodée dans <code>Babies2</code> comme une variable facteur ordonné (<code>ordered</code>). Dans ce cas, c’est les contrastes polynomiaux qui sont utilisés :</p>
+<pre class="sourceCode r"><code class="sourceCode r">Babies2 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">smoke =</span> <span class="kw">as.ordered</span>(smoke)) -&gt;
+<span class="st">  </span>Babies3
+<span class="kw">summary</span>(<span class="kw">lm</span>(<span class="dt">data =</span> Babies3, wt <span class="op">~</span><span class="st"> </span>smoke <span class="op">+</span><span class="st"> </span>wt1))</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = wt ~ smoke + wt1, data = Babies3)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.95453 -0.30780  0.01289  0.31108  1.49443 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)  2.985106   0.091695  32.555  &lt; 2e-16 ***
+# smoke.L     -0.162480   0.026780  -6.067 1.75e-09 ***
+# smoke.Q     -0.148045   0.039294  -3.768 0.000173 ***
+# smoke.C     -0.044605   0.048790  -0.914 0.360787    
+# wt1          0.007617   0.001534   4.966 7.85e-07 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.4999 on 1185 degrees of freedom
+# Multiple R-squared:  0.07733, Adjusted R-squared:  0.07422 
+# F-statistic: 24.83 on 4 and 1185 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Notez comment R est capable d’utiliser automatiquement les contrasts adéquats (polynomiaux) lorsque la variable facteur <code>smoke</code> est encodée en <code>ordered</code>. Nous voyons ici que des contrastes tenant compte d’une variation le long des successions croissante de niveaux de “gravité” de la variable <code>smoke</code> sont maintenant calculés. La ligne <code>smoke.L</code> du tableau <code>Coefficients</code> indique une variation linéaire (significative au seuil alpha de 5%), <code>smoke.Q</code> est une variation quadratique (également significative) et enfin <code>smoke.C</code> est une variation cubique. Voyez la présentation des matrices de contrastes plus haut pour bien comprendre ce qui est calculé ici.</p>
+<p>Au final, l’élément important relatif à la variable <code>smoke</code> est en définitive le fait de fumer <strong>pendant</strong> la grossesse ou non, pas l’histoire de la mère avant sa grossesse en matière de tabocologie ! En modélisation, nous avons toujours intérêt à choisir le <strong>modèle le plus simple</strong>. Donc ici, cela vaut le coup de simplifier <code>smoke</code> à une variable à deux niveaux <code>smoke_preg</code> qui indique uniquement si la mère fume ou non pendant la grossesse. Ensuite, nous ajustons à nouveau un modèle plus simple avec cette nouvelle variable.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Babies <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">smoke_preg =</span> <span class="kw">recode</span>(smoke, <span class="st">&quot;0&quot;</span> =<span class="st"> &quot;0&quot;</span>, <span class="st">&quot;1&quot;</span> =<span class="st"> &quot;1&quot;</span>, <span class="st">&quot;2&quot;</span> =<span class="st"> &quot;0&quot;</span>, <span class="st">&quot;3&quot;</span> =<span class="st"> &quot;0&quot;</span>)) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">smoke_preg =</span> <span class="kw">factor</span>(smoke_preg, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;0&quot;</span>, <span class="st">&quot;1&quot;</span>))) -&gt;
+<span class="st">  </span>Babies
+Babies_lm4 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>smoke_preg <span class="op">+</span><span class="st"> </span>wt1)
+<span class="kw">summary</span>(Babies_lm4)</code></pre>
+<pre><code># 
+# Call:
+# lm(formula = wt ~ smoke_preg + wt1, data = Babies)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -1.96243 -0.30708  0.01208  0.31051  1.48662 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept)  3.037508   0.091896  33.054  &lt; 2e-16 ***
+# smoke_preg1 -0.245797   0.029747  -8.263 3.76e-16 ***
+# wt1          0.007624   0.001531   4.981 7.25e-07 ***
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+# 
+# Residual standard error: 0.4996 on 1187 degrees of freedom
+# Multiple R-squared:  0.07692, Adjusted R-squared:  0.07537 
+# F-statistic: 49.46 on 2 and 1187 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(Babies_lm4)</code></pre>
+<pre><code># Analysis of Variance Table
+# 
+# Response: wt
+#              Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+# smoke_preg    1  18.497 18.4971  74.106 &lt; 2.2e-16 ***
+# wt1           1   6.193  6.1934  24.813 7.253e-07 ***
+# Residuals  1187 296.281  0.2496                      
+# ---
+# Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>A présent, tous les termes de notre modèle sont significatifs au seuil alpha de 5%. La ligne <code>smoke_preg1</code> est le décalage de l’ordonnée à l’origine du poids des bébés issus de mères fumant pendant la grossesse. Il donne donc directement la perte moyenne de poids du à la tabacologie. La représentation graphique de ce dernier modèle est la suivante :</p>
+<pre class="sourceCode r"><code class="sourceCode r">cols &lt;-<span class="st"> </span>iterators<span class="op">::</span><span class="kw">iter</span>(scales<span class="op">::</span><span class="kw">hue_pal</span>()(<span class="dv">2</span>)) <span class="co"># Get colors for lines</span>
+<span class="kw">chart</span>(<span class="dt">data =</span> Babies, wt <span class="op">~</span><span class="st"> </span>wt1) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">col =</span> smoke_preg)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">lapply</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">-0.246</span>), <span class="cf">function</span>(offset)
+    <span class="kw">geom_smooth</span>(<span class="dt">method =</span> lm, <span class="dt">formula =</span> y <span class="op">+</span><span class="st"> </span>offset <span class="op">~</span><span class="st"> </span>x,
+      <span class="dt">col =</span> iterators<span class="op">::</span><span class="kw">nextElem</span>(cols))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Masse de la mère [kg]&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Masse du bébé [kg]&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Enfin, n’oublions pas que notre modèle n’est valide que si les conditions d’application sont rencontrées, en particulier, une distribution normale des résidus et une homoscédasticité (même variance pour les résidus). Nous vérifions cela visuellement toujours avec les graphiques d’analyse des résidus. En voici les plus importants (pensez à utiliser les snippets pour récupérer le template du code) :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(Babies_lm4, which = 1)</span>
+Babies_lm4 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .resid <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Residuals&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Residuals vs Fitted&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(Babies_lm4, which = 2)</span>
+Babies_lm4 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">aes</span>(<span class="dt">sample =</span> .std.resid)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_qq</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_qq_line</span>(<span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Theoretical quantiles&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Standardized residuals&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Normal Q-Q&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(Babies_lm4, which = 3)</span>
+Babies_lm4 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), <span class="kw">sqrt</span>(<span class="kw">abs</span>(.std.resid)) <span class="op">~</span><span class="st"> </span>.fitted) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="dt">formula =</span> y <span class="op">~</span><span class="st"> </span>x) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Fitted values&quot;</span>,
+    <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">bold</span>(<span class="kw">sqrt</span>(<span class="kw">abs</span>(<span class="st">&quot;Standardized residuals&quot;</span>))))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Scale-Location&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot(Babies_lm4, which = 4)</span>
+Babies_lm4 <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">chart</span>(broom<span class="op">::</span><span class="kw">augment</span>(.), .cooksd <span class="op">~</span><span class="st"> </span><span class="kw">seq_along</span>(.cooksd)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="dt">by =</span> <span class="fl">0.05</span>), <span class="dt">colour =</span> <span class="st">&quot;darkgray&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Obs. number&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Cook&#39;s distance&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Cook&#39;s distance&quot;</span>)</code></pre>
+<p><img src="03-mod-lineaire_files/figure-html/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Ici le comportement des résidus est sain. Des petits écarts de la normalité sur le graphique quantile-quantile s’observent peut-être, mais ce n’est pas dramatique et le modèle linéaire est rabuste à ce genre de petis changements d’autant plus qu’ils apparaissent relativement symétriques en haut et et en bas de la distribution. En conclusion de cette analyse, nous pouvons dire que la masse du bébé dépend de la masse de la mère, mais assez faiblement (seulement 7,7% de la variance totale expliquée). Par contre, nous pouvons aussi dire que le fait de fumer pendant la grossesse a un effet significatif sur la réduction de la masse du bébé à la naissance (en moyenne cette réduction est de 0,246kg pour une masse moyenne à la naissance de 3,038kg, soit une réduction de 0,246 / 3,034 * 100 = 8%).</p>
+<p>Voilà, nous venons d’analyser et d’interpréter notre premier modèle linéaire sous forme d’une ANCOVA.</p>
+<div id="a-vous-de-jouer-5" class="section level5 unnumbered">
+<h5>A vous de jouer !</h5>
+<p>Après cette longue lecture avec énormément de nouvelles matières, nous vous proposons les exercices suivants :</p>
+<ul>
+<li>Répondez aux questions d’un learnr afin de vérifier vos acquis.</li>
+</ul>
+
+<div class="bdd">
+<p>Démarrez la SciViews Box et RStudio. Dans la fenêtre <strong>Console</strong> de RStudio, entrez l’instruction suivante suivie de la touche <code>Entrée</code> pour ouvrir le tutoriel concernant les bases de R :</p>
+<pre><code>BioDataScience2::run(&quot;03a_mod_lin&quot;)</code></pre>
+N’oubliez pas d’appuyer sur la touche <code>ESC</code> pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
+</div>
+
+<ul>
+<li>Poursuivez l’analyse des données sur la biométrie des oursins en y intégrant vos nouvelles notions sur le modèle linéaire</li>
+</ul>
+
+<div class="bdd">
+<p>Reprenez votre travail sur la biométrie des oursins et appliquer les nouvelles notions vues</p>
+</div>
+
+</div>
+</div>
+</div>
+<h3>Références</h3>
+<div id="refs" class="references">
+<div id="ref-verzani2005">
+<p>Verzani, John. 2005. <em>Using R for Introductory Statistics</em>. Boca Raton, Florida: Chapman; Hall/CRC. <a href="https://www.crcpress.com/Using-R-for-Introductory-Statistics/Verzani/p/book/9781466590731">https://www.crcpress.com/Using-R-for-Introductory-Statistics/Verzani/p/book/9781466590731</a>.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="7">
+<li id="fn7"><p>Pour rappel, on utilise le signe <code>+</code> pour indiquer un modèle sans interactions et un signe <code>*</code>pour spécifier un modèle complet avec interactions entre les variables.<a href="ancova.html#fnref7" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://sddb.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="matrice-de-contraste.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="modele-lineaire-generalise.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/BioDataScience-Course/sdd-umons2/edit/master/03-mod-lineaire.Rmd",
+"text": "Editer"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

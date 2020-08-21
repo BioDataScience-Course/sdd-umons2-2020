@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>7.3 Accès aux bases de données | Science des données biologiques 2</title>
+  <meta name="description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2.">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="7.3 Accès aux bases de données | Science des données biologiques 2" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://biodatascience-course.sciviews.org/sdd-umons2/" />
+  <meta property="og:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+  <meta property="og:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="github-repo" content="biodatascience-course/sdd-umons2" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="7.3 Accès aux bases de données | Science des données biologiques 2" />
+  
+  <meta name="twitter:description" content="Tutoriel interactif pour la science des données avec R &amp; SciViews-R, partie 2." />
+  <meta name="twitter:image" content="https://biodatascience-course.sciviews.org/sdd-umons2/images/front-cover.png" />
+
+<meta name="author" content="Philippe Grosjean &amp; Guyliann Engels (avec des contributions de Raphaël Conotte)">
+
+
+<meta name="date" content="2020-08-12">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="analyse-factorielle-des-correspondances.html">
+<link rel="next" href="afm.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.8.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.39.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.39.2/plotly-latest.min.js"></script>
+<link href="libs/rglwidgetClass-2/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-2/rglClass.src.js"></script>
+<script src="libs/CanvasMatrix4-2016/CanvasMatrix.src.js"></script>
+<script src="libs/rglWebGL-binding-0.100.19/rglWebGL.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Science des données biologiques 2</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Préambule</a><ul>
+<li class="chapter" data-level="" data-path="vue-generale-des-cours.html"><a href="vue-generale-des-cours.html"><i class="fa fa-check"></i>Vue générale des cours</a></li>
+<li class="chapter" data-level="" data-path="materiel-pedagogique.html"><a href="materiel-pedagogique.html"><i class="fa fa-check"></i>Matériel pédagogique</a></li>
+</ul></li>
+<li class="part"><span><b>I Cours II: modélisation</b></span></li>
+<li class="chapter" data-level="1" data-path="lm.html"><a href="lm.html"><i class="fa fa-check"></i><b>1</b> Régression linéaire I</a><ul>
+<li class="chapter" data-level="1.1" data-path="modele.html"><a href="modele.html"><i class="fa fa-check"></i><b>1.1</b> Modèle</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="modele.html"><a href="modele.html#pourquoi-modeliser"><i class="fa fa-check"></i><b>1.1.1</b> Pourquoi modéliser ?</a></li>
+<li class="chapter" data-level="1.1.2" data-path="modele.html"><a href="modele.html#quand-modeliser"><i class="fa fa-check"></i><b>1.1.2</b> Quand modéliser ?</a></li>
+<li class="chapter" data-level="1.1.3" data-path="modele.html"><a href="modele.html#entrainement-et-confirmation"><i class="fa fa-check"></i><b>1.1.3</b> Entraînement et confirmation</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html"><i class="fa fa-check"></i><b>1.2</b> Régression linéaire simple</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#quantifier-lajustement-dun-modele"><i class="fa fa-check"></i><b>1.2.1</b> Quantifier l’ajustement d’un modèle</a></li>
+<li class="chapter" data-level="1.2.2" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#trouver-la-meilleure-droite"><i class="fa fa-check"></i><b>1.2.2</b> Trouver la meilleure droite</a></li>
+<li class="chapter" data-level="1.2.3" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#la-fonction-lm"><i class="fa fa-check"></i><b>1.2.3</b> La fonction <code>lm()</code></a></li>
+<li class="chapter" data-level="1.2.4" data-path="regression-lineaire-simple.html"><a href="regression-lineaire-simple.html#resume-avec-summary"><i class="fa fa-check"></i><b>1.2.4</b> Résumé avec <code>summary()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html"><i class="fa fa-check"></i><b>1.3</b> Outils de diagnostic</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#analyse-des-residus"><i class="fa fa-check"></i><b>1.3.1</b> Analyse des résidus</a></li>
+<li class="chapter" data-level="1.3.2" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#enveloppe-de-confiance"><i class="fa fa-check"></i><b>1.3.2</b> Enveloppe de confiance</a></li>
+<li class="chapter" data-level="1.3.3" data-path="outils-de-diagnostic.html"><a href="outils-de-diagnostic.html#extraire-les-donnees-dun-modele"><i class="fa fa-check"></i><b>1.3.3</b> Extraire les données d’un modèle</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="lm2.html"><a href="lm2.html"><i class="fa fa-check"></i><b>2</b> Régression linéaire II</a><ul>
+<li class="chapter" data-level="2.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html"><i class="fa fa-check"></i><b>2.1</b> Outils de diagnostic (suite)</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#resume-avec-summarysuite"><i class="fa fa-check"></i><b>2.1.1</b> Résumé avec <code>summary()</code>(suite)</a></li>
+<li class="chapter" data-level="2.1.2" data-path="outils-de-diagnostic-suite.html"><a href="outils-de-diagnostic-suite.html#comparaison-de-regressions"><i class="fa fa-check"></i><b>2.1.2</b> Comparaison de régressions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="regression-lineaire-multiple.html"><a href="regression-lineaire-multiple.html"><i class="fa fa-check"></i><b>2.2</b> Régression linéaire multiple</a></li>
+<li class="chapter" data-level="2.3" data-path="regression-lineaire-polynomiale.html"><a href="regression-lineaire-polynomiale.html"><i class="fa fa-check"></i><b>2.3</b> Régression linéaire polynomiale</a></li>
+<li class="chapter" data-level="2.4" data-path="rmse-critere-dakaike.html"><a href="rmse-critere-dakaike.html"><i class="fa fa-check"></i><b>2.4</b> RMSE &amp; critère d’Akaike</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="mod-lineaire.html"><a href="mod-lineaire.html"><i class="fa fa-check"></i><b>3</b> Modèle linéaire</a><ul>
+<li class="chapter" data-level="3.1" data-path="variables-numeriques-ou-facteurs.html"><a href="variables-numeriques-ou-facteurs.html"><i class="fa fa-check"></i><b>3.1</b> Variables numériques ou facteurs</a></li>
+<li class="chapter" data-level="3.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html"><i class="fa fa-check"></i><b>3.2</b> ANOVA et régression linéaire</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#modele-lineaire-commun"><i class="fa fa-check"></i><b>3.2.1</b> Modèle linéaire commun</a></li>
+<li class="chapter" data-level="3.2.2" data-path="anova-et-regression-lineaire.html"><a href="anova-et-regression-lineaire.html#reencodage-des-variables-de-lanova"><i class="fa fa-check"></i><b>3.2.2</b> Réencodage des variables de l’ANOVA</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html"><i class="fa fa-check"></i><b>3.3</b> Matrice de contraste</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#contraste-orthogonaux"><i class="fa fa-check"></i><b>3.3.1</b> Contraste orthogonaux</a></li>
+<li class="chapter" data-level="3.3.2" data-path="matrice-de-contraste.html"><a href="matrice-de-contraste.html#autres-matrices-de-contrastes-courantes"><i class="fa fa-check"></i><b>3.3.2</b> Autres matrices de contrastes courantes</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="ancova.html"><a href="ancova.html"><i class="fa fa-check"></i><b>3.4</b> ANCOVA</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="ancova.html"><a href="ancova.html#bebes-a-la-naissance"><i class="fa fa-check"></i><b>3.4.1</b> Bébés à la naissance</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html"><i class="fa fa-check"></i><b>3.5</b> Modèle linéaire généralisé</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="modele-lineaire-generalise.html"><a href="modele-lineaire-generalise.html#exemple"><i class="fa fa-check"></i><b>3.5.1</b> Exemple</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="reg-non-lin.html"><a href="reg-non-lin.html"><i class="fa fa-check"></i><b>4</b> Régression non linéaire</a><ul>
+<li class="chapter" data-level="4.1" data-path="rendement-photosynthetique.html"><a href="rendement-photosynthetique.html"><i class="fa fa-check"></i><b>4.1</b> Rendement photosynthétique</a></li>
+<li class="chapter" data-level="4.2" data-path="principe.html"><a href="principe.html"><i class="fa fa-check"></i><b>4.2</b> Principe</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="principe.html"><a href="principe.html#fonction-objective"><i class="fa fa-check"></i><b>4.2.1</b> Fonction objective</a></li>
+<li class="chapter" data-level="4.2.2" data-path="principe.html"><a href="principe.html#calcul-iteratif"><i class="fa fa-check"></i><b>4.2.2</b> Calcul itératif</a></li>
+<li class="chapter" data-level="4.2.3" data-path="principe.html"><a href="principe.html#pieges-et-difficultes"><i class="fa fa-check"></i><b>4.2.3</b> Pièges et difficultés</a></li>
+<li class="chapter" data-level="4.2.4" data-path="principe.html"><a href="principe.html#modeles-selfstart-dans-r"><i class="fa fa-check"></i><b>4.2.4</b> Modèles ‘selfStart’ dans R</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html"><i class="fa fa-check"></i><b>4.3</b> Modèles courants en biologie</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-michaelis-menten"><i class="fa fa-check"></i><b>4.3.1</b> Modèle de Michaelis-Menten</a></li>
+<li class="chapter" data-level="4.3.2" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-croissance"><i class="fa fa-check"></i><b>4.3.2</b> Modèles de croissance</a></li>
+<li class="chapter" data-level="4.3.3" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#courbe-exponentielle"><i class="fa fa-check"></i><b>4.3.3</b> Courbe exponentielle</a></li>
+<li class="chapter" data-level="4.3.4" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#courbe-logistique"><i class="fa fa-check"></i><b>4.3.4</b> Courbe logistique</a></li>
+<li class="chapter" data-level="4.3.5" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-gompertz"><i class="fa fa-check"></i><b>4.3.5</b> Modèle de Gompertz</a></li>
+<li class="chapter" data-level="4.3.6" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modeles-de-von-bertalanffy"><i class="fa fa-check"></i><b>4.3.6</b> Modèles de von Bertalanffy</a></li>
+<li class="chapter" data-level="4.3.7" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-richards"><i class="fa fa-check"></i><b>4.3.7</b> Modèle de Richards</a></li>
+<li class="chapter" data-level="4.3.8" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-weibull"><i class="fa fa-check"></i><b>4.3.8</b> Modèle de Weibull</a></li>
+<li class="chapter" data-level="4.3.9" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-preece-baines-1"><i class="fa fa-check"></i><b>4.3.9</b> Modèle Preece-Baines 1</a></li>
+<li class="chapter" data-level="4.3.10" data-path="modeles-courants-en-biologie.html"><a href="modeles-courants-en-biologie.html#modele-de-tanaka"><i class="fa fa-check"></i><b>4.3.10</b> Modèle de Tanaka</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="choix-du-modele.html"><a href="choix-du-modele.html"><i class="fa fa-check"></i><b>4.4</b> Choix du modèle</a></li>
+</ul></li>
+<li class="part"><span><b>II Cours II: analyse</b></span></li>
+<li class="chapter" data-level="5" data-path="hierarchique.html"><a href="hierarchique.html"><i class="fa fa-check"></i><b>5</b> Classification hiérarchique</a><ul>
+<li class="chapter" data-level="5.1" data-path="analyse-de-donnees.html"><a href="analyse-de-donnees.html"><i class="fa fa-check"></i><b>5.1</b> Analyse de données</a></li>
+<li class="chapter" data-level="5.2" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html"><i class="fa fa-check"></i><b>5.2</b> Distance entre individus</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#matrice-de-distances"><i class="fa fa-check"></i><b>5.2.1</b> Matrice de distances</a></li>
+<li class="chapter" data-level="5.2.2" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#indices-de-dissimilarite"><i class="fa fa-check"></i><b>5.2.2</b> Indices de (dis)similarité</a></li>
+<li class="chapter" data-level="5.2.3" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#utilisation-des-indices"><i class="fa fa-check"></i><b>5.2.3</b> Utilisation des indices</a></li>
+<li class="chapter" data-level="5.2.4" data-path="distance-entre-individus.html"><a href="distance-entre-individus.html#proprietes-des-indices"><i class="fa fa-check"></i><b>5.2.4</b> Propriétés des indices</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html"><i class="fa fa-check"></i><b>5.3</b> Regroupement avec CAH</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#dendrogramme"><i class="fa fa-check"></i><b>5.3.1</b> Dendrogramme</a></li>
+<li class="chapter" data-level="5.3.2" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#separer-les-groupes"><i class="fa fa-check"></i><b>5.3.2</b> Séparer les groupes</a></li>
+<li class="chapter" data-level="5.3.3" data-path="regroupement-avec-cah.html"><a href="regroupement-avec-cah.html#etude-complete"><i class="fa fa-check"></i><b>5.3.3</b> Étude complète</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="k-moyenne-mds-som.html"><a href="k-moyenne-mds-som.html"><i class="fa fa-check"></i><b>6</b> K-moyenne, MDS &amp; SOM</a><ul>
+<li class="chapter" data-level="6.1" data-path="k-moyennes.html"><a href="k-moyennes.html"><i class="fa fa-check"></i><b>6.1</b> K-moyennes</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="k-moyennes.html"><a href="k-moyennes.html#exemple-simple"><i class="fa fa-check"></i><b>6.1.1</b> Exemple simple</a></li>
+<li class="chapter" data-level="6.1.2" data-path="k-moyennes.html"><a href="k-moyennes.html#classification-du-zooplancton"><i class="fa fa-check"></i><b>6.1.2</b> Classification du zooplancton</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html"><i class="fa fa-check"></i><b>6.2</b> Positionnement multidimensionnel (MDS)</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-simplifiee-sous-sciviewsr"><i class="fa fa-check"></i><b>6.2.1</b> MDS simplifiée sous SciViews::R</a></li>
+<li class="chapter" data-level="6.2.2" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-metrique-ou-pcoa"><i class="fa fa-check"></i><b>6.2.2</b> MDS métrique ou PCoA</a></li>
+<li class="chapter" data-level="6.2.3" data-path="positionnement-multidimensionnel-mds.html"><a href="positionnement-multidimensionnel-mds.html#mds-non-metrique"><i class="fa fa-check"></i><b>6.2.3</b> MDS non métrique</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html"><i class="fa fa-check"></i><b>6.3</b> Cartes auto-adaptatives (SOM)</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html#som-sur-le-zooplancton"><i class="fa fa-check"></i><b>6.3.1</b> SOM sur le zooplancton</a></li>
+<li class="chapter" data-level="6.3.2" data-path="cartes-auto-adaptatives-som.html"><a href="cartes-auto-adaptatives-som.html#interpretation-dun-som"><i class="fa fa-check"></i><b>6.3.2</b> Interprétation d’un SOM</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="acp-afc.html"><a href="acp-afc.html"><i class="fa fa-check"></i><b>7</b> ACP &amp; AFC</a><ul>
+<li class="chapter" data-level="7.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html"><i class="fa fa-check"></i><b>7.1</b> Analyse en composantes principales</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#acp-dans-sciviewsr"><i class="fa fa-check"></i><b>7.1.1</b> ACP dans SciViews::R</a></li>
+<li class="chapter" data-level="7.1.2" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#indiens-diabetiques"><i class="fa fa-check"></i><b>7.1.2</b> Indiens diabétiques</a></li>
+<li class="chapter" data-level="7.1.3" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#biometrie-doursin"><i class="fa fa-check"></i><b>7.1.3</b> Biométrie d’oursin</a></li>
+<li class="chapter" data-level="7.1.4" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#visualisation-de-donnees-quantitatives"><i class="fa fa-check"></i><b>7.1.4</b> Visualisation de données quantitatives</a></li>
+<li class="chapter" data-level="7.1.5" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#acp-mecanisme"><i class="fa fa-check"></i><b>7.1.5</b> ACP : mécanisme</a></li>
+<li class="chapter" data-level="7.1.6" data-path="analyse-en-composantes-principales.html"><a href="analyse-en-composantes-principales.html#calcul-matriciel-acp"><i class="fa fa-check"></i><b>7.1.6</b> Calcul matriciel ACP</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html"><i class="fa fa-check"></i><b>7.2</b> Analyse factorielle des correspondances</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#afc-dans-sciviewsr"><i class="fa fa-check"></i><b>7.2.1</b> AFC dans SciViews::R</a></li>
+<li class="chapter" data-level="7.2.2" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#enquete-sur-la-science"><i class="fa fa-check"></i><b>7.2.2</b> Enquête sur la science</a></li>
+<li class="chapter" data-level="7.2.3" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#des-acariens-sinon-rien"><i class="fa fa-check"></i><b>7.2.3</b> Des acariens sinon rien</a></li>
+<li class="chapter" data-level="7.2.4" data-path="analyse-factorielle-des-correspondances.html"><a href="analyse-factorielle-des-correspondances.html#principe-de-lafc"><i class="fa fa-check"></i><b>7.2.4</b> Principe de l’AFC</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html"><i class="fa fa-check"></i><b>7.3</b> Accès aux bases de données</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#installation-de-sqlite"><i class="fa fa-check"></i><b>7.3.1</b> Installation de SQLite</a></li>
+<li class="chapter" data-level="7.3.2" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#base-de-donnees-en-memoire"><i class="fa fa-check"></i><b>7.3.2</b> Base de données en mémoire</a></li>
+<li class="chapter" data-level="7.3.3" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#base-de-donnees-dans-un-fichier"><i class="fa fa-check"></i><b>7.3.3</b> Base de données dans un fichier</a></li>
+<li class="chapter" data-level="7.3.4" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#driver-odbc-dans-rstudio"><i class="fa fa-check"></i><b>7.3.4</b> Driver ODBC dans RStudio</a></li>
+<li class="chapter" data-level="7.3.5" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-db-browser"><i class="fa fa-check"></i><b>7.3.5</b> Utilisation de DB Browser</a></li>
+<li class="chapter" data-level="7.3.6" data-path="acces-aux-bases-de-donnees.html"><a href="acces-aux-bases-de-donnees.html#utilisation-de-dplyr"><i class="fa fa-check"></i><b>7.3.6</b> Utilisation de dplyr</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="afm.html"><a href="afm.html"><i class="fa fa-check"></i><b>8</b> AFM, biodiversité et Open Data</a><ul>
+<li class="chapter" data-level="8.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html"><i class="fa fa-check"></i><b>8.1</b> Analyse factorielle multiple (AFM)</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#afm-dans-sciviewsr"><i class="fa fa-check"></i><b>8.1.1</b> AFM dans SciViews::R</a></li>
+<li class="chapter" data-level="8.1.2" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#plancton-en-mediterranee"><i class="fa fa-check"></i><b>8.1.2</b> Plancton en Méditerranée</a></li>
+<li class="chapter" data-level="8.1.3" data-path="analyse-factorielle-multiple-afm.html"><a href="analyse-factorielle-multiple-afm.html#afm-avec-donnees-mixtes"><i class="fa fa-check"></i><b>8.1.3</b> AFM avec données mixtes</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html"><i class="fa fa-check"></i><b>8.2</b> Indices de biodiversité</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-alpha"><i class="fa fa-check"></i><b>8.2.1</b> Diversité alpha</a></li>
+<li class="chapter" data-level="8.2.2" data-path="indices-de-biodiversite.html"><a href="indices-de-biodiversite.html#diversite-beta"><i class="fa fa-check"></i><b>8.2.2</b> Diversité beta</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="open-data.html"><a href="open-data.html"><i class="fa fa-check"></i><b>8.3</b> Open Data</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="open-data.html"><a href="open-data.html#gestion-des-donnees"><i class="fa fa-check"></i><b>8.3.1</b> Gestion des données</a></li>
+<li class="chapter" data-level="8.3.2" data-path="open-data.html"><a href="open-data.html#utilisation-de-donnees-ouvertes-open-data"><i class="fa fa-check"></i><b>8.3.2</b> Utilisation de données ouvertes (<em>Open Data</em>)</a></li>
+</ul></li>
+</ul></li>
+<li class="appendix"><span><b>Appendices</b></span></li>
+<li class="chapter" data-level="A" data-path="svbox.html"><a href="svbox.html"><i class="fa fa-check"></i><b>A</b> Installation de la SciViews Box</a><ul>
+<li class="chapter" data-level="A.1" data-path="migration-des-projets.html"><a href="migration-des-projets.html"><i class="fa fa-check"></i><b>A.1</b> Migration des projets</a></li>
+<li class="chapter" data-level="A.2" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html"><i class="fa fa-check"></i><b>A.2</b> Configuration Git et Github</a><ul>
+<li class="chapter" data-level="A.2.1" data-path="configuration-git-et-github.html"><a href="configuration-git-et-github.html#compte-github-dans-rstudio"><i class="fa fa-check"></i><b>A.2.1</b> Compte Github dans RStudio</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>Références</a></li>
+<li class="divider"></li>
+<li><a href="http://biodatascience-course.sciviews.org">Site Web du cours</a></li>
+<li><a href="https://github.com/BioDataScience-Course">Site Github du cours</a></li>
+<br/>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Science des données biologiques 2</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="acces-aux-bases-de-donnees" class="section level2">
+<h2><span class="header-section-number">7.3</span> Accès aux bases de données</h2>
+<p>Puisque nous traitons de jeux de données multivariés potentiellement très gros, il devient important de pouvoir accéder aux données stockées de manière plus structurée que dans un fichier au format CSV ou Excel, par exemple. Les bases de données, et notamment les <strong>bases de données relationnelles</strong>, sont prévue pour stocker de grandes quantités de données de manière structurée et pour pouvoir en extraire la partie qui nous intéresse à l’aide de <strong>requêtes</strong>. Nous allons ici étudier les rudiments indispensables pour nous permettre de réaliser de telles requêtes depuis R.</p>
+
+<div class="note">
+SQL est un langage dédié aux requêtes et la manipulation de bases de données relationnelles, constituées de tables (équivalent à des tableaux cas par variables en statistiques) reliées entre elles par une ou plusieurs <em>clés</em>. Par exemple, le champ <code>auteur</code> d’une liste de livres dans la table <code>Livres</code> renvoie (est lié à) vers le champs <code>nom</code> d’une autre table <code>Ecrivains</code> qui fournit plus de détails sur chaque auteur de livres.
+</div>
+
+<p>Il existe différents moteurs de bases de données relationnelles. Les plus courants sont : SQLite, MySQL/MariaDB, PosgreSQL, SQL Server, Oracle, … La plupart de ces solutions nécessitent d’installer un <strong>serveur</strong> de base de données centralisé. Cependant, SQLite, est une solution légère qui permet d’explorer le language SQL (<a href="https://www.vertabelo.com/blog/notes-from-the-lab/sql-or-sequel">prononcez “S.Q.L.” ou “Sequel”</a>), y compris avec des petites bases de données test en mémoire ou contenues dans un fichier.</p>
+<div id="installation-de-sqlite" class="section level3">
+<h3><span class="header-section-number">7.3.1</span> Installation de SQLite</h3>
+<p>Dans la SciViews Box, les drivers SQLite pour la version 2 et la version 3 sont préinstallés. Sous R, vous pouvez utiliser le package <code>RSQLite</code> pour accéder à des bases de données qui sont de simples fichiers sur le disque. Cependant, l’onglet <strong>Connections</strong> dans RStudio n’est pas compatible avec <code>RSQLite</code>. Il fonctionne, par contre avec les <strong>drivers odbc</strong> qui sont un format commun de drivers pour différentes bases de donnes dont SQLite. Les drivers SQLite, MySQL et PosgreSQL sont préinstallés dans la SciViews Box. Nous utiliserons également une interfaces graphique vers SQLite : <strong>DB Browser for SQLite</strong> disponible depuis le menu principal <code>Applications</code>, dans la section <code>Development</code>.</p>
+<p><img src="images/sdd2_07/sqlite-pgm1.png" /></p>
+</div>
+<div id="base-de-donnees-en-memoire" class="section level3">
+<h3><span class="header-section-number">7.3.2</span> Base de données en mémoire</h3>
+<p>La simplicité de SQLite tient au fait qu’il n’est pas nécessaire d’installer un serveur de bases de données pour l’utiliser. La version la plus simple permet même de travailler directement en mémoire. Ainsi, nous pouvons facilement placer le contenu d’un jeu de données comme <code>mtcars</code> et tester ensuite des <strong>requêtes SQL</strong> (l’équivalent des fonctions d’extraction et de remaniement de tableau dans <code>dplyr</code>) sur ces données en mémoire.</p>
+<p>Voici un petit aperçu qui vous montre comment créer, et puis manipuler une base de données SQLite en mémoire depuis R.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&#39;RSQLite&#39;</span>)
+
+<span class="co"># Base de données en mémoire</span>
+con &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(RSQLite<span class="op">::</span><span class="kw">SQLite</span>(), <span class="dt">dbname =</span> <span class="st">&quot;:memory:&quot;</span>)
+
+<span class="co"># Ne contient encore rien</span>
+<span class="kw">dbListTables</span>(con)</code></pre>
+<pre><code># character(0)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Ajoute une table</span>
+<span class="kw">dbWriteTable</span>(con, <span class="st">&quot;mtcars&quot;</span>, mtcars)
+<span class="kw">dbListTables</span>(con)</code></pre>
+<pre><code># [1] &quot;mtcars&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Que contient cette table?</span>
+<span class="kw">dbListFields</span>(con, <span class="st">&quot;mtcars&quot;</span>)</code></pre>
+<pre><code>#  [1] &quot;mpg&quot;  &quot;cyl&quot;  &quot;disp&quot; &quot;hp&quot;   &quot;drat&quot; &quot;wt&quot;   &quot;qsec&quot; &quot;vs&quot;   &quot;am&quot;   &quot;gear&quot;
+# [11] &quot;carb&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Lire toute la table</span>
+<span class="kw">dbReadTable</span>(con, <span class="st">&quot;mtcars&quot;</span>)</code></pre>
+<pre><code>#     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+# 1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+# 2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+# 3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+# 4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+# 5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+# 6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+# 7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+# 8  24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+# 9  22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+# 10 19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+# 11 17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+# 12 16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+# 13 17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+# 14 15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+# 15 10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+# 16 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+# 17 14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+# 18 32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+# 19 30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+# 20 33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+# 21 21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+# 22 15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+# 23 15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+# 24 13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+# 25 19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+# 26 27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+# 27 26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+# 28 30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+# 29 15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+# 30 19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+# 31 15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
+# 32 21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Effectuer une requête SQL sur la table</span>
+res &lt;-<span class="st"> </span><span class="kw">dbSendQuery</span>(con, <span class="st">&quot;SELECT * FROM mtcars WHERE cyl = 4&quot;</span>)
+<span class="kw">dbFetch</span>(res)</code></pre>
+<pre><code>#     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+# 1  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+# 2  24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+# 3  22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+# 4  32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+# 5  30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+# 6  33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+# 7  21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+# 8  27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+# 9  26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+# 10 30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+# 11 21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dbClearResult</span>(res)
+
+<span class="co"># On peut aussi récupérer les données morceau par morceau</span>
+res &lt;-<span class="st"> </span><span class="kw">dbSendQuery</span>(con, <span class="st">&quot;SELECT * FROM mtcars WHERE cyl = 4&quot;</span>)
+<span class="cf">while</span> (<span class="op">!</span><span class="kw">dbHasCompleted</span>(res)) {
+  chunk &lt;-<span class="st"> </span><span class="kw">dbFetch</span>(res, <span class="dt">n =</span> <span class="dv">5</span>)
+  <span class="kw">print</span>(<span class="kw">nrow</span>(chunk))
+}</code></pre>
+<pre><code># [1] 5
+# [1] 5
+# [1] 1</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dbClearResult</span>(res)
+
+<span class="co"># Se déconnecter de la base de données</span>
+<span class="kw">dbDisconnect</span>(con)</code></pre>
+</div>
+<div id="base-de-donnees-dans-un-fichier" class="section level3">
+<h3><span class="header-section-number">7.3.3</span> Base de données dans un fichier</h3>
+<p>La SciViews Box contient une base de données test dans <code>/home/sv/shared/database.sqlite</code>. Vous pouvez facilement vous connecter dessus via l’onglet <code>Connections</code> de RStudio. Vous pouvez également vous y connecter via du code R directement. Notez que la même syntaxe est utilisée pour <strong>créer une nouvelle base de données</strong> si le fichier n’existe pas encore au moment de la connexion.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&#39;RSQLite&#39;</span>)
+con &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(<span class="kw">SQLite</span>(),
+  <span class="dt">dbname =</span> <span class="st">&quot;/home/sv/shared/database.sqlite&quot;</span>)</code></pre>
+<p>Voici quelques instructions typiques pour interroger cette base de données depuis R :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Liste les tables présentes dans la base de données</span>
+<span class="kw">dbListTables</span>(con)</code></pre>
+<pre><code># [1] &quot;iris&quot;   &quot;mtcars&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Extraction de données à l&#39;aide d&#39;une requête SQL</span>
+(setosa &lt;-<span class="st"> </span><span class="kw">dbGetQuery</span>(con, <span class="st">&quot;SELECT * FROM iris WHERE Species is &#39;setosa&#39;&quot;</span>))</code></pre>
+<pre><code>#    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+# 1           5.1         3.5          1.4         0.2  setosa
+# 2           4.9         3.0          1.4         0.2  setosa
+# 3           4.7         3.2          1.3         0.2  setosa
+# 4           4.6         3.1          1.5         0.2  setosa
+# 5           5.0         3.6          1.4         0.2  setosa
+# 6           5.4         3.9          1.7         0.4  setosa
+# 7           4.6         3.4          1.4         0.3  setosa
+# 8           5.0         3.4          1.5         0.2  setosa
+# 9           4.4         2.9          1.4         0.2  setosa
+# 10          4.9         3.1          1.5         0.1  setosa
+# 11          5.4         3.7          1.5         0.2  setosa
+# 12          4.8         3.4          1.6         0.2  setosa
+# 13          4.8         3.0          1.4         0.1  setosa
+# 14          4.3         3.0          1.1         0.1  setosa
+# 15          5.8         4.0          1.2         0.2  setosa
+# 16          5.7         4.4          1.5         0.4  setosa
+# 17          5.4         3.9          1.3         0.4  setosa
+# 18          5.1         3.5          1.4         0.3  setosa
+# 19          5.7         3.8          1.7         0.3  setosa
+# 20          5.1         3.8          1.5         0.3  setosa
+# 21          5.4         3.4          1.7         0.2  setosa
+# 22          5.1         3.7          1.5         0.4  setosa
+# 23          4.6         3.6          1.0         0.2  setosa
+# 24          5.1         3.3          1.7         0.5  setosa
+# 25          4.8         3.4          1.9         0.2  setosa
+# 26          5.0         3.0          1.6         0.2  setosa
+# 27          5.0         3.4          1.6         0.4  setosa
+# 28          5.2         3.5          1.5         0.2  setosa
+# 29          5.2         3.4          1.4         0.2  setosa
+# 30          4.7         3.2          1.6         0.2  setosa
+# 31          4.8         3.1          1.6         0.2  setosa
+# 32          5.4         3.4          1.5         0.4  setosa
+# 33          5.2         4.1          1.5         0.1  setosa
+# 34          5.5         4.2          1.4         0.2  setosa
+# 35          4.9         3.1          1.5         0.2  setosa
+# 36          5.0         3.2          1.2         0.2  setosa
+# 37          5.5         3.5          1.3         0.2  setosa
+# 38          4.9         3.6          1.4         0.1  setosa
+# 39          4.4         3.0          1.3         0.2  setosa
+# 40          5.1         3.4          1.5         0.2  setosa
+# 41          5.0         3.5          1.3         0.3  setosa
+# 42          4.5         2.3          1.3         0.3  setosa
+# 43          4.4         3.2          1.3         0.2  setosa
+# 44          5.0         3.5          1.6         0.6  setosa
+# 45          5.1         3.8          1.9         0.4  setosa
+# 46          4.8         3.0          1.4         0.3  setosa
+# 47          5.1         3.8          1.6         0.2  setosa
+# 48          4.6         3.2          1.4         0.2  setosa
+# 49          5.3         3.7          1.5         0.2  setosa
+# 50          5.0         3.3          1.4         0.2  setosa</code></pre>
+<p>La dernière instruction nécessite quelques explications supplémentaires. La fonction <code>dbGetQuery()</code> envoie une requête sur la base en langage SQL. Ici, nous indiquons les colonnes que nous souhaitons récupérer avec le mot clé <code>SELECT</code>. L’utilisation de <code>*</code> indique que nous voulons toutes les colonnes, sinon, on nomme celles que l’on veut à la place. Ensuite, le mot clé <code>FROM</code> nous indique depuis qulle table, ici celle nommée <code>iris</code>, et enfin, le mot clé <code>WHERE</code> introduit une expression de condition qui va <em>filtrer</em> les lignes de la table à récupérer, par exemple <code>'Sepal.Length' &gt; 1.5</code> ou comme ici <code>Species is 'setosa'</code>.</p>
+<p>Il est également possible d’effectuer une requête SQL directement dans un chunk. A la place d’indiquer <code>```{r}</code>, on indiquera <code>```{sql, connection=con}</code>, et nous pourrons alors directement indiquer la requête SQL dans le chunk :</p>
+<pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> iris <span class="kw">WHERE</span> Species <span class="kw">is</span> <span class="st">&#39;setosa&#39;</span></code></pre>
+<div class="knitsql-table">
+<table>
+<caption><span id="tab:setosa-direct">Tableau 7.1: </span>Displaying records 1 - 10</caption>
+<thead>
+<tr class="header">
+<th align="right">Sepal.Length</th>
+<th align="right">Sepal.Width</th>
+<th align="right">Petal.Length</th>
+<th align="right">Petal.Width</th>
+<th align="left">Species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">5.1</td>
+<td align="right">3.5</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="even">
+<td align="right">4.9</td>
+<td align="right">3.0</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="odd">
+<td align="right">4.7</td>
+<td align="right">3.2</td>
+<td align="right">1.3</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="even">
+<td align="right">4.6</td>
+<td align="right">3.1</td>
+<td align="right">1.5</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="odd">
+<td align="right">5.0</td>
+<td align="right">3.6</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="even">
+<td align="right">5.4</td>
+<td align="right">3.9</td>
+<td align="right">1.7</td>
+<td align="right">0.4</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="odd">
+<td align="right">4.6</td>
+<td align="right">3.4</td>
+<td align="right">1.4</td>
+<td align="right">0.3</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="even">
+<td align="right">5.0</td>
+<td align="right">3.4</td>
+<td align="right">1.5</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="odd">
+<td align="right">4.4</td>
+<td align="right">2.9</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="even">
+<td align="right">4.9</td>
+<td align="right">3.1</td>
+<td align="right">1.5</td>
+<td align="right">0.1</td>
+<td align="left">setosa</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Par défaut, cette requête est imprimée dans le document, et son résultat est perdu ensuite. Il est cependant possible de l’enregistrer sous un nom avec l’option de chunk <code>output.var=</code>. Dans ce cas, rien n’est imprimé, mais comme le résultat de la requête est contenu dans l’objet créé, il est facile de le manipuler dans R ensuite plus loin dans notre document.</p>
+<pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> iris <span class="kw">WHERE</span> Species <span class="kw">is</span> <span class="st">&#39;virginica&#39;</span></code></pre>
+<p>Ensuite, dans un chunk R, vous pouvez manipuler la table contenue dans <code>virginica</code> :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(virginica)</code></pre>
+<pre><code># [1] 50</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(virginica)</code></pre>
+<pre><code>#   Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   
+#  Min.   :4.900   Min.   :2.200   Min.   :4.500   Min.   :1.400  
+#  1st Qu.:6.225   1st Qu.:2.800   1st Qu.:5.100   1st Qu.:1.800  
+#  Median :6.500   Median :3.000   Median :5.550   Median :2.000  
+#  Mean   :6.588   Mean   :2.974   Mean   :5.552   Mean   :2.026  
+#  3rd Qu.:6.900   3rd Qu.:3.175   3rd Qu.:5.875   3rd Qu.:2.300  
+#  Max.   :7.900   Max.   :3.800   Max.   :6.900   Max.   :2.500  
+#    Species         
+#  Length:50         
+#  Class :character  
+#  Mode  :character  
+#                    
+#                    
+# </code></pre>
+<p>Ne pas oublier de se déconnecter de la base de données une fois terminé.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dbDisconnect</span>(con)</code></pre>
+</div>
+<div id="driver-odbc-dans-rstudio" class="section level3">
+<h3><span class="header-section-number">7.3.4</span> Driver ODBC dans RStudio</h3>
+<p>RStudio facilite l’utilisation de bases de données à condition d’utiliser un driver “compatible”. Nous avons installé un tel driver ODBC pour les bases de données SQLite. Pour nous connecter à <code>/home/sv/shared/database.sqlite</code> depuis RStudio, nous entrons dans l’onglet <strong>Connections</strong> et nous cliquons sur le bouton <code>New Connection</code>, ou nous cliquons sur la connection correspondante si elle est déjà créée dans la liste.</p>
+<p><img src="images/sdd2_07/sqlite-rstudio1.png" /></p>
+<p>Pour créer une nouvelle connection, sélectionnons <strong>SQLite3</strong>. Ensuite, nous rentrons <code>Database=/home/sv/shared/database.sqlite</code> comme paramètre dans la fenêtre suivante.</p>
+<p><img src="images/sdd2_07/sqlite-rstudio2.png" /></p>
+<p>Le bouton <strong>Test</strong> permet de vérifier que R/RStudio peut se connecter à cette base de données. Ensuite, dans <strong>Connect from:</strong>, vous pouvez choisir où vous voulez placer l’instruction de connexion. L’option <code>Clipboard</code> est intéressante. Elle place l’instruction dans le presse-papier et vous pouvez alors décider vous-même où la placer. Nous la placerons dans un chunk R dans notre notebook.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(odbc)
+con &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(odbc<span class="op">::</span><span class="kw">odbc</span>(), <span class="dt">.connection_string =</span> <span class="st">&quot;Driver={SQLite3};Database=/home/sv/shared/database.sqlite&quot;</span>)</code></pre>
+<p>Une fois connecté, vous pouvez voir le contenu de la base de données dans l’onglet <strong>Connections</strong>. Pour ajouter une table que nous remplissons à partir des données issues du jeu de données <code>mtcars</code>, nous écririons dans R :</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dbWriteTable</span>(con, <span class="st">&quot;mtcars&quot;</span>, mtcars)</code></pre>
+<p>A partir de ce moment, vous pouvez voir votre table <code>mtcars</code> (il faut peut être cliquer sur le bouton en forme de flèche qui se mord la queue pour rafraichir l’affichage). Comme dans <strong>Environnement</strong>, si vous cliquez sur la flèche dans un rond bleu devant le nom de la table, vous pouvez voir les colonnes qu’elle contient. En cliquant sur l’icône tableau à droite, vous visualisez la table directement dans RStudio.</p>
+<p><img src="images/sdd2_07/sqlite-rstudio3.png" /></p>
+<p>A part cela, vous travaillez avec cette base de données dans R en utilisant l’objet <code>con</code> comme d’habitude, et vous pouvez aussi utiliser directement des chunks sql.</p>
+</div>
+<div id="utilisation-de-db-browser" class="section level3">
+<h3><span class="header-section-number">7.3.5</span> Utilisation de DB Browser</h3>
+<p>Lancez <strong>DB Browser</strong>. Connectez-vous à <code>/home/sv/shared/database.sqlite</code> Vous avez un accès visuel à votre base de données. Explorez les différentes possibilités du logiciel.</p>
+<div class="figure">
+<img src="images/sdd2_07/sqlite-pgm2-dbbrowser.png" alt="DB Browser for SQLite" />
+<p class="caption">DB Browser for SQLite</p>
+</div>
+</div>
+<div id="utilisation-de-dplyr" class="section level3">
+<h3><span class="header-section-number">7.3.6</span> Utilisation de dplyr</h3>
+<p>Les fonctions du package <code>dplyr</code> fonctionnent aussi très bien sur des bases de données. Les commandes sont converties en interne en requêtes SQL. Il suffit d’utiliser <code>collect()</code> à la fin pour exécuter la requête.</p>
+<pre class="sourceCode r"><code class="sourceCode r">dbfile &lt;-<span class="st"> &quot;/home/sv/shared/database.sqlite&quot;</span>
+my_db &lt;-<span class="st"> </span><span class="kw">src_sqlite</span>(dbfile) <span class="co"># Utiliser create = TRUE pour la créer</span>
+my_db</code></pre>
+<pre><code># src:  sqlite 3.22.0 [/media/sf_shared/database.sqlite]
+# tbls: iris, mtcars</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">my_table &lt;-<span class="st"> </span><span class="kw">tbl</span>(my_db, <span class="kw">sql</span>(<span class="st">&quot;SELECT * FROM iris&quot;</span>))
+(df2 &lt;-<span class="st"> </span><span class="kw">collect</span>(my_table))</code></pre>
+<pre><code># # A tibble: 150 x 5
+#    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+#           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;  
+#  1          5.1         3.5          1.4         0.2 setosa 
+#  2          4.9         3            1.4         0.2 setosa 
+#  3          4.7         3.2          1.3         0.2 setosa 
+#  4          4.6         3.1          1.5         0.2 setosa 
+#  5          5           3.6          1.4         0.2 setosa 
+#  6          5.4         3.9          1.7         0.4 setosa 
+#  7          4.6         3.4          1.4         0.3 setosa 
+#  8          5           3.4          1.5         0.2 setosa 
+#  9          4.4         2.9          1.4         0.2 setosa 
+# 10          4.9         3.1          1.5         0.1 setosa 
+# # … with 140 more rows</code></pre>
+<p>Voici maintenant ce que cela donne en utilisant les verbes de <code>dplyr</code>. La fonction <code>explain()</code> permet d’expliquer ce qui est fait.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Sélectionner des variables</span>
+<span class="kw">select</span>(my_table, Sepal.Width, Petal.Length<span class="op">:</span>Species)</code></pre>
+<pre><code># # Source:   lazy query [?? x 4]
+# # Database: sqlite 3.22.0 [/media/sf_shared/database.sqlite]
+#    Sepal.Width Petal.Length Petal.Width Species
+#          &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;  
+#  1         3.5          1.4         0.2 setosa 
+#  2         3            1.4         0.2 setosa 
+#  3         3.2          1.3         0.2 setosa 
+#  4         3.1          1.5         0.2 setosa 
+#  5         3.6          1.4         0.2 setosa 
+#  6         3.9          1.7         0.4 setosa 
+#  7         3.4          1.4         0.3 setosa 
+#  8         3.4          1.5         0.2 setosa 
+#  9         2.9          1.4         0.2 setosa 
+# 10         3.1          1.5         0.1 setosa 
+# # … with more rows</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Filtrer les fleurs à gros pétales</span>
+<span class="kw">filter</span>(my_table, Petal.Length <span class="op">&gt;</span><span class="st"> </span><span class="fl">1.5</span>)</code></pre>
+<pre><code># # Source:   lazy query [?? x 5]
+# # Database: sqlite 3.22.0 [/media/sf_shared/database.sqlite]
+#    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+#           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;  
+#  1          5.4         3.9          1.7         0.4 setosa 
+#  2          4.8         3.4          1.6         0.2 setosa 
+#  3          5.7         3.8          1.7         0.3 setosa 
+#  4          5.4         3.4          1.7         0.2 setosa 
+#  5          5.1         3.3          1.7         0.5 setosa 
+#  6          4.8         3.4          1.9         0.2 setosa 
+#  7          5           3            1.6         0.2 setosa 
+#  8          5           3.4          1.6         0.4 setosa 
+#  9          4.7         3.2          1.6         0.2 setosa 
+# 10          4.8         3.1          1.6         0.2 setosa 
+# # … with more rows</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Réarranger les lignes par longueur de pétale croissante et largeur de sépale décroissant</span>
+<span class="kw">arrange</span>(my_table, Petal.Length, <span class="kw">desc</span>(Sepal.Width))</code></pre>
+<pre><code># # Source:     SQL [?? x 5]
+# # Database:   sqlite 3.22.0 [/media/sf_shared/database.sqlite]
+# # Ordered by: Petal.Length, desc(Sepal.Width)
+#    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+#           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;  
+#  1          4.6         3.6          1           0.2 setosa 
+#  2          4.3         3            1.1         0.1 setosa 
+#  3          5.8         4            1.2         0.2 setosa 
+#  4          5           3.2          1.2         0.2 setosa 
+#  5          5.4         3.9          1.3         0.4 setosa 
+#  6          5.5         3.5          1.3         0.2 setosa 
+#  7          5           3.5          1.3         0.3 setosa 
+#  8          4.7         3.2          1.3         0.2 setosa 
+#  9          4.4         3.2          1.3         0.2 setosa 
+# 10          4.4         3            1.3         0.2 setosa 
+# # … with more rows</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Créer une nouvelle variables</span>
+<span class="kw">mutate</span>(my_table, <span class="dt">logPL =</span> <span class="kw">log10</span>(Petal.Length))</code></pre>
+<pre><code># # Source:   lazy query [?? x 6]
+# # Database: sqlite 3.22.0 [/media/sf_shared/database.sqlite]
+#    Sepal.Length Sepal.Width Petal.Length Petal.Width Species logPL
+#           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;
+#  1          5.1         3.5          1.4         0.2 setosa  0.146
+#  2          4.9         3            1.4         0.2 setosa  0.146
+#  3          4.7         3.2          1.3         0.2 setosa  0.114
+#  4          4.6         3.1          1.5         0.2 setosa  0.176
+#  5          5           3.6          1.4         0.2 setosa  0.146
+#  6          5.4         3.9          1.7         0.4 setosa  0.230
+#  7          4.6         3.4          1.4         0.3 setosa  0.146
+#  8          5           3.4          1.5         0.2 setosa  0.176
+#  9          4.4         2.9          1.4         0.2 setosa  0.146
+# 10          4.9         3.1          1.5         0.1 setosa  0.176
+# # … with more rows</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Résumer les données</span>
+<span class="kw">explain</span>(<span class="kw">summarise</span>(my_table, <span class="dt">taille =</span> <span class="kw">median</span>(Petal.Length)))</code></pre>
+<pre><code># &lt;SQL&gt;
+# SELECT MEDIAN(`Petal.Length`) AS `taille`
+# FROM (SELECT * FROM iris)</code></pre>
+<pre><code># </code></pre>
+<pre><code># &lt;PLAN&gt;
+#    addr       opcode p1 p2 p3        p4 p5 comment
+# 1     0         Init  0 12  0           00      NA
+# 2     1         Null  0  1  2           00      NA
+# 3     2     OpenRead  1  3  0         5 00      NA
+# 4     3       Rewind  1  8  0           00      NA
+# 5     4       Column  1  2  3           00      NA
+# 6     5 RealAffinity  3  0  0           00      NA
+# 7     6     AggStep0  0  3  1 median(1) 01      NA
+# 8     7         Next  1  4  0           01      NA
+# 9     8     AggFinal  1  1  0 median(1) 00      NA
+# 10    9         Copy  1  4  0           00      NA
+# 11   10    ResultRow  4  1  0           00      NA
+# 12   11         Halt  0  0  0           00      NA
+# 13   12  Transaction  0  0  2         0 01      NA
+# 14   13         Goto  0  1  0           00      NA</code></pre>
+<p>Il est possible de réaliser des choses plus complexes ! On peut naturellement chainer tout cela avec le pipe <code>%&gt;.%</code>, ou combiner les requêtes comme on veut. Rien n’est fait avant de <code>collect()</code>er les résultats.</p>
+<pre class="sourceCode r"><code class="sourceCode r">my_table <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">filter</span>(., Petal.Length <span class="op">&gt;</span><span class="st"> </span><span class="fl">1.5</span>) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">select</span>(., Petal.Length, Sepal.Width, Species) <span class="op">%&gt;.%</span>
+<span class="st">  </span><span class="kw">mutate</span>(., <span class="dt">logPL =</span> <span class="kw">log10</span>(Petal.Length)) -&gt;<span class="st"> </span>query1
+query2 &lt;-<span class="st"> </span><span class="kw">arrange</span>(query1, Petal.Length, <span class="kw">desc</span>(Sepal.Width))
+query2</code></pre>
+<pre><code># # Source:     lazy query [?? x 4]
+# # Database:   sqlite 3.22.0 [/media/sf_shared/database.sqlite]
+# # Ordered by: Petal.Length, desc(Sepal.Width)
+#    Petal.Length Sepal.Width Species logPL
+#           &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;
+#  1          1.6         3.8 setosa  0.204
+#  2          1.6         3.5 setosa  0.204
+#  3          1.6         3.4 setosa  0.204
+#  4          1.6         3.4 setosa  0.204
+#  5          1.6         3.2 setosa  0.204
+#  6          1.6         3.1 setosa  0.204
+#  7          1.6         3   setosa  0.204
+#  8          1.7         3.9 setosa  0.230
+#  9          1.7         3.8 setosa  0.230
+# 10          1.7         3.4 setosa  0.230
+# # … with more rows</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Récupérer le résultat</span>
+res &lt;-<span class="st"> </span><span class="kw">collect</span>(query2)
+res</code></pre>
+<pre><code># # A tibble: 113 x 4
+#    Petal.Length Sepal.Width Species logPL
+#           &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;
+#  1          1.6         3.8 setosa  0.204
+#  2          1.6         3.5 setosa  0.204
+#  3          1.6         3.4 setosa  0.204
+#  4          1.6         3.4 setosa  0.204
+#  5          1.6         3.2 setosa  0.204
+#  6          1.6         3.1 setosa  0.204
+#  7          1.6         3   setosa  0.204
+#  8          1.7         3.9 setosa  0.230
+#  9          1.7         3.8 setosa  0.230
+# 10          1.7         3.4 setosa  0.230
+# # … with 103 more rows</code></pre>
+<p>Enfin, la fonction <code>sql_translate()</code> du package <code>dbplyr</code> va indiquer comment une instruction R est convertie en code SQL équivalent. <strong>C’est très pratique aussi pour apprendre SQL quand on connait R !</strong></p>
+<pre class="sourceCode r"><code class="sourceCode r">dbplyr<span class="op">::</span><span class="kw">translate_sql</span>(x<span class="op">^</span><span class="dv">3</span> <span class="op">&lt;</span><span class="st"> </span><span class="dv">15</span> <span class="op">||</span><span class="st"> </span>y <span class="op">&gt;</span><span class="st"> </span><span class="dv">20</span>)</code></pre>
+<pre><code># &lt;SQL&gt; POWER(&quot;x&quot;, 3.0) &lt; 15.0 OR &quot;y&quot; &gt; 20.0</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">dbplyr<span class="op">::</span><span class="kw">translate_sql</span>(<span class="kw">mean</span>(x))</code></pre>
+<pre><code># Warning: Missing values are always removed in SQL.
+# Use `avg(x, na.rm = TRUE)` to silence this warning</code></pre>
+<pre><code># &lt;SQL&gt; avg(&quot;x&quot;) OVER ()</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">dbplyr<span class="op">::</span><span class="kw">translate_sql</span>(<span class="kw">mean</span>(x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</code></pre>
+<pre><code># &lt;SQL&gt; avg(&quot;x&quot;) OVER ()</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Tout ne fonctionne pas, car R offre plus de possibilités que SQL</span>
+dbplyr<span class="op">::</span><span class="kw">translate_sql</span>(<span class="kw">plot</span>(x)) <span class="co">#???</span></code></pre>
+<pre><code># &lt;SQL&gt; PLOT(&quot;x&quot;)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">dbplyr<span class="op">::</span><span class="kw">translate_sql</span>(<span class="kw">mean</span>(x, <span class="dt">trim =</span> <span class="ot">TRUE</span>))</code></pre>
+<pre><code># Error in mean(x, trim = TRUE): unused argument (trim = TRUE)</code></pre>
+<p>Voilà pour ce très rapide tour d’horizon des différentes façons de manipuler des bases de données avec R et RStudio. En pratique, revenez sur cette section, et approfondissez vos connaissances via les ressources proposées ci-dessous lorsque vous serez confrontés “en vrai” à des données présentées dans une base de données relationnelle.</p>
+<div id="pour-en-savoir-plus-6" class="section level5 unnumbered">
+<h5>Pour en savoir plus</h5>
+<ul>
+<li><p><a href="https://db.rstudio.com">RStudio et bases de données</a> : tout un site web dédié à l’accès aux bases de données depuis RStudio (en anglais).</p></li>
+<li><p>La <a href="https://github.com/sqlitebrowser/sqlitebrowser/wiki">documentation</a> de DB Browser for SQLite (en anglais).</p></li>
+<li><p>Une introduction des <a href="http://dept.stat.lsa.umich.edu/~jerrick/courses/stat701/notes/sql.html">requêtes SQL dans R</a> un peu plus développée (en anglais).</p></li>
+<li><p>Un <a href="https://www.w3schools.com/sql/">tutorial SQL</a> avec des exercices (en anglais).</p></li>
+<li><p>Un <a href="https://fr.khanacademy.org/computing/computer-programming/sql/sql-basics/v/welcome-to-sql">cours en ligne sur SQL</a> par vidéos par la Kahn Academy (en anglais).</p></li>
+<li><p>Un autre <a href="http://blog.paumard.org/cours/sql/">tutorial complet sur SQL</a>. Remarquez qu’il en existe beaucoup. Faites une recherche via Google et choisissez le tutorial qui vous plait le plus.</p></li>
+<li><p>Les <a href="https://thinkr.fr/base-de-donnees-reussie/">dix commandements d’une base de données réussie</a>. Il s’agit ici plutôt de la création d’une base de données que de la requête sur une base de données existante… mais tôt ou tard, vous créerez vos propres bases de données et ces conseils vous seront alors utiles.</p></li>
+</ul>
+</div>
+<div id="a-vous-de-jouer-21" class="section level5 unnumbered">
+<h5>A vous de jouer !</h5>
+<ul>
+<li>Réalisez le début du projet spécifique lié au module 7. Ce module couvre la matière entière du module 7.</li>
+</ul>
+
+<div class="bdd">
+<p><strong>Le lien pour réaliser ce projet se trouve en début du module 7</strong></p>
+<em>Ce projet doit être terminé à la fin de ce module</em>
+</div>
+
+
+</div>
+</div>
+</div>
+<!-- </div> -->
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://sddb.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="analyse-factorielle-des-correspondances.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="afm.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/BioDataScience-Course/sdd-umons2/edit/master/07-acp-afc.Rmd",
+"text": "Editer"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
