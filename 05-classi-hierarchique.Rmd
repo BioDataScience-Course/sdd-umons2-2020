@@ -1,4 +1,4 @@
-# (PART) Cours II: analyse {-}
+# (PART) SDD II: analyse {-}
 
 # Classification hiérarchique {#hierarchique}
 

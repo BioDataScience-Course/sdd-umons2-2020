@@ -1,4 +1,4 @@
-# (PART) Cours II: modélisation {-}
+# (PART) SDD II: modélisation {-}
 
 # Régression linéaire I {#lm}
 
