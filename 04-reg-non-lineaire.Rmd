@@ -404,19 +404,8 @@ Il existe aussi un modèle bi-exponentiel qui combine deux signaux exponentiels 
 
 ##### A vous de jouer ! {-}
 
-```{block2, type='bdd'}
-Ajuste les pramètres du modèles afin de trouver la meilleure courbe exponentielle dans une application interactive "shiny". Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir l'application :
-  
-    BioDataScience2::app("04b_exponent") # TODO
+`r launch_shiny("https://sdd.umons.ac.be/04b_exponent/", height = 600)`
 
-Méthode alternative\ :
-
-    shiny::runApp(system.file("shiny/04b_exponent", package = "BioDataScience2"))
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R lorsque vous aurez fini avec l'application shiny.
-```
-
-![04b_exponent](images/sdd2_04/expo.png)
 
 ### Courbe logistique
 
