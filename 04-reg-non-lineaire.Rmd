@@ -404,8 +404,7 @@ Il existe aussi un modèle bi-exponentiel qui combine deux signaux exponentiels 
 
 ##### A vous de jouer ! {-}
 
-`r launch_shiny("https://sdd.umons.ac.be/04b_exponent/", height = 600)`
-
+`r launch_shiny("https://sdd.umons.ac.be/04b_exponent02/", height = 600)`
 
 ### Courbe logistique
 
