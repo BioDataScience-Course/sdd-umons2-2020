@@ -20,16 +20,11 @@ library(modelr)
 
 Avant de nous lancer tête baissée dans de la matière nouvelle, nous allons **installer la dernière version de la SciViews Box**. Une nouvelle version est disponible chaque année début septembre. Reportez-vous à l'appendice \@ref(svbox) pour son installation et pour la migration éventuelle de vos projets depuis la version précédente. Une fois la box installée, consacrez un petit quart d'heure à repérer les icônes nouvelles dans le Dock et dans le menu `Applications`. Vous retrouverez R et RStudio, mais dans des version plus récentes qui apportent également leur lot de nouveautés. Lancez RStudio et repérez ici aussi les nouveaux onglets et les nouvelles entrées de menu. Aidez-vous de l'aide en ligne ou de recherches sur le net pour vous familiariser avec ces nouvelles fonctionnalités.
 
-Une fois la nouvelle SciViews Box fonctionnelle sur votre ordinateur, vous allez réaliser une séance d'exercice couvrant les points essentiels des notions abordées dans le livre [science des données biologiques partie 1](https://wp.sciviews.org/sdd-umons){target='top'} , histoire de rafraîchir vos connaissances. Les tutoriaux `learnr` auxquels vous êtes maintenant habitués seront là pour vous aider à auto-évaluer votre progression. Pour le cours 2, ces tutoriaux sont dans le package `BioDataScience2` que vous venez normalement d'installer si vous avez bien suivi toutes les instructions de configuration de votre SciViews Box (sinon, vérifiez votre configuration).
+Une fois la nouvelle SciViews Box fonctionnelle sur votre ordinateur, vous allez réaliser une séance d'exercice couvrant les points essentiels des notions abordées dans le livre [science des données biologiques partie 1](https://wp.sciviews.org/sdd-umons){target='top'} , histoire de rafraîchir vos connaissances. 
 
-```{block2, type='bdd'}
-Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
+Les tutoriaux `learnr` auxquels vous êtes maintenant habitués seront là pour vous aider à auto-évaluer votre progression. Pour le cours 2, ces tutoriaux sont dans le package `BioDataScience2` que vous venez normalement d'installer si vous avez bien suivi toutes les instructions de configuration de votre SciViews Box (sinon, vérifiez votre configuration).
 
-    BioDataScience2::run("01a_rappel")
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
-```
-
+`r learnr("B01a_rappel", title = "Rappel de SDD I", toc = "Tutoriel pour réviser les notions de SDD I")`
 
 ## Modèle 
 
@@ -317,8 +312,7 @@ L'approche utilisant la somme de la valeur absolue des résidus est également u
 
 ### Trouver la meilleure droite 
 
-`r launch_shiny("https://sdd.umons.ac.be/B01_reglin/", height = 600)`
-
+`r launch_shiny("https://sdd.umons.ac.be/B01a_reglin/", height = 500, delay = 10, toc = "Ajuster la meilleure droite")`
 
 Nous pouvons nous demander si notre modèle 2 qui est la meilleure droite de nos quatre modèles est le **meilleur modèle possible dans l'absolu**. Pour se faire nous allons devoir définir une technique d'optimisation qui nous permet de déterminer quelle est la droite qui minimise notre fonction objective. Dans la suite, nous garderons le critère des moindres carrés (des résidus).
 
@@ -600,14 +594,7 @@ A l'issue de l'analyse des résidus, nous abservons donc différents problèmes 
 
 ##### A vous de jouer {-}
 
-```{block2, type='bdd'}
-Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
-
-    BioDataScience2::run("01b_reg_lin")
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
-```
-
+`r learnr("B01b_reg_lin", title = "Régression linéaire simple", toc = "Tutoriel sur la régression linéaire simple.")`
 
 ##### Pièges et astuces : extrapolation {-}
 
@@ -706,21 +693,16 @@ Vous avez des snippets à votre disposition pour ces deux fonctions\ :
 
 ##### A vous de jouer ! {-}
 
-```{block, type = 'bdd'}
-Maintenant que vous avez appréhendé les différents notions de ce module 1, réalisez les exercices dans l'assignation suivante. Ce projet est spécifique et uniquement dédié au module 1. Ce dernier doit être terminé à la fin de ce module
-
-Les explications relatives à la tâche qui vous est assignée sont dans le fichier `README.md`du dépôt accessible ci-dessous : 
-
-::: {.S-BIOG-015}
-
-> Cours de Sciences des données II à Mons : <...>
-
-----
-
-:::
-
-
-> Veuillez faire un "fork" du dépôt [sdd2_module01](https://github.com/BioDataScience-Course/sdd2_module01). Si vous souhaitez accéder à une version précédente de l'exercice, sélectionner la release correspondante à l'année que vous recherchez.  
-
-
+```{r, echo=FALSE, results='asis'}
+assignation("sdd2_module01", part = NULL,
+  url = "https://github.com/BioDataScience-Course/sdd2_module01",
+  course.urls = c(
+    'S-BIOG-015' = "https://classroom.github.com/a/..."),
+  toc = "Assignation : Exercices pratiques sur la régression linéaire simple.")
 ```
+
+## Récapitulatif des exercices
+
+Ce module 1 vous a permis de prendre connaissance des principes de bases de la modélisation et plus principalement de la régression linéaire. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser\ :
+
+`r show_ex_toc()`
