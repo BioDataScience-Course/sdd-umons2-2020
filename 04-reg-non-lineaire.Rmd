@@ -264,7 +264,6 @@ Au final, l'ajustement d'un modèle non linéaire par les moindres carrés est u
 - Réalisez un rapport scientifique sur la vitesse d'une réaction chimique, en définissant un modèle non linéaire pertinent pour ces données.
 
 ```{block2, type='bdd'}
-
 Vous avez à votre disposition une assignation GitHub Classroom.
 
 Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
@@ -334,20 +333,7 @@ chart(data = micmen_data, v ~ conc) +
 
 ##### A vous de jouer ! {-}
 
-```{block2, type='bdd'}
-Ajuste les pramètres du modèles afin de trouver le meilleur modèle de Michaelis-Menten dans une application interactive "shiny". Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir l'application :
-  
-    BioDataScience2::app("04a_michaelis_menten") # TODO
-
-Méthode alternative\ :
-
-    shiny::runApp(system.file("shiny/04a_michaelis_menten", package = "BioDataScience2"))
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R lorsque vous aurez fini avec l'application shiny.
-```
-
-![04a_michaelis_menten](images/sdd2_04/micmen1.png)
-
+`r launch_shiny("https://sdd.umons.ac.be/B04_micmen/", height = 600)`
 
 Concernant les modèles utiles en chimie et biochimie, le modèle à compartiment de premier ordre permet de décrire la cinétique de transformation d'une substance au cours du temps. Voyez le modèle `?Ssfol`. Il peut servir par exemple pour déterminer la cinétique d'élimination d'une substance du sang après injection.
 
@@ -404,7 +390,7 @@ Il existe aussi un modèle bi-exponentiel qui combine deux signaux exponentiels 
 
 ##### A vous de jouer ! {-}
 
-`r launch_shiny("https://sdd.umons.ac.be/04b_exponent02/", height = 600)`
+`r launch_shiny("https://sdd.umons.ac.be/B04_exponent/", height = 600)`
 
 ### Courbe logistique
 
@@ -440,19 +426,7 @@ Cette courbe sigmoïdale est asymptotique en 0 et $y_\infty$, et elle est égale
 
 ##### A vous de jouer ! {-}
 
-```{block2, type='bdd'}
-Ajuste les pramètres du modèles afin de trouver la meilleure courbe exponentielle dans une application interactive "shiny". Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir l'application :
-  
-    BioDataScience2::app("04c_logistique") # TODO
-
-Méthode alternative\ :
-
-    shiny::runApp(system.file("shiny/04c_logistique", package = "BioDataScience2"))
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R lorsque vous aurez fini avec l'application shiny.
-```
-
-![04c_logistique](images/sdd2_04/logis.png)
+`r launch_shiny("https://sdd.umons.ac.be/B04_logis/", height = 600)`
 
 Il est possible de généraliser ce modèle en définissant une courbe logistique dont l'asymptote basse peut se situer n'importe où ailleurs qu'en 0. Si cette asymptote se situe en $y_0$, nous obtenons l'équation\ :
 
