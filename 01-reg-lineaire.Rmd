@@ -18,7 +18,9 @@ library(modelr)
 
 ##### Prérequis {-}
 
-Avant de nous lancer tête baissée dans de la matière nouvelle, nous allons **installer la dernière version de la SciViews Box**. Une nouvelle version est disponible chaque année début septembre. Reportez-vous à l'appendice \@ref(svbox) pour son installation et pour la migration éventuelle de vos projets depuis la version précédente. Une fois la box installée, consacrez un petit quart d'heure à repérer les icônes nouvelles dans le Dock et dans le menu `Applications`. Vous retrouverez R et RStudio, mais dans des version plus récentes qui apportent également leur lot de nouveautés. Lancez RStudio et repérez ici aussi les nouveaux onglets et les nouvelles entrées de menu. Aidez-vous de l'aide en ligne ou de recherches sur le net pour vous familiariser avec ces nouvelles fonctionnalités.
+Avant de nous lancer tête baissée dans de la matière nouvelle, assurez vous d'avoir installé la SciViews Box `r learndown$svbox`. Si ce n'est pas encore fait retournez à la [page d'acceuil pour bien débuter]( `r learndown$baseurl` )
+
+Consacrez un petit quart d'heure à repérer les nouveaux icônes dans le Dock et dans le menu `Applications`. Vous retrouverez R et RStudio, mais dans des version plus récentes qui apportent également leur lot de nouveautés. 
 
 Une fois la nouvelle SciViews Box fonctionnelle sur votre ordinateur, vous allez réaliser une séance d'exercice couvrant les points essentiels des notions abordées dans le livre [science des données biologiques partie 1](https://wp.sciviews.org/sdd-umons){target='top'} , histoire de rafraîchir vos connaissances. 
 
