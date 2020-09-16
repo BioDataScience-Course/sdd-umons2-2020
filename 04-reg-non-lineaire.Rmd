@@ -333,7 +333,8 @@ chart(data = micmen_data, v ~ conc) +
 
 ##### A vous de jouer ! {-}
 
-`r launch_shiny("https://sdd.umons.ac.be/B04_micmen/", height = 600)`
+`r launch_shiny("https://sdd.umons.ac.be/B04Sa_micmen/", height = 600, delay = 20, toc = "Ajuster la meilleure courbe")`
+
 
 Concernant les modèles utiles en chimie et biochimie, le modèle à compartiment de premier ordre permet de décrire la cinétique de transformation d'une substance au cours du temps. Voyez le modèle `?Ssfol`. Il peut servir par exemple pour déterminer la cinétique d'élimination d'une substance du sang après injection.
 
@@ -390,7 +391,7 @@ Il existe aussi un modèle bi-exponentiel qui combine deux signaux exponentiels 
 
 ##### A vous de jouer ! {-}
 
-`r launch_shiny("https://sdd.umons.ac.be/B04_exponent/", height = 600)`
+`r launch_shiny("https://sdd.umons.ac.be/B04Sb_exponent/", height = 600, delay = 20, toc = "Ajuster la meilleure courbe")`
 
 ### Courbe logistique
 
@@ -426,7 +427,7 @@ Cette courbe sigmoïdale est asymptotique en 0 et $y_\infty$, et elle est égale
 
 ##### A vous de jouer ! {-}
 
-`r launch_shiny("https://sdd.umons.ac.be/B04_logis/", height = 600)`
+`r launch_shiny("https://sdd.umons.ac.be/B04Sc_logis/", height = 600, delay = 20, toc = "Ajuster la meilleure courbe")`
 
 Il est possible de généraliser ce modèle en définissant une courbe logistique dont l'asymptote basse peut se situer n'importe où ailleurs qu'en 0. Si cette asymptote se situe en $y_0$, nous obtenons l'équation\ :
 

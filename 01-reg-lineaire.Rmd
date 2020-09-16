@@ -26,7 +26,7 @@ Une fois la nouvelle SciViews Box fonctionnelle sur votre ordinateur, vous allez
 
 Les tutoriaux `learnr` auxquels vous êtes maintenant habitués seront là pour vous aider à auto-évaluer votre progression. Pour le cours 2, ces tutoriaux sont dans le package `BioDataScience2` que vous venez normalement d'installer si vous avez bien suivi toutes les instructions de configuration de votre SciViews Box (sinon, vérifiez votre configuration).
 
-`r learnr("B01a_rappel", title = "Rappel de SDD I", toc = "Tutoriel pour réviser les notions de SDD I")`
+`r learnr("B01La_rappel", title = "Rappel de SDD I", toc = "Tutoriel pour réviser les notions de SDD I")`
 
 ## Modèle 
 
@@ -314,7 +314,7 @@ L'approche utilisant la somme de la valeur absolue des résidus est également u
 
 ### Trouver la meilleure droite 
 
-`r launch_shiny("https://sdd.umons.ac.be/B01a_reglin/", height = 500, delay = 20, toc = "Ajuster la meilleure droite")`
+`r launch_shiny("https://sdd.umons.ac.be/B01Sa_reglin/", height = 500, delay = 20, toc = "Ajuster la meilleure droite")`
 
 Nous pouvons nous demander si notre modèle 2 qui est la meilleure droite de nos quatre modèles est le **meilleur modèle possible dans l'absolu**. Pour se faire nous allons devoir définir une technique d'optimisation qui nous permet de déterminer quelle est la droite qui minimise notre fonction objective. Dans la suite, nous garderons le critère des moindres carrés (des résidus).
 
@@ -596,7 +596,7 @@ A l'issue de l'analyse des résidus, nous abservons donc différents problèmes 
 
 ##### A vous de jouer {-}
 
-`r learnr("B01b_reg_lin", title = "Régression linéaire simple", toc = "Tutoriel sur la régression linéaire simple.")`
+`r learnr("B01Lb_reglin1", title = "Régression linéaire simple", toc = "Tutoriel sur la régression linéaire simple.")`
 
 ##### Pièges et astuces : extrapolation {-}
 
