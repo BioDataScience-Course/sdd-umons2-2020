@@ -40,7 +40,7 @@ Cette équation comporte\ :
 
 - deux **paramètres** $a$ et $b$, respectivement la pente de la droite ($a$) et son ordonnée à l'origine ($b$). Ecrit de la sorte, $a$ et $b$ peuvent prendre n'importe quelle valeur et l'équation définit de manière généraliste *toutes* les droites possibles qui existent dans le plan $xy$. *Paramétrer* ou *paramétriser* le modèle consiste à définir **une et une seule droite** en fixant les valeurs de $a$ et de $b$. Par exemple, si je décide de fixer $a = 0.35$ et $b = -1.23$, mon équation définit maintenant **une droite bien précise** dans le plan $xy$\ :
 
-$$y = 0,35 \ x - 1.23$$
+$$y = 0.35 \ x - 1.23$$
 
 ```{block2, type='warning'}
 La distinction entre *variable* et *paramètre* dans les équations précédentes semble difficile pour certaines personnes. C'est pourtant crucial de pouvoir le faire pour bien comprendre la suite. Alors, c'est le bon moment de **relire attentivement** ce qui est écrit ci-dessus et de le mémoriser avant d'aller plus avant\ !
@@ -312,7 +312,7 @@ L'approche utilisant la somme de la valeur absolue des résidus est également u
 
 ### Trouver la meilleure droite 
 
-`r launch_shiny("https://sdd.umons.ac.be/B01a_reglin/", height = 500, delay = 10, toc = "Ajuster la meilleure droite")`
+`r launch_shiny("https://sdd.umons.ac.be/B01a_reglin/", height = 500, delay = 20, toc = "Ajuster la meilleure droite")`
 
 Nous pouvons nous demander si notre modèle 2 qui est la meilleure droite de nos quatre modèles est le **meilleur modèle possible dans l'absolu**. Pour se faire nous allons devoir définir une technique d'optimisation qui nous permet de déterminer quelle est la droite qui minimise notre fonction objective. Dans la suite, nous garderons le critère des moindres carrés (des résidus).
 
@@ -697,7 +697,7 @@ Vous avez des snippets à votre disposition pour ces deux fonctions\ :
 assignation("sdd2_module01", part = NULL,
   url = "https://github.com/BioDataScience-Course/sdd2_module01",
   course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/a/..."),
+    'S-BIOG-015' = "https://classroom.github.com/a/CNxriMps"),
   toc = "Assignation : Exercices pratiques sur la régression linéaire simple.")
 ```
 
