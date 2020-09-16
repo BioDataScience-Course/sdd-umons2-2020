@@ -696,10 +696,10 @@ Vous avez des snippets à votre disposition pour ces deux fonctions\ :
 ##### A vous de jouer ! {-}
 
 ```{r, echo=FALSE, results='asis'}
-assignation("sdd2_module01", part = NULL,
-  url = "https://github.com/BioDataScience-Course/sdd2_module01",
+assignation("B01Ga_reglin1", part = NULL,
+  url = "https://github.com/BioDataScience-Course/B01Ga_reglin1",
   course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/a/CNxriMps"),
+    'S-BIOG-015' = "https://classroom.github.com/a/o40tVOh8"),
   toc = "Assignation : Exercices pratiques sur la régression linéaire simple.")
 ```
 
