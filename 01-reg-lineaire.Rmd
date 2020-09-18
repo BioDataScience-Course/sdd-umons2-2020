@@ -315,7 +315,7 @@ L'approche utilisant la somme de la valeur absolue des résidus est également u
 
 ### Trouver la meilleure droite 
 
-`r launch_shiny("https://sdd.umons.ac.be/B01Sa_reglin/", height = 500, delay = 20, toc = "Ajuster la meilleure droite")`
+`r launch_shiny("https://sdd.umons.ac.be/B01Sa_reglin/", height = 600, delay = 20, toc = "Ajuster la meilleure droite")`
 
 Nous pouvons nous demander si notre modèle 2 qui est la meilleure droite de nos quatre modèles est le **meilleur modèle possible dans l'absolu**. Pour ce faire, nous allons devoir définir une technique d'optimisation qui nous permet de déterminer quelle est la droite qui minimise notre *fonction objective*. Dans la suite, nous garderons le critère des moindres carrés (des résidus) comme fonction objective.
 
