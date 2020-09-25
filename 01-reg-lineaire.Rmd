@@ -701,7 +701,8 @@ Des snippets sont à votre disposition pour ces deux fonctions\ :
 assignation("B01Ga_reglin1", part = NULL,
   url = "https://github.com/BioDataScience-Course/B01Ga_reglin1",
   course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/a/o40tVOh8"),
+    'S-BIOG-015' = "https://classroom.github.com/a/o40tVOh8", 
+    'S-BIOG-937' = "https://classroom.github.com/a/u1SbQgxf"),
   toc = "Assignation : Exercices pratiques sur la régression linéaire simple.")
 ```
 
