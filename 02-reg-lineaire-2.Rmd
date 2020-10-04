@@ -44,7 +44,7 @@ $$\sqrt{\frac{\sum(y_i - ŷ_i)^2}{n-2}}$$
 
 - Multiple R-squared\ :
 
-Il s'agit de la valeur du **coefficient de détermination** du modèle noté *R^2* de manière générale ou *r^2^* dans le cas d'une régression linéaire simple. Il exprime la fraction de variance exprimée par le modèle. Autrement dit, le *R^2^* quantifie la capacité du modèle à *prédire* la valeur de $y$ connaissant la valeur $x$ pour le même individu. C'est dons une indication du *pouvoir prédictif* de notre modèle autant que de sa **qualité d'ajustement** (*goodness-of-fit* en anglais).
+Il s'agit de la valeur du **coefficient de détermination** du modèle noté *R^2^* de manière générale ou *r^2^* dans le cas d'une régression linéaire simple. Il exprime la fraction de variance exprimée par le modèle. Autrement dit, le *R^2^* quantifie la capacité du modèle à *prédire* la valeur de $y$ connaissant la valeur $x$ pour le même individu. C'est donc une indication du *pouvoir prédictif* de notre modèle autant que de sa **qualité d'ajustement** (*goodness-of-fit* en anglais).
 
 Souvenons-nous que la variance totale respecte la propiété d'additivité. La variance est composée au numérateur d'une somme de carrés, et au dénominateur de degrés de liberté. La somme des carrés totaux (de la variance) peut elle-même être décomposée en une **fraction expliquée** par notre modèle, et la fraction qui ne l'est pas (les **résidus**)\ :
 
@@ -62,7 +62,7 @@ A partir de la décomposition de ces sommes de carrés, le coefficient *R^2^* (o
 
 $$R^2 = \frac{SC(rég)}{SC(total)} = 1 - \frac{SC(résidus)}{SC(total)}$$
 
-La valeur du *R^2^* est comprise entre 0 (lorsque le modèle est très mauvais et n'explique rien) et 1 (lorsque le modèle est parfait et "capture" toute la variance des données\ ; dans ce cas, tous les résidus valent zéro). Donc, **plus le coefficient *R^2^* se rapproche de un, plus le modèle explique bien les données et aura un bon pouvoir de prédiction**.
+La valeur du *R^2^* est comprise entre 0 (lorsque le modèle est très mauvais et n'explique rien) et 1 (lorsque le modèle est parfait et "capture" toute la variance des données\ ; dans ce cas, tous les résidus valent zéro). Donc, **plus le coefficient *R^2^* se rapproche de 1, plus le modèle explique bien les données et aura un bon pouvoir de prédiction**.
 
 ```{block2, type='warning'}
 
@@ -76,7 +76,7 @@ D'un autre côté, si l'ordonnée à l'origine est fixée à zéro dans le modè
 
 - Adjusted R-squared\ :
 
-La valeur du coefficient *R^2^* **ajustée**, noté $\bar{R^2}$ n'est pas utile dans le cadre de la régression linéaire simple, mais est indispensable avec la régression multiple. En effet, à chaque fois que vous rendez votre modèle plus complexe en ajoutant une ou plusieurs variables indépendantes, le modèle s'ajustera de mieux en mieux dans les données, même par pur hasard. C'est un phénomène que l'on appelle l'**inflation du *R^2^***. A la limite, si nous ajoutons une nouvelle variable fortement corrélée avec les précédentes^[La corrélation entre les prédicteurs dans un modèle linéaire multiple est un gros problème et doit être évité le plus possible. Cela s'appelle la **colinéarité** ou encore **multicollinéairité**. Ainsi, il est toujours préférable de choisir un ensemble de variables indépendantes peu corrélées entre elles dans un même modèle, mais ce n'est pas toujours possible.], l'apport en terme d'information nouvelle sera négligeable, mais le *R^2^* augmentera malgré tout un tout petit peu. Alors dans quel cas l'ajout d'une nouvelle variable est-il pertinent ou non\ ? Le *R^2^* ajusté apporte l'information désirée ici. Sa valeur n'augmentera pour l'ajout d'un nouveau prédicteur *que si l'ajustement est meilleur que ce que l'on obtiendrait par le pur hasard*. Le *R^2^* ajusté se calcule comme suit (il n'est pas nécessaire de retenir cette formule, mais juste de constater que l'ajustement fait intervenir *p*, le nombre de paramètres du modèle et *n*, la taille de l'échantillon)\ :
+La valeur du coefficient *R^2^* **ajustée**, noté $\bar{R^2}$ n'est pas utile dans le cadre de la régression linéaire simple, mais est indispensable avec la régression multiple. En effet, à chaque fois que vous rendez votre modèle plus complexe en ajoutant une ou plusieurs variables indépendantes, le modèle s'ajustera de mieux en mieux dans les données, même par pur hasard. C'est un phénomène que l'on appelle l'**inflation du *R^2^***. A la limite, si nous ajoutons une nouvelle variable fortement corrélée avec les précédentes^[La corrélation entre les prédicteurs dans un modèle linéaire multiple est un gros problème et doit être évité le plus possible. Cela s'appelle la **colinéarité** ou encore **multicolinéarité**. Ainsi, il est toujours préférable de choisir un ensemble de variables indépendantes peu corrélées entre elles dans un même modèle, mais ce n'est pas toujours possible.], l'apport en terme d'information nouvelle sera négligeable, mais le *R^2^* augmentera malgré tout un tout petit peu. Alors dans quel cas l'ajout d'une nouvelle variable est-il pertinent ou non\ ? Le *R^2^* ajusté apporte l'information désirée ici. Sa valeur n'augmentera pour l'ajout d'un nouveau prédicteur *que si l'ajustement est meilleur que ce que l'on obtiendrait par le pur hasard*. Le *R^2^* ajusté se calcule comme suit (il n'est pas nécessaire de retenir cette formule, mais juste de constater que l'ajustement fait intervenir *p*, le nombre de paramètres du modèle et *n*, la taille de l'échantillon)\ :
 
 $$
 \bar{R^2} = 1 - (1 - R^2) \frac{n - 1}{n - p - 1}
@@ -88,7 +88,7 @@ Tout comme pour l'ANOVA, le test de la significativité de la régression car  $
 
 - p-value\ : 
 
-Il s'agit de la valeur *p* associé à la statistique de *F*, donc à l'ANOVA associée à la régression linéaire. Pour cette ANOVA particulière, l'hypothèse nulle est que la droite n'apporte pas plus d'explication des valeurs de *y* à partir des valeurs de *x* que la valeur moyenne de *y* (ou zéro, dans le cas paerticulier d'un modèle dont l'ordonnée à l'origine est forcé à zéro). L'hypothèse alternative est donc que le modèle est significatif au seuil $\alpha$ considéré. **Donc, notre objectif est de rejetter *H~0~* pour cet test ANOVA** pour que le modèle ait un sens (valeur *p* plus petite quez le seuil $\alpha$ choisi).
+Il s'agit de la valeur *p* associé à la statistique de *F*, donc à l'ANOVA associée à la régression linéaire. Pour cette ANOVA particulière, l'hypothèse nulle est que la droite n'apporte pas plus d'explication des valeurs de *y* à partir des valeurs de *x* que la valeur moyenne de *y* (ou zéro, dans le cas particulier d'un modèle dont l'ordonnée à l'origine est forcé à zéro). L'hypothèse alternative est donc que le modèle est significatif au seuil $\alpha$ considéré. **Donc, notre objectif est de rejetter *H~0~* pour ce test ANOVA** pour que le modèle ait un sens (valeur *p* plus petite que le seuil $\alpha$ choisi).
 
 Le tableau complet de l'ANOVA associée au modèle peut aussi être obtenu à l'aide de la fonction `anova()`\ :
 
@@ -119,7 +119,7 @@ chart(trees, volume ~ diameter) +
     color = "blue", size = 1.5)
 ```
 
-La droite en bleu correspond à la régression sans utiliser l'arbre de diamètre supérieur à 0,5m. Tentez d'analyser le tableau de notre régression en bleu (astuce\ : comparez avec ce que la régeression précédente donnait).
+La droite en bleu correspond à la régression sans utiliser l'arbre de diamètre supérieur à 0.5m. Tentez d'analyser le tableau de notre régression en bleu (astuce\ : comparez avec ce que la régeression précédente donnait).
 
 ```{r}
 summary(lm1)
@@ -183,38 +183,33 @@ lm1 %>.%
   ggtitle(expression("Cook's dist vs Leverage h"[ii] / (1 - h[ii])))
 ```
 
-Au travers de cet exemple, nous constatons que la comparaison de modèles, dans le but de choisir le meilleur est un travail utile. Cela apparaitra d'autant plus utile que la situation va passablement se complexifier (dans le bon sens) avec l'introduction de la régression multiple et polynomiale ci-dessous. Heureusement, nous terminerons ce module avec la découverte d'une métrique qui va nous permettre d'effectuer le choix du meilleur modèle de manière fiable\ : le critère d'Akaike.
+Au travers de cet exemple, nous constatons que la comparaison de modèles, dans le but de choisir le meilleur est un travail utile. Cela apparaitra d'autant plus utile que la situation va passablement se complexifier (dans le bon sens) avec l'introduction de la régression multiple et polynomiale ci-dessous. Heureusement, nous terminerons ce module avec la découverte d'une métrique qui nous permettra d'effectuer le choix du meilleur modèle de manière fiable\ : le critère d'Akaike.
 
 
 ##### A vous de jouer ! {-}
 
 Réalisez une nouvelle assignation individuelle :
 
-
-```{block2, type='bdd'}
-
-Vous avez à votre disposition la première assignation GitHub Classroom.
-
-Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
-
-* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/jkh3ruyX>
-
-* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [anscombe
-](https://github.com/BioDataScience-Course/anscombe). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
-
+```{r, echo=FALSE, results='asis'}
+assignation("B02Ga_anscombe", part = NULL,
+  url = "https://github.com/BioDataScience-Course/anscombe",
+  course.urls = c(
+    'S-BIOG-015' = "https://classroom.github.com/a/...", 
+    'S-BIOG-937' = "https://classroom.github.com/a/..."),
+  toc = "Assignation : Régression linéaire simple sur le quartet d’Anscombe.")
 ```
 
 ## Régression linéaire multiple 
 
-Dans le cas de la régression linéaire simple, nous considèrions le modèle stqatistique suivant (avec $\epsilon$ représentant les résidus, terme statistique dans l'équation)\ :
+Dans le cas de la régression linéaire simple, nous considèrions le modèle statistique suivant (avec $\epsilon$ représentant les résidus, terme statistique dans l'équation)\ :
 
 $$y = a \ x + b + \epsilon $$ 
 
-Dans le cas de la régression, nous introduirons *plusieurs* variables indépendantes notés $x_1$, $x_2$, ..., $x_n$\ :
+Dans le cas de la régression linéaire multiple, nous introduirons *plusieurs* variables indépendantes notés $x_1$, $x_2$, ..., $x_n$\ :
 
 $$y = a_1 \ x_1 + a_2 \ x_2 + ... + a_n \ x_n + b + \epsilon $$ 
 
-La bonne nouvelle, c'est que tous les calculs, les métriques et les tests d'hypothèses relatifs à la régression linéaire simple se généraliser simplement et naturellement, tout comme nous sommes passés dans le cours SDD 1 de l'ANOVA à 1 facteur à un modèle plus complexe à 2 ou plusoieurs facteurs. Voyons tout de suite ce que cela donne si nous voulions utiliser **à la fois** le diamètree et la hauteur des cerisiers noirs pour prédire leur volume de bois\ :
+La bonne nouvelle, c'est que tous les calculs, les métriques et les tests d'hypothèses relatifs à la régression linéaire simple se généraliser simplement et naturellement, tout comme nous sommes passés dans le cours SDD 1 de l'ANOVA à 1 facteur à un modèle plus complexe à 2 ou plusieurs facteurs. Voyons tout de suite ce que cela donne si nous voulions utiliser **à la fois** le diamètre et la hauteur des cerisiers noirs pour prédire leur volume de bois\ :
 
 ```{r}
 summary(lm2 <- lm(data = trees, volume ~ diameter + height))
@@ -222,7 +217,7 @@ summary(lm2 <- lm(data = trees, volume ~ diameter + height))
 
 D'un point de vue pratique, nous voyons que la formule qui spécifie le modèle peut très bien comporter plusieurs variables séparées par des `+`. Nous avons ici trois paramètres dans notre modèle\ : l'ordonnée à l'origine qui vaut -1,63, la pente relative au diamètre de 5,25, et la pente relative à la hauteur de 0,031. Le modèle `lm2` sera donc paramétré comme suit\ : volume de bois = 5,25 . diamètre + 0,031 . hauteur - 1,63.
 
-Notons que la pente relative à la hauteur (0,031) n'est pas significativement différente de zéro au seuil $\alpha$ de 5% (mais l'est seulement pour $\alpha$ = 1%). En effet, la valeur *t* du test de Student associé (H~0~\ : le paramètre vaut zéro, H~1~\ : le paramètre est différent de zéro) vaut 2,574. Cela correspond à une valeur *p* du test de 0,0156, une valeur moyennement significative donc, matérialisée par une seule astérisque à la droite du tableau. Cela dénote un plus faible pouvoir de prédiction du volume de bois via la hauteur que via le diamètre de l'arbre. Nous l'avions déjà observé sur le graphique matrice de nuages de points réalisé initialement, ainsi que via les coefficients de correlation respectifs.
+Notons que la pente relative à la hauteur (0,031) n'est pas significativement différente de zéro au seuil $\alpha$ de 1% (mais l'est seulement pour $\alpha$ = 5%). En effet, la valeur *t* du test de Student associé (H~0~\ : le paramètre vaut zéro, H~1~\ : le paramètre est différent de zéro) vaut 2,574. Cela correspond à une valeur *p* du test de 0,0156, une valeur moyennement significative donc, matérialisée par une seule astérisque à la droite du tableau. Cela dénote un plus faible pouvoir de prédiction du volume de bois via la hauteur que via le diamètre de l'arbre. Nous l'avions déjà observé sur le graphique matrice de nuages de points réalisé initialement, ainsi que via les coefficients de correlation respectifs.
 
 La représentation de cette régression nécessite un graphique à trois dimensions (diamètre, hauteur et volume) et le modèle représente en fait le meilleur **plan** dans cet espace à 3 dimensions. Pour un modèle comportant plus de deux variables indépendantes, il n'est plus possible de représenter graphiquement la régression.
 
@@ -286,21 +281,11 @@ Dans le cas particulier de modèles **imbriqués** (un modèle *contient* l'autr
 anova(lm., lm2)
 ```
 
-Notez que dans le cas de l'ajout d'*un seul* terme, la valeur *p* de cette ANOVA est identique à la valeur *p* de test de significativité du paramètre (ici, cette valeur *p* est de 0,0156 dans les deux cas). Donc, le choix peut se faire directement à partir de `summary()` pour ce terme unique. La conclusion est similaire\ : l'ANOVA donne un résultat seulement moyennent significatif entre les 2 modèles. Dans un cas plus complexe, la fonction `anova()` de comparaison pourra être utile. Enfin, tous les modèles ne sont pas nécessairement imbriqués. Dans ce cas, il nous faudra un autre moyen de les départager, ... mais avant d'aborder cela, étudions une variante intéressante de la régression multiple\ : la régression polynomiale.
+Notez que dans le cas de l'ajout d'*un seul* terme, la valeur *p* de cette ANOVA est identique à la valeur *p* de test de significativité du paramètre (ici, cette valeur *p* est de 0,0156 dans les deux cas). Donc, le choix peut se faire directement à partir de `summary()` pour ce terme unique. La conclusion est similaire\ : l'ANOVA donne un résultat seulement moyennement significatif entre les 2 modèles. Dans un cas plus complexe, la fonction `anova()` de comparaison pourra être utile. Enfin, tous les modèles ne sont pas nécessairement imbriqués. Dans ce cas, il nous faudra un autre moyen de les départager, ... mais avant d'aborder cela, étudions une variante intéressante de la régression multiple\ : la régression polynomiale.
 
 ##### A vous de jouer ! {-}
 
-Réalisez une nouvelle assignation individuelle :
-
-
-```{block2, type='bdd'}
-Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
-
-    BioDataScience2::run("02a_reg_multi")
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
-```
-
+`r learnr("B02La_reg_multi", title = "Régression linéaire multiple", toc = "Tutoriel sur la régression linéaire multiple.")`
 
 ## Régression linéaire polynomiale
 
@@ -318,7 +303,7 @@ trees %>.%
 summary(lm(data = trees, volume ~ diameter + diameter2))
 ```
 
-Il semble que R ait pu réaliser cette analyse. Cette fois-ci, nous n'avons cependant pas une droite ou un plan ajusté, mais par ce subterfuge, nous avons pu ajuster une **courbe** dans les données\ ! Nous pourrions augmenter le degré du polynome (ajouter un terme en `diameter^3`, voire encore des puissance supérieures). Dans ce cas, nous obtiendrons une courbe de plus en plus flexible, toujours dans le plan `xy`. Ceci illustre parfaitement d'ailleurs l'ambiguité de la complexité du modèle qui s'ajuste de mieux en mieux dans les données, mais qui ce faisant, perd également progressivement son pouvoir explicatif. En effet, on sait qu'il existe toujours une droite qui passe entre deux points dans le plan. De même, il existe toujours une parabole qui passe par 3 points quelconques dans le plan. Et par extension, il existe une courbe correspondant à un polynome d'ordre *n* - 1 qui passe par n'importe quel ensemble de *n* points dans le plan. Un modèle construit à l'aide d'un tel polynome aura **toujours** un *R^2^* égal à un, ... mais en même temps ce modèle ne sera d'**aucune** utilité car il ne contient plus aucune information pertinente. C'est ce qu'on appelle le **surajustement** (overfitting en anglais). La figure ci-dessous (issue d'un article écrit par Anup Bhande [ici](https://medium.com/greyatom/what-is-underfitting-and-overfitting-in-machine-learning-and-how-to-deal-with-it-6803a989c76)) illuste bien ce phénomène.
+Il semble que R ait pu réaliser cette analyse. Cette fois-ci, nous n'avons cependant pas une droite ou un plan ajusté, mais par ce subterfuge, nous avons pu ajuster une **courbe** dans les données\ ! Nous pourrions augmenter le degré du polynome (ajouter un terme en `diameter^3`, voire encore des puissances supérieures). Dans ce cas, nous obtiendrons une courbe de plus en plus flexible, toujours dans le plan `xy`. Ceci illustre parfaitement d'ailleurs l'ambiguité de la complexité du modèle qui s'ajuste de mieux en mieux dans les données, mais qui ce faisant, perd également progressivement son pouvoir explicatif. En effet, on sait qu'il existe toujours une droite qui passe entre deux points dans le plan. De même, il existe toujours une parabole qui passe par 3 points quelconques dans le plan. Et par extension, il existe une courbe correspondant à un polynome d'ordre *n* - 1 qui passe par n'importe quel ensemble de *n* points dans le plan. Un modèle construit à l'aide d'un tel polynome aura **toujours** un *R^2^* égal à 1, ... mais en même temps ce modèle ne sera d'**aucune** utilité car il ne contient plus aucune information pertinente. C'est ce qu'on appelle le **surajustement** (overfitting en anglais). La figure ci-dessous (issue d'un article écrit par Anup Bhande [ici](https://medium.com/greyatom/what-is-underfitting-and-overfitting-in-machine-learning-and-how-to-deal-with-it-6803a989c76)) illuste bien ce phénomène.
 
 ![](images/sdd2_02/under_overfitting.png)
 
@@ -381,7 +366,7 @@ summary(lm3)
 
 La pente relative au `diameter` nécessite quelques éléments d'explication. En effet, que signifie une pente pour une courbe dont la dérivée première ("pente locale") change constamment\ ? En fait, il faut comprendre ce paramètre comme étant la pente de la courbe au point *x* = 0.
 
-Si le modèle est très nettement significatif (ANOVA, valeur *p* <<< 0,001), et si le *R^2^* ajusté grimpe maintenant à 0,959, seul le paramètre relatif au diamètre^2^ est significatif cette fois-ci. Ce résultat suggère que ce modèle pourrait êtrte simplifié en considérant que l'ordonnée à l'origine et la pente pour le terme `diameter` valent zéro. Cela peut être tenté, mais **à condition de refaire l'analyse**. On ne peut jamais laisser tomber un paramètre dans une analyse et considérer que les autres sont utilisable tels quels. tous les paramètres caculés sont interconnectés.
+Si le modèle est très nettement significatif (ANOVA, valeur *p* <<< 0,001), et si le *R^2^* ajusté grimpe maintenant à 0,959, seul le paramètre relatif au diamètre^2^ est significatif cette fois-ci. Ce résultat suggère que ce modèle pourrait être simplifié en considérant que l'ordonnée à l'origine et la pente pour le terme `diameter` valent zéro. Cela peut être tenté, mais **à condition de refaire l'analyse**. On ne peut jamais laisser tomber un paramètre dans une analyse et considérer que les autres sont utilisables tels quels. Tous les paramètres calculés sont interconnectés.
 
 Voyons ce que cela donne (la formule devient `volume ~ I(diameter^2) - 1`  ou `volume ~ I(diameter^2) + 0`, ce qui est identique)\ :
 
@@ -399,7 +384,7 @@ summary(lm4bis <- lm(data = trees, volume ~ diameter2 - 1))
 
 Notez qu'on obtient bien évidemment exactement les mêmes résultats si nous transformons *d'abord* les données ou si nous intégrons le calcul à l'intérieur de la formule qui décrit le modèle.
 
-Faites bien attention de ne pas comparer le *R^2^* acvec ordonnée à l'origine fixée à zéro ici dans notre modèle `lm4` avec les *R^2^* des modèles `lm.` ou `lm3` qui ont ce paramètre estimé. Rappelez-vous que le *R^2^* est calculé différemment dans les deux cas\ ! Donc, nous voilà une fois de plus face à un nouveau modèle pour lequel il nous est difficile de décider s'il est meilleur que les précédents. Avant de comparer, élaborons un tout dernier modèle, le plus complexe, qui reprend à la fois notre régression polynomiale d'ordre 2 sur le diamètre **et** la hauteur. Autrement dit, une régression à la fois multiple et polynomiale.
+Faites bien attention de ne pas comparer le *R^2^* avec ordonnée à l'origine fixée à zéro ici dans notre modèle `lm4` avec les *R^2^* des modèles `lm.` ou `lm3` qui ont ce paramètre estimé. Rappelez-vous que le *R^2^* est calculé différemment dans les deux cas\ ! Donc, nous voilà une fois de plus face à un nouveau modèle pour lequel il nous est difficile de décider s'il est meilleur que les précédents. Avant de comparer, élaborons un tout dernier modèle, le plus complexe, qui reprend à la fois notre régression polynomiale d'ordre 2 sur le diamètre **et** la hauteur. Autrement dit, une régression à la fois multiple et polynomiale.
 
 ```{r}
 summary(lm5 <- lm(data = trees, volume ~  diameter + I(diameter^2) + height))
@@ -503,40 +488,32 @@ Après cette longue lecture avec énormément de nouvelles matières, nous vous 
 
 - Répondez aux questions d'un learnr afin de vérifier vos acquis.
 
-```{block2, type='bdd'}
-Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
-
-    BioDataScience2::run("02b_reg_poly")
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
-```
+`r learnr("B02Lb_reg_poly", title = "Régression linéaire polynomiale", toc = "Tutoriel sur la régression linéaire polynomiale.")`
 
 - Réalisez un carnet de laboratoire sur la biométrie des oursins avec l'assignation ci-dessous.
 
-```{block2, type='bdd'}
-
-Vous avez à votre disposition une assignation GitHub Classroom.
-
-Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
-
-* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/5hI-HSOv>
-
-* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [urchin
-](https://github.com/BioDataScience-Course/urchin). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
-
+```{r, echo=FALSE, results='asis'}
+assignation("B02Gb_urchin", part = NULL,
+  url = "https://github.com/BioDataScience-Course/urchin",
+  course.urls = c(
+    'S-BIOG-015' = "https://classroom.github.com/a/...", 
+    'S-BIOG-937' = "https://classroom.github.com/a/..."),
+  toc = "Assignation : Urchin - Exercices pratiques sur la régression linéaire.")
 ```
 
 - Réalisez un rapport scientifique sur la croissance des escargots géants d'Afrique.
 
-```{block2, type='bdd'}
-
-Vous avez à votre disposition une assignation GitHub Classroom.
-
-Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
-
-* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/_wJZDbNp>
-
-* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [achatina
-](https://github.com/BioDataScience-Course/achatina). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
+```{r, echo=FALSE, results='asis'}
+assignation("B02Gc_achatina", part = NULL,
+  url = "https://github.com/BioDataScience-Course/achatina",
+  course.urls = c(
+    'S-BIOG-015' = "https://classroom.github.com/a/...", 
+    'S-BIOG-937' = "https://classroom.github.com/a/..."),
+  toc = "Assignation : Achatina - Exercices pratiques sur la régression linéaire.")
 ```
 
+## Récapitulatif des exercices
+
+Ce deuxième module vous a permis de prendre connaissance de différents outils de diagnostique à votre disposition pour sélectionner le meilleur modèle et de découvrir la régression linéaire multiple et polynomiale. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser\ :
+
+`r show_ex_toc()`
