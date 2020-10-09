@@ -485,7 +485,7 @@ fivenum(lm.$residuals)
 
 - Coefficients\ :
 
-Il s'agit des résultats associés à la pente et à l'ordonnée à l'origine dont les valeurs estimées des paramètres *(Estimate*). Les mêmes valeurs peuvent être obtenues à partir de `lm.$coefficients`\ :
+Il s'agit des résultats associés à l'ordonnée à l'origine et à la pente dont les valeurs estimées des paramètres *(Estimate*). Les mêmes valeurs peuvent être obtenues à partir de `lm.$coefficients`\ :
 
 ```{r}
 lm.$coefficients
