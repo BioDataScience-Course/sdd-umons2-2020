@@ -195,7 +195,7 @@ assignation("B02Ga_anscombe", part = NULL,
   url = "https://github.com/BioDataScience-Course/anscombe",
   course.urls = c(
     'S-BIOG-015' = "https://classroom.github.com/a/...", 
-    'S-BIOG-937' = "https://classroom.github.com/a/3EMyegs8"),
+    'S-BIOG-937' = "https://classroom.github.com/a/9EQCVg1n"),
   toc = "Assignation : Régression linéaire simple sur le quartet d’Anscombe.")
 ```
 
@@ -497,7 +497,7 @@ assignation("B02Gb_achatina", part = NULL,
   url = "https://github.com/BioDataScience-Course/achatina",
   course.urls = c(
     'S-BIOG-015' = "https://classroom.github.com/a/...", 
-    'S-BIOG-937' = "https://classroom.github.com/a/jGUT4KnU"),
+    'S-BIOG-937' = "https://classroom.github.com/a/9EQCVg1n"),
   toc = "Assignation : Achatina - Exercices pratiques sur la régression linéaire.")
 ```
 
