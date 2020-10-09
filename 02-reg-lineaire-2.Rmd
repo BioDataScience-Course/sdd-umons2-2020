@@ -497,7 +497,7 @@ assignation("B02Gb_achatina", part = NULL,
   url = "https://github.com/BioDataScience-Course/achatina",
   course.urls = c(
     'S-BIOG-015' = "https://classroom.github.com/a/...", 
-    'S-BIOG-937' = "https://classroom.github.com/a/9EQCVg1n"),
+    'S-BIOG-937' = "https://classroom.github.com/a/jGUT4KnU"),
   toc = "Assignation : Achatina - Exercices pratiques sur la régression linéaire.")
 ```
 
