@@ -1,14 +1,12 @@
 # (APPENDIX) Appendices {-}
 
-
 # Installation de la SciViews Box {#svbox}
 
 ```{r echo=FALSE, out.width="256px", fig.align='right'}
 knitr::include_graphics('images/sdd1_01/svBox-256.png')
 ```
 
-Pour ce cours SDD 2, nous utiliserons la même SciViews Box que pour le cours 1... mais actualisée (version de l'année). Vous allez donc devoir installer la nouvelle version. La procédure n'a changé que sur des points de détails. Référez-vous à [la page dé départ du site](http://wp.sciviews.org){target='top'}. **Vous pouvez conserver l'ancienne SciViews Box en parallèle avec cette nouvelle version**, mais vérifiez si vous avez assez d'espace sur le disque dur pour contenir les deux simultanément. Comptez par sécurité 25Go par version. Si vous manquez de place, vous pouvez éliminer l'ancienne version avant d'installer la nouvelle (vos projets ne seront pas effacés).
-
+Pour ce cours SDD 2, nous utiliserons la même SciViews Box que pour le cours 1... mais actualisée (version de l'année). Vous allez donc devoir installer la nouvelle version. La procédure n'a changé que sur des points de détails. Référez-vous à [la page de départ du site](https://wp.sciviews.org). **Vous pouvez conserver l'ancienne SciViews Box en parallèle avec cette nouvelle version**, mais vérifiez si vous avez assez d'espace sur le disque dur pour contenir les deux simultanément. Comptez par sécurité 25Go par version. Si vous manquez de place, vous pouvez éliminer l'ancienne version avant d'installer la nouvelle (vos projets ne seront pas effacés).
 
 ## Migration des projets
 
@@ -19,7 +17,6 @@ Concernant les projets réalisés dans une version précédente de la SciViews B
 2. Vous ne conservez que la dernière version de la SciViews Box, mais ne devez pas accéder fréquemment vos anciens projets, et dans ce cas, vous pouvez réinstaller temporairement l'ancienne version de svbox. Dans ce cas, ne migrez pas vos anciens projets. Éliminez simplement l'ancienne svbox, tout en laissant vos projets intacts dans son répertoire `shared`. Lors de la réinstallation de l'ancienne svbox, vous retrouverez alors tous vos anciens projets intacts.
 
 3. Vous ne conservez pas d'ancienne version de la svbox et vous ne souhaitez pas devoir la réinstaller. Il est possible de *migrer* vos anciens projets en les déplaçant de l'ancien répertoire `shared` vers le nouveau. **Soyez toutefois conscients que vos documents R Markdown et scripts R ne fonctionneront pas forcément dans la nouvelle svbox et qu'une adaptation sera peut-être nécessaire\ !**
-
 
 ## Configuration
 
@@ -35,7 +32,7 @@ A partir de la SciViews Box 2020, et du nouveau site web, la configuration est p
 
 3. Vous vous êtes enregistré sur ce même site via le login **GitHub**,
 
-4. Vous avez lancé votre SciViews Box en tâche de fond, et ouvrez RStudio via le bouton du même qui se trouve dans la barre supérieure de menu du site web (éventuellement, il faut le faire une seconde fois si une application **BioDataScience1, 2, ou 3** doit être installée\ ; RStudio vous le proposera automatiquement).
+4. Vous avez lancé votre SciViews Box en tâche de fond, et ouvrez RStudio via le bouton `RStudio` bleu qui se trouve dans la barre supérieure de menu du site web (éventuellement, il faut le faire une seconde fois si une application **BioDataScience** est installée pour être certain que tout est bien actualisé\ ; RStudio vous le proposera automatiquement).
 
 Tout cela est expliqué plus en détails dans la nouvelle page d'accueil du site web.
 

@@ -7,7 +7,7 @@ SciViews::R
 
 ##### Objectifs {-}
 
-- Savoir utiliser les outils de diagnostic de la régression linéaire correctement, en particulier l'analyse des résidus.
+- Être capable d'utiliser les outils de diagnostic de la régression linéaire correctement, en particulier l'analyse des résidus.
 
 - Appréhender les différentes formes de régressions linéaires par les moindres carrés.
 
@@ -295,7 +295,7 @@ $$
 a_0 + a_1 . x + a_2 . x^2 + ... + a_n . x^n
 $$
 
-Un polynome d'ordre 2 (terme jusqu'au $x^2$) correspond à une parabole dans le plan *xy*. Que se passe-t-il si nous calculons une variable `diametre2` qui est le carré du diamètre et que nous prétendons faire une régression multiple en utilisant à la fois `diamètre` et `diamètre2`/ ?
+Un polynome d'ordre 2 (terme jusqu'au $x^2$) correspond à une parabole dans le plan *xy*. Que se passe-t-il si nous calculons une variable `diametre2` qui est le carré du diamètre et que nous prétendons faire une régression multiple en utilisant à la fois `diamètre` et `diamètre2`\ ?
 
 ```{r}
 trees %>.%
@@ -303,11 +303,11 @@ trees %>.%
 summary(lm(data = trees, volume ~ diameter + diameter2))
 ```
 
-Il semble que R ait pu réaliser cette analyse. Cette fois-ci, nous n'avons cependant pas une droite ou un plan ajusté, mais par ce subterfuge, nous avons pu ajuster une **courbe** dans les données\ ! Nous pourrions augmenter le degré du polynome (ajouter un terme en `diameter^3`, voire encore des puissances supérieures). Dans ce cas, nous obtiendrons une courbe de plus en plus flexible, toujours dans le plan `xy`. Ceci illustre parfaitement d'ailleurs l'ambiguité de la complexité du modèle qui s'ajuste de mieux en mieux dans les données, mais qui ce faisant, perd également progressivement son pouvoir explicatif. En effet, on sait qu'il existe toujours une droite qui passe entre deux points dans le plan. De même, il existe toujours une parabole qui passe par 3 points quelconques dans le plan. Et par extension, il existe une courbe correspondant à un polynome d'ordre *n* - 1 qui passe par n'importe quel ensemble de *n* points dans le plan. Un modèle construit à l'aide d'un tel polynome aura **toujours** un *R^2^* égal à 1, ... mais en même temps ce modèle ne sera d'**aucune** utilité car il ne contient plus aucune information pertinente. C'est ce qu'on appelle le **surajustement** (overfitting en anglais). La figure ci-dessous (issue d'un article écrit par Anup Bhande [ici](https://medium.com/greyatom/what-is-underfitting-and-overfitting-in-machine-learning-and-how-to-deal-with-it-6803a989c76)) illuste bien ce phénomène.
+Il semble que R ait pu réaliser cette analyse. Cette fois-ci, nous n'avons cependant pas une droite ou un plan ajusté, mais par ce subterfuge, nous avons pu ajuster une **courbe** dans les données\ ! Nous pourrions augmenter le degré du polynome (ajouter un terme en `diameter^3`, voire encore des puissances supérieures). Dans ce cas, nous obtiendrons une courbe de plus en plus flexible, toujours dans le plan `xy`. Ceci illustre parfaitement d'ailleurs l'ambiguité de la complexité du modèle qui s'ajuste de mieux en mieux dans les données, mais qui ce faisant, perd également progressivement son pouvoir explicatif. En effet, on sait qu'il existe toujours une droite qui passe entre deux points dans le plan. De même, il existe toujours une parabole qui passe par 3 points quelconques dans le plan. Et par extension, il existe une courbe correspondant à un polynome d'ordre *n* - 1 qui passe par n'importe quel ensemble de *n* points dans le plan. Un modèle construit à l'aide d'un tel polynome aura **toujours** un *R^2^* égal à 1, ... mais en même temps ce modèle ne sera d'**aucune** utilité car il ne contient plus aucune information pertinente. C'est ce qu'on appelle le **surajustement** (*overfitting* en anglais). La figure ci-dessous (issue d'un article écrit par Anup Bhande [ici](https://medium.com/greyatom/what-is-underfitting-and-overfitting-in-machine-learning-and-how-to-deal-with-it-6803a989c76)) illustre bien ce phénomène.
 
 ![](images/sdd2_02/under_overfitting.png)
 
-Devoir calculer les différentes puissance des variables au préalable devient rapidement fastidieux. Heureusement, R autorise de glisser ce cacul *directement dans la formule*, mais à condition de lui indiquer qu'il ne s'agit pas du nom d'une variable `diameter^2`, mais d'un calcul effectué sur `diameter` en utilisant la fonction, d'identité `I()`. Ainsi, sans rien calculer au préalable, nous pouvons utiliser la formule `volume ~ diameter + I(diameter^2)`. Un snippet est d'ailleurs disponible pour ajuster un polynome d'ordre 2 ou d'ordre 3, et il est accompagné du code nécessaire pour représenter également graphiquement cette régression polynomiale. Le code ci-dessous qui construit le modèle `lm3` l'utilise.
+Devoir calculer les différentes puissance des variables au préalable devient rapidement fastidieux. Heureusement, R autorise de glisser ce calcul *directement dans la formule*, mais à condition de lui indiquer qu'il ne s'agit pas du nom d'une variable `diameter^2`, mais d'un calcul effectué sur `diameter` en utilisant la fonction, d'identité `I()`. Ainsi, sans rien calculer au préalable, nous pouvons utiliser la formule `volume ~ diameter + I(diameter^2)`. Un snippet est d'ailleurs disponible pour ajuster un polynome d'ordre 2 ou d'ordre 3, et il est accompagné du code nécessaire pour représenter également graphiquement cette régression polynomiale. Le code ci-dessous qui construit le modèle `lm3` l'utilise.
 
 ```{r}
 summary(lm3 <- lm(data = trees,
