@@ -192,10 +192,10 @@ Réalisez une nouvelle assignation individuelle :
 
 ```{r, echo=FALSE, results='asis'}
 assignation("B02Ga_anscombe", part = NULL,
-  url = "https://github.com/BioDataScience-Course/anscombe",
+  url = "https://github.com/BioDataScience-Course/B02Ga_anscombe",
   course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/a/...", 
-    'S-BIOG-937' = "https://classroom.github.com/a/..."),
+    'S-BIOG-015' = "https://classroom.github.com/a/Rfdvbqw2", 
+    'S-BIOG-937' = "https://classroom.github.com/a/9EQCVg1n"),
   toc = "Assignation : Régression linéaire simple sur le quartet d’Anscombe.")
 ```
 
@@ -490,27 +490,29 @@ Après cette longue lecture avec énormément de nouvelles matières, nous vous 
 
 `r learnr("B02Lb_reg_poly", title = "Régression linéaire polynomiale", toc = "Tutoriel sur la régression linéaire polynomiale.")`
 
-- Réalisez un carnet de laboratoire sur la biométrie des oursins avec l'assignation ci-dessous.
-
-```{r, echo=FALSE, results='asis'}
-assignation("B02Gb_urchin", part = NULL,
-  url = "https://github.com/BioDataScience-Course/urchin",
-  course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/a/...", 
-    'S-BIOG-937' = "https://classroom.github.com/a/..."),
-  toc = "Assignation : Urchin - Exercices pratiques sur la régression linéaire.")
-```
-
 - Réalisez un rapport scientifique sur la croissance des escargots géants d'Afrique.
 
 ```{r, echo=FALSE, results='asis'}
-assignation("B02Gc_achatina", part = NULL,
-  url = "https://github.com/BioDataScience-Course/achatina",
+assignation("B02Gb_achatina", part = NULL,
+  url = "https://github.com/BioDataScience-Course/B02Gb_achatina",
   course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/a/...", 
-    'S-BIOG-937' = "https://classroom.github.com/a/..."),
+    'S-BIOG-015' = "https://classroom.github.com/a/IIpgV7Mc", 
+    'S-BIOG-937' = "https://classroom.github.com/a/jGUT4KnU"),
   toc = "Assignation : Achatina - Exercices pratiques sur la régression linéaire.")
 ```
+
+- Réalisez un carnet de laboratoire sur la biométrie des oursins avec l'assignation ci-dessous.
+
+```{r, echo=FALSE, results='asis'}
+assignation("B02Gc_urchin", part = NULL,
+  url = "https://github.com/BioDataScience-Course/BG_urchin",
+  course.urls = c(
+    'S-BIOG-015' = "...", 
+    'S-BIOG-937' = "..."),
+  toc = "Assignation : Urchin - Exercices pratiques sur la régression linéaire.")
+```
+
+
 
 ## Récapitulatif des exercices
 
