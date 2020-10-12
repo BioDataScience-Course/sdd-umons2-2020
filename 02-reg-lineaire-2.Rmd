@@ -501,17 +501,16 @@ assignation("B02Gb_achatina", part = NULL,
   toc = "Assignation : Achatina - Exercices pratiques sur la régression linéaire.")
 ```
 
-- Réalisez un carnet de laboratoire sur la biométrie des oursins avec l'assignation ci-dessous.
+- Réalisez en binôme un carnet de laboratoire et un rapport sur la biométrie des oursins avec l'assignation ci-dessous.
 
 ```{r, echo=FALSE, results='asis'}
 assignation("B02Gc_urchin", part = NULL,
-  url = "https://github.com/BioDataScience-Course/BG_urchin",
+  url = "https://github.com/BioDataScience-Course/B02G_urchin",
   course.urls = c(
-    'S-BIOG-015' = "...", 
-    'S-BIOG-937' = "..."),
+    'S-BIOG-015' = "https://classroom.github.com/a/OCKDjX4n", 
+    'S-BIOG-937' = "https://classroom.github.com/a/..."),
   toc = "Assignation : Urchin - Exercices pratiques sur la régression linéaire.")
 ```
-
 
 
 ## Récapitulatif des exercices
