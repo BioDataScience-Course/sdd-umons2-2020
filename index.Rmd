@@ -51,7 +51,7 @@ Cet ouvrage interactif est le second volume d'une série de trois ouvrages trait
 
 - [Science des données II : analyse et modélisation](http://applications.umons.ac.be/web/fr/pde/2020-2021/ue/US-B3-SCBIOL-006-M.htm) au troisième Bachelier en Biologie en Faculté des Sciences de l'Université de Mons, et dont le responsable est Philippe Grosjean
 
-- [Bio-informatique et science des données II](http://applications.umons.ac.be/web/fr/pde/2020-2021/ue/US-B3-SCBIOL-940-C.htm) au troisième bachelier en Biologie en Faculté des Sciences à Charleroi en co-diplomation entre l'Université de Mons (UMONS) et l'Université Libre de Bruxelles (ULB), et dont le responsable est Raphaël Conotte
+- [Bio-informatique et science des données II](http://applications.umons.ac.be/web/fr/pde/2020-2021/ue/US-B3-SCBIOC-940-C.htm) au troisième bachelier en Biologie en Faculté des Sciences à Charleroi en co-diplomation entre l'Université de Mons (UMONS) et l'Université Libre de Bruxelles (ULB), et dont le responsable est Raphaël Conotte
 
 La matière est divisée en 12 modules de 6h chacun en présentiel. Il nécessitera environ un tiers de ce temps (voir plus, en fonction de votre rythme et de votre technique d'apprentissage) en travail à domicile. **Cette matière fait suite au premier cours dont le contenu est considéré comme assimilé (voir [cours SDD I](https://wp.sciviews.org/sdd-umons){target='top'}).**
 
