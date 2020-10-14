@@ -8,7 +8,7 @@ learndown <- list(
   institutions = "UMONS",              # Known institutions
   courses = c(
     "S-BIOG-015",                      # SDD2 Q1 & (Q2 = S-BIOG-061, pas utilisé
-    "S-BIOG-937"                      # SDD2 Charleroi
+    "S-BIOG-937-"                      # SDD2 Charleroi
   ),
   courses_names = c(
     "Science des Données Biologiques II à l'UMONS",
