@@ -195,7 +195,7 @@ assignation("B02Ga_anscombe", part = NULL,
   url = "https://github.com/BioDataScience-Course/B02Ga_anscombe",
   course.urls = c(
     'S-BIOG-015' = "https://classroom.github.com/a/Rfdvbqw2", 
-    'S-BIOG-937-' = "https://classroom.github.com/a/9EQCVg1n"),
+    'S-BIOG-937-958-959' = "https://classroom.github.com/a/9EQCVg1n"),
   toc = "Régression linéaire simple sur le quartet d’Anscombe.")
 ```
 
@@ -497,7 +497,7 @@ assignation("B02Gb_achatina", part = NULL,
   url = "https://github.com/BioDataScience-Course/B02Gb_achatina",
   course.urls = c(
     'S-BIOG-015' = "https://classroom.github.com/a/IIpgV7Mc", 
-    'S-BIOG-937-' = "https://classroom.github.com/a/jGUT4KnU"),
+    'S-BIOG-937-958-959' = "https://classroom.github.com/a/jGUT4KnU"),
   toc = "Achatina - Exercices pratiques sur la régression linéaire.")
 ```
 
@@ -508,7 +508,7 @@ assignation("B02Gc_urchin", part = NULL,
   url = "https://github.com/BioDataScience-Course/B02G_urchin",
   course.urls = c(
     'S-BIOG-015' = "https://classroom.github.com/a/OCKDjX4n", 
-    'S-BIOG-937-' = "https://classroom.github.com/g/5nzpamBh"),
+    'S-BIOG-937-958-959' = "https://classroom.github.com/g/5nzpamBh"),
   toc = "Urchin - Exercices pratiques sur la régression linéaire.")
 ```
 
