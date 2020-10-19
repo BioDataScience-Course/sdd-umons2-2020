@@ -46,7 +46,7 @@ $$\sqrt{\frac{\sum(y_i - ŷ_i)^2}{n-2}}$$
 
 Il s'agit de la valeur du **coefficient de détermination** du modèle noté *R^2^* de manière générale ou *r^2^* dans le cas d'une régression linéaire simple. Il exprime la fraction de variance exprimée par le modèle. Autrement dit, le *R^2^* quantifie la capacité du modèle à *prédire* la valeur de $y$ connaissant la valeur $x$ pour le même individu. C'est donc une indication du *pouvoir prédictif* de notre modèle autant que de sa **qualité d'ajustement** (*goodness-of-fit* en anglais).
 
-Souvenons-nous que la variance totale respecte la propiété d'additivité. La variance est composée au numérateur d'une somme de carrés, et au dénominateur de degrés de liberté. La somme des carrés totaux (de la variance) peut elle-même être décomposée en une **fraction expliquée** par notre modèle, et la fraction qui ne l'est pas (les **résidus**)\ :
+Souvenons-nous que la variance totale respecte la propriété d'additivité. La variance est composée au numérateur d'une somme de carrés, et au dénominateur de degrés de liberté. La somme des carrés totaux (de la variance) peut elle-même être décomposée en une **fraction expliquée** par notre modèle, et la fraction qui ne l'est pas (les **résidus**)\ :
 
 $$SC(total) = SC(rég) + SC(résidus)$$
 

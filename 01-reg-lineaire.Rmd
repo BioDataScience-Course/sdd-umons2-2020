@@ -55,7 +55,7 @@ Le but de la modélisation consiste à découvrir l'équation mathématique de l
 
 $$M = b \cdot e^{a \cdot t}$$
 
-Passer au logartihme pour le poids peut d'écrire comme le logarithme des deux membres de cette équation\ :
+Passer au logarithme pour le poids peut d'écrire comme le logarithme des deux membres de cette équation\ :
 
 $$log(M) = log(b \cdot e^{a \cdot t})$$
 
@@ -453,6 +453,20 @@ La fonction `lm()` crée un objet spécifique qui contient de nombreuses informa
 
 ```{r}
 class(lm.)
+```
+
+```{block2, type='note'}
+Pour la régression par les moindres carrés (des résidus), le fait de considérer que toute l'erreur porte sur la variable dépendante *Y* est une décision importante qui a de nombreuses conséquences. Outre un calcul simplifié de la meilleure droite et des contraintes sur la distribution des résidus (qui doit être Normale), nous avons également une **asymétrie qui apparait entre les deux variables _X_ et _Y_**.
+
+Ainsi, la régression $y = a \cdot x + b$ ne correspond *pas* à la même droite que $x = a' \cdot y + b'$. En effet, dans le premier cas, l'erreur est entièrement reportée sur *Y* tandis que dans le second cas, elle est entièrement reportée sur *X*. C'est pour cela qu'on distingue la **variable réponse** ou **dépendante** à la gauche de l'équation de la **variable explicative** ou **indépendante** à sa droite.
+
+Décider quel variable est réponse dans l'équation n'est donc pas anodin. Utilisez les critères suivants\ :
+
+- Si une des deux variables contient beaucoup plus d'erreur et/ou de variabilité inter-individuelle, placez-là à la gauche de l'équation comme variable réponse. En effet, votre modèle sera plus en adéquation avec la réalité, puisque dans le modèle *toute* l'erreur porte sur cette variable.
+- Si une des deux variables est fixée dans une expérience. Par exemple, vous faites grandir différents lots de plantes à des intensités lumineuses différentes, alors la variable intensité lumineuse sera plutôt variable explicative à la droite de l'équation et la mesure de la croissance de vos plantes sera variable réponse dans le terme de gauche.
+- Si une variable devra être prédite ultérieurement (quelle sera la croissance de mes plantes pour telle ou telle illumination, dans notre exemple précédent), cette variable à prédire sera plus facile à traiter si elle est variable réponse à la gauche de l'équation.
+
+S'il y a des conflits entre ces trois règles, traitez-les par priorité dans l'ordre indiqué ici\ : partitionnement de l'erreur > rôle dans l'expérience > prédiction.
 ```
 
 ### Résumé avec `summary()`
