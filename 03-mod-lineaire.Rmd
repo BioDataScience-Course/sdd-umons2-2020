@@ -18,7 +18,7 @@ SciViews::R
 
 ##### Prérequis {-}
 
-- L'ANOVA (modules 10 & 11 du cours [SDD 1](http://biodatascience-course.sciviews.org/sdd-umons/)), ainsi que la régression linéaire (modules 1 et 2 du présent cours) doivent être maitrisées avant d'aborder cette matière.
+- L'ANOVA (modules 10 & 11 du cours [SDD 1](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2020/variance.html)), ainsi que la régression linéaire (modules 1 et 2 du présent cours) doivent être maitrisées avant d'aborder cette matière.
 
 
 ## Variables numériques ou facteurs
@@ -478,21 +478,17 @@ Après cette longue lecture avec énormément de nouvelles matières, nous vous 
 
 - Répondez aux questions d'un learnr afin de vérifier vos acquis.
 
-```{block2, type='bdd'}
-Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
-
-    BioDataScience2::run("03a_mod_lin")
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
-```
-
+`r learnr("B03La_mod_lin", title = "Modèle linéaire", toc = "Tutoriel sur les modèles linéaires.")`
 
 - Poursuivez l'analyse des données sur la biométrie des oursins en y intégrant vos nouvelles notions sur le modèle linéaire
 
-```{block2, type='bdd'}
-
-Reprenez votre travail sur la biométrie des oursins et appliquer les nouvelles notions vues
-
+```{r, echo=FALSE, results='asis'}
+assignation("B02Gc_urchin", part = NULL,
+  url = "https://github.com/BioDataScience-Course/B02G_urchin",
+  course.urls = c(
+    'S-BIOG-015' = "https://classroom.github.com/g/foTtdgC5", 
+    'S-BIOG-937-958-959' = "https://classroom.github.com/g/5nzpamBh"),
+  toc = "Urchin - Exercices pratiques sur la régression linéaire.")
 ```
 
 
@@ -651,6 +647,9 @@ Lisez le README afin de prendre connaissance de l'exercice.
 ```
 
 
+## Récapitulatif des exercices
 
+Ce troisième module vous a permis de comprendre le modèle linéaire, de découvrir l'ANCOVA ainsi qu'apprendre le mécanisme du modèle linéaire généralisé. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser\ :
 
+`r show_ex_toc()`
 
