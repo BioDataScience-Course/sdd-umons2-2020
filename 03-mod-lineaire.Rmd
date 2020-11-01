@@ -520,7 +520,7 @@ $$
 y = 1/(1 + e^{- \beta x})
 $$
 
-La transformation **logit** calcule alors\ : $\ln(y / (1 - y)) = \beta x$. Les situations correspondant à ce cas de figure concernent par exemple des variables de type (vivant *versus* mort) par rapport à une situation potentiellement léthale, ou alors, le développement d'une maladie lors d'une épidémie (sain *versus* malade). 
+La transformation **logit** calcule alors\ : $\ln(y / (1 - y)) = \beta x$. Les situations correspondant à ce cas de figure concernent par exemple des variables de type (vivant *versus* mort) par rapport à une situation potentiellement létale, ou alors, le développement d'une maladie lors d'une épidémie (sain *versus* malade). 
 
 
 ### Exemple
@@ -560,7 +560,7 @@ Babies_table <- table(Babies_prem$premat, Babies_prem$smoke)
 knitr::kable(addmargins(Babies_table))
 ```
 
-Ce tableau de contingence ne nous donne pas encore l'idée de la répartition de prématurés en fonction de statut de fumeuse de la mère, mais le graphique suivant nous le montre.
+Ce tableau de contingence ne nous donne pas encore l'idée de la répartition de prématurés en fonction du statut de fumeuse de la mère, mais le graphique suivant nous le montre.
 
 ```{r}
 chart(data = Babies_prem, ~smoke %fill=% premat) +
@@ -612,23 +612,25 @@ Nous voyons que le résumé de l'objet `glm` est très similaire à celui d'un o
 
 - Réalisez un rapport scientifique sur la maturation d'ovocytes, en définissant un modèle linéaire généralisé le plus pertinent pour ces données.
 
-```{block2, type='bdd'}
-
-Vous avez à votre disposition une assignation GitHub Classroom.
-
-Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
-
-* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/mXAIu4Ir>
-
-* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [
-ovocytes
-](https://github.com/BioDataScience-Course/ovocytes). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
-
-Lisez le README afin de prendre connaissance de l'exercice.
-
+```{r, echo=FALSE, results='asis'}
+assignation("B03Ga_ovocyte", part = NULL,
+  url = "https://github.com/BioDataScience-Course/B03Ga_ovocyte",
+  course.urls = c(
+    'S-BIOG-015' = "https://classroom.github.com/g/...", 
+    'S-BIOG-937-958-959' = "https://classroom.github.com/a/QwLCXKbY"),
+  toc = "Ovocyte - Exercices pratiques cadrés sur le modèle linéaire.")
 ```
 
 - Réalisez un rapport scientifique sur la biométrie humaine
+
+```{r, echo=FALSE, results='asis'}
+assignation("B03Gb_human", part = NULL,
+  url = "https://github.com/BioDataScience-Course/B03Gb_human",
+  course.urls = c(
+    'S-BIOG-015' = "https://classroom.github.com/g/...", 
+    'S-BIOG-937-958-959' = "https://classroom.github.com/a/lwuZuRGJ"),
+  toc = "Human - Exercices pratiques libres sur le modèle linéaire.")
+```
 
 ```{block2, type='bdd'}
 
