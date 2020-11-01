@@ -632,22 +632,6 @@ assignation("B03Gb_human", part = NULL,
   toc = "Human - Exercices pratiques libres sur le modèle linéaire.")
 ```
 
-```{block2, type='bdd'}
-
-Vous avez à votre disposition une assignation GitHub Classroom.
-
-Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
-
-* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/hS069etL>
-
-* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [
-human
-](https://github.com/BioDataScience-Course/human). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
-
-Lisez le README afin de prendre connaissance de l'exercice.
-
-```
-
 
 ## Récapitulatif des exercices
 
