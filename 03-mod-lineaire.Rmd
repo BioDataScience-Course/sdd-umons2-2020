@@ -18,7 +18,7 @@ SciViews::R
 
 ##### Prérequis {-}
 
-- L'ANOVA (modules 10 & 11 du cours [SDD 1](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2020/variance.html)), ainsi que la régression linéaire (modules 1 et 2 du présent cours) doivent être maitrisées avant d'aborder cette matière.
+- L'ANOVA (modules 10 & 11 du cours [SDD 1](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2020/variance.html)), ainsi que la régression linéaire (modules 1 et 2 du présent cours) doivent être maîtrisées avant d'aborder cette matière.
 
 
 ## Variables numériques ou facteurs
@@ -31,7 +31,7 @@ Donc, la principale différence entre ANOVA et régression linéaire telles que 
 
 - variables quantitatives continues représentables par des nombres réels (`numeric` dans R),
 
-- variables quantitatives discrètes pour des dénombrements d'événements finis par exemple, et représentables par des nombres entiers (`integer` dans R),
+- variables quantitatives discrètes pour des dénombrements d'évènements finis par exemple, et représentables par des nombres entiers (`integer` dans R),
 
 - variables qualitatives ordonnées pour des variables prenant un petit nombre de valeurs, mais pouvant être ordonnées de la plus petite à la plus grande (`ordered` dans R),
 
@@ -190,7 +190,7 @@ plot(contr.poly(10)[, 2], type = "b")
 plot(contr.poly(10)[, 3], type = "b")
 ```
 
-Sur le graphique, l'axe X nommé `index` correspond en réalité à la succession des 10 niveaux de la variable présentés dans l'ordre du plus petit au plus grand. Nous voyons maintenant clairement comment les contrastes sont construits ici. Pour le contraste linéaire, on contraste les petits niveaux avec les grands, et ce, de manière proportionnelle par rapport à la progression d'un niveau à l'autre (polynôme d'ordre un = droite). Pour le contraste quadratique, on place "dans le même sac" les petits et grand niveaux qui sont contrastés avec les niveaux moyens (nous avons une parabole ou polynôme d'ordre 2). Pour le troisième graphique, la situation se complexifie en encore un peu plus avec un polynôme d'ordre 3, et ainsi de suite pour des polynômes d'ordres croissants jusqu'à remplir complètement la matrice de contrastes. 
+Sur le graphique, l'axe X nommé `index` correspond en réalité à la succession des dix niveaux de la variable présentés dans l'ordre du plus petit au plus grand. Nous voyons maintenant clairement comment les contrastes sont construits ici. Pour le contraste linéaire, on contraste les petits niveaux avec les grands, et ce, de manière proportionnelle par rapport à la progression d'un niveau à l'autre (polynôme d'ordre un = droite). Pour le contraste quadratique, on place "dans le même sac" les petits et grand niveaux qui sont contrastés avec les niveaux moyens (nous avons une parabole ou polynôme d'ordre deux). Pour le troisième graphique, la situation se complexifie en encore un peu plus avec un polynôme d'ordre trois, et ainsi de suite pour des polynômes d'ordres croissants jusqu'à remplir complètement la matrice de contrastes. 
 
 ```{block2, type='note'}
 
@@ -210,7 +210,7 @@ Avant l'apparition du modèle linéaire, une version particulière d'un mélange
 
 ### Bébés à la naissance
 
-Nous étudions la masse de nouveaux nés en fonction du poids de la mère et du fait qu’elle fume ou non. Cette analyse s'inspire de @verzani2005. Nous avons donc ici une variable dépendante `wt`, la masse des bébés qui est quantitative, et deux variables indépendantes ou prédictives `wt1`, la masse de la mère, et `smoke` le fait que la mère fume ou non. Or la première de ces variables explicatives est quantitative (`wt1`)  et l'autre (`smoke`) est une variable facteur à quatre niveaux (0 = la mère n'a jamais fumé, 1 = elle fume y compris pendant la grossesse, 2 = elle fumait mais a arrêté à la grossesses, et 3 = la mère a fumé, mais a arrêté, et ce, bien avant la grossesse. Un dernier niveau 9 = inconnu encode de manière non orthodoxe les valeurs manquantes dans notre tableau de données (valeurs que nous éliminerons). De même les masses des nouveaux nés et des mères sont des des unités impériales (américaines) respectivement en "onces" et en "livres". Enfin, nous devons prendre soin de bien encoder la variable `smoke` comme une variable `factor` (ici nous ne considérons pas qu'il s'agit d'un facteur ordonné et nous voulons faire un contraste de type traitement avec comparaison à des mères qui n'ont jamais fumé). **Un remaniement soigneux des données est donc nécessaire avant de pouvoir appliquer notre modèle\ !**
+Nous étudions la masse de nouveaux nés en fonction du poids de la mère et du fait qu’elle fume ou non. Cette analyse s'inspire de @verzani2005. Nous avons donc ici une variable dépendante `wt`, la masse des bébés qui est quantitative, et deux variables indépendantes ou prédictives `wt1`, la masse de la mère, et `smoke` le fait que la mère fume ou non. Or la première de ces variables explicatives est quantitative (`wt1`)  et l'autre (`smoke`) est une variable facteur à quatre niveaux (0 = la mère n'a jamais fumé, 1 = elle fume y compris pendant la grossesse, 2 = elle fumait mais a arrêté à la grossesses, et 3 = la mère a fumé, mais a arrêté, et ce, bien avant la grossesse. Un dernier niveau 9 = inconnu encode de manière non orthodoxe les valeurs manquantes dans notre tableau de données (valeurs que nous éliminerons). De même les masses des nouveaux-nés et des mères sont des des unités impériales (américaines) respectivement en "onces" et en "livres". Enfin, nous devons prendre soin de bien encoder la variable `smoke` comme une variable `factor` (ici nous ne considérons pas qu'il s'agit d'un facteur ordonné et nous voulons faire un contraste de type traitement avec comparaison à des mères qui n'ont jamais fumé). **Un remaniement soigneux des données est donc nécessaire avant de pouvoir appliquer notre modèle\ !**
 
 ```{r}
 SciViews::R
@@ -227,8 +227,8 @@ Ce tableau est "brut de décoffrage". Voyez `help("babies", package = "UsingR")`
 #       = 3 (plus depuis un certain temps) and = 9 (inconnu)
 babies %>.% select(., wt, wt1, smoke) %>.% # Garder seulement wt, wt1 & smoke
   filter(., wt1 < 999, wt < 999, smoke < 9) %>.% # Eliminer les valeurs manquantes
-  mutate(., wt = wt * 0.02835) %>.% # Transformer le poids en kg
-  mutate(., wt1 = wt1 * 0.4536) %>.% # Idem
+  mutate(., wt = wt * 0.02835) %>.% # Transformer le poids de livres en kg
+  mutate(., wt1 = wt1 * 0.4536) %>.% # Idem de onces en kg
   mutate(., smoke = as.factor(smoke)) -> # S'assurer d'avoir une variable factor
   Babies # Enregistrer le résultat dans Babies
 
@@ -270,13 +270,17 @@ summary(Babies_lm)
 anova(Babies_lm)
 ```
 
-L'analyse de variance montre que la masse de la mère a un effet significatif au seuil alpha de 5%, de même si la mère fume. Par contre, il n'y a pas d'**interactions** entre les deux. Le fait de pouvoir meurer des interactions entre variables qualitatives et quantitatives est ici bien évidemment un plus du modèle linéaire par rapport à ce qu'on pouvait faire avant\ !
+L'analyse de variance (tableau du bas) montre que la masse de la mère a un effet significatif au seuil alpha de 5%, de même que la variable `smoke`. Par contre, il n'y a pas d'**interactions** entre les deux. Le fait de pouvoir mesurer des interactions entre variables qualitatives et quantitatives est ici bien évidemment un plus du modèle linéaire par rapport à ce qu'on pouvait faire avant\ !
 
-Le résumé de l'analyse nous montre que la régression de la masse des bébés en fonction de la masse de la mère (ligne `wt1` dans le tableau des coefficients), bien qu'étant significative, n'explique que 8% de la variance totale (le $R^2$). Les termes `smoke1`, `smoke2` et `smoke3` sont les contrastes appliqués par rapport au contrôle (`smoke == 0`). On voit ici qu'aucun de ces contrastes n'est significatif au seuil alpha de 5%. Cela signifie que le seul effet significatif est celui lié à une ordonnée à l'origine non nulle `(Intercept)` matérialisant la condition `smoke == 0`. Cela signifie que des mères de masse nulle n'ayant jamais fumé engendreraient des bébés pesant environ 3kg. Dans le contexte présent, cette constatation n'a bien sûr aucun sens, et l'interprétation  de l'ordonnée à l'origine ne doit pas être faite. Donc, le modèle linéaire, en offrant plus de contrôle dans notre ajustement et une définition de contrastes "utiles" matérialisés par les lignes `smoke1`, `smoke2` et `smoke3` du tableau nous permet de faire des tests plus utiles dans le contexte de notre analyse.
+Dans le tableau supérieur (coefficients), nous avons le détail du modèle linéaire complet qui tient compte de la matrice de contrastes choisie pour `smoke` (matrice de contrastes de type traitement qui est **choisie par défaut par R** pour une variable de classe **factor**, donc, comparaison à un modèle de base ajusté pour `smoke == 0`, mères n'ayant jamais fumé, premier niveau de la variable). Cette analyse est bien plus complète qu'une simple ANOVA, et nous voyons se dégager d'autres résultats lorsque les quatre conditions de `smoke` sont contrastées. Le résumé de l'analyse nous montre que la régression de la masse des bébés en fonction de la masse de la mère (ligne `wt1` dans le tableau des coefficients), bien qu'étant significative, n'explique que 8% de la variance totale (le $R^2$). Suite à l'examen du nuage de points plus haut, nous n'en sommes pas surpris.
 
-N'oublions pas non plus la possibilité de déterminer si des interactions entre `smoke` et `wt1` existent pour ces différents contrastes, interactions testées respectivements aux lignes `smoke1:wt1`, `smoke2:wt1`, et `smoke3:wt1`du tableau des coefficients. Dans le cas présent, aucune de ces interactions n'est siginificative au seuil alpha de 5%.
+Les termes `smoke1`, `smoke2` et `smoke3` sont les contrastes appliqués par rapport au contrôle (`smoke == 0`). Ce sont les **décalages des ordonnées à l'origine** dans la régression du poids du bébé en fonction du poids de la mère, lorsque la matrice de contrastes traitement est utilisée comme ici. Par exemple, pour `smoke1`, l'estimation de l'ordonnée à l'origine pour la sous-population de référence `smoke == 0` est de 3.00 (terme "Intercept") -0.30 valeur de décalage estimé pour le terme `smoke1`, ce qui donne une ordonnée à l'origine pour la droite de la sous-population `smoke == 1` de 0.270. Le même raisonnement peut être fait pour la sous-population `smoke == 2`(3.00 + 0.90 = 3.90) et `smoke == 3` (3.00 - 0.04 = 2.96).
 
-Pour comprendre à quoi tout cela fait référence, il faut considérer le modèle de base comme une droite de régression ajustée entre `wt` et `wt1` pour la population de référence `smoke == 0`. Ainsi, si nous faisons\ :
+Les termes `smoke1:wt1` à `smoke3:wt1` sont les **interactions du modèle**, mais concrètement, cela représente la **variation de la pente** par rapport à la droite représentant le poids des bébés `wt1` en fonction du poids de la mère `wt`. Comme l'estimation de la pente pour la sous-population `smoke == 0` de référence est de 0.0081 (terme `wt1` dans le tableau), nous pouvons dire que la pente estimée pour la sous-population `smoke == 1` est de 0.0081 + 0.0012 = 0.0093, pour la sous-population `smoke == 2` elle est de 0.0081 - 0.0153 = -0.0072, et enfin pour la sous-population `smoke == 3`, elle est de 0.0081 + 0.0012 = 0.0093.
+
+Bien. Mais maintenant, est-ce que ces décalages d'ordonnées à l'origine et de pente sont significatifs\ ? Nous regardons plus loin les tests *t* de Student associés à chaque terme (H~0~: terme = 0, H~1~: terme ≠ 0). Au seuil alpha de 5% choisi au départ avant de faire l'analyse, nous constatons que les droites pour `smoke1` et `smoke3` ne diffèrent pas de manière significative de celle de référence pour `smoke == 0`. Par contre, tant le décalage de l'ordonnée à l'origine (terme `smoke2`) que de la pente (terme `smoke2:wt1`) sont significatifs au seuil alpha de 5%. Donc, la sous-population `smoke == 2` a un comportement différent en terme de variation du poids du bébé `wt1` en fonction du poids de la mère `wt`. 
+
+Pour vérifier tout cela, nous pouvons considérer le modèle de base comme une droite de régression ajustée entre `wt` et `wt1` pour la sous-population de référence `smoke == 0`. Ainsi, si nous faisons\ :
 
 ```{r}
 summary(lm(data = Babies, wt ~ wt1, subset = smoke == 0))
@@ -284,19 +288,17 @@ summary(lm(data = Babies, wt ~ wt1, subset = smoke == 0))
 
 Nous voyons en effet que les pentes et ordonnées à l'origine sont ici parfaitement identiques au modèle ANCOVA complet (mais pas les tests associés).
 
-Maintenant plus difficile\ : à quoi correspond une régression entre `wt` et `wt1` pour `smoke == 1`\ ?
+Faisons de même pour la régression entre `wt` et `wt1` pour la sous-population `smoke == 1`\ ?
 
 ```{r}
 summary(lm(data = Babies, wt ~ wt1, subset = smoke == 1))
 ```
 
-Nous avons une ordonnées à l'origine qui vaut 2,70 ici. Notons que cela correspond aussi à `(Intercept)` + `smoke1` = 3,00 - 0,30 = 2,70. Donc, l'ordonnées à l'origine pour `smoke == 1` est bien la valeur de référence additionnée de la valeur fournie à la ligne `smoke1` dans l'ANCOVA. Cela se vérifie aussi pour les deux autres droites pour `smoke2` et `smoke3`.
-
-Maintenant, la pente pour notre droite ajustée sur la population `smoke == 1` uniquement vaut 0,00927. Dans l'ANCOVA, nous avions une pente `wt1` de 0,00812 et une interaction `smoke1:wt1` claculée comme 0,00115. Notez alors que la pente de la droite seule 0,00927 = 0,00812 + 0,00115. Donc, tout comme `smoke1` correspond au décalage de l'ordonnée à l'origine du modèle de référence, les interactions `smoke1:wt1` correspondent au décalage de la pente par rapport au modèle de référence. Cela se vérifie également pour `smoke2:wt1` et `smoke3:wt1`.
+Nous avons une ordonnées à l'origine qui vaut 2,70 et une pente qui vaut 0.0093 comme calculé ci-dessus. L'estimation de la pente correspond donc bien  à `(Intercept)` + `smoke1` = 3,00 - 0,30 = 2,70. Cela se vérifie aussi pour les deux autres droites pour `smoke2` et `smoke3`. De même, la pente de notre droite pour la sous-population `smoke == 1` est égale à `wt1` + `smoke1:wt1` = 0.0081 + 0.0012 = 0.0093. Cela se vérifie aussi pour les deux autres sous-populations.
 
 Donc, notre modèle complet ne fait rien d'autre que d'ajuster les quatre droites correspondant aux relations linéaires entre `wt` et `wt1`, **mais en décompose les effets, niveau par niveau de la variable qualitative `smoke`** en fonction de la matrice de contraste que l'on a choisie. En bonus, nous avons la possibilité de tester si chacune des composantes (tableau coefficient de `summary()`) ou si globalement chacune des variables (tableau obtenu avec `anova()`) a un effet significatif ou non dans le modèle.
 
-Le graphique correspondant est le même que si nous avions ajusté les 4 régressions linéaires indépendamment l'une de l'autre (mais les tests et les enveloppes de confiance diffèrent).
+Le graphique correspondant est le même que si nous avions ajusté les quatre régressions linéaires indépendamment l'une de l'autre (mais les tests et les enveloppes de confiance diffèrent).
 
 ```{r}
 chart(data = Babies, wt ~ wt1 %col=% smoke) +
@@ -314,10 +316,11 @@ chart(data = Babies, wt ~ wt1 | smoke) +
   ylab("Masse du bébé [kg]")
 ```
 
+Sur ces deux graphiques, nous voyons très bien que les droites pour `smoke == 1` et `smoke == 3` sont parallèles à la droite de référence `smoke == 0`, mais avec un léger décalage qui n'apparaît pas significatif à 5% dans notre analyse, toutefois. Par contre, la droite relative à la sous-population `smoke == 2` a une pente très différente ainsi que son ordonnée à l'origine. Et ces différences sont significatives au seuil alpha de 5% (mais ne l'auraient pas été, si nous avions choisi 1% à la place). Il faudrait investiguer plus à fond pour déterminer si cette différence est *reproductible* (vérifier sur un autre échantillon), et si elle n'est pas due à un biais d'échantillonnage. Enfin, il faudrait si cela se confirme, expliquer pourquoi le poids des bébés varie différemment à partir du moment au une mère arrête de fumer au début de la grossesse...
 
 Comme toujours, lorsqu'un effet n'est pas significatif, nous pouvons décider de *simplifier* le modèle. **Mais attention\ ! Toujours considérer que les composantes sont interdépendantes.** Donc, éliminer une composante du modèle peut avoir des effets parfois surprenants sur les autres.
 
-Voyons ce que cela donne si nous éliminons les interactions. Dans ce cas, nous ajustons des droites toutes parallèles avec uniquement un décalage de leur ordonnée à l'origine matérialisé par `smoke1`, `smoke2` et `smoke3` par rapport au modèle de référence ajusté pour la population `smoke == 0` (notez l'utilisation, du signe `+` dans la formuile, là où nous utilisions le signe `*` dans la modèle précédent).
+Voyons ce que cela donne si nous éliminons les interactions, par exemple, parce que nous avons pu démontrer que le comportement différent pour `smoke == 2` était dû au hasard dans une étude complémentaire qui n'aurait pas confirmé cela. Ici, nous le faisons juste dans un but pédagogique, pour monter que changer de modèle peut amener à des observations très différentes sur les *mêmes données*. Dans ce cas, nous ajustons des droites toutes parallèles avec uniquement un décalage de leur ordonnée à l'origine matérialisé par `smoke1`, `smoke2` et `smoke3` par rapport au modèle de référence ajusté pour la population `smoke == 0` (notez l'utilisation, du signe `+` dans la formule, là où nous utilisions le signe `*` dans la modèle précédent).
 
 ```{r}
 # ANCOVA
@@ -326,9 +329,9 @@ summary(Babies_lm2)
 anova(Babies_lm2)
 ```
 
-Hé, ça c'est intéressant\ ! Maintenant que nous avons éliminé les interactions qui apparaissent non pertinentes ici, nous avons toujours une régression significative entre `wt` et `wt1` (mais avec un $R^2$  très faible de 7,7%, attention), mais maintenant, nous faisons apparaître un effet significatif du contraste avec `smoke1` au seuil alpha de 5%. Et du coup, les effets des deux variables deviennent plus clairs dans notre tableau de l'ANOVA. 
+Maintenant que nous avons éliminé les interactions, nous avons toujours une régression significative entre `wt` et `wt1` (mais avec un $R^2$ toujours très faible de 7,7%, attention), mais maintenant, nous faisons apparaître un effet significatif du contraste avec `smoke1` au seuil alpha de 5%. Et du coup, les effets des deux variables deviennent plus clairs dans notre tableau de l'ANOVA. **D'une manière générale, un modèle avec interactions est toujours plus difficile à analyser du point de vue du tableau de l'ANOVA.**
 
-Le graphique correspondant est l'ajustement de droites parallèles les unes aux autres pour les 4 sous-populations en fonction de `smoke`. Ce graphique est difficile à réaliser. Il faut ruser, et les détails du code vont au delà de ce cours (il n'est pas nécessaire de les comprendre à ce stade).
+Le graphique correspondant est l'ajustement de droites parallèles les unes aux autres pour les quatre sous-populations en fonction de `smoke`. Ce graphique est difficile à réaliser. Il faut ruser, et les détails du code vont au delà de ce cours (il n'est pas nécessaire de les comprendre à ce stade).
 
 ```{r}
 cols <- iterators::iter(scales::hue_pal()(4)) # Get colors for lines
@@ -342,7 +345,7 @@ chart(data = Babies, wt ~ wt1) +
 ```
 
 
-Voyons ce que donne l'analyse *post hoc* des comparaisons multiples (nous utilisons ici simplement le snippet disponible à partir de `...` -> `hypothesis tests` -> `hypothesis tests: means` -> `hmanovamult : anova - multiple comparaisons [multcomp]`) que nous avons déjà employé et qui reste valable ici.
+Voyons ce que donne l'analyse *post hoc* des comparaisons multiples (nous utilisons ici simplement le "snippet" disponible à partir de `...` -> `hypothesis tests` -> `hypothesis tests: means` -> `hmanovamult : anova - multiple comparaisons [multcomp]`) que nous avons déjà employé et qui reste valable ici.
 
 ```{r}
 summary(anovaComp. <- confint(multcomp::glht(Babies_lm2,
@@ -352,7 +355,7 @@ summary(anovaComp. <- confint(multcomp::glht(Babies_lm2,
 
 Ici, comme nous testons tous les contrastes, nous pouvons dire que la population des mères qui ont fumé pendant la grossesse `smoke == 1` donne des bébés significativement moins gros au seuil alpha de 5%, et ce, en comparaison de tous les autres niveaux (mère n'ayant jamais fumé, ou ayant fumé mais arrêté avant la grossesse, que ce soit longtemps avant ou juste avant).
 
-Il semble évident maintenant qu'il n'est pas utile de préciser si la mère a fumé ou non avant sa grossesse. L'élément déterminant est uniquement le fait de fumer *pendant* la grossesse ou non. Nous pouvons le montrer également en utilisant des contrastes de Helmert, à condition de recoder `smoke` avec des niveaux de "gravité" croissants ("0" = n'a jamais fumé, "1" = a arrêté il y a longtemps, "2" = a arrêté juste avant la grossesse et finalement, "1" = a continué à fumé à la grossesse). Il faut donc intervertir les cas "1" et "3". Nous pouvons utiliser `recode()` pour cela, mais attention, nous avons ici une variable `factor`, donc, ce ne sont pas des nombres mais des chaines de caractères (à placer entre guillemets). Une fois le recodage réalisé, il faut aussi retrier les niveaux en appelant `factor(..., levels = c("0", "1", "2", "3"))` sinon l'ancien ordre est conservé.
+Il semble évident maintenant qu'il n'est pas utile de préciser si la mère a fumé ou non avant sa grossesse. L'élément déterminant est uniquement le fait de fumer *pendant* la grossesse ou non. Nous pouvons le montrer également en utilisant des contrastes de Helmert, à condition de recoder `smoke` avec des niveaux de "gravité" croissants ("0" = n'a jamais fumé, "1" = a arrêté il y a longtemps, "2" = a arrêté juste avant la grossesse et finalement, "3" = a continué à fumer à la grossesse). Il faut donc intervertir les cas "1" et "3". Nous pouvons utiliser `recode()` pour cela, mais attention, nous avons ici une variable `factor`, donc, ce ne sont pas des nombres mais des chaînes de caractères (à placer entre guillemets). Une fois le recodage réalisé, il faut aussi retrier les niveaux en appelant `factor(..., levels = c("0", "1", "2", "3"))` sinon l'ancien ordre est conservé.
 
 ```{r}
 Babies %>.%
@@ -379,7 +382,7 @@ contr.helmert(4)
 
 - `smoke1` est le décalage de l'ordonnée à l'origine entre la modèle moyen établi avec les données `smoke == 0` et `smoke == 1` et celui pour `smoke == 1` (non significatif au seuil alpha de 5%),
 - `smoke2` est le décalage de l'ordonnée à l'origine pour `smoke == 2` _par rapport au modèle ajusté sur `smoke == 0`, `smoke == 1` **et** `smoke == 2` avec des pondérations respectives de -1, -1, et 2_ (non significatif au seuil alpha de 5%),
-- `smoke3` est le décalage de l'ordonnée à l'origine par rapport au modèle ajusté sur l'ensemble des autres observations, donc, avec `smoke` valant 0, 1, ou 2, et des pondérations respectives comme dans la dernière colonne de la matrice de contraste.. Donc, ce dernier contraste est celui qui nous intéresse car il compare les cas où la mère n'a pas fumé pendant la grossesse avec le cas `smoke == 3` où la mère a fumé pendant la grossesse, et il est significatif au seuil alpha de 5%. L'interprétation des valerrs estimées est plus complexe ici. Comparer ce résultat avec le modèle ajusté avec les contrastes traitement par défaut avec `smoke` réencodé\ :
+- `smoke3` est le décalage de l'ordonnée à l'origine par rapport au modèle ajusté sur l'ensemble des autres observations, donc, avec `smoke` valant 0, 1, ou 2, et des pondérations respectives comme dans la dernière colonne de la matrice de contraste.. Donc, ce dernier contraste est celui qui nous intéresse car il compare les cas où la mère n'a pas fumé pendant la grossesse avec le cas `smoke == 3` où la mère a fumé pendant la grossesse, et il est significatif au seuil alpha de 5%. L'interprétation des valeurs estimées est plus complexe ici. Comparer ce résultat avec le modèle ajusté avec les contrastes traitement par défaut avec `smoke` réencodé\ :
 
 ```{r}
 summary(lm(data = Babies2, wt ~ smoke + wt1))
@@ -396,9 +399,9 @@ Babies2 %>.%
 summary(lm(data = Babies3, wt ~ smoke + wt1))
 ```
 
-Notez comment R est capable d'utiliser automatiquement les contrasts adéquats (polynomiaux) lorsque la variable facteur `smoke` est encodée en `ordered`. Nous voyons ici que des contrastes tenant compte d'une variation le long des successions croissante de niveaux de "gravité" de la variable `smoke` sont maintenant calculés. La ligne `smoke.L` du tableau `Coefficients` indique une variation linéaire (significative au seuil alpha de 5%), `smoke.Q` est une variation quadratique (également significative) et enfin `smoke.C` est une variation cubique. Voyez la présentation des matrices de contrastes plus haut pour bien comprendre ce qui est calculé ici.
+Notez comment R est capable d'utiliser automatiquement les contrastes adéquats (polynomiaux) lorsque la variable facteur `smoke` est encodée en `ordered`. Nous voyons ici que des contrastes tenant compte d'une variation le long des successions croissante de niveaux de "gravité" de la variable `smoke` sont maintenant calculés. La ligne `smoke.L` du tableau `Coefficients` indique une variation linéaire (significative au seuil alpha de 5%), `smoke.Q` est une variation quadratique (également significative) et enfin `smoke.C` est une variation cubique. Voyez la présentation des matrices de contrastes plus haut pour bien comprendre ce qui est calculé ici.
 
-Au final, l'élément important relatif à la variable `smoke` est en définitive le fait de fumer **pendant** la grossesse ou non, pas l'histoire de la mère avant sa grossesse en matière de tabocologie\ ! En modélisation, nous avons toujours intérêt à choisir le **modèle le plus simple**. Donc ici, cela vaut le coup de simplifier `smoke` à une variable à deux niveaux `smoke_preg` qui indique uniquement si la mère fume ou non pendant la grossesse. Ensuite, nous ajustons à nouveau un modèle plus simple avec cette nouvelle variable.
+Au final, l'élément important relatif à la variable `smoke` est en définitive le fait de fumer **pendant** la grossesse ou non, pas l'histoire de la mère avant sa grossesse en matière de tabacologie\ ! En modélisation, nous avons toujours intérêt à choisir le **modèle le plus simple**. Donc ici, cela vaut le coup de simplifier `smoke` à une variable à deux niveaux `smoke_preg` qui indique uniquement si la mère fume ou non pendant la grossesse. Ensuite, nous ajustons à nouveau un modèle plus simple avec cette nouvelle variable.
 
 ```{r}
 Babies %>.%
@@ -467,7 +470,7 @@ Babies_lm4 %>.%
   ggtitle("Cook's distance")
 ```
 
-Ici le comportement des résidus est sain. Des petits écarts de la normalité sur le graphique quantile-quantile s'observent peut-être, mais ce n'est pas dramatique et le modèle linéaire est rabuste à ce genre de petis changements d'autant plus qu'ils apparaissent relativement symétriques en haut et et en bas de la distribution. En conclusion de cette analyse, nous pouvons dire que la masse du bébé dépend de la masse de la mère, mais assez faiblement (seulement 7,7% de la variance totale expliquée). Par contre, nous pouvons aussi dire que le fait de fumer pendant la grossesse a un effet significatif sur la réduction de la masse du bébé à la naissance (en moyenne cette réduction est de 0,246kg pour une masse moyenne à la naissance de 3,038kg, soit une réduction de 0,246 / 3,034 * 100 = 8%).
+Ici le comportement des résidus est sain. Des petits écarts de la normalité sur le graphique quantile-quantile s'observent peut-être, mais ce n'est pas dramatique et le modèle linéaire est robuste à ce genre de petits changements d'autant plus qu'ils apparaissent relativement symétriques en haut et et en bas de la distribution. En conclusion de cette analyse, nous pouvons dire que la masse du bébé dépend de la masse de la mère, mais assez faiblement (seulement 7,7% de la variance totale expliquée). Par contre, nous pouvons aussi dire que le fait de fumer pendant la grossesse a un effet significatif sur la réduction de la masse du bébé à la naissance (en moyenne cette réduction est de 0,246kg pour une masse moyenne à la naissance de 3,038kg, soit une réduction de 0,246 / 3,034 * 100 = 8%).
 
 Voilà, nous venons d'analyser et d'interpréter notre premier modèle linéaire sous forme d'une ANCOVA.
 
@@ -567,7 +570,7 @@ chart(data = Babies_prem, ~smoke %fill=% premat) +
   geom_bar(position = "fill")
 ```
 
-Il ne semble pas y avoir un effet flagrant, même si le niveau `smoke == 2` semble contenir une plus forte proportion de prématurés. Qu'en est-il en fonction de l'éthnicité (voir `help(babies, packahge = "UsingR")` pour le détail sur les variétés éthniques considérées) de la mère (variable `race`)\ ?
+Il ne semble pas y avoir un effet flagrant, même si le niveau `smoke == 2` semble contenir une plus forte proportion de prématurés. Qu'en est-il en fonction de l'ethnicité (voir `help(babies, packahge = "UsingR")` pour le détail sur les variétés ethniques considérées) de la mère (variable `race`)\ ?
 
 ```{r}
 Babies_table <- table(Babies_prem$premat, Babies_prem$race)
@@ -605,7 +608,7 @@ Babies_glm <- glm(data = Babies_prem, premat ~ smoke + race + bmi + age,
 summary(Babies_glm)
 ```
 
-Nous voyons que le résumé de l'objet `glm` est très similaire à celui d'un objet `lm`, notamment avec un tableau des `Coefficients` identique et qui s'interprète de la même manière. Ici, nous pouvons confirmer que ni le fait de fumer, ni l'âge, ni le BMI de la mère n'a d'incidence sur les bébés prématurés au seuil alpha de 5%. En revanche, certaines éthnies sont significativement plus susceptibles d'accoucher avant terme. Cela suggère soit un facteur génétique, soit un facteur environnmental/culturel lié à ces éthnies. Naturellement, il faudrait ici simplifier le modèle qui se ramène en fin de compte à l'équivalent d'une ANOVA à un facteur, mais en version `glm()` une fois que les variables non significatives sont éliminées. De même, on pourrait légitimement se demander si la variable `premat` ne pourrait pas aussi être modélisée avec une autre fonction de lien en considérant une distribution de Poisson par exemple. A vous de voir...
+Nous voyons que le résumé de l'objet `glm` est très similaire à celui d'un objet `lm`, notamment avec un tableau des `Coefficients` identique et qui s'interprète de la même manière. Ici, nous pouvons confirmer que ni le fait de fumer, ni l'âge, ni le BMI de la mère n'a d'incidence sur les bébés prématurés au seuil alpha de 5%. En revanche, certaines ethnies sont significativement plus susceptibles d'accoucher avant terme. Cela suggère soit un facteur génétique, soit un facteur environnemental/culturel lié à ces ethnies. Naturellement, il faudrait ici simplifier le modèle qui se ramène en fin de compte à l'équivalent d'une ANOVA à un facteur, mais en version `glm()` une fois que les variables non significatives sont éliminées. De même, on pourrait légitimement se demander si la variable `premat` ne pourrait pas aussi être modélisée avec une autre fonction de lien en considérant une distribution de Poisson par exemple. A vous de voir...
 
 
 ##### A vous de jouer ! {-}
