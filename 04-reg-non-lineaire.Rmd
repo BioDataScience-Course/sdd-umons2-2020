@@ -258,27 +258,6 @@ Lorsque la convergence a du mal à se faire, ceci est éventuellement lié à la
 Au final, l'ajustement d'un modèle non linéaire par les moindres carrés est une opération beaucoup plus délicate que l'ajustement par les moindres carrés d'un modèle linéaire. Dans le cas linéaire, la solution est trouvée de manière immédiate grâce à un calcul matriciel simple. Dans le cas non linéaire, il n'existe souvent pas de solution miracle et le meilleur ajustement doit être recherché de manière itérative. Nous verrons ci-dessous que R propose, pour certains modèles appelés 'SelfStart' une solution élégante pour calculer automatiquement les valeurs initiales et pour converger très rapidement vers la solution recherchée, mais la plupart du temps il faut tâtonner pour ajuster sa courbe.
 
 
-
-##### A vous de jouer ! {-}
-
-- Réalisez un rapport scientifique sur la vitesse d'une réaction chimique, en définissant un modèle non linéaire pertinent pour ces données.
-
-```{block2, type='bdd'}
-Vous avez à votre disposition une assignation GitHub Classroom.
-
-Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
-
-* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/pa48JVSl>
-
-* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [
-speed-reaction
-](https://github.com/BioDataScience-Course/speed-reaction). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
-
-Lisez le README afin de prendre connaissance de l'exercice.
-
-```
-
-
 ### Modèles 'selfStart' dans R
 
 Dans certains cas, il existe des petites astuces de calcul pour converger directement vers la solution, ou du moins, pour calculer des valeurs de départ très proches de la solution recherchée de sorte que l'algorithme de recherche pourra converger très rapidement. Par exemple, lorsqu'il est possible de linéariser le modèle en transformant les données. Dans ce cas, une bonne estimation des valeurs de départ des paramètres peut être obtenue en linéarisant la relation et en calculant les paramètres par régression linéaire. Ensuite, les paramètres obtenus sont retransformés dans leur forme initiale, et ils sont utilisés comme valeurs de départ.
@@ -843,6 +822,8 @@ La courbe est très proche des modèles de Gompertz et Weibull aux jeunes âges,
 Le choix final entre Gompertz ou Weibull dépend de l'usage que l'on veut faire du modèle. Si la simplicité du modèle est primordiale, nous garderons Gompertz. Si la croissance des petits oursins est un aspect important de l'analyse, nous garderons Weibull qui semble mieux s'ajuster aux données à ce niveau.
 
 ##### A vous de jouer ! {-}
+
+
 
 ```{r, echo=FALSE, results='asis'}
 assignation("B04Gb_bacterial_growth", part = NULL,
