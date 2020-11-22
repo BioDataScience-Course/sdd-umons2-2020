@@ -333,11 +333,20 @@ chart(data = micmen_data, v ~ conc) +
 
 ##### A vous de jouer ! {-}
 
-`r launch_shiny("https://sdd.umons.ac.be/B04Sa_micmen/", height = 600, delay = 20, toc = "Ajuster la meilleure courbe")`
+`r launch_shiny("https://sdd.umons.ac.be/B04Sa_micmen/", height = 600, delay = 20, toc = "Ajuster la meilleur courbe de Michaelis-Menten")`
 
 
 Concernant les modèles utiles en chimie et biochimie, le modèle à compartiment de premier ordre permet de décrire la cinétique de transformation d'une substance au cours du temps. Voyez le modèle `?Ssfol`. Il peut servir par exemple pour déterminer la cinétique d'élimination d'une substance du sang après injection.
 
+
+```{r, echo=FALSE, results='asis'}
+assignation("B04Ga_speed_reaction", part = NULL,
+  url = "https://github.com/BioDataScience-Course/B04Ga_speed_reaction",
+  course.urls = c(
+    'S-BIOG-015' = "https://classroom.github.com/a/DuJyBwfY", 
+    'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+  toc = "Vitesse de réaction chimique - Exercice pratique cadré sur la régression non linéaire.")
+```
 
 ### Modèles de croissance
 
@@ -391,7 +400,7 @@ Il existe aussi un modèle bi-exponentiel qui combine deux signaux exponentiels 
 
 ##### A vous de jouer ! {-}
 
-`r launch_shiny("https://sdd.umons.ac.be/B04Sb_exponent/", height = 600, delay = 20, toc = "Ajuster la meilleure courbe")`
+`r launch_shiny("https://sdd.umons.ac.be/B04Sb_exponent/", height = 600, delay = 20, toc = "Ajuster la meilleure courbe exponentielle")`
 
 ### Courbe logistique
 
@@ -427,7 +436,7 @@ Cette courbe sigmoïdale est asymptotique en 0 et $y_\infty$, et elle est égale
 
 ##### A vous de jouer ! {-}
 
-`r launch_shiny("https://sdd.umons.ac.be/B04Sc_logis/", height = 600, delay = 20, toc = "Ajuster la meilleure courbe")`
+`r launch_shiny("https://sdd.umons.ac.be/B04Sc_logis/", height = 600, delay = 20, toc = "Ajuster la meilleure courbe logistique")`
 
 Il est possible de généraliser ce modèle en définissant une courbe logistique dont l'asymptote basse peut se situer n'importe où ailleurs qu'en 0. Si cette asymptote se situe en $y_0$, nous obtenons l'équation\ :
 
@@ -456,19 +465,7 @@ chart(data = fpl_data, y ~ t) +
 
 ##### A vous de jouer ! {-}
 
-```{block2, type='bdd'}
-Ajuste les pramètres du modèles afin de trouver la meilleure courbe exponentielle dans une application interactive "shiny". Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir l'application :
-  
-    BioDataScience2::app("04d_logistique") # TODO
-
-Méthode alternative\ :
-
-    shiny::runApp(system.file("shiny/04d_logistique_gen", package = "BioDataScience2"))
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R lorsque vous aurez fini avec l'application shiny.
-```
-
-![04d_logistique_gen](images/sdd2_04/logis_gen.png)
+`r launch_shiny("https://sdd.umons.ac.be/B04Sd_gen_logis/", height = 600, delay = 20, toc = "Ajuster le meilleur modèle logistique généralisé")`
 
 ### Modèle de Gompertz
 
@@ -499,21 +496,10 @@ chart(data = gomp_data, y ~ t) +
   annotate("text", label = "point d'inflexion", x = 3.5, y = 0.32)
 ```
 
+
 ##### A vous de jouer ! {-}
 
-```{block2, type='bdd'}
-Ajuste les pramètres du modèles afin de trouver la meilleure courbe exponentielle dans une application interactive "shiny". Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir l'application :
-  
-    BioDataScience2::app("04e_gompertz") # TODO
-
-Méthode alternative\ :
-
-    shiny::runApp(system.file("shiny/04e_gompertz", package = "BioDataScience2"))
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R lorsque vous aurez fini avec l'application shiny.
-```
-
-![04e_gompertz](images/sdd2_04/gompertz.png)
+`r launch_shiny("https://sdd.umons.ac.be/B04Se_gompertz/", height = 600, delay = 20, toc = "Ajuster le meilleur modèle de Gompertz")`
 
 ### Modèles de von Bertalanffy
 
@@ -608,6 +594,9 @@ chart(data = rich_data, y ~ t %col=% "m = 1") +
   labs(color = "Richards avec :")
 ```
 
+##### A vous de jouer ! {-}
+
+`r launch_shiny("https://sdd.umons.ac.be/B04Sf_richards/", height = 600, delay = 20, toc = "Ajuster le meilleur modèle de Richards")`
 
 ### Modèle de Weibull
 
@@ -853,24 +842,19 @@ La courbe est très proche des modèles de Gompertz et Weibull aux jeunes âges,
 
 Le choix final entre Gompertz ou Weibull dépend de l'usage que l'on veut faire du modèle. Si la simplicité du modèle est primordiale, nous garderons Gompertz. Si la croissance des petits oursins est un aspect important de l'analyse, nous garderons Weibull qui semble mieux s'ajuster aux données à ce niveau.
 
-
 ##### A vous de jouer ! {-}
 
-- Réalisez un cahier de laboratoire sur la croissance de bactérie en définissant un modèle non linéaire pertinent pour ces données.
-
-```{block2, type='bdd'}
-
-Vous avez à votre disposition une assignation GitHub Classroom.
-
-Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
-
-* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/kSLMNWpw>
-
-* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [bacterial_growth
-](https://github.com/BioDataScience-Course/bacterial_growth). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
-
-Lisez le README afin de prendre connaissance de l'exercice.
+```{r, echo=FALSE, results='asis'}
+assignation("B04Gb_bacterial_growth", part = NULL,
+  url = "https://github.com/BioDataScience-Course/B04Gb_bacterial_growth",
+  course.urls = c(
+    'S-BIOG-015' = "https://classroom.github.com/a/2n7jgK3t", 
+    'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+  toc = "Croissance bactérienne - Exercices pratiques libres sur la régression non linéaire.")
 ```
 
+## Récapitulatif des exercices
 
+Ce quatrième module vous a permis de comprendre les régressions non linéaires. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser\ :
 
+`r show_ex_toc()`
