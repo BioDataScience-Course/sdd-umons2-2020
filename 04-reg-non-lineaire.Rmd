@@ -134,6 +134,10 @@ AIC(rlc_lm, rlc_nls)
 
 **Super\ ! Nous venons de réaliser ensemble notre première régression non linéaire par les moindres carrés.** Étudions un petit peu plus dans le détail cette technique dans la section suivante. En effet, il est utile de connaitre et comprendre les différents pièges qui peuvent se présenter à nous pour les éviter.
 
+##### A vous de jouer ! {-}
+
+`r h5p(46, height = 270, toc = "Base de la régression non linéaire")`
+
 
 ## Principe
 
@@ -165,6 +169,10 @@ La description détaillée et les développements mathématiques de ces algorith
 - **plinear** de **Golub-Pereyra**, bien que peu répandu, est également implémenté. Il est utile en ce sens qu'il sépare les paramètres en deux sous-groupes\ : ceux qui sont linéaires dans la fonction (coefficients multiplicateurs de termes additifs) et ceux qui ne le sont pas. La recherche itérative ne se fait que sur les seconds. Les premiers étant estimés par régression linéaire. Ainsi, lorsque la fonction ne comporte que peu de paramètres non linéaires, l'algorithme converge beaucoup plus rapidement.
 
 - **Port** est également disponible. Il a la particularité, contrairement aux deux précédents, de permettre de définir des limites supérieures et inférieures acceptables pour chaque paramètres. Cela limite la recherche dans un domaine de validité, lorsque celui-ci peut être défini.
+
+##### A vous de jouer ! {-}
+
+`r h5p(45, height = 270, toc = "Minimisation de la fonction objectif")`
 
 Reprenons le calcul de notre RLC pour *P. oceanica*. L'argument `trace = TRUE` peut être ajouté à l'appel de `nls()` pour visionner les différentes étapes du calcul itératif. Voici ce que cela donne\ :
 
@@ -817,7 +825,7 @@ urchins_plot +
 AIC(urchins_gomp, urchins_logis, urchins_weib, urchins_rich)
 ```
 
-La courbe est très proche des modèles de Gompertz et Weibull aux jeunes âges, mais l'asymptote maximale est légèrement plus haute que pour les deux autres modèles (58 mm au lieu de 57 mm). Les trois courbes sont très, très proches l'une de l'autre. Le critère d'information d'Akaiké est marginalement moins bon pour le modèle de Richards que pour celui de Weibull, mais est tout juste meilleur que celui de Gompertz. En outre l'écart type pour le paramètre `x0` est plus conséquent en comparaison de sa valeur, ce qui démontre une certaine instabilité de la fonction par rapport à ce paramètre, et par conséquent, une incertitude dans son estimation. Pour cette raison, det pour la difficulté à l'ajuster, le modèle de Richards sera écarté dans notre cas au benefice du modèle de Weibull, voire de celui de Gompertz plus simple.
+La courbe est très proche des modèles de Gompertz et Weibull aux jeunes âges, mais l'asymptote maximale est légèrement plus haute que pour les deux autres modèles (58 mm au lieu de 57 mm). Les trois courbes sont très, très proches l'une de l'autre. Le critère d'information d'Akaiké est marginalement moins bon pour le modèle de Richards que pour celui de Weibull, mais est tout juste meilleur que celui de Gompertz. En outre l'écart type pour le paramètre `x0` est plus conséquent en comparaison de sa valeur, ce qui démontre une certaine instabilité de la fonction par rapport à ce paramètre, et par conséquent, une incertitude dans son estimation. Pour cette raison, det pour la difficulté à l'ajuster, le modèle de Richards sera écarté dans notre cas au bénéfice du modèle de Weibull, voire de celui de Gompertz plus simple.
 
 Le choix final entre Gompertz ou Weibull dépend de l'usage que l'on veut faire du modèle. Si la simplicité du modèle est primordiale, nous garderons Gompertz. Si la croissance des petits oursins est un aspect important de l'analyse, nous garderons Weibull qui semble mieux s'ajuster aux données à ce niveau.
 
