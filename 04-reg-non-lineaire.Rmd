@@ -823,6 +823,7 @@ Le choix final entre Gompertz ou Weibull dépend de l'usage que l'on veut faire 
 
 ##### A vous de jouer ! {-}
 
+`r learnr("B04La_nls", title = "Modèles non-linéaires", toc = "Tutoriel sur les modèles non linéaires.")`
 
 
 ```{r, echo=FALSE, results='asis'}
