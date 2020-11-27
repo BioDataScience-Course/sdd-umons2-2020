@@ -75,7 +75,7 @@ Nous pouvons être amenés à utiliser une régression non linéaire pour l'une 
 
 - Lorsque le nuage de points est **curvilinéaire**, évidemment, mais après avoir tenté de le **linéariser** (et de résoudre un problème éventuel d’hétéroscédasticité ou de non-normalité des résidus) par **transformation** sans succès,
 
-- En fonction de nos connaissances _a priori_ du phénomène. Tout phénomène issu d'un mécanisme dont nous connaissons le mode de fonctionnement menant à une équation mathématique non linéaire. Cela se rencontre fréquemment en physique, en chimie, et même en biologie (courbes de croissance, effet de modifications environmentales, etc.)
+- En fonction de nos connaissances _a priori_ du phénomène. Tout phénomène issu d'un mécanisme dont nous connaissons le mode de fonctionnement menant à une équation mathématique non linéaire. Cela se rencontre fréquemment en physique, en chimie, et même en biologie (courbes de croissance, effet de modifications environnementales, etc.)
 ```
 
 Les spécialistes de la photosynthèse ont mis au point différents modèles pour représenter les RLC. [@platt1980] ont proposé une formulation mathématique des phénomènes mis en jeu ici. Leur équation est la suivante\ :
@@ -95,7 +95,7 @@ pgh_model <- function(x, etr_max, alpha, beta)
   etr_max * (1 - exp(-x * alpha/etr_max)) * (exp(-x * beta/etr_max))
 ```
 
-Le premier argument de la fonction *doit* être la variable indépendante (notée de manière générique `x`, mais n'importe quel nom fait l'affaire ici) et les autres arguments correspondent aux paramètres du modèle, donc `etr_max`, `alpha` et `beta`. Ce modèle peut être ajusté dans R à l'aide de la fonction `nls()` pour "Nonlinear Least Squares" (regression). Par contre, nous devons fournir une information supplémentaire (l'explication sera détaillée plus loin)\ : des valeurs approximatives de départ pour les paramètres. Nous voyons sur le graphique que `etr_max = 9` est une estimation plausible, mais il est difficile de déterminer `alpha` et `beta` rien qu'en regardant le graphique. Nous allons fixer `alpha = 1` (rendement max), et partir d'un modèle sans photoinhibition en utilisant `beta = 0`. Voici comment la régression non linéaire par les moindre carrés avec notre fonction `pgh_model` peut être calculée\ :
+Le premier argument de la fonction *doit* être la variable indépendante (notée de manière générique `x`, mais n'importe quel nom fait l'affaire ici) et les autres arguments correspondent aux paramètres du modèle, donc `etr_max`, `alpha` et `beta`. Ce modèle peut être ajusté dans R à l'aide de la fonction `nls()` pour "Nonlinear Least Squares" (regression). Par contre, nous devons fournir une information supplémentaire (l'explication sera détaillée plus loin)\ : des valeurs approximatives de départ pour les paramètres. Nous voyons sur le graphique que `etr_max = 9` est une estimation plausible, mais il est difficile de déterminer `alpha` et `beta` rien qu'en regardant le graphique. Nous allons fixer `alpha = 1` (rendement max), et partir d'un modèle sans photoinhibition en utilisant `beta = 0`. Voici comment la régression non linéaire par les moindres carrés avec notre fonction `pgh_model` peut être calculée\ :
 
 ```{r}
 rlc_nls <- nls(data = rlc, etr ~ pgh_model(par, etr_max, alpha, beta),
@@ -107,7 +107,7 @@ La dernière ligne, "achieved convergence" indique que le modèle a pu être cal
 
 $$ETR = 9.4 \cdot (1 - e^{-PAR \cdot 0.33/9.3}) \cdot e^{-PAR \cdot 0.0040/9.3}$$
 
-Voyons ce que cela donne sur le graphique. Nous utiliserons pour ce faire une petite astuce qui consiste à transformer l'objet `nls` obtenu en une fonction utilisable par `stat_function()` pour le graphique `ggplot2` réalisé à l'aide de `chart()`^[Il est également possible de l'utiliser avec `curve()` pour une graphique de base dans R.].
+Voyons ce que cela donne sur le graphique. Nous utiliserons pour ce faire une petite astuce qui consiste à transformer l'objet `nls` obtenu en une fonction utilisable par `stat_function()` pour le graphique `ggplot2` réalisé à l'aide de `chart()`^[Il est également possible de l'utiliser avec `curve()` pour un graphique de base dans R.].
 
 ```{r}
 as.function.nls <- function(x, ...) {
@@ -270,7 +270,7 @@ Au final, l'ajustement d'un modèle non linéaire par les moindres carrés est u
 
 Dans certains cas, il existe des petites astuces de calcul pour converger directement vers la solution, ou du moins, pour calculer des valeurs de départ très proches de la solution recherchée de sorte que l'algorithme de recherche pourra converger très rapidement. Par exemple, lorsqu'il est possible de linéariser le modèle en transformant les données. Dans ce cas, une bonne estimation des valeurs de départ des paramètres peut être obtenue en linéarisant la relation et en calculant les paramètres par régression linéaire. Ensuite, les paramètres obtenus sont retransformés dans leur forme initiale, et ils sont utilisés comme valeurs de départ.
 
-Par exemple, si nous décidons d'ajuster un modèle allométrique de Huxley, de type $y = a x^b$^[Un modèle 'selfStart' est disponible pour cette fonction dans le package `vegan`, voir `?vegan::SSarrhenius()`.], nous pouvons linéariser la relation en transformant les deux variables en logarithmes. En effet, $\log(y) = \log(a x^b)$, ce qui est équivalent à une droite en développant\: $\log(y) = b \log(x) + \log(a)$. Le paramètre $b$ devient donc la pente de la droite, et $\log(a)$ devient l'ordonnée à l'origine dans le modèle linéaire transformé. Une fois la droite ajustée, on a directement la valeur de $b$, et il suffit de calculer l'exponentielle de l'ordonnée à l'origine pour obtenir $a$. Toutefois, comme les résidus sont différents dans la relation non transformée initiale, il ne s'agit pas de la solution recherchée mais d'une bon point de départ très proche de cette solution. Ainsi, on prendra les valeurs de $a$ et de $b$ ainsi calculées par la droite en double log comme point de départ, et on laissera l'algorithme de recherche du minimum terminer le travail. En fait, c'est exactement de cette façon que les modèles dits 'selfStart' fonctionnent dans R. Plus qu’une fonction, il s’agit en réalité d’un programme complet qui contient\ :
+Par exemple, si nous décidons d'ajuster un modèle allométrique de Huxley, de type $y = a x^b$^[Un modèle 'selfStart' est disponible pour cette fonction dans le package `vegan`, voir `?vegan::SSarrhenius()`.], nous pouvons linéariser la relation en transformant les deux variables en logarithmes. En effet, $\log(y) = \log(a x^b)$, ce qui est équivalent à une droite en développant\: $\log(y) = b \log(x) + \log(a)$. Le paramètre $b$ devient donc la pente de la droite, et $\log(a)$ devient l'ordonnée à l'origine dans le modèle linéaire transformé. Une fois la droite ajustée, on a directement la valeur de $b$, et il suffit de calculer l'exponentielle de l'ordonnée à l'origine pour obtenir $a$. Toutefois, comme les résidus sont différents dans la relation non transformée initiale, il ne s'agit pas de la solution recherchée mais d'un bon point de départ très proche de cette solution. Ainsi, on prendra les valeurs de $a$ et de $b$ ainsi calculées par la droite en double log comme point de départ, et on laissera l'algorithme de recherche du minimum terminer le travail. En fait, c'est exactement de cette façon que les modèles dits 'selfStart' fonctionnent dans R. Plus qu’une fonction, il s’agit en réalité d’un programme complet qui contient\ :
 
 * la fonction elle-même,
 * la résolution analytique de la dérivée première de la fonction en chaque point (utilisée par l’algorithme de convergence pour déterminer l’écart à apporter aux paramètres à l’itération suivante),
@@ -293,7 +293,7 @@ Les domaines les plus courants où des modèles non linéaires sont utilisés en
 
 ### Modèle de Michaelis-Menten
 
-La corube de Michaelis-Menten est bien connue pour modéliser des cinétiques chimiques simples, enzymatiques en particulier. Son équation est\ :
+La courbe de Michaelis-Menten est bien connue pour modéliser des cinétiques chimiques simples, enzymatiques en particulier. Son équation est\ :
 
 $$V = \frac{V_{max} \cdot conc}{K + conc}$$
 
@@ -331,7 +331,7 @@ assignation("B04Ga_speed_reaction", part = NULL,
   url = "https://github.com/BioDataScience-Course/B04Ga_speed_reaction",
   course.urls = c(
     'S-BIOG-015' = "https://classroom.github.com/a/DuJyBwfY", 
-    'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+    'S-BIOG-937-958-959' = "https://classroom.github.com/a/TVj1lxHC"),
   toc = "Vitesse de réaction chimique - Exercice pratique cadré sur la régression non linéaire.")
 ```
 
@@ -464,7 +464,7 @@ qui se résout et se simplifie en\ :
 
 $$y(t) = y_\infty \ e^{-k \ (t - t_0)} = y_\infty \ e^{-a \cdot b^t} = y_\infty \ a^{e^{-k \ t}} = y_\infty \ a^{b^t}$$
 
-La dernière forme apparaît plus simple et est le plus souvent utilisée. La première forme est directement dérivée de l'équation différentielle et donne une meilleure comparaison avec la courbe logistique, puisque $t_0$ correspond aussi à l'abscisse du point d'inflexion, qui n'est plus en position symétrique ici (voir figure ci-dessous). Le modèle 'selfStart' correspondant dans R s'appelle `SSgompertz()`. Sa paramétriqation correspond à la seconde forme, mais avec $a$ appelé `b2` et $b$ appelé `b3` ($y(t) = Asym \ e^{-b2 \cdot b3^t}$).
+La dernière forme apparaît plus simple et est le plus souvent utilisée. La première forme est directement dérivée de l'équation différentielle et donne une meilleure comparaison avec la courbe logistique, puisque $t_0$ correspond aussi à l'abscisse du point d'inflexion, qui n'est plus en position symétrique ici (voir figure ci-dessous). Le modèle 'selfStart' correspondant dans R s'appelle `SSgompertz()`. Sa paramétrisation correspond à la seconde forme, mais avec $a$ appelé `b2` et $b$ appelé `b3` ($y(t) = Asym \ e^{-b2 \cdot b3^t}$).
 
 Voici le graphique d'une courbe de Gompertz avec $y_\infty = 0,95$, $a = 5$ et $b = 0,5$.
 
@@ -502,16 +502,16 @@ La forme la plus simple de ce modèle est obtenue lorsque nous mesurons des dime
 
 $$y(t) = y_\infty \ (1 - e^{-k \ (t - t_0)})$$
 
-Un graphique des deux modèles est présenté ci-dessous. Le modèle de von Bertalanffy pour mesures linéaire n'a pas de point d'inflexion. La croissance est la plus rapide à la naissance et ne fait que diminuer avec le temps pour finalement atteindre zéro lorsque la taille maximale asymptotique est atteinte. Avec ce modèle, la croissance est donc déterminée et elle ne peut dépasser cette asymptote horizontale située en $y(t)= y_\infty$. A cause de la puissance cubique de la forme pondérale du modèle von Bertalanffy, cette dernière est une sigmoïde asymétrique, comme l'est le modèle de Gompertz également. Trois modèles 'selfStart' existent dans R\ : `SSasympOff()`, `SSasymp()` et `SSasympOrig()`.
+Un graphique des deux modèles est présenté ci-dessous. Le modèle de von Bertalanffy pour mesures linéaires n'a pas de point d'inflexion. La croissance est la plus rapide à la naissance et ne fait que diminuer avec le temps pour finalement atteindre zéro lorsque la taille maximale asymptotique est atteinte. Avec ce modèle, la croissance est donc déterminée et elle ne peut dépasser cette asymptote horizontale située en $y(t)= y_\infty$. A cause de la puissance cubique de la forme pondérale du modèle von Bertalanffy, cette dernière est une sigmoïde asymétrique, comme l'est le modèle de Gompertz également. Trois modèles 'selfStart' existent dans R\ : `SSasympOff()`, `SSasymp()` et `SSasympOrig()`.
 
 - `SSAsympOff()` est définie comme $y(t) = y_\infty \ (1 - e^{-e^{lrc} \ (t - t_0)})$. Ici $k$ est remplacé par $e^{lrc}$. Cette astuce permet d'avoir un paramètre $k$ qui ne prend pas de valeur négatives, puisque l'exponentielle d'une valeur négative est un nombre compris entre 0 et 1. Donc, un $lrc$ négatif donne un $k$ compris entre 0 et 1. Cela permet de contraindre un paramètre du modèle sans nécessité de passer obligatoirement par l'algorithme "Port". A noter finalement que $y_\infty$ s'appelle `Asym` dans tous les modèles 'selfStart' dans R, y compris ici, et que $t_0$ s'appelle ici `c0`.
 
-- `SSAsymp()` est définie comme $y(t) = y_\infty + (R_0 - y_\infty) \ e^{-e^{lrc} \cdot t}$. Par rapport à la forme habituelle, outre l'astuce de $e^{lrc}$ à la place de $k$, $t_0$ est également reparamétré en $R_0$ qui représente la taille initiale au temps $t = 0$. Cela mets l'accent sur cette "taille à la naissance". 
+- `SSAsymp()` est définie comme $y(t) = y_\infty + (R_0 - y_\infty) \ e^{-e^{lrc} \cdot t}$. Par rapport à la forme habituelle, outre l'astuce de $e^{lrc}$ à la place de $k$, $t_0$ est également reparamétré en $R_0$ qui représente la taille initiale au temps $t = 0$. Cela met l'accent sur cette "taille à la naissance". 
 
 ```{block, type='info'}
 **Reparamétriser un modèle** consiste à exprimer la fonction mathématique qui le représente d'une façon différente. Etant donné que l'interprétation biologique des paramètres fait partie des objectifs de la méthode. On parle d'approche **mécanistique**, qui vise à décrypter le mécanisme sous-jacent *versus* une approche purement **empirique** basée sur les données uniquement avec un modèle polynomial tout venant, par exemple.
 
-Ainsi, L'équation du modèle de von Bertalanffy présentée au début montre une paramétrisation "classique", implémentée dans `SSasympOff()` alors que `SSasymp()` mets la taille initiale en évidence via le paramètre $R_0$.
+Ainsi, L'équation du modèle de von Bertalanffy présentée au début montre une paramétrisation "classique", implémentée dans `SSasympOff()` alors que `SSasymp()` met la taille initiale en évidence via le paramètre $R_0$.
 ```
 
 - `SSasympOrig()` force le modèle à passer par l'origine des axes {0, 0}. Il n'y a donc plus que deux paramètres `Asym` = $y_\infty$ et `lrc` tel que $k = e^{lrc}$. Ce modèle simplifié est souvent utile en pratique. Il a l'avantage d'être simple, avec seulement deux paramètres. Il est l'équivalent d'une droite forcée à zéro pour le modèle von Bertalanffy. Si `R0` dans `SSasymp()` ou `c0` dans `SSasympOff()` ne sont pas significativement différents de zéro (test *t* de Student dans le tableau des paramètres), vous pouvez envisager de simplifier le modèle vers `SSasympOrig()`. 
@@ -551,7 +551,7 @@ $$y(t) = y_\infty \ (1 - e^{-k \ (t - t_0)})^m$$
 
 Von Bertalanffy (1938, 1957) a fixé $m$ à 1 ou à 3. Richards (1959) permet à $m$ de varier librement, et donc son modèle a un paramètre de plus. Cette dernière courbe est très flexible (voir schéma ci-dessous) et il est possible de démontrer que plusieurs autres modèles de croissance ne sont que des cas particuliers de ce modèle généraliste avec différentes valeurs de $m$. Nous avons déjà observé que le modèle de Richards se réduit aux deux modèles de von Bertalanffy quand $m = 1$ et $m = 3$. Il se réduit aussi à une courbe logistique lorsque $m = -1$ et il est possible de montrer qu'il converge vers le modèle de Gompertz lorsque $|m| \rightarrow \infty$. Il n'existe aucun modèle 'selfStart' pour la courbe de Richards dans R. Par ailleurs, il s'agit d'un modèle particulièrement délicat à ajuster, comme nous le verrons dans un exemple concret plus loin dans la section "choix du modèle".
 
-Avec une paramétrisation proche de celle de `SSasympOff()`, la fonction de Rcichards peut s'écrire comme ceci\ :
+Avec une paramétrisation proche de celle de `SSasympOff()`, la fonction de Richards peut s'écrire comme ceci\ :
 
 ```{r}
 richards <- function(x, Asym, lrc, c0, m) Asym*(1 - exp(-exp(lrc) * (x - c0)))^m
@@ -695,11 +695,11 @@ Comme vous pouvez le voir, différents oursins ont été mesurés via le diamèt
 
 Le choix du meilleur modèle se fait grâce à deux critères\ :
 
-1. Les connaissances théoriques et *a priori* du modèle que l'on ajuste. En effet, il n'existe qu'un seul modèle linéaire, mais une infinité de modèles curvilinéaires qui peuvent s'ajuster dans les données. Le choix du meilleur modèle se fait en fonction de considérations sur le phénomène sous-jacent qui doivent se refléter dans les propriétés mathématiques de la courbe choisie. Par exemple, si on sait que la croissance est asymptotique vers une taille maximale, nous devrons choisir une courbe mathématique qui présente une asymptote horizontale à son maximum pour représente au mieux le phénomène étudié.
+1. Les connaissances théoriques et *a priori* du modèle que l'on ajuste. En effet, il n'existe qu'un seul modèle linéaire, mais une infinité de modèles curvilinéaires qui peuvent s'ajuster dans les données. Le choix du meilleur modèle se fait en fonction de considérations sur le phénomène sous-jacent qui doivent se refléter dans les propriétés mathématiques de la courbe choisie. Par exemple, si on sait que la croissance est asymptotique vers une taille maximale, nous devrons choisir une courbe mathématique qui présente une asymptote horizontale à son maximum pour représenter au mieux le phénomène étudié.
 
 2. Le coefficient de détermination $R^2$ n'est pas calculé par R pour une régression non linéaire car sa validité est sujette à discussion entre les statisticiens (d'autres logiciels statistiques le calculent). Nous n'avons donc pas d'estimation de la qualité de l'ajustement par ce biais, comme dans le cas de la régression linéaire. Par contre, il est possible de calculer un autre critère plus fiable que nous avons déjà utilisé\ : le **critère d'Akaïke** (fonction `AIC()` dans R). Ce critère tient compte à la fois de la qualité d'ajustement et de la complexité du modèle, exprimée par le nombre de paramètres qu'il faut estimer. Plus le modèle est complexe, plus on peut s'attendre à ce qu'il s'ajuste bien aux données car il est plus flexible. Cependant, en ce domaine, la complexité n'est pas forcément un gage de qualité. On recherche plutôt un compromis entre meilleur ajustement et simplicité. Le critère d'information d'Akaiké quantifie précisément ce compromis, c'est-à-dire que le modèle qui a un AIC le plus faible est considéré comme le meilleur. Appliquons donc ce concept pour sélectionner le meilleur modèle de croissance pour décrire la croissance somatique de nos oursins après avoir sélectionné les modèles candidats les plus judicieux (modèle sigmoïdal avec asymptote horizontale au maximum).
 
-Notons toutefois que, comme les animaux sont mesurés aux mêmes âges, tous les 3 à 6 mois, certains points se superposent. Afin d'afficher tous les points, il est utile d'utiliser la fonction `geom_jitter()` à la place de `geom_point()` qui décale les points d'une valeur aléatoire pour éviter ces superpositions (l'argument `width =` indique le décalage maximum à appliquer). Voici ce que cela donne (en ajoutant également un titre avec formattage correct du nom en latin) \ :
+Notons toutefois que, comme les animaux sont mesurés aux mêmes âges, tous les 3 à 6 mois, certains points se superposent. Afin d'afficher tous les points, il est utile d'utiliser la fonction `geom_jitter()` à la place de `geom_point()` qui décale les points d'une valeur aléatoire pour éviter ces superpositions (l'argument `width =` indique le décalage maximum à appliquer). Voici ce que cela donne (en ajoutant également un titre avec formatage correct du nom en latin) \ :
 
 ```{r}
 urchins_plot <- chart(data = urchins, diameter ~ age) +
@@ -783,7 +783,7 @@ urchins_plot +
 AIC(urchins_gomp, urchins_logis, urchins_weib)
 ```
 
-Ce modèle fait presque jeu égal avec le modèle de Gompertz en terme de critère d'Akaiké\ ; juste un tout petit peu mieux. En fait, les deux courbes sont pratiquement superposées l'une à l'autre, mais le modèle de Weibull à un démarrage de croissance plus lent au début, ce qui se reflète dans les données. Par contre, il est pénalisé par le fait que c'est un modèle plus complexe qui possède un paramètre de plus. L'un dans l'autre, le critère d'information d'Akaiké considère donc les deux modèles sur pratiquement sur le même plan du point de vue de la qualité de leurs ajustements respectifs.
+Ce modèle fait presque jeu égal avec le modèle de Gompertz en terme de critère d'Akaiké\ ; juste un tout petit peu mieux. En fait, les deux courbes sont pratiquement superposées l'une à l'autre, mais le modèle de Weibull à un démarrage de croissance plus lent au début, ce qui se reflète dans les données. Par contre, il est pénalisé par le fait que c'est un modèle plus complexe qui possède un paramètre de plus. L'un dans l'autre, le critère d'information d'Akaiké considère donc les deux modèles sur pratiquement le même plan du point de vue de la qualité de leurs ajustements respectifs.
 
 A ce stade, nous voudrions également essayer un autre modèle flexible à quatre paramètres\ : le modèle de Richards. Malheureusement, il n'existe pas de fonction 'SelfStart' dans R pour ce modèle. Nous sommes donc réduit "à mettre les mains dans le cambouis", à définir la fonction nous même, à trouver de bonnes valeurs de départ, etc. Voici comment définir la fonction\ :
 
@@ -825,7 +825,7 @@ urchins_plot +
 AIC(urchins_gomp, urchins_logis, urchins_weib, urchins_rich)
 ```
 
-La courbe est très proche des modèles de Gompertz et Weibull aux jeunes âges, mais l'asymptote maximale est légèrement plus haute que pour les deux autres modèles (58 mm au lieu de 57 mm). Les trois courbes sont très, très proches l'une de l'autre. Le critère d'information d'Akaiké est marginalement moins bon pour le modèle de Richards que pour celui de Weibull, mais est tout juste meilleur que celui de Gompertz. En outre l'écart type pour le paramètre `x0` est plus conséquent en comparaison de sa valeur, ce qui démontre une certaine instabilité de la fonction par rapport à ce paramètre, et par conséquent, une incertitude dans son estimation. Pour cette raison, det pour la difficulté à l'ajuster, le modèle de Richards sera écarté dans notre cas au bénéfice du modèle de Weibull, voire de celui de Gompertz plus simple.
+La courbe est très proche des modèles de Gompertz et Weibull aux jeunes âges, mais l'asymptote maximale est légèrement plus haute que pour les deux autres modèles (58 mm au lieu de 57 mm). Les trois courbes sont très, très proches l'une de l'autre. Le critère d'information d'Akaiké est marginalement moins bon pour le modèle de Richards que pour celui de Weibull, mais est tout juste meilleur que celui de Gompertz. En outre l'écart type pour le paramètre `x0` est plus conséquent en comparaison de sa valeur, ce qui démontre une certaine instabilité de la fonction par rapport à ce paramètre, et par conséquent, une incertitude dans son estimation. Pour cette raison, et pour la difficulté à l'ajuster, le modèle de Richards sera écarté dans notre cas au bénéfice du modèle de Weibull, voire de celui de Gompertz plus simple.
 
 Le choix final entre Gompertz ou Weibull dépend de l'usage que l'on veut faire du modèle. Si la simplicité du modèle est primordiale, nous garderons Gompertz. Si la croissance des petits oursins est un aspect important de l'analyse, nous garderons Weibull qui semble mieux s'ajuster aux données à ce niveau.
 
@@ -839,7 +839,7 @@ assignation("B04Gb_bacterial_growth", part = NULL,
   url = "https://github.com/BioDataScience-Course/B04Gb_bacterial_growth",
   course.urls = c(
     'S-BIOG-015' = "https://classroom.github.com/a/2n7jgK3t", 
-    'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+    'S-BIOG-937-958-959' = "https://classroom.github.com/a/bLfInvZs"),
   toc = "Croissance bactérienne - Exercices pratiques libres sur la régression non linéaire.")
 ```
 
