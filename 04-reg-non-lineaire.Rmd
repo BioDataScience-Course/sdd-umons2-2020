@@ -172,7 +172,7 @@ La description détaillée et les développements mathématiques de ces algorith
 
 ##### A vous de jouer ! {-}
 
-`r h5p(45, height = 270, toc = "Minimisation de la fonction objectif")`
+`r h5p(45, height = 270, toc = "Minimisation de la fonction objective")`
 
 Reprenons le calcul de notre RLC pour *P. oceanica*. L'argument `trace = TRUE` peut être ajouté à l'appel de `nls()` pour visionner les différentes étapes du calcul itératif. Voici ce que cela donne\ :
 
