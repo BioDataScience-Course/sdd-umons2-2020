@@ -39,14 +39,14 @@ Donc, la principale différence entre ANOVA et régression linéaire telles que 
 
 ```{block2, type='warning'}
 
-Par la suite, un encodage correct des variables sera *indispensable* afin de distinguer correctement ces différentes situations. En effet, R considèrera automatiquement comment mener l'analyse en fonction de la classe des variables fournies. Donc, si la classe est incorrecte, l'analyse le sera aussi\ ! Si vous avez des doutes concernant les types de variables, relisez la section [type de variables](http://biodatascience-course.sciviews.org/sdd-umons/types-de-variables.html) avant de continuer ici. 
+Par la suite, un encodage correct des variables sera *indispensable* afin de distinguer correctement ces différentes situations. En effet, R considèrera automatiquement comment mener l'analyse en fonction de la classe des variables fournies. Donc, si la classe est incorrecte, l'analyse le sera aussi\ ! Si vous avez des doutes concernant les types de variables, relisez la section [type de variables](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2020/types-de-variables.html) avant de continuer ici. 
 
 ```
 
 
 ## ANOVA et régression linéaire
 
-Avez-vous remarqué une ressemblance particulière entre la régression linéaire que nous avons réalisé précédement et l'analyse de variance (ANOVA)\ ? Les plus observateurs auront mis en avant que la fonction de base dans R est la même dans les deux cas\ : `lm()`. Cette fonction est donc capable de traiter aussi bien des variables réponses qualitatives que quantitatives, et effectue alors une ANOVA dans un cas ou une régression linéaire dans l'autre.
+Avez-vous remarqué une ressemblance particulière entre la régression linéaire que nous avons réalisé précédemment et l'analyse de variance (ANOVA)\ ? Les plus observateurs auront mis en avant que la fonction de base dans R est la même dans les deux cas\ : `lm()`. Cette fonction est donc capable de traiter aussi bien des variables réponses qualitatives que quantitatives, et effectue alors une ANOVA dans un cas ou une régression linéaire dans l'autre.
 
 Par ailleurs, nous avons vu que l’ANOVA et la régression linéaire se représentent par des modèles semblables\ :
 
@@ -119,20 +119,19 @@ $$
 
 ```
 
-
 ## Matrice de contraste
 
 La version que nous avons étudié jusqu'ici pour nos variables indicatrices, à savoir, une seule prend la valeur 1 lorsque toutes les autres prennent une valeur zéro, n'est qu'un cas particulier de ce qu'on appelle les **contrastes** appliqués à ces variables indicatrices. En réalité, nous pouvons leurs donner bien d'autres valeurs (on parle de **poids**), et cela permettra de considérer des contrastes différents, eux-mêmes représentatifs de situations différentes.
 
 Afin de mieux comprendre les contrastes appliqués à nos modèles linéaires, les statisticiens ont inventé les **matrices de contrastes**. Ce sont des tableaux à deux entrées indiquant pour chaque niveau de la variable indépendante qualitative quelles sont les valeurs utilisées pour les différentes variables indicatrices présentées en colonne.
 
-Dans le cas de notre version simplifiée du modèle mathématique où nous avons fait disparaitre $I_1$ en l'assimilant à la moyenne $\mu$ pour obteniur $\beta_1$. Dans le cas où notre variable qualitative a quatre niveaux, nous avons donc le modèle suivant\ :
+Dans le cas de notre version simplifiée du modèle mathématique où nous avons fait disparaître $I_1$ en l'assimilant à la moyenne $\mu$ pour obtenir $\beta_1$. Dans le cas où notre variable qualitative a quatre niveaux, nous avons donc le modèle suivant\ :
 
 $$
 y = \beta_1 + \beta_2 I_2 + \beta_3 I_3 + \beta_4 I_4 + \epsilon
 $$
 
-Cela revient à considérer le premier niveau comme **niveau de référence** et à établir tous les contrastes par rapport à ce niveau de référence. C'est une situation que l'on rencontre fréquemment lorsque nos testons l'effet de différents médicaments ou de différents traitement par rapport à un **contrôle** (pas de traitement, ou placébo). La matrice de contrastes correspondante, dans un cas où on aurait trois traitements en plus du contrôle (donc, notre variable `factor` à quatre niveaux) s'obtient facilement dans R à l'aide de la fonction `contr.treatment()`\ :
+Cela revient à considérer le premier niveau comme **niveau de référence** et à établir tous les contrastes par rapport à ce niveau de référence. C'est une situation que l'on rencontre fréquemment lorsque nos testons l'effet de différents médicaments ou de différents traitement par rapport à un **contrôle** (pas de traitement, ou placebo). La matrice de contrastes correspondante, dans un cas où on aurait trois traitements en plus du contrôle (donc, notre variable `factor` à quatre niveaux) s'obtient facilement dans R à l'aide de la fonction `contr.treatment()`\ :
 
 ```{r}
 contr.treatment(4)
@@ -525,7 +524,6 @@ $$
 
 La transformation **logit** calcule alors\ : $\ln(y / (1 - y)) = \beta x$. Les situations correspondant à ce cas de figure concernent par exemple des variables de type (vivant *versus* mort) par rapport à une situation potentiellement létale, ou alors, le développement d'une maladie lors d'une épidémie (sain *versus* malade). 
 
-
 ### Exemple
 
 Continuons à analyser nos données concernant les bébés à la naissance. Un bébé prématuré est un bébé qui nait avant 37 semaines de grossesse. Dans notre jeu de données `Babies`, nous pouvons déterminer si un enfant est prématuré ou non (variable binaire) à partir de la variable `gestation`(en jours). Transformons nos données pour obtenir les variables d'intérêt.
@@ -570,7 +568,7 @@ chart(data = Babies_prem, ~smoke %fill=% premat) +
   geom_bar(position = "fill")
 ```
 
-Il ne semble pas y avoir un effet flagrant, même si le niveau `smoke == 2` semble contenir une plus forte proportion de prématurés. Qu'en est-il en fonction de l'ethnicité (voir `help(babies, packahge = "UsingR")` pour le détail sur les variétés ethniques considérées) de la mère (variable `race`)\ ?
+Il ne semble pas y avoir un effet flagrant, même si le niveau `smoke == 2` semble contenir une plus forte proportion de prématurés. Qu'en est-il en fonction de l'ethnie (voir `help(babies, package = "UsingR")` pour le détail sur les variétés ethniques considérées) de la mère (variable `race`)\ ?
 
 ```{r}
 Babies_table <- table(Babies_prem$premat, Babies_prem$race)

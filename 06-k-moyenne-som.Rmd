@@ -4,21 +4,21 @@
 SciViews::R
 ```
 
-
 ##### Objectifs {-}
 
 - Maîtriser la technique de classification par les k-moyennes comme alternative à la CAH pour les gros jeux de données.
+
 - Comprendre la représentation d'une matrice de distances sur un carte (ordination) et la réduction de dimensions via le positionnement multidimensionnel MDS.
+
 - Être capable de créer des cartes auto-adaptatives ou SOM, de les interpréter et de les utiliser comme autre technique de classification.
 
 ##### Prérequis {-}
 
 Ces techniques étant basées sur des matrices de distances et complémentaires à la classification ascendante hiérarchique, le module \@ref(hierarchique) doit être assimilé avant de s'attaquer au présent module.
 
-
 ## K-moyennes
 
-Les k-moyennes (ou "k-means" en anglais) représentent une autre façon de regrouper les individus d'un tableau multivarié. Par rapport à la CAH, cette technique est généralement moins efficace, mais elle a l'avantage de permettre le regroupement d'un très grand nombre d'individus (gros jeu de données), là où la CAH nécessiterait trop de temps de calcul et de mémoire vive. Il est donc utile de connaitre cette seconde technique à utiliser comme solution de secours lorsque le dendrogramme de la CAH devient illisible sur de très gros jeux de données.
+Les k-moyennes (ou "k-means" en anglais) représentent une autre façon de regrouper les individus d'un tableau multivarié. Par rapport à la CAH, cette technique est généralement moins efficace, mais elle a l'avantage de permettre le regroupement d'un très grand nombre d'individus (gros jeu de données), là où la CAH nécessiterait trop de temps de calcul et de mémoire vive. Il est donc utile de connaître cette seconde technique à utiliser comme solution de secours lorsque le dendrogramme de la CAH devient illisible sur de très gros jeux de données.
 
 Le principe des k-moyennes est très simple^[En pratique, différents algorithmes avec diverses optimisations existent. Le plus récent et le plus sophistiqué est celui de Hartigan-Wong. Il est utilisé par défaut par la fonction `kmeans()`. En pratique, il y a peu de raison d'en changer.]\ :
 
@@ -56,7 +56,6 @@ Commençons par l'exemple simplissime de la réalisation de deux groupes à part
 set.seed(38)
 ```
 
-
 ```{r}
 zoo %>.%
   select(., -class) %>.% # Elimination de la colonne class
@@ -78,13 +77,13 @@ Nous voyons que la fonction `kmeans()` effectue notre classification. Nous lui f
 zoo6_kmeans$cluster
 ```
 
-Le package `broom` contient trois fonctions complémentaires qui nous seront utiles\ : `tidy()`, `augment()` et `glance()`. `broom::glance()` retourne un `data.frame` avec les statistiques permettant d'évaluer la qualité de la classification obtenue\ :
+Le package {broom} contient trois fonctions complémentaires qui nous seront utiles\ : `tidy()`, `augment()` et `glance()`. `broom::glance()` retourne un **data.frame** avec les statistiques permettant d'évaluer la qualité de la classification obtenue\ :
 
 ```{r}
 broom::glance(zoo6_kmeans)
 ```
 
-De plus, le package `factoextra` propose une fonction `fviz_nbclust()` qui réalise un graphique pour aider au choix optimal de *k*\ :
+De plus, le package {factoextra} propose une fonction `fviz_nbclust()` qui réalise un graphique pour aider au choix optimal de *k*\ :
 
 ```{r}
 factoextra::fviz_nbclust(zoo6, kmeans, method = "wss", k.max = 5)
@@ -92,7 +91,7 @@ factoextra::fviz_nbclust(zoo6, kmeans, method = "wss", k.max = 5)
 
 Le graphique obtenu montre la décroissance de la somme des carrés des distances intra-groupes en fonction de *k*. Avec *k* = 1, nous considérons toutes les données dans leur ensemble et nous avons simplement la somme des carrés des distances euclidiennes entre tous les individus et le centre de gravité du nuage de points dont les coordonnées sont les moyennes de chaque variable. C'est le point de départ qui nous indique de combien les données sont dispersées (la valeur absolue de ce nombre n'est pas importante).
 
-Ensuite, avec *k* croissant, notre objectif est de faire des regroupement qui diminuent la variance intra-groupe autant que possible, ce que nous notons par la diminution de la somme des carrés intra-groupes (la variance du groupe est, en effet, la somme des carrés des distances enclidiennes entre les points et le centre du groupe, divisée par les degrés de liberté).
+Ensuite, avec *k* croissant, notre objectif est de faire des regroupement qui diminuent la variance intra-groupe autant que possible, ce que nous notons par la diminution de la somme des carrés intra-groupes (la variance du groupe est, en effet, la somme des carrés des distances euclidiennes entre les points et le centre du groupe, divisée par les degrés de liberté).
 
 Nous recherchons ici des sauts importants dans la décroissance de la somme des carrés, tout comme dans le dendrogramme obtenu par la CAH nous recherchions des sauts importants dans les regroupements (hauteur des barres verticales du dendrogramme). Nous observons ici un saut important pour *k* = 2, puis une diminution moins forte de *k* = 3 à *k* = 5. Ceci *suggère* que nous pourrions considérer deux groupes.
 
@@ -163,7 +162,6 @@ kmeans(zoo6, centers = 2, nstart = 50) # 50 positions de départ différentes
 
 Dans ce cas simple, cela ne change pas grand chose. Mais avec un plus gros jeu de données plus complexe, cela peut être important.
 
-
 ### Classification du zooplancton
 
 Maintenant que nous savons utiliser `kmeans()` et les fonctions annexes, nous pouvons classer le jeu de données `zoo` tout entier.
@@ -206,7 +204,6 @@ table(zoob$class, zoob$cluster)
 
 Le cluster numéro 2 n'est pas vraiment défini en terme des classes de plancton car aucune classe ne s'y trouve de manière majoritaire. Le groupe numéro 1 contient la majorité des items de diverses classes, alors que le groupe 3 a une majorité de calanoïdes et d'harpacticoïdes (différents copépodes). Globalement, le classement a un sens, mais est moins bien corrélé avec les classes de plancton que ce que la CAH nous a fourni. Notez que, si nous avions standardisé les données avant d'effectuer les k-moyennes comme nous l'avons fait pour la CAH, nous aurions obtenu d'autres résultats. **La transformation des variables préalablement à l'analyse reste une approche intéressante pour moduler l'importance des différentes variables entre elles dans leur impact sur le calcul des distances, et donc, des regroupements réalisés**. Nous vous laissons réaliser les k-moyennes sur les données `zoo standardisées à l'aide de la fonction `scale()` comme pour la CAH comme exercice.
 
-
 ##### A vous de jouer ! {-}
 
 - Réalisez le tutoriel afin de vérifier votre bonne compréhension de la méthode des k-moyennes.
@@ -230,17 +227,15 @@ La dernière version du README est disponible via le lien suivant\ :
 - <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea>
 ```
 
-
 ##### Pour en savoir plus {-}
 
 Il existe une approche mixte qui mèle la CAH et les k-moyennes. Cette approche est intéressante pour les gros jeux de données. Le problématique est expliquée [ici](https://lovelyanalytics.com/2017/11/18/cah-methode-mixte/), et l'implémentation dans la fonction `factoextra::hkmeans()` est détaillée [ici (en anglais)](https://www.datanovia.com/en/lessons/hierarchical-k-means-clustering-optimize-clusters/).
 
 Cet [article](https://www.r-bloggers.com/the-complete-guide-to-clustering-analysis-k-means-and-hierarchical-clustering-by-hand-and-in-r/) explique dans le détail `kmeans()` et `hclust()` dans R, et montre aussi comment on peut calculer les k-moyennes à la main pour bien en comprendre la logique (en anglais).
 
-
 ## Positionnement multidimensionnel (MDS)
 
-Le positionnement multidimensionnel, ou "multidimensional scaling" en anglais, d'où son acronyme fréquemment utilisé en français également\ : le MDS, est une autre façon de représenter clairement l'information contenue dans une matrice de distances. Ici, l'objectif n'est pas de **regrouper** ou de **classifier** les individus du tableau, mais de les **ordonner** sur un graphique en nuage de points en deux ou trois dimensions. Ce graphique s'appelle une "carte", et la technique qui la réalise est une **méthode d'ordination**.
+Le positionnement multidimensionnel, ou *multidimensional scaling* en anglais, d'où son acronyme fréquemment utilisé en français également\ : le MDS, est une autre façon de représenter clairement l'information contenue dans une matrice de distances. Ici, l'objectif n'est pas de **regrouper** ou de **classifier** les individus du tableau, mais de les **ordonner** sur un graphique en nuage de points en deux ou trois dimensions. Ce graphique s'appelle une "carte", et la technique qui la réalise est une **méthode d'ordination**.
 
 Au départ, nous avons *p* colonnes et *n* lignes dans le tableau cas par variables, c'est-à-dire, *p* variables quantitatives mesurées sur *n* individus distincts. Nous voulons déterminer les similitudes ou différences de ces *n* individus en les visualisant sur une carte où la distance d'un individu à l'autre représente cette similitude. Plus deux individus sont proches, plus ils sont semblables. Plus les individus sont éloignés, plus ils diffèrent. Ces distances entre paires d'individus, nous les avons déjà calculées dans la matrice de distances. Mais comment les représenter\ ? En effet, une représentation exacte ne peut se faire que dans un espace à *p* dimensions (même nombre de dimensions que de variables initiales). Donc, afin de réduire les dimensions à seulement 2 ou 3, nous allons devoir "tordre" les données et accepter de perdre un peu d'information. Ce que nous allons faire avec la MDS correspond exactement à cela\ : nous allons littéralement "écraser" les données dans un plan (deux dimensions) ou dans un espace à trois dimensions. C'est donc ce qu'on appelle une technique de **réduction de dimensions**.
 
@@ -254,7 +249,6 @@ Il existe, en réalité, plusieurs techniques de MDS. Elle répondent toutes au 
 - Le positionnement des points faisant intervenir un facteur aléatoire (choix des points à placer en premier, réorganisation ensuite pour minimiser la fonction de stress), le résutat final peut varier d'une fois à l'autre sur les mêmes données, voir ne pas converger vers une solution stable. Il faut en être conscient.
 
 Nous vous épargnons ici les développements mathématiques qui mènent à la définition de la fonction de stress. Nous nous concentrerons sur les principales techniques et sur leurs propriétés utiles en pratique.
-
 
 ### MDS simplifiée sous SciViews::R
 
@@ -363,14 +357,13 @@ glance.mds <- function(x, ...){
 }
 ```
 
-
 ### MDS métrique ou PCoA
 
 La forme classique, aussi appelée **MDS métrique** ou **analyse en coordonnées principales** (Principal Coordinates Analysis en anglais ou PCoA), va *projetter* le nuage de points à *p* dimensions dans un espace réduit à *k* = 2 dimensions (voire éventuellement à 3 dimensions). Cette projection se fait de manière similaire à une ombre chinoise projettée d'un objet tridimensionnel sur une surface plane en deux dimensions.
 
 ![Ombre chinoise\ : un placement astucieux des mains dans le faisceau lumineux permet de projetter l'ombre d'un animal ou d'un objet sur une surface plane. La PCoA fait de même avec vos données.](images/sdd2_06/shadow.jpg)
 
-Considérons un relevé de couverture végétale en 24 stations concernant 44 plantes répertoriées sur le site de l'étude, par exemple, `Callvulg` est *[Calluna vulgaris](https://www.tela-botanica.org/bdtfx-nn-12262-synthese)*, `Empenigr` est *[Empetrum nigrum](https://www.tela-botanica.org/bdtfx-nn-23935-synthese)*, etc. Les valeurs sont les couvertures végétales observées pour chaque plante sur le site, expérimées en pourcents. La première colonne nommée `rownames` à l'importation contient les identifiants des stations (chaînes de caractères). Nous la renommons donc pour un intitulé plus explicite\ : `station`.
+Considérons un relevé de couverture végétale en 24 stations concernant 44 plantes répertoriées sur le site de l'étude, par exemple, `Callvulg` est *[Calluna vulgaris](https://www.tela-botanica.org/bdtfx-nn-12262-synthese)*, `Empenigr` est *[Empetrum nigrum](https://www.tela-botanica.org/bdtfx-nn-23935-synthese)*, etc. Les valeurs sont les couvertures végétales observées pour chaque plante sur le site, exprimées en pourcents. La première colonne nommée `rownames` à l'importation contient les identifiants des stations (chaînes de caractères). Nous la renommons donc pour un intitulé plus explicite\ : `station`.
 
 ```{r}
 read("varespec", package = "vegan") %>.%
@@ -394,7 +387,6 @@ veg %>.%
 ```
 
 Comme nous pouvions nous y attendre, sept ou huit espèces dominent la couverture végétales et les autres données sont complètement écrasées à zéro sur l'axe pour la majorité des stations. Si nous utilisons la distance de Bray-Curtis, l'analyse sera pratiquement réalisée sur seulement ces quelques espèces dominantes. Avec Canberra, nous risquons par contre de donner beaucoup trop d'importance aux espèces extrêmement rares (toutes les espèces ont une importance égale avec cette métrique). Une solution intermédiaire est de transformer les données pour réduire l'écart d'importance entre les espèces abondantes et les rares, soit avec $log(x + 1)$, soit avec $\sqrt{\sqrt{x}}$. Voyons ce que donne la transformation logarithmique ici en utilisant la fonction `log1p()` dans R.
-
 
 ```{r, fig.height=8}
 veg %>.%
@@ -420,7 +412,6 @@ N'imprimez pas le contenu de `veg_dist`\ ! C'est de toutes façons illisible. La
 ```{r, echo=FALSE}
 set.seed(9)
 ```
-
 
 ```{r}
 veg_mds <- mds$metric(veg_dist)
@@ -454,7 +445,7 @@ glance(veg_mds)
 
 Ici `GOF1` est la somme des valeurs propres obtenues lors du calcul (ces valeurs propres vous seront expliquées dans le module suivant consacré à l'ACP). Retenez simplement que c'est une mesure de la part de variance du jeu de données initial qui a pu être représentée sur la carte. Plus la valeur se rapproche de 1, mieux c'est, avec des valeurs > 0.7 ou 0.8 qui restent acceptables. Le second indicateur, `GOF2` est la somme uniquement des valeurs propres positives. Certains préfèrent ce dernier indicateur. En principe, les deux sont proches ou égaux. Donc, le choix de l'un ou de l'autre ne devrait pas fondamentalement modifier vos conclusions.
 
-**Ici, avec des valeurs de goodness-of-fit à peine supérieures à 50% nous pouvons considérer que la carte n'est pas suffisamment représentative.** Soit nous tentons de la représenter en trois dimensions (mais c'est rarement plus lisible car il faut quand même se résigner à présenter ce graphique 3D dans un plan à deux dimensions -l'écran de l'ordinateur, ou une feuille de papier- au final). Une autre solution lorsque la MDS métrique ne donne pas satisfaction est de se tourner vers la MDs non métrique. Ce que nous allons faire ci-dessous.
+**Ici, avec des valeurs de goodness-of-fit à peine supérieures à 50% nous pouvons considérer que la carte n'est pas suffisamment représentative.** Soit nous tentons de la représenter en trois dimensions (mais c'est rarement plus lisible car il faut quand même se résigner à présenter ce graphique 3D dans un plan à deux dimensions -l'écran de l'ordinateur, ou une feuille de papier- au final). Une autre solution lorsque la MDS métrique ne donne pas satisfaction est de se tourner vers la MDS non métrique. Ce que nous allons faire ci-dessous.
 
 ```{block2, type='note'}
 
@@ -462,12 +453,11 @@ A noter que la PCoA sur matrice euclidienne après standardisation ou non des do
 
 ```
 
-
 ### MDS non métrique
 
-La version non métrique de la MDS vise à réaliser une carte sur base de la matrice de distances, mais en autorisant des écarts plus flexibles entre les individus... pour autant que des individus similaires restent plus proches les uns des autres que des individus plus différents, et ce, partout sur la carte. Donc, une dissimilarité donnée pourra être "compressée" ou "dilatée", pour autant que la distortion garde l'ordre des points intacts. Cela signifie que la distortion se fera via une fonction monotone croissante (une dissimilarité plus grande ne pouvant pas être représentée par une distance plus petite sur la carte).
+La version non métrique de la MDS vise à réaliser une carte sur base de la matrice de distances, mais en autorisant des écarts plus flexibles entre les individus... pour autant que des individus similaires restent plus proches les uns des autres que des individus plus différents, et ce, partout sur la carte. Donc, une dissimilarité donnée pourra être "compressée" ou "dilatée", pour autant que la distorsion garde l'ordre des points intacts. Cela signifie que la distorsion se fera via une fonction monotone croissante (une dissimilarité plus grande ne pouvant pas être représentée par une distance plus petite sur la carte).
 
-La distortion ainsi introduite est appelée un **stress**. C'est un peu comme si vous écrasiez par la force un objet 3D sur une surface plane, au lieu de juste en projeter l'ombre. Comme il existe différentes fonctions de stress, il existe donc différentes versions de MDS non métriques. Ici, nous nous attacherons à maitriser une version implémentée dans `mds$nonmetric()`. Il s'agit de l'une des premières formes de MDS non métriques qui a été proposée par le statisticien Joseph Kruskal (on parle aussi du positionnement multidimensionnel de Kruskal).
+La distorsion ainsi introduite est appelée un **stress**. C'est un peu comme si vous écrasiez par la force un objet 3D sur une surface plane, au lieu de juste en projeter l'ombre. Comme il existe différentes fonctions de stress, il existe donc différentes versions de MDS non métriques. Ici, nous nous attacherons à maîtriser une version implémentée dans `mds$nonmetric()`. Il s'agit de l'une des premières formes de MDS non métriques qui a été proposée par le statisticien Joseph Kruskal (on parle aussi du positionnement multidimensionnel de Kruskal).
 
 La logique est la même que pour la MDS métrique\ :
 
@@ -519,24 +509,21 @@ Si par contre, vous voulez être plus contraignant, alors, les distances seront 
 
 Ici, nous pouvons constater que les deux critères sont bons. Nous pouvons donc nous fier à la carte obtenue à l'aide de la MDs non métrique de Kruskal.
 
-
 ```{block2, type='warning'}
 
 Restez toujours attentif à la taille du jeu de données que vous utilisez pour réaliser une MDS, en particuliers une MDS non métrique. Quelques centaines de lignes, ça dois passer, plusieurs dizaines de milliers ou plus, ça ne passera pas\ ! La limite dépend bien sûr de la puissance de votre ordinateur et de la quantité de mémoire vive disponible. Retenez toutefois que la quantité de calculs augmente drastiquement avec la taille du jeu de données à traiter.
 
 ```
 
-
 ##### Pour en savoir plus {-}
 
 - La fonction `mds()` donne accès à d'autres versions de MDS non métriques également. Ainsi, `mds$isoMDS()` ou `mds$monoMDS()` correspondent toutes deux à la version de Kruskal mais en utilisant une seule configuration de départ (donc, moins robustes mais plus rapides à calculer). La `mds$sammon()` est une autre forme de MDS non métrique décrite dans l'aide en ligne de `?MASS::sammon`.
 
-- Des techniques existent pour déterminer la dimension *k* idéale de la carte. Le **graphique des éboulis** (screeplot en anglais) sera abordé au module suivante dans le cadre de l'ACP. Il en existe une version pour le MDS, voyez [ici](https://rpubs.com/YaPi/393252) (en anglais).
-
+- Des techniques existent pour déterminer la dimension *k* idéale de la carte. Le **graphique des éboulis** (*screeplot* en anglais) sera abordé au module suivante dans le cadre de l'ACP. Il en existe une version pour le MDS, voyez [ici](https://rpubs.com/YaPi/393252) (en anglais).
 
 ##### A vous de jouer ! {-}
 
-- Réalisez le tutoriel afin de vérifier votre bonne compréhension de la mds.
+- Réalisez le tutoriel afin de vérifier votre bonne compréhension de la MDS.
 
 ```{block2, type='bdd'}
 Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
@@ -557,7 +544,6 @@ La dernière version du README est disponible via le lien suivant\ :
 - <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea>
 ```
 
-
 ## Cartes auto-adaptatives (SOM)
 
 Le positionnement multidimensionnel faisant appel à une matrice de distances entre tous les individus, les calculs deviennent vite pénalisants au fur et à mesure que le jeu de données augmente en taille. En général, les calculs sont assez lents. Nous verrons au module suivant que l'**analyse en composantes principales** apporte une réponse intéressante à ce problème, mais nous contraint à étudier des corrélations linéaires et des distances de type euclidiennes.
@@ -576,21 +562,18 @@ Plutôt que de détailler les calculs, nous vous montrons ici comment un ensembl
 
 ![Carte SOM obtenue à partir de l'image précédente\ : les pixels sont automatiquement triés par couleur sur la carte.](images/sdd2_06/pixels_som.png)
 
-
-Ce qui est évident sur un exemple aussi visuel que celui-ci fonctionne aussi très bien pour ranger les individus dans un tableau multivarié *a priori* cahotique comme ceux que nous rencontrons régulièrement en statistiques multivariées en biologie.
-
-
+Ce qui est évident sur un exemple aussi visuel que celui-ci fonctionne aussi très bien pour ranger les individus dans un tableau multivarié *a priori* chaotique comme ceux que nous rencontrons régulièrement en statistiques multivariées en biologie.
 
 ### SOM sur le zooplancton
 
-Reprenons notre exemple du zooplankton. 
+Reprenons notre exemple du zooplancton. 
 
 ```{r}
 zoo <- read("zooplankton", package = "data.io")
 zoo
 ```
 
-Les 19 premières colonnes représentent des mesures réalisées sur notre plancton et la vingtième est la classe. Nous nous débarasserons de la colonne classe et transformons les données numériques en **matrice** après avoir standardisé les données (étapes *obligatoires*) pour stocker le résultat dans `zoo_mat`.
+Les 19 premières colonnes représentent des mesures réalisées sur notre plancton et la vingtième est la classe. Nous nous débarrasserons de la colonne classe et transformons les données numériques en **matrice** après avoir standardisé les données (étapes *obligatoires*) pour stocker le résultat dans `zoo_mat`.
 
 ```{r}
 zoo %>.%
@@ -690,11 +673,9 @@ zoo_som_nb <- table(zoo_som$unit.classif)
 zoo_som_nb
 ```
 
-
 ### Interprétation d'un SOM
 
 De nombreuses autres présentations graphiques sont possibles sur cette base. Nous allons explorer deux aspects complémentaires\ : (1) représentation des variables, et (2) réalisation et représentation de regroupements.
-
 
 #### Représentation des variables
 
@@ -720,7 +701,6 @@ for (var in c("size", "mode", "range", "aspect", "elongation", "circularity"))
 ```
 
 Nous pouvons plus facilement inspecter les zones d'influence de différentes variables ciblées. Ici, `size` est une mesure de la taille des particules, `mode` est le niveau d'opacité moyen, `range` est la variation d'opacité (un `range` important indique que la particule a des parties très transparentes et d'autres très opaques), `aspect` est le rapport longueur/largeur, `elongation` est une indication de la complexité du périmètre de la particule, et `circularity` est sa forme plus ou moins circulaire. Pour une explication détaillée des 19 variables, faites `?zooplankton`.
-
 
 #### Regroupements
 
@@ -765,14 +745,13 @@ Grâce à la topographie des variables que nous avons réalisée plus haut, nous
 
 Nous n'avons fait qu'effleurer les nombreuses possibilités des cartes auto-adaptatives SOM... Il est par exemple possible d'aller mapper des nouveaux individus dans cette carte (données supplémentaires), ou même de faire une classification sur base d'exemples (classification supervisée) que nous verrons au cours de Science des Données Biologiques III. Nous espérons que cela vous donnera l'envie et la curiosité de tester cette méthode sur vos données et d'explorer plus avant ses nombreuses possibilités.
 
-
 ##### Pour en savoir plus {-}
 
 - Une [explication très détaillée en français](https://meritis.fr/ia/cartes-topologiques-de-kohonen/) accompagnée de la résolution d'un exemple fictif dans R.
 
 - Une [autre explication détaillée en français](http://eric.univ-lyon2.fr/~ricco/tanagra/fichiers/fr_Tanagra_Kohonen_SOM_R.pdf) avec exemple dans R.
 
-- Si vous êtes aventureux, vous pouvez vous lancer dans la réimplémentation des graphiques du package `kohonen` en `chart`ou `ggplot2`. Voici [un bon point de départ](http://blog.schochastics.net/post/soms-and-ggplot/) (en anglais).
+- Si vous êtes aventureux, vous pouvez vous lancer dans la réimplémentation des graphiques du package {kohonen} en {chart} ou {ggplot2}. Voici [un bon point de départ](http://blog.schochastics.net/post/soms-and-ggplot/) (en anglais).
 
 ##### A vous de jouer ! {-}
 
@@ -786,7 +765,7 @@ Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, e
 N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
 ```
 
-- Complétez votre carnet de note par binôme sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).
+- Complétez votre carnet de note par binôme sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le fichier `README.md` (Ce dernier a été mis à jour).
 
 ```{block2, type='bdd'}
 
@@ -796,4 +775,3 @@ La dernière version du README est disponible via le lien suivant\ :
   
 - <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea>
 ```
-

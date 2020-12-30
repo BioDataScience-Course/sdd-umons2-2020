@@ -4,15 +4,13 @@
 SciViews::R
 ```
 
-
 ##### Objectifs {-}
 
 - Être capable d'analyser des données présentes dans des tableaux multiples et/ou hétérogènes simultanément à l'aide de l'analyse factorielle multiple
 
 - Comprendre et pouvoir utiliser en pratique les principaux indices de biodiversité
 
-- Se sensibiliser à l'"Open Data"\ : quand et pourquoi rendre ses données ouvertes\ ? Comment le faire correctement (format, métadonnées, dictionnaire des données, licences, principe FAIR, DMP, ...)
-
+- Se sensibiliser aux données ouvertes\ : quand et pourquoi rendre ses données ouvertes\ ? Comment le faire correctement (format, métadonnées, dictionnaire des données, licences, principe FAIR, DMP, ...)
 
 ##### Prérequis {-}
 
@@ -37,7 +35,6 @@ Lisez le README afin de prendre connaissance de l'exercice.
 *Ce projet doit être terminé à la fin de ce module*
 ```
 
-
 ## Analyse factorielle multiple (AFM)
 
 Jusqu'ici nous avons étudié différentes techniques pour explorer des données multivariées *soit* quantitatives (ACP), *soit* qualitatives (AFC). Nous n'avons pas abordé encore la question de données *mixtes* avec des tableaux qui contiennent *à la fois* des variables quantitatives et des données qualitatives.
@@ -55,14 +52,13 @@ Une première approche consiste à convertir des variables afin d'homogénéiser
 | 35 - 40         | obésité classe II  |
 | > 40            | obésité classe III |
 
-A l'extrême, il est toujours possible d'encoder n'importe quelle variable sous forme binaire. C'est ce qu'on appelle le **codage disjonctif complet** (voir, par exemple, [ici](https://mtes-mct.github.io/parcours-r/m4/lacm.html)). Cette approche a non seulement l'avantage de transformer des variables différentes en 0 ou 1 dans un tableau homogène, mais permet aussi de comparer plus de deux variables qualitatives selon une extension de l'AFC dit **Analyse en Composantes Multiples** ou ACM que nous ne verrons pas dans ce cours mais qu'il est important de mentionner pour mémo ici^[Si vous êtes intéressé par l'ACM et le codage disjonctif complet, voyez [cette vidéo](https://www.youtube.com/watch?v=bihScz3OXbw).].
+A l'extrême, il est toujours possible d'encoder n'importe quelle variable sous forme binaire. C'est ce qu'on appelle le **codage disjonctif complet** (voir, par exemple, [ici](https://mtes-mct.github.io/parcours_r_module_analyse_multi_dimensionnelles/lacm.html)). Cette approche a non seulement l'avantage de transformer des variables différentes en 0 ou 1 dans un tableau homogène, mais permet aussi de comparer plus de deux variables qualitatives selon une extension de l'AFC dit **Analyse en Composantes Multiples** ou ACM que nous ne verrons pas dans ce cours mais qu'il est important de mentionner pour mémo ici^[Si vous êtes intéressé par l'ACM et le codage disjonctif complet, voyez [cette vidéo](https://www.youtube.com/watch?v=bihScz3OXbw).].
 
-L'analyse factorielle multiple (AFM, *multiple factorial analysis* ou MFA en anglais) va permettre d'analyser simultanément plusieurs tableaux de données multivariés, et éventuellement mélanger des tableaux quantititfs et qualitatifs (pour autant que les variables soient homogènes au sein de chaque tableau).
-
+L'analyse factorielle multiple (AFM, *multiple factorial analysis* ou MFA en anglais) va permettre d'analyser simultanément plusieurs tableaux de données multivariés, et éventuellement mélanger des tableaux quantitatifs et qualitatifs (pour autant que les variables soient homogènes au sein de chaque tableau).
 
 ### AFM dans SciViews::R
 
-L'AFM n'est pas encore intégrée dans `SciViews::R`. Le code suivant permet de réaliser notre analyse via l'interface habituelle, soit `mfa(data = ...., formula)` pour construire l'analyse (calculs en internes basés sur `FactoMineR::MFA()`), et ensuite nous utiliserons `summary()` et `chart$type()` pour les graphiques, où type pourra être "screeplot", "altscreeplot", "loadings", "scores", "groups", "axes", "frequences" ou "ellipses" (nous verrons plus loin ce que représentent tous ces graphiques). Vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de vos documents R Markdown/Notebook pour l'utiliser.
+L'AFM n'est pas encore intégrée dans `SciViews::R`. Le code suivant permet de réaliser notre analyse via l'interface habituelle, soit `mfa(data = ...., formula)` pour construire l'analyse (calculs en internes basés sur `FactoMineR::MFA()`), et ensuite nous utiliserons `summary()` et `chart$type()` pour les graphiques, où `type` pourra être `screeplot`, `altscreeplot`, `loadings`, `scores`, `groups`, `axes`, `frequences` ou `ellipses` (nous verrons plus loin ce que représentent tous ces graphiques). Vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de vos documents R Markdown/Notebook pour l'utiliser.
 
 ```{r}
 # Code mfa() version 2
@@ -247,13 +243,13 @@ Nous allons aborder cette technique puissante mais un peu plus complexe qu'est l
 
 ### Plancton en Méditerranée
 
-Les jeux de données `marphy` et `marbio` dans le package R `pastecs` présentent deux tableaux de données complémentaires. Le premier, `marphy` reprend les mesures environnementales de base (température, salinité et densité des masses d'eaux), ainsi qu'une information indirecte sur la concentration en phytoplancton\ : la fluorescence de la chlorophylle. Le second tableau `marbio` reprend les effectifs observés dans 24 groupes de zooplancton mesurés sur des échantillons issus des mêmes stations que `marphy`. Ces stations sont réparties de manière équidistante le long d'un transect entre le continent (vers Nice, station n°1) et la Corse (à Calvi, station n°68). 
+Les jeux de données `marphy` et `marbio` dans le package R {pastecs} présentent deux tableaux de données complémentaires. Le premier, `marphy` reprend les mesures environnementales de base (température, salinité et densité des masses d'eaux), ainsi qu'une information indirecte sur la concentration en phytoplancton\ : la fluorescence de la chlorophylle. Le second tableau `marbio` reprend les effectifs observés dans 24 groupes de zooplancton mesurés sur des échantillons issus des mêmes stations que `marphy`. Ces stations sont réparties de manière équidistante le long d'un transect entre le continent (vers Nice, station n°1) et la Corse (à Calvi, station n°68). 
 
 ![Exemple d'organismes appartenant au zooplancton (Matt Wilson & Jay Clark, NOAA NMFS AFSC, licence\ : domaine public)](images/sdd2_08/zooplankton.jpg)
 
-Jusqu'à présent, nous avions utilisé ces deux tableaux séparément. Notre objectif ici est de les analyser ensemble. Nous allons commencer par considérer ces deux tableaux comme **quantitatifs**. Dans ce cas, l'AFM réalisera deux ACP, une par tableau. Ensuite, elle pondèrera les données de chacun en fonction de la part de variance sur le premier axe respectif. Pour finir, elle réalisera une ACP globale avec toutes les données qui conservera la structure de chacun des deux tableaux initiaux grâce à la pondération appliquée en interne.
+Jusqu'à présent, nous avions utilisé ces deux tableaux séparément. Notre objectif ici est de les analyser ensemble. Nous allons commencer par considérer ces deux tableaux comme **quantitatifs**. Dans ce cas, l'AFM réalisera deux ACP, une par tableau. Ensuite, elle pondérera les données de chacun en fonction de la part de variance sur le premier axe respectif. Pour finir, elle réalisera une ACP globale avec toutes les données qui conservera la structure de chacun des deux tableaux initiaux grâce à la pondération appliquée en interne.
 
-Les données environmentales dans `marphy` étant mesurées dans des unités différentes, nous les standardiserons. Concernant le plancton dans `marbio`, nous allons pondérer les espèces rares par rapport aux espèces abondantes en tranformant $log(x + 1)$ les abondances observées avec la fonction `log1p()`. Enfin, nous rajouterons les différentes masses d'eaux identifiées par ailleurs (voir l'aide `?pastecs::marphy`) dans `marzones` que nous utiliserons comme troisième tableau de **variables supplémentaires** (un tableau que nous n'utilisons *pas* dans l'analyse, mais que nous représenterons dans les graphiques afin d'aider à leur interprétation). Voici donc la constitution d'un gros tableau qui reprend toutes les données dans la variable `mar`\ :
+Les données environementales dans `marphy` étant mesurées dans des unités différentes, nous les standardiserons. Concernant le plancton dans `marbio`, nous allons pondérer les espèces rares par rapport aux espèces abondantes en transformant $log(x + 1)$ les abondances observées avec la fonction `log1p()`. Enfin, nous rajouterons les différentes masses d'eaux identifiées par ailleurs (voir l'aide `?pastecs::marphy`) dans `marzones` que nous utiliserons comme troisième tableau de **variables supplémentaires** (un tableau que nous n'utilisons *pas* dans l'analyse, mais que nous représenterons dans les graphiques afin d'aider à leur interprétation). Voici donc la constitution d'un gros tableau qui reprend toutes les données dans la variable `mar`\ :
 
 ```{r}
 marzones <- factor(c(
@@ -376,7 +372,6 @@ Ce graphique représente les groupes proches des axes dont ils sont responsables
 
 La variable supplémentaire zone est aussi représentée à proximité de la structure qui lui correspond le mieux. Nous voyons que zone est plus proche d'environnement, ce qui signifie que les masses d'eau sont plutôt structurées en rapport avec les variables environnementales qu'en rapport avec les communautés planctoniques. 
 
-
 ### AFM avec données mixtes
 
 Jusqu'ici, nous avons réalisé une AFM avec uniquement des données quantitatives, mais l'AFM peut aussi traiter des données qualitatives, sous forme de tableaux de contingence à double entrée, ou sous forme de variables facteurs. Nous allons tester cette variante sans sortir de notre exemple du plancton méditerranéen. En effet, le tableau plancton peut *aussi* être considéré comme un tableau de contingence à double entrée. Il nous suffit de changer le type de **c** à **f** (pour l'analyse des fréquences) dans la formule pour traiter à présent le plancton sous la forme d'une AFC dans `mar_mfa2`\ :
@@ -424,19 +419,17 @@ Les groupes montrent toujours le groupe zone plus proche d'environnement que de 
 chart$groups(mar_mfa2, choices = c(1,2))
 ```
 
-
 La partie AFC de l'analyse est accessible via `chart$frequences()`\ :
 
 ```{r}
 chart$frequences(mar_mfa2, choices = c(1, 2))
 ```
 
-Ici aussi les quatre classes de plancton EchinodermLarvae, GasteropodsLarvae, Clodocerans et Pteropods s'individualisent à gauche, contre tous les autres à droite. Également les stations proches de Nice se retrouvent à la gauche, et toutes les autres à droite.
+Ici aussi les quatre classes de plancton `EchinodermLarvae`, `GasteropodsLarvae`, `Cladocerans` et `Pteropods` s'individualisent à gauche, contre tous les autres à droite. Également les stations proches de Nice se retrouvent à la gauche, et toutes les autres à droite.
 
 ```{block2, type='note'}
 Nous voyons ici que le traitement sous forme ACP ou sous forme AFC (pour le comptage exhaustif d'espèces ou de classes taxonomiques par station, les deux sont envisageables) ne donne pas de résultats franchement différents ici. Il n'en est pas forcément toujours le cas. Veuillez à bien choisir vos types de variables dans l'AFM.
 ```
-
 
 ##### Pour en savoir plus {-}
 
@@ -446,15 +439,15 @@ Nous voyons ici que le traitement sous forme ACP ou sous forme AFC (pour le comp
 
 - La [résolution de l'exemple sur les vins de Loire](http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/116-mfa-multiple-factor-analysis-in-r-essentials/) présenté dans la vidéo ci-dessus dans R (en anglais).
 
-- Le site de [FactoMineR](http://factominer.free.fr/index.html) qui implménete la fonction `MFA()` sur laquelle notre analyse se base,
+- Le site de [FactoMineR](http://factominer.free.fr/index.html) qui implémente la fonction `MFA()` sur laquelle notre analyse se base,
 
 - Un exemple d'[application en biologie avec des données de génomique](https://link.springer.com/article/10.1186/s13059-017-1362-4) faisant intervenir une AFM,
 
-- [Numerical Ecology with R](https://www.springer.com/gp/book/9781441979766) traite en détail de nombreuses méthodes multivarées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).
+- [Numerical Ecology with R](https://www.springer.com/gp/book/9781441979766) traite en détail de nombreuses méthodes multivariées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).
 
 ##### A vous de jouer ! {-}
 
-- Réalisez le début du projet spécifique lié au module 08.  
+- Réalisez le début du projet spécifique lié au module 08.
 
 ```{block2, type='bdd'}
 **Le lien pour réaliser ce projet se trouve au début du module**
@@ -469,14 +462,13 @@ Au premier abord, la notion de biodiversité est simple. Elle représente toute 
 - la **diversité bêta** ($\beta$)\ : diversité de relevé entre des zones différentes (diversité interzone),
 - la **diversité gamma** ($\gamma$) qui représente la richesse spécifique globale.
 
-
 ### Diversité alpha
 
 #### Richesse spécifique
 
 Le premier indice et le plus simple à calculer correspond à la **richesse spécifique** (S) et représente le nombre d’espèce que compte une communauté sans tenir compte de l’abondance relative de chacune des espèces. Vous pouvez l’obtenir très facilement avec la fonction `vegan::specnumber()`.
 
-Le jeu de données `BCI` du package `vegan` contient les valeurs de dénombrement obtenues suite au recensement des arbres sur 50 parcelles de 1 hectare sur l’île de Barro Colorado (BCI = Barro Colorado Island). Le nombre total d’espèces recensée sur les 50 parcelles est de 225. Prenons, un sous-ensemble de cinq parcelles de ce jeu de données et cherchons à identifier la richesse spécifique pour chacune d’entre-elles. 
+Le jeu de données `BCI` du package {vegan} contient les valeurs de dénombrement obtenues suite au recensement des arbres sur 50 parcelles de 1 hectare sur l’île de Barro Colorado (BCI = Barro Colorado Island). Le nombre total d’espèces recensée sur les 50 parcelles est de 225. Prenons, un sous-ensemble de cinq parcelles de ce jeu de données et cherchons à identifier la richesse spécifique pour chacune d’entre-elles. 
 
 
 ```{r}
@@ -497,8 +489,7 @@ skimr::skim(bci_sub[, 1:15])
 vegan::specnumber(bci_sub)
 ```
 
-Comme on peut le voir, cet indice permet de connaitre le nombre d’espèce présent sur chaque parcelle. Mais est-ce que chaque espèce est présente de manière équitable\ ? Ou est-ce que certaines espèces sont plus abondante que d’autres\ ? Cet indice ne tient pas compte de cette abondance dans son calcul et ne permet donc pas de répondre à ces questions. Par contre, l’indice de Shannon peut nous aider à répondre à cette question.
-
+Comme on peut le voir, cet indice permet de connaître le nombre d’espèce présent sur chaque parcelle. Mais est-ce que chaque espèce est présente de manière équitable\ ? Ou est-ce que certaines espèces sont plus abondante que d’autres\ ? Cet indice ne tient pas compte de cette abondance dans son calcul et ne permet donc pas de répondre à ces questions. Par contre, l’indice de Shannon peut nous aider à répondre à cette question.
 
 #### Indice de Shannon
 
@@ -525,7 +516,6 @@ bci_sub_h <- vegan::diversity(bci_sub)
 bci_sub_h
 ```
 
-
 #### Indice d’équitabilité de Piélou
 
 L’indice de Shannon est rarement utilisé seul. Il est souvent accompagné de l’**indice d’équitabilité de Piélou** qui permet de mesurer la répartition des individus au sein des espèce. Il s’agit là d’un paramètre plus rigoureux et très utile pour comparer des dominances potentielles entre sites puisqu’il est indépendant de la richesse spécifique. Il traduit donc le degré de diversité qui est atteint par un peuplement et se calcul comme suit\ :
@@ -533,6 +523,7 @@ L’indice de Shannon est rarement utilisé seul. Il est souvent accompagné de 
 $$J = \frac{H}{H_{max}}$$
 
 où\ : 
+
 - $H$ correspond à l'indice de Shannon 
 - $H_{max}$ correspond à la valeur de la diversité théorique maximale ($log_b\ S$)
 - $S$ est la richesse spécifique
@@ -550,7 +541,6 @@ bci_sub_j
 
 Il est important de noter que ces deux indices restent dépendants de la taille des échantillons et sont sensibles aux espèces rares.
 
-
 #### Indice de Simpson
 
 Il existe plusieurs indices permettant d’évaluer la biodiversité parmi lesquels on retrouve l’**indice de Simpson**. Cet indice aussi appelé indice de dominance mesure la probabilité que deux individus tirés au hasard à partir d’un échantillon appartiennent à la même espèce. Avec cet indice, on donne plus de poids aux espèces abondantes par rapport aux espèces rares. Dès lors, l’ajout d’une espèce rare à un échantillon ne modifiera pratiquement pas la valeur de l’indice de diversité. 
@@ -563,18 +553,15 @@ où\ :
 - $S$ est la richesse spécifique
 
 Sous cette forme, l’indice est inversement proportionnel à la diversité. La formulation suivante a donc été proposée pour que l’indice soit directement représentatif de la diversité. 
-
 $$E = 1 - \sum_{i=1}^S p_i^2$$ 
 
 L’indice de Simpson varie dans l’intervalle $[0,1[$. Cet indice tend donc vers 0 lorsque la diversité est minimale et vers $1 - \frac{1}{S}$ lorsque la diversité est maximale. Il vaudra donc 0 si une seule espèce est présente et donc une probabilité de $p_i = 1$ et $1 - \frac{1}{S}$ si les différentes espèces présentes ont la même probabilité $p_i = \frac{1}{S}$. 
-
 Le calcul de cet indice dans R se fait aussi avec la fonction `vegan::diversity(, index = "simpson")`. 
 
 ```{r}
 bci_sub_e <- vegan::diversity(bci_sub, index = "simpson")
 bci_sub_e
 ```
-
 
 ### Diversité beta
 
@@ -601,28 +588,27 @@ Regardons comment colculer l'indice de Jaccard pour nos cinq parcelles avec R\ :
 1 - vegan::vegdist(bci_sub, method = "jaccard", binary = TRUE)
 ```
 
-
 ##### Pour en savoir plus {-}
 
 - [L'introduction des indices de diversité](https://cran.r-project.org/web/packages/vegan/vignettes/diversity-vegan.pdf) dans `vegan` par son auteur (en anglais),
 
-- Un [document très détaillé décrivant les différents indices de diversité](https://www.ecofog.gf/fr/enseignement/fth2010/Cours/4-Biodiversite/Mesures%20de%20la%20biodiversité.pdf) en français,
+- Un [document très détaillé décrivant les différents indices de diversité](http://www.ecofog.gf/fr/enseignement/fth2010/Cours/4-Biodiversite/Mesures%20de%20la%20biodiversité.pdf) en français,
 
-- [Numerical Ecology with R](https://www.springer.com/gp/book/9781441979766) traite en détail de nombreuses méthodes multivarées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).
+- [Numerical Ecology with R](https://www.springer.com/gp/book/9781441979766) traite en détail de nombreuses méthodes multivariées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).
 
 ##### A vous de jouer ! {-}
 
-- Réalisez la suite du projet spécifique lié au module 08.  
+- Réalisez la suite du projet spécifique lié au module 08.
 
 ```{block2, type='bdd'}
 **Le lien pour réaliser ce projet se trouve au début du module**
 *Ce projet doit être terminé à la fin de ce module*
 ```
 
-- Complétez votre projet sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour). Il serait intéressant de connaitre la station avec la haute diversité. Comment évolue la diversité le long du transect ? 
+- Complétez votre projet sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour). Il serait intéressant de connaître la station avec la haute diversité. Comment évolue la diversité le long du transect\ ? 
 
 ```{block2, type='bdd'}
-Complétez votre projet. Lisez attentivement le README.
+Complétez votre projet. Lisez attentivement le ficiher `README.md`.
 
 La dernière version du README est disponible via le lien suivant\ :
   
@@ -631,16 +617,13 @@ La dernière version du README est disponible via le lien suivant\ :
 *Le README est un rappel des consignes, il ne s'agit aucunement du lien pour débuter le travail*
 ```
 
+## Données ouvertes
 
-## Open Data
-
-L'"Open Data" ou données ouvertes est un phénomène en pleine expansion. Vous y serez certainement confrontés dans votre carrière. Autant bien comprendre de quoi il s'agit et rendre vos données accessibles et publiques de la meilleure façon qui soit. Cette dernière partie est une brève introduction en la matière, qui devrait vous permettre de bien démarrer.
-
+L'*"Open Data"* ou données ouvertes est un phénomène en pleine expansion. Vous y serez certainement confrontés dans votre carrière. Autant bien comprendre de quoi il s'agit et rendre vos données accessibles et publiques de la meilleure façon qui soit. Cette dernière partie est une brève introduction en la matière, qui devrait vous permettre de bien démarrer.
 
 ### Gestion des données
 
 Lors de la préparation d'une expérience, vous devez réfléchir à un plan d'expérience. Vous avez donc défini des protocoles d'expérience, le nombre de réplicas,... Vous devez cependant intégrer à votre réflexion, un plan de gestion de vos données. Dans ce plan, vous aurez à définir l'acquisition, la description ou encore le partage des données.
-
 
 #### Principe FAIR
 
@@ -648,11 +631,10 @@ Pour assurer une gestion cohérente des données scientifiques, il faut respecte
 
 | Acronyme en anglais | Acronyme en français | Description  |
 |---------------------|----------------------|-----------------------------------------------------------------------------------------------|
-| Findable | Facile à trouver  | Les données ont besoin d'un code unique et persistant pour les retrouver |
-| Accessible | Accessible | Les données et surtout les métadonnées avec une license sont mises à disposition. |
-| Interoperable | Intéropérable | Les données et les métadonnées doivent respecter les standards internationaux |
-| Reusable | Réutilisable | Les données doivent être réutilisable grâce à des métadonnées riches et des licenses claires  |
-
+| *Findable* | Facile à trouver  | Les données ont besoin d'un code unique et persistant pour les retrouver |
+| *Accessible* | Accessible | Les données et surtout les métadonnées avec une licence sont mises à disposition. |
+| *Interoperable* | Intéropérable | Les données et les métadonnées doivent respecter les standards internationaux |
+| *Reusable* | Réutilisable | Les données doivent être réutilisable grâce à des métadonnées riches et des licences claires  |
 
 ##### Facile à retrouver (*Findable*)
 
@@ -662,7 +644,6 @@ Dans le cadre de la recherche scientifique, Le Digital Object Identifier (*DOI*)
 
 Le DOI ne couvre pas que les articles scientifiques, il est également utilisé pour les données. Par exemple, le DOI suivant <https://doi.org/10.5281/zenodo.3711592> fait référence au données intitulé. *Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands* publié par Zenodo. Nous reviendrons dans les sections suivantes sur [zenodo](https://zenodo.org). 
 
-
 ##### Accessible (*Accessible*)
 
 Les données et les métadonnées que vous collectez doivent de plus en plus souvent être rendue disponible. Certaines revues scientifiques requièrent la mise à disposition des données. Les recherches financées par des fonds publics (nationaux, Européen,...) requièrent également la mise à disposition des données. Les données ne doivent pas être disponible à tous. Par contre les métadonnées doivent l'être. Il est, de plus, important de préciser la procédure afin d'obtenir les données.
@@ -671,7 +652,7 @@ Il parait presque logique et évident de mettre à disposition ces données afin
 
 Il ne s'agit cependant pas de donner ces données sans aucune sécurité. En effet, il serait frustrant de travailler très dur sur un sujet précis et qu'un autre scientifique vole le fruit de ces nombreuses heures de travail et publie un article avant vous. Il existe une solution pour spécifier les droits d'utilisation de vos données. Vous devez associer une **licence** à vos données et métadonnées. 
 
-Vous avez très certainement déjà entendu parlé des licences [Creative Commons](https://creativecommons.org). Il est de plus en plus courant de voir apparaitre ce genre d'information sur des sites web comme [CC0](https://creativecommons.org/share-your-work/public-domain/cc0), [CC-by](https://creativecommons.org/licenses/by/4.0/), ou encore [CC-by-sa](https://creativecommons.org/licenses/by-sa/4.0/). 
+Vous avez très certainement déjà entendu parlé des licences [Creative Commons](https://creativecommons.org). Il est de plus en plus courant de voir apparaître ce genre d'information sur des sites web comme [CC0](https://creativecommons.org/share-your-work/public-domain/cc0), [CC-by](https://creativecommons.org/licenses/by/4.0/), ou encore [CC-by-sa](https://creativecommons.org/licenses/by-sa/4.0/). 
 
 Vous êtes peut être plus familié avec les logos ci-dessous\ :
 
@@ -683,7 +664,7 @@ Vous êtes peut être plus familié avec les logos ci-dessous\ :
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Licence Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a>.
 
-**Que se cache-t'il derrière ces logos\ ? Nous allons détailler ensemble ces abréviations.** Nous pouvons résumer cela de manière simple en se posant deux questions\ :
+**Que se cache-t-il derrière ces logos\ ? Nous allons détailler ensemble ces abréviations.** Nous pouvons résumer cela de manière simple en se posant deux questions\ :
 
 - Souhaitez-vous autoriser le partage des adaptations de votre œuvre\ ?
     + Oui
@@ -694,23 +675,21 @@ Vous êtes peut être plus familié avec les logos ci-dessous\ :
     + Oui
     + Non 
 
-Ces deux questions proviennent de l'outil mis à disposition sur le site creative commons <https://creativecommons.org/choose/> pour définir la licence la plus adaptée pour vous.
+Ces deux questions proviennent de l'outil mis à disposition sur le site Creative Commons <https://creativecommons.org/choose/> pour définir la licence la plus adaptée pour vous.
 
 Dans le cadre de la recherche, tout n'est pas si simple. Vous devez tenir compte l'avis de vos supérieurs hiérarchiques, de votre institution et de la ou des institutions qui financent le travail. La bonne pratique est donc de discuter avec l'ensemble des acteurs pour décider de la bonne licence à employer, *le plus tôt possible, c'est-à-dire, déjà lors de l'élaboration du projet de recherche*.
 
-Repartons de notre jeu de données sur le COVID-19 : [Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands](https://doi.org/10.5281/zenodo.3711592). Nous pouvons voir que l'auteur a décidé d'employer la licence 
+Repartons de notre jeu de données sur la COVID-19\ : [Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands](https://doi.org/10.5281/zenodo.3711592). Nous pouvons voir que l'auteur a décidé d'employer la licence 
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Licence Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />Ce(tte) œuvre est mise à disposition selon les termes de la <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Licence Creative Commons Attribution 4.0 International</a>.
 
-Il est donc autorisé d'adapter l'œuvre et de l'utiliser à des fins commerciales. Il s'agit d'une licence très peu contraignantes. Il suffit simplement de créditer l'auteur de l'oœuvre originale.
+Il est donc autorisé d'adapter l'œuvre et de l'utiliser à des fins commerciales. Il s'agit d'une licence très peu contraignantes. Il suffit simplement de créditer l'auteur de l'œuvre originale.
 
-Il existe également des licences plus spécifiques aux bases de données, de la moins contraignante à la plus contraingante [PDDL](https://opendatacommons.org/licenses/pddl/) , [ODC-by](https://opendatacommons.org/licenses/by/) et [ODbL](https://opendatacommons.org/licenses/odbl/)
-
+Il existe également des licences plus spécifiques aux bases de données, de la moins contraignante à la plus contraignante [PDDL](https://opendatacommons.org/licenses/pddl/) , [ODC-by](https://opendatacommons.org/licenses/by/) et [ODbL](https://opendatacommons.org/licenses/odbl/)
 
 ##### Intéropérable (*Interoperable*)
 
 Les données sont associées à des métadonnées riches. Sur base des métadonnées, les données doivent être utilisable, compréhensible et *combinable avec d'autres données*. Ce principe est difficile à mettre en place et requiert donc une réflexion approfondie.
-
 
 ##### Réutilisable (*Reusable*) 
 
@@ -729,11 +708,10 @@ Le contexte c'est\ :
 
 - un code unique et persistant associé aux données et au contexte,
 - une description du projet associée aux données,
-- des metodonnées riches (y compris un dictionnaire des données^[Vous avez déjà rédigé un dictionnaire des données lorsque vous avez plannifié vos mesures concernant la biométrie humaine l'an dernier au cours de science des données biologiques I.]),
-- la licence associée aux données?
+- des metadonnées riches (y compris un dictionnaire des données^[Vous avez déjà rédigé un dictionnaire des données lorsque vous avez planifié vos mesures concernant la biométrie humaine l'an dernier au cours de science des données biologiques I.]),
+- la licence associée aux données
 
-Dans le cadre de vos futures recherches, un outil comme Zenodo est très intéressant pour publier vos donnes sur l'Internet tout en suivant au mieux le principe **FAIR**
-
+Dans le cadre de vos futures recherches, un outil comme Zenodo est très intéressant pour publier vos donnes sur l'Internet tout en suivant au mieux le principe **FAIR**.
 
 #### DMP
 
@@ -741,21 +719,20 @@ Afin de respecter ces principes **FAIR**, des outils ont été développés. Il 
 
 Lorsque vous allez concevoir un plan d'expérience, n'oubliez pas de concevoir votre plan de gestion des données en même temps. Voici une checklist pour un plan de gestion des données efficaces <http://www.dcc.ac.uk/sites/default/files/documents/resource/DMP_Checklist_2013.pdf>
 
-
 ##### A vous de jouer ! {-}
 
-- Réalisez la fin  du projet spécifique lié au module 08.  
+- Réalisez la fin  du projet spécifique lié au module 08.
 
 ```{block2, type='bdd'}
 **Le lien pour réaliser ce projet se trouve au début du module**
 *Ce projet doit être terminé à la fin de ce module*
 ```
 
-### Utilisation de données ouvertes (*Open Data*)
+### Utilisation de données ouvertes
 
-Il existe de nombreux sites qui regroupent un ensemble de données que nous allons appeler *Open Data*. Nous avons parlé précédemment de Zenodo mais de nombreuses bases de données sont également disponibles comme le [Portail européen de données](https://www.europeandataportal.eu/fr), [Portail belge de données](https://data.gov.be/fr), ...
+Il existe de nombreux sites qui regroupent un ensemble de données ouvertes. Nous avons parlé précédemment de Zenodo mais de nombreuses bases de données sont également disponibles comme le [Portail européen de données](https://www.europeandataportal.eu/fr), [Portail belge de données](https://data.gov.be/fr), ...
 
-Afin de connaitre la qualité des données voici une checklist très utile pour appréhender des données ouvertes. Vous devez être capable de trouver facilement\ :
+Afin de connaître la qualité des données voici une check-list très utile pour appréhender des données ouvertes. Vous devez être capable de trouver facilement\ :
 
 - But des données
 - Code unique et persistant des données
@@ -763,11 +740,11 @@ Afin de connaitre la qualité des données voici une checklist très utile pour 
 - Format des données
 - Qualité des données
 
-**A nouveau, vous vous rendez compte que nous revenons à notre principe FAIR expliqué plus haut.** Prenons notre exemple sur le *Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands* et appliquons notre checklist.
+**A nouveau, vous vous rendez compte que nous revenons à notre principe FAIR expliqué plus haut.** Prenons notre exemple sur le *Dataset: Number of diagnoses with coronavirus disease (COVID-19) in The Netherlands* et appliquons notre check-list.
 
 - Le but des données
 
-Une description des données est proposée. Le nom de l'auteur est spécifié. Il est également précisé la date de publication avec la version des données. Le 16 mars 2020, la version est `v2020.3.16`. Les données sont également associées à un dépôt Github qui les traitent\ : [J535D165/CoronaWatchNL](https://github.com/J535D165/CoronaWatchNL)
+Une description des données est proposée. Le nom de l'auteur est spécifié. Il est également précisé la date de publication avec la version des données. Le 16 mars 2020, la version est `v2020.3.16`. Les données sont également associées à un dépôt GitHub qui les traitent\ : [J535D165/CoronaWatchNL](https://github.com/J535D165/CoronaWatchNL)
 
 - Un code unique et persistant
 
@@ -785,24 +762,23 @@ Les données sont proposées sous le format `csv`. Ce format est un standard tr�
 
 Ce dernier critère est le plus difficile à déterminer. Une première chose à vérifier concerne les métadonnées associées à chaque variable. Nous pouvons voir que l'auteur peut encore améliorer les métadonnées associées à ses données. Le nom des variables reste cependant tout à fait compréhensible. 
 
-Comme vous venez de le voir, Zenodo de part sa structuration permet de remplir très simplement cette checklist.
-
+Comme vous venez de le voir, Zenodo de part sa structuration permet de remplir très simplement cette check-list.
 
 ##### Pour en savoir plus {-}
 
-- [Qu'est ce que l'Open Data\ ?](https://www.europeandataportal.eu/fr/training/what-open-data) 
+- [Qu'est ce que les données ouvertes\ ?](https://www.europeandataportal.eu/fr/training/what-open-data) 
 
 - [Aide sur l'interprétation et le choix des licences](https://www.europeandataportal.eu/en/training/licensing-assistant)
 
 - [Choisir la bonne licence Open Source](https://choosealicense.com)
 
-- [Guide sur les licences open data](https://theodi.org/article/publishers-guide-to-open-data-licensing/)
+- [Guide sur les licences Open Data](https://theodi.org/article/publishers-guide-to-open-data-licensing/)
 
 - Des stockages spécifiques ont été mis en place pour les données scientifiques comme [Zenodo (dépot des données hebergé par le CERN)](https://zenodo.org), [Dataverse](https://dataverse.org), ou encore [Figshare](https://figshare.com)
 
 - [Data Management Plan](https://www.unil.ch/openscience/fr/home/menuinst/open-research-data/gerer-ses-donnees-de-recherche/data-management-plan-dmp.html) 
 
-- Le [Principe FAIR](https://ogsl.ca/fr/principes-fair) expliqué par l'Observatoire Global du Saint-Laurent.
+- Le [Principe FAIR](https://ogsl.ca/fr/principes-fair) expliqué par l'Observatoire Global du Saint-Laurent
 
 - Article scientifique sur le FAIR plan\ : [The FAIR Guiding Principles for scientific data management and stewardship](https://www.nature.com/articles/sdata201618)
 

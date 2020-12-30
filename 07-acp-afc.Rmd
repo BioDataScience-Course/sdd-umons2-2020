@@ -4,14 +4,13 @@
 SciViews::R
 ```
 
-
 ##### Objectifs {-}
 
 - Apprendre à réaliser une ordination de données quantitatives à l'aide de l'ACP.
 
 - Savoir ordiner des variables qualitatives sous forme de tableaux cas par variables ou de tables de contingences à double entrée à l'aide de l'AFC.
 
-- Appréhender l'accès aux bases de données depuis R et RStudio, en particulier via des requêtes SQL simples ou avec dbplyr.
+- Appréhender l'accès aux bases de données depuis R et RStudio, en particulier via des requêtes SQL simples ou avec {dbplyr}.
 
 
 ##### Prérequis {-}
@@ -20,7 +19,7 @@ SciViews::R
 
 ##### A vous de jouer ! {-}
 
-En lien avec ce module vous avez une série d’exercices à réaliser. Vous avez à :
+En lien avec ce module vous avez une série d’exercices à réaliser. Vous avez à\ :
 
 - Réaliser un projet spécifique et dédié uniquement au module 07. Ce module couvre l'ensemble de la matière du module 7. 
 
@@ -42,9 +41,9 @@ Lisez le README afin de prendre connaissance de l'exercice.
 
 ## Analyse en composantes principales
 
-Notre première approche d'ordination avec le MDS dans le précédent module nous a permis de comprendre l'intérêt de représenter des données multivariées sur des **cartes**. Malheureusement, les techniques itératives et basées sur les matrices de distances du MDS rendent cette technique peu propice pour analyser des gros jeux de données. En effet, le temps de calcul et le besoin en mémoire vive grandissent de manière exponentielle avec la taille des jeux de données. Heureusement, il existe aussi des techniques d'ordination qui se calculent plus facilement et plus rapidement sur de très gros jeux de données. L'**Analyse en Composantes Principales** ou ACP ("Principal Component Analysis" ou PCA en anglais) est une méthode de base qu'il est indispensable de connaitre et de comprendre. La plupart des autres techniques d'ordination plus sophistiquées sont des variante de l'ACP.
+Notre première approche d'ordination avec le MDS dans le précédent module nous a permis de comprendre l'intérêt de représenter des données multivariées sur des **cartes**. Malheureusement, les techniques itératives et basées sur les matrices de distances du MDS rendent cette technique peu propice pour analyser des gros jeux de données. En effet, le temps de calcul et le besoin en mémoire vive grandissent de manière exponentielle avec la taille des jeux de données. Heureusement, il existe aussi des techniques d'ordination qui se calculent plus facilement et plus rapidement sur de très gros jeux de données. L'**Analyse en Composantes Principales** ou ACP (*Principal Component Analysis* ou PCA en anglais) est une méthode de base qu'il est indispensable de connaître et de comprendre. La plupart des autres techniques d'ordination plus sophistiquées sont des variante de l'ACP.
 
-- Des **relations linéaires** sont suspectées entres les variables  (si elles ne sont pas linéaires, penser à transformer les données auparavant pour les linéairser).
+- Des **relations linéaires** sont suspectées entres les variables  (si elles ne sont pas linéaires, penser à transformer les données auparavant pour les linéariser).
 
 - Ces relations conduisent à une répartition des individus (le nuage de points) qui forme une **structure que l’on cherchera à interpréter**.
 
@@ -52,10 +51,9 @@ Notre première approche d'ordination avec le MDS dans le précédent module nou
 
 - La réduction des dimensions se fait avec une perte minimale d'information au sens de la variance des données.
 
-
 ### ACP dans SciViews::R
 
-L'ACP est facilitée dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documenbts R Markdown/Notebook.
+L'ACP est facilitée dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documents R Markdown/Notebook.
 
 ```{r}
 SciViews::R()
@@ -255,22 +253,20 @@ class(chart.pcomp) <- c("function", "subsettable_type")
 
 ### Indiens diabétiques
 
-Les indiens Pimas sont des amérindiens originaires du nord du Mexique qui sont connus pour compter le plus haut pourcentage d'obèses et de diabétiques de toutes les éthnies. Ils ont fait l'objet de plusieurs études scientifiques d'autant plus que les Pimas en Arizona développent principalement cette obésité et ce diabète, alors que les Pimas mexicains les ont plus rarement. Il est supposé que leur mode de vie différent aux Etats_Units pourrait en être la raison. Voici un jeu de données qui permet d'explorer un peu ceci\ :
+Les indiens Pimas sont des amérindiens originaires du nord du Mexique qui sont connus pour compter le plus haut pourcentage d'obèses et de diabétiques de toutes les ethnies. Ils ont fait l'objet de plusieurs études scientifiques d'autant plus que les Pimas en Arizona développent principalement cette obésité et ce diabète, alors que les Pimas mexicains les ont plus rarement. Il est supposé que leur mode de vie différent aux États-Units pourrait en être la raison. Voici un jeu de données qui permet d'explorer un peu ceci\ :
 
 ```{r}
 pima <- read("PimaIndiansDiabetes2", package = "mlbench")
 pima
 ```
 
-Ce jeu de données contient des vlaeurs manquantes. Le graphique suivant permet de [visualiser l'importance des "dégâts"](https://cran.r-project.org/web/packages/naniar/vignettes/naniar-visualisation.html)\ :
-
+Ce jeu de données contient des valeurs manquantes. Le graphique suivant permet de [visualiser l'importance des "dégâts"](https://cran.r-project.org/web/packages/naniar/vignettes/naniar-visualisation.html)\ :
 
 ```{r}
 naniar::vis_miss(pima)
 ```
 
 Moins de 10% des données sont manquantes, et c'est principalement dans les variables `insulin` et `triceps`. Si nous souhaitons un tableau sans variables manquantes, nous pouvons décider d'éliminer des lignes et ou des colonnes (variables), mais ici nous souhaitons garder toutes les variables et réduisons donc uniquement le nombre de lignes avec la fonction `drop_na()`.
-
 
 ```{r}
 pima <- drop_na(pima)
@@ -402,7 +398,7 @@ chart$scores(pima_pca, choices = c(2, 3),
   stat_ellipse()
 ```
 
-Etant donné que les deux graphiques (variables et individus) s'interprètent conjointement, nous pourrions être tentés de les superposer, cela s'appelle un **biplot**. Mais se pose alors un problème\ : celui de mettre à l'échelle les deux représentations pour qu'elles soient cohérentes entre elles. Ceci n'est pas facile et différentes représentations coexistent. L'argument `scale =` de la fonction `chart$biplot()` permet d'utiliser différentes mises à l'échelle. Enfin, ce type de graphique tend à être souvent bien trop encombré. Il est donc plus difficile à lire que les deux graphiques des variables et individus séparés. Voici ce que cela donne pour notre jeu de données exemple\ :
+Étant donné que les deux graphiques (variables et individus) s'interprètent conjointement, nous pourrions être tentés de les superposer, cela s'appelle un **biplot**. Mais se pose alors un problème\ : celui de mettre à l'échelle les deux représentations pour qu'elles soient cohérentes entre elles. Ceci n'est pas facile et différentes représentations coexistent. L'argument `scale =` de la fonction `chart$biplot()` permet d'utiliser différentes mises à l'échelle. Enfin, ce type de graphique tend à être souvent bien trop encombré. Il est donc plus difficile à lire que les deux graphiques des variables et individus séparés. Voici ce que cela donne pour notre jeu de données exemple\ :
 
 ```{r}
 chart$biplot(pima_pca)
@@ -410,10 +406,9 @@ chart$biplot(pima_pca)
 
 Bien moins lisible, en effet\ !
 
-
 ### Biométrie d'oursin
 
-Analysons à présent un autre jeu de données qui nous montrera l'importance de la transformation (linéarisation), du choix de réduire ou non (argument `scale =`), et l'effet d'un **effet saturant**, et comment s'en débarrasser. Il s'agit de la biométrie effectuée sur deux populations de l'oursin violet *Paracentrotus lividus*, une en élevage et une oautre provenant du milieu naturel. Nous avons abondamment utilisé ce jeu de données en SDD I dans la section visualisation. Nous le connaissons bien, mais reprenons certains éléments essentiels ici...
+Analysons à présent un autre jeu de données qui nous montrera l'importance de la transformation (linéarisation), du choix de réduire ou non (argument `scale =`), et l'effet d'un **effet saturant**, et comment s'en débarrasser. Il s'agit de la biométrie effectuée sur deux populations de l'oursin violet *Paracentrotus lividus*, une en élevage et une autre provenant du milieu naturel. Nous avons abondamment utilisé ce jeu de données en SDD I dans la section visualisation. Nous le connaissons bien, mais reprenons certains éléments essentiels ici...
 
 ```{r}
 urchin <- read("urchin_bio", package = "data.io", lang = "FR")
@@ -426,7 +421,7 @@ Ici aussi nous avons des valeurs manquantes\ :
 naniar::vis_miss(urchin)
 ```
 
-Ces valeurs manquantes sont rassemblées essentiellement dans les variables `buoyant_weight`, `dry_integuments`, les mesures relatives au squelette (`skeleton`, `lantern`, `test` et `spines`), et surtout au niveau de `sex` (impossible de déterminer le sexe des individus les plus jeunes). Si nous éliminons purement et simplement les lignes qui ont au moins une valeur manquante, nous perdons tous les individus jeunes, et c'est dommage. Nous allons donc d'abord éliminer les variables `sex`, ainsi que les quatres variables liées au squelette. Dans un second temps, nous appliquerons `drop_na()` sur ce qui reste\ :
+Ces valeurs manquantes sont rassemblées essentiellement dans les variables `buoyant_weight`, `dry_integuments`, les mesures relatives au squelette (`skeleton`, `lantern`, `test` et `spines`), et surtout au niveau de `sex` (impossible de déterminer le sexe des individus les plus jeunes). Si nous éliminons purement et simplement les lignes qui ont au moins une valeur manquante, nous perdons tous les individus jeunes, et c'est dommage. Nous allons donc d'abord éliminer les variables `sex`, ainsi que les quatre variables liées au squelette. Dans un second temps, nous appliquerons `drop_na()` sur ce qui reste\ :
 
 ```{r}
 urchin %>.%
@@ -441,7 +436,7 @@ Il nous reste 319 lignes des 421 initiales. Nous n'avons perdu qu'un quart des d
 skimr::skim(urchin2)
 ```
 
-Nous avons 12 variables quatitatives continues. Notez la distribution très asymétrique et similaire (voir colonne `hist`) de toutes ces variables. les variables `origin` et `maturity` ne pourront pas être utilisées, mais seront éventuellement utiles pour colorer les points dans nos graphiques. Qu'en est-il des corrélations entre les 12 variables\ ?
+Nous avons 12 variables quantitatives continues. Notez la distribution très asymétrique et similaire (voir colonne `hist`) de toutes ces variables. les variables `origin` et `maturity` ne pourront pas être utilisées, mais seront éventuellement utiles pour colorer les points dans nos graphiques. Qu'en est-il des corrélations entre les 12 variables\ ?
 
 ```{r}
 urchin2_cor <- correlation(urchin2[, 2:13])
@@ -458,7 +453,7 @@ chart(data = urchin2, weight ~ diameter1) +
   geom_point()
 ```
 
-Ce type de relation, dite allométrique se linéarise très bien en effectuant une transformation double-log, comme nous pouvons le constater sur le graphique suivant\ :
+Ce type de relation, dite allométrique se linéarise très bien en effectuant une transformation double-logarithme, comme nous pouvons le constater sur le graphique suivant\ :
 
 ```{r}
 chart(data = urchin2, log(weight) ~ log(diameter1)) +
@@ -469,7 +464,7 @@ chart(data = urchin2, log(weight) ~ log(diameter1)) +
 Il est crucial de bien nettoyer son jeu de données avant une ACP, et aussi, de vérifier que les relations sont linéaires. Sinon il faut transformer les données de manière appropriée. Rappelez-vous que l'ACP s'intéresse aux corrélations **linéaires** entre vos variables. 
 ```
 
-Attention toutefois à la transformation logarithmique appliquée sur des données qui peuvent contenir des zéros (par exemple, `gonads` ou `dry_gonads`). Dans ce cas, la transformartion logarithme(x + 1) réalisée avec la fonction `log1p()` est plus indiquée. Nous allons ici trtansformer **toutes** les variables en log(x + 1). C'est assez fastidieux à faire avec `mutate()`, mais nous pouvons l'utiliser directemnt sur le tableau entier réduit aux variables quantitatives continues seules lors de l'appel à `pca()` comme suit\ :
+Attention toutefois à la transformation logarithmique appliquée sur des données qui peuvent contenir des zéros (par exemple, `gonads` ou `dry_gonads`). Dans ce cas, la transformation logarithme(x + 1) réalisée avec la fonction `log1p()` est plus indiquée. Nous allons ici transformer **toutes** les variables en log(x + 1). C'est assez fastidieux à faire avec `mutate()`, mais nous pouvons l'utiliser directement sur le tableau entier réduit aux variables quantitatives continues seules lors de l'appel à `pca()` comme suit\ :
 
 ```{r}
 urchin2 %>.%
@@ -490,13 +485,13 @@ Whaaa\ ! Plus de 93% de la variance représentée sur le premier axe. Ça parait
 chart$scree(urchin2_pca)
 ```
 
-Ne vous réjousissez pas trop vite. Nous avons ici un **effet saturant** lié au fait que toutes les variables sont positivement corrélées entre elles. Cet effet est évident. Ici, c'est la taille. Nous allons conclure que plus un oursin est gros, plus ses dimensions et ses masses sont importante. **C'est trivial et d'un intérêt très limité**, avouons-le.
+Ne vous réjouissez pas trop vite. Nous avons ici un **effet saturant** lié au fait que toutes les variables sont positivement corrélées entre elles. Cet effet est évident. Ici, c'est la taille. Nous allons conclure que plus un oursin est gros, plus ses dimensions et ses masses sont importante. **C'est trivial et d'un intérêt très limité**, avouons-le.
 
 ```{block2, type='warning'}
 Puisque l'ACP optimise la variance sur le premier axe, un effet saturant aura tendance à occulter d'autres effets intéressants. Nous pouvons nous en débarrasser en identifiant une des variables représentant le mieux cet effet, et en calculant les ratios entre toutes les autres variables et celle-là. Ainsi, nous passons de quantification de la taille sur toutes les variables à des ratios qui quantifient beaucoup mieux des effets de forme plus subtils.
 ```
 
-Notez aussi les valeurs relativement faibles, mais homogènes de toutes les variables sur l'axe PC1 dans le tableau des vecteurs propres, avec des valeurs comprises entre 0,26 et 0,30. Le graphique des variables est également très moche dans le premier plan de l'ACP, même si un effet différent relatif aux gonades apparait tout de même sur l'axe PC2, il ne compte que pour 4,2% de la variance totale\ :
+Notez aussi les valeurs relativement faibles, mais homogènes de toutes les variables sur l'axe PC1 dans le tableau des vecteurs propres, avec des valeurs comprises entre 0,26 et 0,30. Le graphique des variables est également très moche dans le premier plan de l'ACP, même si un effet différent relatif aux gonades apparaît tout de même sur l'axe PC2, il ne compte que pour 4,2% de la variance totale\ :
 
 ```{r}
 chart$loadings(urchin2_pca)
@@ -555,24 +550,22 @@ chart$scores(urchin3_pca, choices = c(2, 3),
 
 Vous devriez pouvoir interpréter ces résultats par vous-même maintenant.
 
-
 ### Visualisation de données quantitatives
 
 #### Deux dimensions
 
-**Le nuage de points** est le graphe idéal pour visualiser la distribution des données bivariées pour deux vaeriavbles quantitatives. Il permet de visualiser également une **association** entre deux variables. Il permet aussi de visualiser comment deux ou plusieurs groupes peuvent être séparés en fonction de ces deux variables.
+**Le nuage de points** est le graphe idéal pour visualiser la distribution des données bivariées pour deux variables quantitatives. Il permet de visualiser également une **association** entre deux variables. Il permet aussi de visualiser comment deux ou plusieurs groupes peuvent être séparés en fonction de ces deux variables.
 
 ```{r}
 chart(data = pima, glucose ~ insulin %col=% diabetes) +
   geom_point()
 ```
 
-
 #### Trois dimensions
 
 **Le nuage de points en pseudo-3D** est l’équivalent pour visualiser trois variables quantitatives simultanément. Il est nécessaire de rendre l’effet de la **troisième dimension** (perspective, variation de taille des objets, ...).  La possibilité de **faire tourner l’objet 3D virtuel** est indispensable pour concrétiser l’effet 3D et pour le visionner sous différents angles
 
-Le package `rgl` permet de réaliser ce genre de graphique 3D interactif (que vous pouvez faire tourner dans l'orientation que vous voulez à la souris)\ :
+Le package {rgl} permet de réaliser ce genre de graphique 3D interactif (que vous pouvez faire tourner dans l'orientation que vous voulez à la souris)\ :
 
 ```{r, echo=FALSE}
 library(rgl)
@@ -588,7 +581,6 @@ rgl::plot3d(pima$insulin, pima$glucose, pima$triceps,
 rgl::rglwidget(width = 800, height = 800)
 ```
 
-
 #### Plus de trois dimensions
 
 Déjà à trois dimensions la visualisation devient délicate, mais au delà, cela devient pratiquement mission impossible. La **matrice de nuages de points** peut rendre service ici, mais dans certaines limites (tous les angles de vue ne sont pas accessibles).
@@ -598,7 +590,6 @@ GGally::ggscatmat(pima, 2:6, color = "diabetes")
 ```
 
 Nous voyons qu'ici nous atteignons les limites des possibilités. C'est pour cela que, pour des données multivariées comportant beaucoup de variables quantitatives, les techniques de réduction des dimensions comme l'ACP sont indispensables.
-
 
 ### ACP : mécanisme
 
@@ -619,7 +610,7 @@ plt <- ggplot(dat, aes(x = Var1, y = Var2)) +
 marrangeGrob(list(tbl, plt), nrow = 1, ncol = 2, top = NULL)
 ```
 
-Voic une représentation graphique 2D de ces données\ :
+Voici une représentation graphique 2D de ces données\ :
 
 ```{r echo=FALSE, fig.width=9, fig.height=5}
 # One solution would be to put both plots on one graph
@@ -633,7 +624,6 @@ marrangeGrob(list(tbl, plt), nrow = 1, ncol = 2, top = NULL)
 ```
 
 Si nous réduisons à une seule dimension en laissant tomber une des deux variables, voici ce que cela donne (ici on ne garde que `Var1`, donc, on projette les points sur l'axe des abscisses).
-
 
 ```{r echo=FALSE, fig.width=4.5, fig.height=5}
 plt <- ggplot(dat) +
@@ -702,7 +692,6 @@ C'est une bien meilleure solution car la perte d'information est ici minimale. R
 - Ensuite on calcule la composante 2 comme étant orthogonale (i.e., perpendiculaire) à PC1 et présentant la plus grande variabilité non encore capturée par la composante 1.
 
 - Le mécanisme revient à projeter les points sur des axes orientés différemment dans l'e plan'espace à N dimensions (pour N variables intiales). En effet, mathématiquement ce mécanisme se généralise facilement à trois, puis à N dimensions.
-
 
 ### Calcul matriciel ACP
 
@@ -801,12 +790,11 @@ text(1.2, 0.28, "x'", col = "red")
 text(-0.32, 0.55, "y'", col = "red")
 ```
 
-
 #### Résolution numérique simple
 
 Effectuons une ACP sur matrice var/covar sans réduction des données (mais calcul très similaire lorsque les données sont réduites) sur un exemple numérique simple.
 
-- Étape 1\ :  centrage des données
+- Étape 1\ : centrage des données
 
 $$
 \mathop{\begin{pmatrix}
@@ -826,7 +814,7 @@ $$
 \end{pmatrix}}_{\text{Tableau centré (X)}}
 $$
 
-- Étape 2\ :  calcul de la matrice de variance/covariance
+- Étape 2\ : calcul de la matrice de variance/covariance
 
 $$
 \mathop{\begin{pmatrix}
@@ -863,7 +851,6 @@ $$
 - 14 est la **variance totale** du jeu de données
 - La matrice diagonale B est la solution exprimant **la plus grande part de variance possible sur le premier axe de l’ACP**\ : 9, soit 64,3% de la variance totale.
 - Les éléments sur la diagonale sont les valeurs propres $\lambda_i$\ ! Vous vous rappelez les fameuses "eigenvalues" dans la sortie de `summary(pima_pca)`.
-
 
 - Étape 4\ : calcul de la matrice de rotation des axes (en utilisant la propriété des valeurs propres $\text{A}.\text{U} = \text{B}.\text{U}$).
 
@@ -934,19 +921,17 @@ $$
 
 - Ensuite, on représente ces individus à l'aide d'un graphique en nuage de points.
 
-
 Tout ces calculs se généralisent facilement à trois, puis à N dimensions.
-
 
 ##### Pour aller plus loin {-}
 
 - N'hésitez pas à **combiner** plusieurs techniques. Par exemple, vous pouvez représenter les groupes créés par classification ascendante hiérarchiques sur un graphique de l'ACP dans l'espace des individus en faisant varier les couleurs ou les labels des individus en fonction des groupes de la CAH.
 
-- Une [autre explication de l'ACP](http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/112-pca-principal-component-analysis-essentials/) en utilsant quelques autres fonctions de R pour visualiser le résultat
+- Une [autre explication de l'ACP](http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/112-pca-principal-component-analysis-essentials/) en utilisant quelques autres fonctions de R pour visualiser le résultat
 
 - Une [explication détaillée de la PCA en anglais](http://staff.ustc.edu.cn/~zwp/teach/MVA/abdi-awPCA2010.pdf).
 
-- Une page qui reprend [une série de vidéos](http://www.sthda.com/english/articles/21-courses/65-principal-component-analysis-course-using-factominer/) qui présentent les différentes facettes de l'ACP (en franglais).
+- Une page qui reprend [une série de vidéos](http://www.sthda.com/english/articles/21-courses/65-principal-component-analysis-course-using-factominer/) qui présentent les différentes facettes de l'ACP (en anglais).
 
 ##### A vous de jouer ! {-}
 
@@ -972,12 +957,11 @@ La dernière version du README est disponible via le lien suivant\ :
 
 ## Analyse factorielle des correspondances
 
-Comme l'ACP s'intéresse à des corrélations linéaires entre variables quantitatives, elle n'est absolument pas utilisable pour traiter des variables qualitatives. L'**Analyse Factorielle des Correspondances** sera utile dans ce dernier cas (AFC, ou en anglais "Correspondence Analysis" ou CA).
-
+Comme l'ACP s'intéresse à des corrélations linéaires entre variables quantitatives, elle n'est absolument pas utilisable pour traiter des variables qualitatives. L'**Analyse Factorielle des Correspondances** sera utile dans ce dernier cas (AFC, ou en anglais *Correspondence Analysis* ou CA).
 
 ### AFC dans SciViews::R
 
-L'AFC utilises la fonction `ca()` du package `ca` dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documents R Markdown/Notebook.
+L'AFC utilises la fonction `ca()` du package {ca} dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documents R Markdown/Notebook.
 
 ```{r}
 SciViews::R()
@@ -1090,7 +1074,6 @@ class(chart.ca) <- c("function", "subsettable_type")
 
 ```
 
-
 ### Enquête sur la science
 
 L'idée de départ de l'AFC est de pouvoir travailler sur des données qualitatives en les transformant en variables quantitatives via une astuce de calcul, et ensuite de réaliser une ACP sur ce tableau quantitatif pour en représenter l'information visuellement sur une carte. Les enquêtes (mais pas seulement) génèrent souvent des quantités importantes de variables qualitatives qu'il faut ensuite analyser. En effet, des sondage proposent la plupart du temps d'évaluer une question sur une échelle de plusieurs niveaux du genre "tout-à-fait d'accord", "d'accord", "pas d'accord", "pas du tout d'accord", ce qui donnerait une variable facteur à quatre niveaux ordonnés.
@@ -1103,14 +1086,13 @@ B. En général, la science moderne fait plus de mal que de bien
 
 C. Tout changement dans la nature apporté par les êtres humains risque d'empirer les choses
 
-D. La science moderne va résoudre nos problèmes relatifs à l'environement sans faire de grands changements à notre mode de vie
+D. La science moderne va résoudre nos problèmes relatifs à l'environnement sans faire de grands changements à notre mode de vie
 
 Les réponses possibles sont\ : 1 = tout-à-fait d'accord à 5 = pas du tout d'accord. Le jeu de données `wg93` du package `ca` reprend les réponses données par les allemands de l'ouest à ces questions. De plus, les caractéristiques suivantes des répondants sont enregistrées\ :
 
 - le sexe (1 = homme, 2 = femme),
 - l'âge (1 = 18-24, 2 = 25-34, 3 = 35-44, 4 = 45-54, 5 = 55-64, 6 = 65+)
 - le niveau d'éducation (1 = primaire, 2 = second. partim, 3 = secondaire, 4 = univ. partim, 5 = univ. cycle 1, 6 = univ. cycle 2+)
-
 
 ```{r}
 wg <- read("wg93", package = "ca")
@@ -1143,7 +1125,7 @@ Par exemple, si nous nous posons la question de l'impact de l'éducation sur l'i
 table(wg$B, wg$edu)
 ```
 
-- **Étape 2\ :** test de Chi^2^ d'indépendance, voir [section 8.2 du cours de SDD I](http://biodatascience-course.sciviews.org/sdd-umons/test-dhypothese.html#test-chi2-dindependance). L'hypothèse nulle du test est quel les deux variables sont indépendantes l'une de l'autre. L'hypothèse alternative est qu'une dépendance existe. Si la réponse aux questions est indépendante du niveau d'éducation (pas de rejet de H~0~), notre analyse est terminée. Sinon, il faut approfondir... Choisissons notre seuil $\alpha$ à 5% avant de réaliser notre test.
+- **Étape 2\ :** test de Chi^2^ d'indépendance, voir [section 8.2.5 du cours de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2020/test-dhypoth%25C3%25A8se.html). L'hypothèse nulle du test est quel les deux variables sont indépendantes l'une de l'autre. L'hypothèse alternative est qu'une dépendance existe. Si la réponse aux questions est indépendante du niveau d'éducation (pas de rejet de H~0~), notre analyse est terminée. Sinon, il faut approfondir... Choisissons notre seuil $\alpha$ à 5% avant de réaliser notre test.
 
 ```{r}
 chisq.test(wg$B, wg$edu)
@@ -1152,7 +1134,7 @@ chisq.test(wg$B, wg$edu)
 L'avertissement nous prévient qu'une approximation a du être réalisée, mais le test reste utilisable si la valeur est loin du seuil $/alpha$. La valeur *p* de 0,2% est très inférieure à $\alpha$. Nous rejettons H~0~. Il y a dépendance entre le niveau d'éducation et la réponse à la question B. OK, mais comment se fait cette dépendance\ ? C'est ici que l'AFC nous vient en aide.
 
 
--**Étape 3\ :** Si l'hypothèse nulle est rejettée, il faut analyser plus en profondeur. L'AFC va présenter la dépendance de manière claire. La fonction `ca()` accepte un jeu de données dans l'argument `data =` et une formule qui spécifie dans le terme de droite les deux variables à croiser séparées par un signe + (`~ fact1 + fact2`). Donc\ :
+-**Étape 3\ :** Si l'hypothèse nulle est rejetée, il faut analyser plus en profondeur. L'AFC va présenter la dépendance de manière claire. La fonction `ca()` accepte un jeu de données dans l'argument `data =` et une formule qui spécifie dans le terme de droite les deux variables à croiser séparées par un signe + (`~ fact1 + fact2`). Donc\ :
 
 ```{r}
 wg_b_edu <- ca(data = wg, ~ B + edu)
@@ -1187,12 +1169,11 @@ L'essentiel se lit ici effectivement sur un seul axe (dimension 1) qui capture e
 
 Ici la lecture de la carte générée par l'AFC est limpide... Et manifestement, nous pouvions légitimement conclure à l'époque qu'un effort éducatif et d'information était nécessaire auprès de la population la moins éduquée pour leur faire prendre conscience de l'intérêt de la science moderne (à moins que cette dernière remarque ne soit un parti pris... d'un universtaire :-).
 
-
 ### Des acariens sinon rien
 
 Un deuxième exemple illustre une utilisation légèrement différente de l'AFC. Il s'agit des tableaux de type "espèces par stations". Ces tableaux contiennent différentes espèces ou autres groupes taxonomiques dénombrés dans plusieurs échantillons prélevés à des stations différentes. Le dénombrement des espèces peut être quantitatif (nombre d'individus observés par unité de surface ou de volume), semi-quantitatif (peu, moyen, beaucoup), ou même binaire (présence ou absence de l'espèce). Ces tableaux sont assimilables, en réalité, à des tableaux de contingence à double entrée qui croisent deux variables qualitatives "espèce" et "station". C'est comme si la première étape avait déjà été réalisée dans l'analyse précédente du jeu de données `wg`.
 
-Naturellement, comme il ne s'agit pas réellement d'un tableau de contingence, nous ne réaliserons pas le test Chi^2^ d'indépendance ici, et nous passerons directement à l'étape de l'AFC. L'exemple choisi concerne des populations d'acariens dans de la litière (acarien se dit "mite" en anglais, d'où le nom du jeu de données issu du package `vegan`).
+Naturellement, comme il ne s'agit pas réellement d'un tableau de contingence, nous ne réaliserons pas le test Chi^2^ d'indépendance ici, et nous passerons directement à l'étape de l'AFC. L'exemple choisi concerne des populations d'acariens dans de la litière (acarien se dit "mite" en anglais, d'où le nom du jeu de données issu du package {vegan}).
 
 ```{r}
 mite <- read("mite", package = "vegan")
@@ -1286,7 +1267,6 @@ chart$biplot(mite2_ca, choices = c(1, 2), repel = TRUE)
 
 Nous vous laissons le soin d'effectuer l'analyse complète des points bleus (stations) entre eux, ensuite les points rouges (espèces) entre eux et enfin, conjointement. Notez les stations 44, 59, 65 et 67 qui se détachent et qui sont caractérisées par des espèces qu'on trouve préférentiellement là-bas\ : `Trhypch1` et `Trimalc2`. Les espèces et station proches du centre d'inertie, au contraire, ne montrent aucune particularité.
 
-
 ### Principe de l'AFC
 
 Maintenant que nous avons découvert la façon de réaliser et d'interpréter une AFC, il est temps d'en comprendre les rouages. Rappelez-vous que la distance du Chi^2^ quantifie l'écart entre des effectifs observés $a_i$ et des effectifs théoriques $\alpha_i$ comme\ :
@@ -1307,12 +1287,11 @@ Si nous prenons le même nombre de composantes principales des deux côtés, nou
 
 Au final, l'AFC apparait donc comme une variante de l'ACP qui utilise la distance du Chi^2^ à la place de la distance euclidienne dans l'ACP classique, et qui reflète la symétrie du tableau de contingence (lignes/colonnes *versus* colonnes/lignes). Il en résulte la possiblité d'analyser ainsi des données qualitatives pour lesquelles la distance et la statistique du Chi^2^ ont précisément été inventées.
 
-
 ##### Pour en savoir plus {-}
 
 - Une courte introduction de l'AFC en [vidéo](https://www.youtube.com/watch?v=tEc5cmlQVdI) avec résolution d'un exemple volontairement simpliste pour faire comprendre la signification du graphique obtenu et la façon de l'interpréter.
 
-- Une [autre explication](http://www.sthda.com/french/articles/38-methodes-des-composantes-principales-dans-r-guide-pratique/74-afc-analyse-factorielle-des-correspondances-avec-r-l-essentiel/) qui utilise les packages `FactoMineR` et `factoextra` et qui va plus loin dans les concepts (notamment la qualité de la représentation des points via leur "cos^2^", les différents types de biplots, et l'ajout de données supplémentaires).
+- Une [autre explication](http://www.sthda.com/french/articles/38-methodes-des-composantes-principales-dans-r-guide-pratique/74-afc-analyse-factorielle-des-correspondances-avec-r-l-essentiel/) qui utilise les packages {FactoMineR} et {factoextra} et qui va plus loin dans les concepts (notamment la qualité de la représentation des points via leur "cos^2^", les différents types de biplots, et l'ajout de données supplémentaires).
 
 ##### A vous de jouer ! {-}
 
@@ -1346,13 +1325,11 @@ SQL est un langage dédié aux requêtes et la manipulation de bases de données
 
 Il existe différents moteurs de bases de données relationnelles. Les plus courants sont\ : SQLite, MySQL/MariaDB, PosgreSQL, SQL Server, Oracle, ... La plupart de ces solutions nécessitent d'installer un **serveur** de base de données centralisé. Cependant, SQLite, est une solution légère qui permet d'explorer le language SQL ([prononcez "S.Q.L." ou "Sequel"](https://www.vertabelo.com/blog/notes-from-the-lab/sql-or-sequel)), y compris avec des petites bases de données test en mémoire ou contenues dans un fichier.
 
-
 ### Installation de SQLite
 
 Dans la SciViews Box, les drivers SQLite pour la version 2 et la version 3 sont préinstallés. Sous R, vous pouvez utiliser le package `RSQLite` pour accéder à des bases de données qui sont de simples fichiers sur le disque. Cependant, l'onglet **Connections** dans RStudio n'est pas compatible avec `RSQLite`. Il fonctionne, par contre avec les **drivers odbc** qui sont un format commun de drivers pour différentes bases de donnes dont SQLite. Les drivers SQLite, MySQL et PosgreSQL sont préinstallés dans la SciViews Box. Nous utiliserons également une interfaces graphique vers SQLite\ : **DB Browser for SQLite** disponible depuis le menu principal `Applications`, dans la section `Development`.
 
 ![](images/sdd2_07/sqlite-pgm1.png)
-
 
 ### Base de données en mémoire
 
@@ -1395,7 +1372,6 @@ dbClearResult(res)
 # Se déconnecter de la base de données
 dbDisconnect(con)
 ```
-
 
 ### Base de données dans un fichier
 
@@ -1443,7 +1419,6 @@ Ne pas oublier de se déconnecter de la base de données une fois terminé.
 dbDisconnect(con)
 ```
 
-
 ### Driver ODBC dans RStudio
 
 RStudio facilite l'utilisation de bases de données à condition d'utiliser un driver "compatible". Nous avons installé un tel driver ODBC pour les bases de données SQLite. Pour nous connecter à `/home/sv/shared/database.sqlite` depuis RStudio, nous entrons dans l'onglet **Connections** et nous cliquons sur le bouton `New Connection`, ou nous cliquons sur la connection correspondante si elle est déjà créée dans la liste.
@@ -1473,22 +1448,20 @@ A partir de ce moment, vous pouvez voir votre table `mtcars` (il faut peut être
 
 A part cela, vous travaillez avec cette base de données dans R en utilisant l'objet `con` comme d'habitude, et vous pouvez aussi utiliser directement des chunks sql.
 
-
 ### Utilisation de DB Browser
 
 Lancez **DB Browser**. Connectez-vous à `/home/sv/shared/database.sqlite` Vous avez un accès visuel à votre base de données. Explorez les différentes possibilités du logiciel.
 
 ![DB Browser for SQLite](images/sdd2_07/sqlite-pgm2-dbbrowser.png)
 
-
-### Utilisation de dplyr
+### Utilisation de {dplyr}
 
 ```{r, echo=FALSE}
 #dbWriteTable(con, "iris", iris, overwrite = TRUE)
 ```
 
 
-Les fonctions du package `dplyr` fonctionnent aussi très bien sur des bases de données. Les commandes sont converties en interne en requêtes SQL. Il suffit d'utiliser `collect()` à la fin pour exécuter la requête.
+Les fonctions du package {dplyr} fonctionnent aussi très bien sur des bases de données. Les commandes sont converties en interne en requêtes SQL. Il suffit d'utiliser `collect()` à la fin pour exécuter la requête.
 
 ```{r dplyr1}
 dbfile <- "~/shared/database.sqlite"
@@ -1498,7 +1471,7 @@ my_table <- tbl(my_db, sql("SELECT * FROM iris"))
 (df2 <- collect(my_table))
 ```
 
-Voici maintenant ce que cela donne en utilisant les verbes de `dplyr`. La fonction `explain()` permet d'expliquer ce qui est fait.
+Voici maintenant ce que cela donne en utilisant les verbes de {dplyr}. La fonction `explain()` permet d'expliquer ce qui est fait.
 
 ```{r}
 # Sélectionner des variables
@@ -1527,7 +1500,7 @@ res <- collect(query2)
 res
 ```
 
-Enfin, la fonction `sql_translate()` du package `dbplyr` va indiquer comment une instruction R est convertie en code SQL équivalent. **C'est très pratique aussi pour apprendre SQL quand on connait R\ !**
+Enfin, la fonction `sql_translate()` du package {dbply} va indiquer comment une instruction R est convertie en code SQL équivalent. **C'est très pratique aussi pour apprendre SQL quand on connait R\ !**
 
 ```{r, error=TRUE}
 dbplyr::translate_sql(x^3 < 15 || y > 20)
@@ -1539,7 +1512,6 @@ dbplyr::translate_sql(mean(x, trim = TRUE))
 ```
 
 Voilà pour ce très rapide tour d'horizon des différentes façons de manipuler des bases de données avec R et RStudio. En pratique, revenez sur cette section, et approfondissez vos connaissances via les ressources proposées ci-dessous lorsque vous serez confrontés "en vrai" à des données présentées dans une base de données relationnelle.
-
 
 ##### Pour en savoir plus {-}
 
@@ -1553,10 +1525,9 @@ Voilà pour ce très rapide tour d'horizon des différentes façons de manipuler
 
 - Un [cours en ligne sur SQL](https://fr.khanacademy.org/computing/computer-programming/sql/sql-basics/v/welcome-to-sql) par vidéos par la Kahn Academy (en anglais).
 
-- Un autre [tutorial complet sur SQL](http://blog.paumard.org/cours/sql/). Remarquez qu'il en existe beaucoup. Faites une recherche via Google et choisissez le tutorial qui vous plait le plus.
+- Un autre [tutorial complet sur SQL](http://blog.paumard.org/cours/sql/). Remarquez qu'il en existe beaucoup. Faites une recherche via Google et choisissez le tutoriel qui vous plaît le plus.
 
 - Les [dix commandements d'une base de données réussie](https://thinkr.fr/base-de-donnees-reussie/). Il s'agit ici plutôt de la création d'une base de données que de la requête sur une base de données existante... mais tôt ou tard, vous créerez vos propres bases de données et ces conseils vous seront alors utiles.
-
 
 ##### A vous de jouer ! {-}
 

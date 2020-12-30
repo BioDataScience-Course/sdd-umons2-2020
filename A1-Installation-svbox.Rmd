@@ -74,4 +74,4 @@ RStudio offre la possibilité (de manière optionnelle) d'enregistrer une clé p
 
 - Déconnectez et reconnectez-vous dans RStudio pour que les changements soient pris en compte. La prochaine action sur GitHub depuis RStudio pourrait encore déclencher la demande de votre login et mot de passe, mais ensuite, les opérations devraient se faire directement.
 
-Si vous éprouvez toujours des difficultés à faire collaborer R et RStudio avec Git et GiHhub, voyez [Happy Git and GitHub for the UseR](https://happygitwithr.com) (en anglais) qui explique les différentes procédures bien plus en détails.
+Si vous éprouvez toujours des difficultés à faire collaborer R et RStudio avec Git et GitHub, voyez [Happy Git and GitHub for the UseR](https://happygitwithr.com) (en anglais) qui explique les différentes procédures bien plus en détails.

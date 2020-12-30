@@ -15,7 +15,6 @@ SciViews::R
 
 - Être capable d'effectuer un regroupement pertinent des individus d'un jeu de données multivarié à l'aide de ces techniques.
 
-
 ##### Prérequis {-}
 
 Vous devez être à l'aise avec l'utilisation de R et Rstudio, en particulier pour l'importation, le remaniement et la visualisation de données multivariées. Ceci correspond au cours SDD I. Il n'est pas nécessaire d'avoir acquis toutes les notions vue dans la partie **Cours II :modélisation** pour pouvoir comprendre cette seconde partie du cours. Si vous ne vous sentez pas assez à l'aise avec R et RStudio, c'est peut-être le bon moment pour refaire le premier "learnr" du package `BioDataScience2`\ :
@@ -27,7 +26,6 @@ Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, e
 
 N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
 ```
-
 
 ## Analyse de données
 
@@ -42,7 +40,6 @@ La vidéo suivante introduit l'EAD (jusqu'à 2:11)\ :
 ```{r, echo=FALSE}
 vembedr::embed_youtube("q-IVQoh1nxA", width = 770, height = 433, query = "end=131")
 ```
-
 
 ## Distance entre individus
 
@@ -62,7 +59,6 @@ Notez que cette formule se généralise à *n* dimensions et s'écrit alors, pou
 $$\mathrm{D_{Euclidean}}_{j, k} = \sqrt{\sum_{i=1}^{n}(y_{ij}-y_{ik})^2}$$
 
 C'est la racine carré de la somme dans les *n* dimensions des écarts entre les valeurs au carré pour toutes les variables *y~i~*. Plus sa valeur est grande, plus les individus sont éloignés (différents). Pour cette raison, nous appelerons cette distance, une mesure de **dissimilarité**.
-
 
 ### Matrice de distances
 
@@ -106,7 +102,6 @@ Attention\ : dans certains cas, un indice de dissimilarité peut varier de 0 à 
 
 Tous les indices de similarité / dissimilarité peuvent servir à construire des matrices de distances.
 
-
 #### Indice de Bray-Curtis
 
 L'indice de dissimilarité de Bary-Curtis, aussi appelé coefficient de Czecanowski est calculé comme suit\ :
@@ -120,8 +115,6 @@ Une caractéristique essentielle de cet indice (contrairement à la distance euc
 L'indices de similarité de Bray-Curtis (*sim*) est complémentaire à l'indices de dssimilarité correspondant (*dis* tel que calculé ci-dessus)\ : 
 
 $$sim = 1 – dis$$
-
-
 
 #### Indice de Canberra
 
@@ -147,7 +140,6 @@ Attention\ : Si les volumes échantillonnés entre stations ne sont pas comparab
 
 De même que pour Bray-Curtis, l'indice de similarité *sim* se calcule à partir de l'indice de dissimilarité *dis* tel que ci-dessus comme $sim = 1 - dis$.
 
-
 #### Distance Euclidienne
 
 Nous savons déjà que c'est la distance géométrique entre les points dans un espace à *n* dimensions\ :
@@ -155,7 +147,6 @@ Nous savons déjà que c'est la distance géométrique entre les points dans un 
 $$\mathrm{D_{Euclidean}}_{j,k}=\sqrt{\sum_{i=1}^{n}(y_{ij}-y_{ik})^2}$$
 
 Dans R, cette distance peut être calculée avec `dist(DF)` ou `vegan::vegdist(DF, method = "euclidean")`. Cet indice de dissimilarité est utile pour des mesures quantitatives, pour des données environnmentales, etc. Il faut que les mesures soient toutes effectuées dans les mêmes unités. Si ce n'est pas le cas, penser alors à standardiser les mesures avant le calcul comme nous l'avons fait plus dans l'exemple sur le zooplancton. Il n'existe pas d'indice de similarité complémentaire.
-
 
 #### Distance de Manhattan
 
@@ -165,13 +156,11 @@ $$\mathrm{D_{Manhattan}}_{j,k}=\sum_{i=1}^{n}|y_{ij}-y_{ik}|$$
 
 Dans R, nous utiliserons `vegan::vegdist(DF, method = "manhattan")`. Ici aussi, seul l'indice de dissimilarité est défini. L'indice de similarité complémentaire n'existe pas car la valeur de l'indice de dissimlarité n'est pas borné à droite et peut varier de zéro (dissimilarité nulle, les deux individus soint identiques) à l'infini pour une différence maximale.
 
-
 ### Utilisation des indices
 
 - Les distances euclidienne ou de Manhattan sont à préférer pour les **mesures environnementales** ou de manière générale pour les variables quantitatives continues.
 
 - Les distances de Bray-Curtis ou Canberra sont meilleure pour les **dénombrements d’espèces** (nombreux double zéro), ou de manière générale, pour les variables quantitatives discrètes prenant des valeurs nulles ou positives.
-
 
 ### Propriétés des indices
 
@@ -199,7 +188,6 @@ La dernière propriété d'inégalité triangulaire est la plus difficile à obt
 | (correlation)          | (non métrique)
 | (variance/covariance)  | (non métrique)
 
-
 ##### Pour en savoir plus {-}
 
 - Vous pouver aussi transposer le tableau pour calculer la distance entre les variables en utilisant la fonction `t()` dans R (`dist(t(DF))`). Par exemple, dans le cas d'un tableau "espèces - station" (dénombrement d'espèces en différentes stations), nous pouvons souhaiter comparer les stations du point de vue de la composition en espèces, mais nous pouvons aussi comparer les espèces du point de vue de leur répartition entre les stations. Pour passer d'un calcul à l'autre, nous transposerons donc le tableau (les colonnes deviennent les lignes et inversément) avant d'utiliser `dist()` ou `vegan::vegdist()`.
@@ -214,11 +202,11 @@ rownames(ex1) <- paste0("Sta", 1:3)
 knitr::kable(ex1)
 ```
 
-Pour rappel, la dissimilarité de Canberra se calcule comme suit:
+Pour rappel, la dissimilarité de Canberra se calcule comme suit\ :
 
 $$\mathrm{D_{Canberra}}_{j,k}=\frac{1}{nz}\sum_{i'=1}^{nz}\frac{\left|y_{i'j}-y_{i'k}\right|}{y_{i'j}+y_{i'k}}$$
 
-où:
+où\ :
 
 - _nz_ est le nombre d'observations non nulles simultanément dans les deux vecteurs comparés (les doubles zéros ne sont pas pris en compte)
 - _i'_ est l'itérateur sur toutes les valeurs non double zéros
@@ -258,7 +246,6 @@ dist(ex1, method = "canberra") %>.%
   round(., 2)
 ```
 
-
 ##### A vous de jouer ! {-}
 
 - Réalisez le tutoriel afin de vérifier votre bonne compréhension des matrices de distance.
@@ -271,7 +258,7 @@ Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, e
 N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
 ```
 
-- Réalisez un carnet de note par binôme sur le transect entre Nice et Calvi. Lisez attentivement le README
+- Réalisez un carnet de note par binôme sur le transect entre Nice et Calvi. Lisez attentivement le fichier `README.md`.
 
 ```{block2, type='bdd'}
 
@@ -287,15 +274,13 @@ Lisez le README afin de prendre connaissance de l'exercice.
 
 ```
 
-
 ## Regroupement avec CAH
 
 A partir du moment où nous avons une matrice de distances entre toutes les paires d'individus dans notre jeu de données, nous pouvons les regrouper en fonction de leur ressemblance. Deux approches radicalement différentes existent. Soit nous pouvons diviser l'échantillon progressivement jusqu'à obtenir des groupes homogènes (**méthodes divisives, telle que les K-moyennes** que nous aborderons dans le module suivant), soit nous pouvons regrouper les items semblables petit à petit jusqu'à avoir traité tout l'échantillon (**méthodes agglomératives, telle que la classification ascendante hiérarchique** étudiée ici).
 
-
 ### Dendrogramme
 
-Le **dendrogramme** est une manière très utile de représenter graphiquement un regroupement. Il s'agit de réaliser un arbre dichotomique ressemblant un peu à un arbre phylogénétique qui est familier aux biologistes (par exemple [ici](https://evolution.frama.wiki/la_theorie_de_l_evolution_ne_fait_pas_de_predictions))\ :
+Le **dendrogramme** est une manière très utile de représenter graphiquement un regroupement. Il s'agit de réaliser un arbre dichotomique ressemblant un peu à un arbre phylogénétique qui est familier aux biologistes (par exemple [ici](https://www.futura-sciences.com/planete/definitions/classification-vivant-phylogenie-4372/))\ :
 
 ![](images/sdd2_05/arbre_ornithorynque1.png)
 
@@ -349,7 +334,6 @@ zoo$class[13:18]
 
 Les individus 2, 3 et 5 ("Poecilostomatoid" ou "Calanoid") sont des [copépodes](http://www.obs-vlfr.fr/~gaspari/copepodes/cop_doc.htm), des crustacés particulièrement abondants dans le zooplancton. Leur forme est similaire. Leur regroupement est logique. L'individu 4 est une [larve de décapode](https://news.ecoledelamer.fr/plancton/observation/fiche/zoe-1), un autre crustacé. Ainsi le regroupement de 2, 3 et 5 avec 4 correspond aux crustacés ici. Enfin, les individus 1 et 6 sont très différents puisqu'il s'agit respectivement d'un [œuf](http://grainesdexplorateurs.ens-lyon.fr/archives-1/2012-2013/projets/tara-2013/pouldreuzic-2013/plancton-de-beg-meil/copy_of_embryon-de-poisson/view) rond probablement de poisson et d'un [appendiculaire](https://scripps.ucsd.edu/zooplanktonguide/species/oikopleura-dioica).
 
-
 ### Séparer les groupes
 
 Si notre dendrogramme est satisfaisant (nous le déterminons en l'étudiant et en vérifiant que le regroupement obtenu a un sens biologique  par rapport à l'objectif de notre étude), nous concrétisons le regroupement en coupant l'arbre à une certaine hauteur à l'aide de la fonction `cutree()`. Nous pouvons matérialiser ce niveau de coupure en traçant un trait horizontal rouge avec `abline(h = XXX, col = "red")` pour le graphe de base, ou en ajoutant `+ geom_hline(yintercept = XXX, col = "red")` au graphique ggplot2, avec 'XXX' la hauteur de coupure souhaitée. Par exemple, si nous voulons réaliser deux groupes, nous ferons\ :
@@ -359,14 +343,14 @@ plot(zoo6std_clust)
 abline(h = 8, col = "red")
 ```
 
-Pour réaliser trois groupes, nous couperons plus bas (ici version ggplot2)\ :
+Pour réaliser trois groupes, nous couperons plus bas (ici version {ggplot2})\ :
 
 ```{r}
 ggdendro::ggdendrogram(zoo6std_clust) +
   geom_hline(yintercept = 6.5, col = "red")
 ```
 
-Et ainsi de suite. A mesure que la hauteur de coupure descend, nous réaliserons quatre, puis cinq groupes. Quel est le meilleur niveau de coupure\ ? Il n'y en a pas un seul forcément car les différents niveaux correspondent à un point de vue de plus en plus détaillé du regroupement. Néanmoins, lorsque le saut sur l'axe d'un regroupement à l'autre est fort, nous pouvons considérer une séparation des groupes d'autant meilleure. Cela crédibilise d'autant le regroupement choisi. Ainsi la séparation en deux groupes apparait forte (entre 10,2 et 7,4, sur un intervalle de 2,8 unités donc). De même, la séparation de l'individu 4 par rapport au groupe constitué de 2, 3 et 5 se fait sur un intervalle de 4,7 unités (entre 7,4 et 2,7). En comparaison, la séparation de l'individu 3 du groupe 2 et 5 est nettement moins nette puisqu'elle apparait aux hauteurs entre 2,7 à 2.4, soit seulement sur un intervalle de 0,3 unités. Ces mesures d'intervalles n'ont aucune valeur absolue. Il faut les considérer uniquement de manière relatives les unes par rapport aux autres, et seulement au sein d'un même dendrogramme.
+Et ainsi de suite. A mesure que la hauteur de coupure descend, nous réaliserons quatre, puis cinq groupes. Quel est le meilleur niveau de coupure\ ? Il n'y en a pas un seul forcément car les différents niveaux correspondent à un point de vue de plus en plus détaillé du regroupement. Néanmoins, lorsque le saut sur l'axe d'un regroupement à l'autre est fort, nous pouvons considérer une séparation des groupes d'autant meilleure. Cela crédibilise d'autant le regroupement choisi. Ainsi la séparation en deux groupes apparaît forte (entre 10,2 et 7,4, sur un intervalle de 2,8 unités donc). De même, la séparation de l'individu 4 par rapport au groupe constitué de 2, 3 et 5 se fait sur un intervalle de 4,7 unités (entre 7,4 et 2,7). En comparaison, la séparation de l'individu 3 du groupe 2 et 5 est nettement moins nette puisqu'elle apparaît aux hauteurs entre 2,7 à 2.4, soit seulement sur un intervalle de 0,3 unités. Ces mesures d'intervalles n'ont aucune valeur absolue. Il faut les considérer uniquement de manière relatives les unes par rapport aux autres, et seulement au sein d'un même dendrogramme.
 
 Ici, deux niveaux de coupure se détachent. Nous utilisons aussi la fonction `rect.hclust()` pour matérialiser ces groupes sur le dendrogramme, et `cutree()` pour obtenir une nouvelle variable que nous pourrons ajouter dans notre tableau de données qui concrétise le regroupement choisi\ :
 
@@ -409,7 +393,6 @@ chart(zoo6, area ~ circularity %col=% group2) +
 ```
 
 Nous voyons que les copépodes (groupe 2 en turquoise) sont plus grands (`area`) et moins circulaires (`circularity`) que les deux autres particules du groupe 1 en rouge. Nous pouvons ainsi réexplorer nos données en fonction du regroupement pour mieux le comprendre.
-
 
 #### Méthodes de CAH
 
@@ -465,10 +448,9 @@ zoo6std_dist %>.%
   plot(.)
 ```
 
-
 ### Étude complète
 
-Voici ce que cela donne si nous effectuons une CAH sur le jeu zooplancton complet avec ses 1262 lignes.
+Voici ce que cela donne si nous effectuons une CAH sur le jeu `zoo`plancton complet avec ses 1262 lignes.
 
 
 ```{r}
@@ -483,7 +465,7 @@ zoo %>.%
   abline(h = 70, col = "red") # Séparation en 3 groupes
 ```
 
-Naturellement, avec 1262 branches, notre dendrogramme est très encombré\ ! Cependant, il reste analysable tant que nous nous intéressons aux regroupements de plus haut niveau (vers le haut du dendrogramme). Notez comme les vlaeurs sur l'axe des ordonnées ont changé par rapport à nos cas simple à six items (ne jamais comparer les hauteurs *entre* dendrogrammes différents).
+Naturellement, avec 1262 branches, notre dendrogramme est très encombré\ ! Cependant, il reste analysable tant que nous nous intéressons aux regroupements de plus haut niveau (vers le haut du dendrogramme). Notez comme les valeurs sur l'axe des ordonnées ont changé par rapport à nos cas simple à six items (ne jamais comparer les hauteurs *entre* dendrogrammes différents).
 
 Notre CAH est terminée, mais nous pouvons matérialiser le regroupement sous forme d'une variable supplémentaire dans le tableau et l'utiliser ensuite.
 
@@ -506,7 +488,6 @@ table(zoo$class, zoo$Groupes)
 
 Ainsi, nous pouvons constater que le groupe 1 contient une fraction importante des annélides, des cladocères,des décapodes, des œufs ronds et des gastéropodes. Le groupe 2 contient un maximum des copépodes représentés par les calanoïdes, les cyclopoïdes, les harpacticoïdes et les poecilostomatoïdes. Il contient aussi tous les appendiculaires, tous les protistes, presque tous les œufs allongés, les poissons, et une majorité des malacostracés. Enfin, le groupe 3 contient une majorité des chaetognathes et des cnidaires. Le regroupement a été réalisé uniquement en fonction de mesures effectuées sur les images. Il n'est pas parfait, mais des tendances se dégagent tout de même.
 
-
 ##### Pour en savoir plus {-}
 
 - La vidéo suivante présente la matière que nous venons d'étudier de manière légèrement différente. Plus d'explications sont également apportées concernant la méthode de Ward.
@@ -517,7 +498,7 @@ vembedr::embed_youtube("SE_4dLh5vXY", width = 770, height = 433, query = list(st
 
 - Une autre explication encore [ici](http://larmarange.github.io/analyse-R/classification-ascendante-hierarchique.html).
 
-- Pour bien comprendre la façon dont une CAH est réalisée, il est utile de détailler le calcul étape par étape sur un exemple simple. Voici une matrice de distances euclidiennes fictive entre 6 stations \ :
+- Pour bien comprendre la façon dont une CAH est réalisée, il est utile de détailler le calcul étape par étape sur un exemple simple. Voici une matrice de distances euclidiennes fictive entre 6 stations\ :
 
 ```{r, echo=FALSE}
 Question1 <- data.frame(Espece1 = c(0, 9, 2, 1, 1, 7),
@@ -576,7 +557,7 @@ knitr::kable(dst2)
     * Distance entre I et III = I_B = 15
     * Distance entre II et III = II_B = 13,04
 
-Matrice de distance recalculée \ :
+Matrice de distance recalculée\ :
 
 ```{r, echo=FALSE}
 dst3 <- data.frame(I = c(15, 7.81),

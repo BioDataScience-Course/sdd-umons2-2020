@@ -20,10 +20,9 @@ SciViews::R
 
 - Les modules 1 & 2 du présent cours concernant la régression linéaire sont une entrée en matière indispensable puisque la régression va être abordée ici comme une extension de ce qui a déjà été vu.
 
-
 ## Rendement photosynthétique
 
-Afin d'avoir un premier aperçu de ce qu'est une régression non linéaire par les moindres carrés et comment on la calcule dans R, nous allons résoudre un exemple concret. La posidonie (*Posidonia oceanica* (L.) Delile (1813)) est une plante à fleur marine qui forme des herbiers denses en mer Méditerranée. Ses feuilles sont particulièrement adaptées à l'utilisation de la lumière qui règne à quelques mètres en dessous de la surface où elle prospère en herbiers denses. (un mémoire portant sur l'[étude du diméthylsulfoniopropionate et du diméthylsulfoxyde chez *Posidonia oceanica* (L.) Delile (1813)](http://di.umons.ac.be/details.aspx?pub=82f7743a-4343-4aa3-84b1-ff92c6e4e4c3) a été réalisé au sein du service d'Écologie numérique des Milieux aquatiques).
+Afin d'avoir un premier aperçu de ce qu'est une régression non linéaire par les moindres carrés et comment on la calcule dans R, nous allons résoudre un exemple concret. La posidonie (*Posidonia oceanica* (L.) Delile (1813)) est une plante à fleur marine qui forme des herbiers denses en mer Méditerranée. Ses feuilles sont particulièrement adaptées à l'utilisation de la lumière qui règne à quelques mètres en dessous de la surface où elle prospère en herbiers denses. (un mémoire portant sur l'[étude du diméthylsulfoniopropionate et du diméthylsulfoxyde chez *Posidonia oceanica* (L.) Delile (1813)](http://di.umons.ac.be/details.aspx?pub=82f7743a-4343-4aa3-84b1-ff92c6e4e4c3) a été réalisé au sein du service d'Écologie numérique).
 
 ![[Herbier de posidonies](http://www.futura-sciences.com/planete/dossiers/nature-posidonie-miracle-mediterranee-2006/)](images/sdd2_04/posido.png)
 
@@ -31,7 +30,7 @@ Pour étudier le rendement de sa photosynthèse, c'est-à-dire la part du rayonn
 
 ![[Diving PAM](https://www.walz.com/products/chl_p700/diving-pam-II/introduction.html)](https://www.walz.com/images/diving-pam-II/intro/diving-pam-II_01l.jpg)
 
-Cet appareil est capable de déterminer le taux de transfert des électrons (ETR en µmol électrons/m^2^/s) par l'analyse de la fluorescence réémise par la plante lorsque ses photosites sont excités par une lumière monochromatique pulsée [@diving_pam2018]. Une façon de déterminer la réponse de la plante en rendement photosynthétique en fonction de l'intensité de la lumière reçue est de mesurer successivement l'ETR pour différentes intensités de lumière. En anglais cela s'appelle la "Rapid Light Curve" ou RLC en abbrégé. Comme toutes les longueurs d'ondes lumineuses ne sont pas utilisables par la chlorophylle, l'intensité lumineuse est exprimé dans une unité particulière, le "PAR" ou "Photosynthetically Active Radiation" en µmol photons/m^2^/s. Une RLC represente donc la variation de l'ERT en fonction des PAR^[Techniquement, l'ERT nécessite d'effectuer des mesures après stabilisation de la photosynthèse, ce qui prend plusieurs minutes. Donc, une courbe *rapide* est discutable de ce point de vue mais reste un outil utile en écophysiologie où la comparaison de différentes RLCs indique une changement de capacité photosynthétique de la plante.]. Une RLC typique commence par une relation quasi-linéaire aux faibles intensités, pour s'infléchir et atteindre un plateau de rendement maximum. Au delà, si l'intensité lumineuse augmente encore, des phénomènes de photoinhibition apparaissent et le rendement diminue dans une troisième phase. Voici une RLC mesurée à l'aide du diving PAM sur une feuille de *P. oceanica*.
+Cet appareil est capable de déterminer le taux de transfert des électrons (ETR en µmol électrons/m^2^/s) par l'analyse de la fluorescence réémise par la plante lorsque ses photosites sont excités par une lumière monochromatique pulsée [@diving_pam2018]. Une façon de déterminer la réponse de la plante en rendement photosynthétique en fonction de l'intensité de la lumière reçue est de mesurer successivement l'ETR pour différentes intensités de lumière. En anglais cela s'appelle la "Rapid Light Curve" ou RLC en abrégé. Comme toutes les longueurs d'ondes lumineuses ne sont pas utilisables par la chlorophylle, l'intensité lumineuse est exprimé dans une unité particulière, le "PAR" ou "Photosynthetically Active Radiation" en µmol photons/m^2^/s. Une RLC représente donc la variation de l'ERT en fonction des PAR^[Techniquement, l'ERT nécessite d'effectuer des mesures après stabilisation de la photosynthèse, ce qui prend plusieurs minutes. Donc, une courbe *rapide* est discutable de ce point de vue mais reste un outil utile en écophysiologie où la comparaison de différentes RLCs indique une changement de capacité photosynthétique de la plante.]. Une RLC typique commence par une relation quasi-linéaire aux faibles intensités, pour s'infléchir et atteindre un plateau de rendement maximum. Au delà, si l'intensité lumineuse augmente encore, des phénomènes de photoinhibition apparaissent et le rendement diminue dans une troisième phase. Voici une RLC mesurée à l'aide du diving PAM sur une feuille de *P. oceanica*.
 
 ```{r}
 rlc <- tribble(
@@ -182,7 +181,7 @@ rlc_nls <- nls(data = rlc, etr ~ pgh_model(par, etr_max, alpha, beta),
   trace = TRUE)
 ```
 
-A gauche, nous avons la valeur de la fonction objective $f_{obj}$, et à droite des deux points, la valeur actuelle des trois paramètres dans l'ordre `etr_max`, `alpha` et `beta`. La première ligne indique l'étape 0. $f_{obj}$ vaut 24,3 avec les valeurs par défaut. Dès l'étape suivante (itération #1), cette valeur est divisée par 6 et vaut 4,2. A ce stade, `etr_max = 8,5`, `alpha = 0,29` et `beta = 0,0019`. Les étapes #2 et #3 font encore significativement diminuer $f_{obj}$, et puis nous grapillons des décimales.
+A gauche, nous avons la valeur de la fonction objective $f_{obj}$, et à droite des deux points, la valeur actuelle des trois paramètres dans l'ordre `etr_max`, `alpha` et `beta`. La première ligne indique l'étape 0. $f_{obj}$ vaut 24,3 avec les valeurs par défaut. Dès l'étape suivante (itération #1), cette valeur est divisée par 6 et vaut 4,2. A ce stade, `etr_max = 8,5`, `alpha = 0,29` et `beta = 0,0019`. Les étapes #2 et #3 font encore significativement diminuer $f_{obj}$, et puis nous grappillons des décimales.
 
 Voici une animation de ce processus\ :
 
@@ -258,19 +257,17 @@ Si ce n'est toujours pas clair, imaginez que la courbe en rouge représente la f
 Il vaut toujours mieux tester différentes combinaisons de valeurs de départ pour vérifier si la convergence se fait correctement et pour démasquer les cas de minima locaux.
 ```
 
-
 #### Complexité du modèle {-}
 
 Lorsque la convergence a du mal à se faire, ceci est éventuellement lié à la complexité de la fonction que l'on cherche à ajuster. Les propriétés mathématique de la courbe choisie peuvent très bien faire que cette courbe ne soit pas définie pour certaines valeurs des paramètres, ou qu'elle ait un comportement spécial dans un certain domaine (par exemple, courbe tendant vers l'infini). Ces cas sont difficilement traités par la plupart des algorithmes de minimisation de la fonction objective, et des erreurs de calcul de type "division par zéro", ou "résultat non défini" peuvent apparaître. Dans les meilleures implémentations (`nls()` en est une), des gardes-fous ont été ajoutés dans le code de la fonction pour éviter les erreurs dans pareils cas. Toutefois, il n'est pas possible de traiter tous les cas possibles. Ainsi, il arrive parfois que le modèle choisi ne soit pas ajustable sur les données.
 
 Au final, l'ajustement d'un modèle non linéaire par les moindres carrés est une opération beaucoup plus délicate que l'ajustement par les moindres carrés d'un modèle linéaire. Dans le cas linéaire, la solution est trouvée de manière immédiate grâce à un calcul matriciel simple. Dans le cas non linéaire, il n'existe souvent pas de solution miracle et le meilleur ajustement doit être recherché de manière itérative. Nous verrons ci-dessous que R propose, pour certains modèles appelés 'SelfStart' une solution élégante pour calculer automatiquement les valeurs initiales et pour converger très rapidement vers la solution recherchée, mais la plupart du temps il faut tâtonner pour ajuster sa courbe.
 
-
 ### Modèles 'selfStart' dans R
 
 Dans certains cas, il existe des petites astuces de calcul pour converger directement vers la solution, ou du moins, pour calculer des valeurs de départ très proches de la solution recherchée de sorte que l'algorithme de recherche pourra converger très rapidement. Par exemple, lorsqu'il est possible de linéariser le modèle en transformant les données. Dans ce cas, une bonne estimation des valeurs de départ des paramètres peut être obtenue en linéarisant la relation et en calculant les paramètres par régression linéaire. Ensuite, les paramètres obtenus sont retransformés dans leur forme initiale, et ils sont utilisés comme valeurs de départ.
 
-Par exemple, si nous décidons d'ajuster un modèle allométrique de Huxley, de type $y = a x^b$^[Un modèle 'selfStart' est disponible pour cette fonction dans le package `vegan`, voir `?vegan::SSarrhenius()`.], nous pouvons linéariser la relation en transformant les deux variables en logarithmes. En effet, $\log(y) = \log(a x^b)$, ce qui est équivalent à une droite en développant\: $\log(y) = b \log(x) + \log(a)$. Le paramètre $b$ devient donc la pente de la droite, et $\log(a)$ devient l'ordonnée à l'origine dans le modèle linéaire transformé. Une fois la droite ajustée, on a directement la valeur de $b$, et il suffit de calculer l'exponentielle de l'ordonnée à l'origine pour obtenir $a$. Toutefois, comme les résidus sont différents dans la relation non transformée initiale, il ne s'agit pas de la solution recherchée mais d'un bon point de départ très proche de cette solution. Ainsi, on prendra les valeurs de $a$ et de $b$ ainsi calculées par la droite en double log comme point de départ, et on laissera l'algorithme de recherche du minimum terminer le travail. En fait, c'est exactement de cette façon que les modèles dits 'selfStart' fonctionnent dans R. Plus qu’une fonction, il s’agit en réalité d’un programme complet qui contient\ :
+Par exemple, si nous décidons d'ajuster un modèle allométrique de Huxley, de type $y = a x^b$^[Un modèle 'selfStart' est disponible pour cette fonction dans le package {vegan}, voir `?vegan::SSarrhenius()`.], nous pouvons linéariser la relation en transformant les deux variables en logarithmes. En effet, $\log(y) = \log(a x^b)$, ce qui est équivalent à une droite en développant\: $\log(y) = b \log(x) + \log(a)$. Le paramètre $b$ devient donc la pente de la droite, et $\log(a)$ devient l'ordonnée à l'origine dans le modèle linéaire transformé. Une fois la droite ajustée, on a directement la valeur de $b$, et il suffit de calculer l'exponentielle de l'ordonnée à l'origine pour obtenir $a$. Toutefois, comme les résidus sont différents dans la relation non transformée initiale, il ne s'agit pas de la solution recherchée mais d'un bon point de départ très proche de cette solution. Ainsi, on prendra les valeurs de $a$ et de $b$ ainsi calculées par la droite en double logarithme comme point de départ, et on laissera l'algorithme de recherche du minimum terminer le travail. En fait, c'est exactement de cette façon que les modèles dits 'selfStart' fonctionnent dans R. Plus qu’une fonction, il s’agit en réalité d’un programme complet qui contient\ :
 
 * la fonction elle-même,
 * la résolution analytique de la dérivée première de la fonction en chaque point (utilisée par l’algorithme de convergence pour déterminer l’écart à apporter aux paramètres à l’itération suivante),
@@ -285,11 +282,9 @@ apropos("^SS")
 
 Ensuite, nous recherchons l'aide relative à ces fonctions, par exemple via `?SSasymp`.
 
-
 ## Modèles courants en biologie
 
 Les domaines les plus courants où des modèles non linéaires sont utilisés en biologie concernent les cinétiques de réactions (chimiques, biochimiques), les courbes de type dose-réponse, les courbes de survie et les modèles de croissance. Nous verrons principalement divers modèles de croissance dans la section suivante. Certains de ces modèles, comme le modèle exponentiel, celui de Gompertz ou de Weibull sont aussi utilisés comme courbes de survie. De plus, la courbe logistique est un modèle classique de type dose-réponse. Ainsi, les différentes courbes de croissances recouvrent également une majorité des modèles utilisés dans d'autres domaines.
-
 
 ### Modèle de Michaelis-Menten
 
@@ -322,9 +317,7 @@ chart(data = micmen_data, v ~ conc) +
 
 `r launch_shiny("https://sdd.umons.ac.be/B04Sa_micmen/", height = 600, delay = 20, toc = "Ajuster la meilleure courbe de Michaelis-Menten")`
 
-
 Concernant les modèles utiles en chimie et biochimie, le modèle à compartiment de premier ordre permet de décrire la cinétique de transformation d'une substance au cours du temps. Voyez le modèle `?Ssfol`. Il peut servir par exemple pour déterminer la cinétique d'élimination d'une substance du sang après injection.
-
 
 ```{r, echo=FALSE, results='asis'}
 assignation("B04Ga_speed_reaction", part = NULL,
@@ -344,7 +337,6 @@ Il existe un autre type de modèle de croissance\ : la croissance des population
 De nombreux modèles de croissance différents sont disponibles. Certains sont exclusivement des modèles de croissance individuelle, d'autres sont exclusivement des modèles de croissance de populations, mais beaucoup peuvent être utilisés indifféremment dans les deux cas. Tous ont comme particularité d'être l'une ou l'autre forme de modèle exponentiel, exprimant ainsi le fait que la croissance est fondamentalement un processus exponentiel (comprenez que l'augmentation de masse ou du nombre d'individus est proportionnelle à la masse ou au nombre préexistant à chaque incrément temporel).
 
 Nous allons décrire ci-dessous quelques un des modèles de croissance principaux. Ensuite, nous les utiliserons pour ajuster une courbe de croissance dans un jeu de donnée réel.
-
 
 ###  Courbe exponentielle
 
@@ -542,7 +534,6 @@ chart(data = vb_data, y ~ t %col=% "VB en taille") +
 
 Dans les deux cas l'asymptote représentant la taille maximale possible vaut 0,95. Pour le modèle pondéral, c'est le cube de la valeur obtenue avec `SSasympOff()` appliquée sur la racine cubique des masses. Dans les deux cas, `lrc = 0,1` donc $k = e^{0,1} = 1,1$ et `c0 = 0`, la droite passe par l'origine (donc, nous aurions également pu utiliser `SSasympOrig()` pour générer ces données.
 
-
 ### Modèle de Richards
 
 La forme généralisée du modèle de von Bertalanffy est\ :
@@ -558,7 +549,6 @@ richards <- function(x, Asym, lrc, c0, m) Asym*(1 - exp(-exp(lrc) * (x - c0)))^m
 ```
 
 Voici l'allure de différentes courbes de Richards en fonction de la valeur de $m$ (0,5, 1, 3, 6 et 9) avec $lrc = 0,1$, $y_\infty = 0,95$ et $t_0 = 0$ pour toutes les courbes.
-
 
 ```{r}
 rich_data <- tibble(
@@ -595,7 +585,6 @@ avec $d = y_\infty - y_0$. Un modèle à trois paramètres est également utilis
 
 Voici l'allure de différentes courbes de Weibull pour respectivement $m$ (alias `pwr`) = 5, 2, 1 et 0,5, avec $lrc = -0,5$ (donc, $k = e^{-0,5}$ = 0,61), $y_\infty$ (alias `Asym`) = 0,95 et $y_0= 0,05$, ce qui donne $d$ (alias `Drop`) = 0,95 - 0,05 = 0,9. La courbe avec $m = 1$ est équivalente à un modèle de von Bertalanffy linéaire. Toutes les courbes démarrent en $y_0$ et passent par $y_\infty - d \ e^{-k}$ qui est également le point d'inflexion pour les sigmoïdes lorsque $m > 1$.
 
-
 ```{r}
 weib_data <- tibble(
   t = seq(0, 10, by = 0.1),
@@ -619,7 +608,6 @@ chart(data = weib_data, y ~ t %col=% "m = 1") +
   labs(color = "Weibull avec :")
 ```
 
-
 ### Modèle Preece-Baines 1
 
 Preece et Baines (1978) ont décrit plusieurs modèles spécifiques à la croissance humaine. Ces modèles combinent deux phases de croissance exponentielle pour représenter la croissance graduelle d'enfants suivie par une courte phase de croissance accélérée à l'adolescence, mais qui atteint rapidement un plateau correspondant à la taille adulte définitive (voir graphique ci-dessous). Ce type de modèle est naturellement très utile pour tous les mammifères, mais certains, comme le modèle 1 présenté ici, ont aussi été utilisés dans d'autres circonstances, profitant de sa grande flexibilité. Son équation est\ :
@@ -633,7 +621,7 @@ preece_baines1 <- function(x, Asym, Drop, lrc1, lrc2, c0)
   Asym - (2 * (Asym - Drop)) / (exp(exp(lrc1) * (x - c0)) + exp(exp(lrc2) * (x - c0)))
 ```
 
-$k1$ et $k2$ sont forcés à des valeurs positives ou nulles grace à l'astuce de passer par `lrc1` et `lrc2`. $d$ est `Drop` et $t_0$ est `c0`.
+$k1$ et $k2$ sont forcés à des valeurs positives ou nulles grâce à l'astuce de passer par `lrc1` et `lrc2`. $d$ est `Drop` et $t_0$ est `c0`.
 
 Ci-dessous un exemple de courbe Preece-Baines 1 avec $y_\infty$ (alias `Asym`) = 0,95, $d$ (alias `Drop`) = 0,8, $k1 = 0,19$ (alias `lrc1` = log(0,19) = -1,7), $k2 = 2,5$ (alias `lrc2`= log(2,5) = 0,92) et $t_0$ (alias `c0`) = 6.
 
@@ -649,10 +637,9 @@ chart(data = pb1_data, y ~ t) +
   annotate("text", label = "Asym", x = -0.4, y = 0.95)
 ```
 
-
 ### Modèle de Tanaka
 
-Tous les modèles précédents sont asymptotiques, à l'exception de la courbe exponentielle (mais cette dernière ne modélise valablement que la phase de croissance initiale). Tous ces modèles décrivent donc une **croissance déterminée** qui n'excédera jamais une taille maximale représentée par une asymptote horizontale en $y(t) = y_\infty$. Knight (1968) s'est demandé s'il s'agit d'une réalité biologique ou simplement d'un artefact mathématique. Dans le second cas, la croissance n'apparaîtrait déterminée que parce que les modèles choisis pour la représenter sont asymptotiques. Pour s'affranchir d'une telle contrainte, Tanaka (1982, 1988) a élaboré un nouveau modèle de croissance qui décrit une croissance non déterminée\ :
+Tous les modèles précédents sont asymptotiques, à l'exception de la courbe exponentielle (mais cette dernière ne modélise valablement que la phase de croissance initiale). Tous ces modèles décrivent donc une **croissance déterminée** qui n'excédera jamais une taille maximale représentée par une asymptote horizontale en $y(t) = y_\infty$. Knight (1968) s'est demandé s'il s'agit d'une réalité biologique ou simplement d'un artéfact mathématique. Dans le second cas, la croissance n'apparaîtrait déterminée que parce que les modèles choisis pour la représenter sont asymptotiques. Pour s'affranchir d'une telle contrainte, Tanaka (1982, 1988) a élaboré un nouveau modèle de croissance qui décrit une croissance non déterminée\ :
 
 $$y(t) = \frac{1}{\sqrt{b}} \ \ln |2 \ b \ (t - t_0) + 2 \ \sqrt{b^2 \ (t - t_0)^2 + a \ b}| + d$$
 
@@ -676,7 +663,6 @@ chart(data = tanaka_data, y ~ t) +
   geom_line() +
   geom_vline(xintercept = 0, col = "darkgray")
 ```
-
 
 ## Choix du modèle
 
@@ -761,7 +747,6 @@ AIC(urchins_gomp, urchins_logis)
 
 Comme on peut le voir clairement sur le graphe, la courbe logistique donne une autre solution, cette dernière est à peine moins bonne que le modèle de Gompertz, selon le critère d'Akaiké. Pourtant, la courbe est assez bien démarquée de celle de Gompertz. Essayons maintenant un modèle de Weibull. Ce modèle est plus complexe car il a quatre paramètres au lieu de trois pour les deux modèles précédents\ :
 
-
 ```{r}
 urchins_weib <- nls(data = urchins, diameter ~ SSweibull(age, Asym, Drop, lrc, pwr))
 summary(urchins_weib)
@@ -832,7 +817,6 @@ Le choix final entre Gompertz ou Weibull dépend de l'usage que l'on veut faire 
 ##### A vous de jouer ! {-}
 
 `r learnr("B04La_nls", title = "Modèles non-linéaires", toc = "Tutoriel sur les modèles non linéaires.")`
-
 
 ```{r, echo=FALSE, results='asis'}
 assignation("B04Gb_bacterial_growth", part = NULL,
