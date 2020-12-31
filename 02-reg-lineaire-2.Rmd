@@ -186,17 +186,16 @@ lm1 %>.%
 Au travers de cet exemple, nous constatons que la comparaison de modèles, dans le but de choisir le meilleur est un travail utile. Cela apparaitra d'autant plus utile que la situation va passablement se complexifier (dans le bon sens) avec l'introduction de la régression multiple et polynomiale ci-dessous. Heureusement, nous terminerons ce module avec la découverte d'une métrique qui nous permettra d'effectuer le choix du meilleur modèle de manière fiable\ : le critère d'Akaike.
 
 
-##### A vous de jouer ! {-}
-
-Réalisez une nouvelle assignation individuelle :
+##### À vous de jouer ! {-}
 
 ```{r, echo=FALSE, results='asis'}
-assignation("B02Ga_anscombe", part = NULL,
-  url = "https://github.com/BioDataScience-Course/B02Ga_anscombe",
-  course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/a/Rfdvbqw2", 
-    'S-BIOG-937-958-959' = "https://classroom.github.com/a/9EQCVg1n"),
-  toc = "Régression linéaire simple sur le quartet d’Anscombe.")
+if (exists("assignation"))
+  assignation("B02Ga_anscombe", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B02Ga_anscombe",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/Rfdvbqw2", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/9EQCVg1n"),
+    toc = "Quartet d’Anscombe")
 ```
 
 ## Régression linéaire multiple 
@@ -283,9 +282,9 @@ anova(lm., lm2)
 
 Notez que dans le cas de l'ajout d'*un seul* terme, la valeur *p* de cette ANOVA est identique à la valeur *p* de test de significativité du paramètre (ici, cette valeur *p* est de 0,0156 dans les deux cas). Donc, le choix peut se faire directement à partir de `summary()` pour ce terme unique. La conclusion est similaire\ : l'ANOVA donne un résultat seulement moyennement significatif entre les 2 modèles. Dans un cas plus complexe, la fonction `anova()` de comparaison pourra être utile. Enfin, tous les modèles ne sont pas nécessairement imbriqués. Dans ce cas, il nous faudra un autre moyen de les départager, ... mais avant d'aborder cela, étudions une variante intéressante de la régression multiple\ : la régression polynomiale.
 
-##### A vous de jouer ! {-}
+##### À vous de jouer ! {-}
 
-`r learnr("B02La_reg_multi", title = "Régression linéaire multiple", toc = "Tutoriel sur la régression linéaire multiple.")`
+`r learnr("B02La_reg_multi", title = "Régression linéaire multiple", toc = "Régression linéaire multiple")`
 
 ## Régression linéaire polynomiale
 
@@ -482,34 +481,28 @@ L'erreur moyenne d'estimation du volume de bois passe de 0,07 m^3^ pour le modè
 
 </center>
 
-##### A vous de jouer ! {-}
+##### À vous de jouer ! {-}
 
-Après cette longue lecture avec énormément de nouvelles matières, nous vous proposons les exercices suivants\ :
-
-- Répondez aux questions d'un learnr afin de vérifier vos acquis.
-
-`r learnr("B02Lb_reg_poly", title = "Régression linéaire polynomiale", toc = "Tutoriel sur la régression linéaire polynomiale.")`
-
-- Réalisez un rapport scientifique sur la croissance des escargots géants d'Afrique.
+`r learnr("B02Lb_reg_poly", title = "Régression linéaire polynomiale", toc = "Régression linéaire polynomiale")`
 
 ```{r, echo=FALSE, results='asis'}
-assignation("B02Gb_achatina", part = NULL,
-  url = "https://github.com/BioDataScience-Course/B02Gb_achatina",
-  course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/a/IIpgV7Mc", 
-    'S-BIOG-937-958-959' = "https://classroom.github.com/a/jGUT4KnU"),
-  toc = "Achatina - Exercices pratiques sur la régression linéaire.")
+if (exists("assignation"))
+  assignation("B02Gb_achatina", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B02Gb_achatina",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/IIpgV7Mc", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/jGUT4KnU"),
+    toc = "Utilisation de la régression linéaire (travail individuel sur achatina)")
 ```
 
-- Réalisez en binôme un carnet de laboratoire et un rapport sur la biométrie des oursins avec l'assignation ci-dessous.
-
 ```{r, echo=FALSE, results='asis'}
-assignation("B02Gc_urchin", part = NULL,
-  url = "https://github.com/BioDataScience-Course/B02G_urchin",
-  course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/g/foTtdgC5", 
-    'S-BIOG-937-958-959' = "https://classroom.github.com/g/5nzpamBh"),
-  toc = "Urchin - Exercices pratiques sur la régression linéaire.")
+if (exists("assignation"))
+  assignation("B02Gc_urchin", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B02G_urchin",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/g/foTtdgC5", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/g/5nzpamBh"),
+    toc = "Utilisation la régression linéaire (travail en binôme sur urchin)")
 ```
 
 ## Récapitulatif des exercices

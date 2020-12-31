@@ -4,7 +4,6 @@
 SciViews::R
 ```
 
-
 ##### Objectifs {-}
 
 - Comprendre le modèle linéaire (ANOVA et régression linéaire tout en un)
@@ -15,11 +14,9 @@ SciViews::R
 
 - Comprendre le mécanisme du modèle linéaire généralisé
 
-
 ##### Prérequis {-}
 
 - L'ANOVA (modules 10 & 11 du cours [SDD 1](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2020/variance.html)), ainsi que la régression linéaire (modules 1 et 2 du présent cours) doivent être maîtrisées avant d'aborder cette matière.
-
 
 ## Variables numériques ou facteurs
 
@@ -38,11 +35,8 @@ Donc, la principale différence entre ANOVA et régression linéaire telles que 
 - variables qualitatives non ordonnées prenant également un petit nombre de valeurs possibles, mais sans ordre particulier (`factor` dans R).
 
 ```{block2, type='warning'}
-
 Par la suite, un encodage correct des variables sera *indispensable* afin de distinguer correctement ces différentes situations. En effet, R considèrera automatiquement comment mener l'analyse en fonction de la classe des variables fournies. Donc, si la classe est incorrecte, l'analyse le sera aussi\ ! Si vous avez des doutes concernant les types de variables, relisez la section [type de variables](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2020/types-de-variables.html) avant de continuer ici. 
-
 ```
-
 
 ## ANOVA et régression linéaire
 
@@ -63,7 +57,6 @@ Donc, nous retrouvons bien au niveau du modèle mathématique sous-jacent que la
 
 Le calcul est, en réalité, identique en interne. Il est donc possible de généraliser ces deux approches en une seule appelée **modèle linéaire**, mais à condition d'utiliser une astuce pour modifier nos modèles afin qu'ils soient intercompatibles.
 
-
 ### Modèle linéaire commun
 
 Le nœud du problème revient donc à transformer nos modèles mathématiques pour qu'ils puissent être fusionnés en un seul. Comment homogénéiser ces deux modèles\ ?
@@ -73,7 +66,6 @@ Le nœud du problème revient donc à transformer nos modèles mathématiques po
 - $y = \beta_1 + \beta_2 x + \epsilon$ pour la régression linéaire.
 
 Avant de poursuivre, réfléchissez un peu par vous-même. Quelles sont les différences qu'il faut contourner\ ? Est-il possible d'effectuer une ou plusieurs transformations des variables pour qu'elles se comportent de manière similaire dans les deux cas\ ?
-
 
 ### Réencodage des variables de l'ANOVA
 
@@ -110,13 +102,11 @@ $$
 Cette dernière formulation est strictement équivalente au modèle de la régression linéaire simple dans laquelle la variable $x$ a simplement été remplacée par notre variable indicatrice $I_2$. Ceci se généralise pour une variable indépendante à $k$ niveaux, avec $k - 1$ variables indicatrices au final.
 
 ```{block2, type='note'}
-
 En prenant soin de réencoder le modèle de l'ANOVA relatif aux variables indépendantes qualitatives, nous pouvons à présent mélanger les termes des deux modèles en un seul\ : notre fameux modèle linéaire. Nous aurons donc, quelque chose du genre (avec les $x_i$ correspondant aux variables quantitatives et les $I_j$ des variables indicatrices pour les différents niveaux des variables qualitatives)\ :
 
 $$
 y = \beta_1 + \beta_2 x_1 + \beta_3 x_2 + ... + \beta_n I_1 + \beta_{n+1} I_2 ... + \epsilon  
 $$
-
 ```
 
 ## Matrice de contraste
@@ -147,11 +137,9 @@ Le même raisonnement peut être fait pour les niveaux 3 et 4, avec des décalag
 
 En d'autres termes, les contrastes qui sont construits ici *font tous référence au contrôle*, et chaque médicament est explicitement comparé au contrôle (mais les médicaments ne sont pas comparés entre eux). Nous voyons donc que les variables indicatrices et la matrice de contrastes permettent de spécifier quelles sont les contrastes pertinents et éliminent ceux qui ne le sont pas (nous n'utilisons donc pas systématiquement toutes les comparaisons deux à deux des différents niveaux^[Attention\ : le fait d'utiliser une matrice de contraste qui restreint ceux utilisés dans le modèle est indépendant des tests *post hoc* de comparaisons multiples, qui restent utilisables par après. Les comparaisons deux à deux des médicaments restent donc accessibles, mais ils ne sont tout simplement pas mis en évidence dans le modèle de base.]).
 
-
 ### Contraste orthogonaux
 
 Les contrastes doivent être de préférence **orthogonaux par rapport à l’ordonnée à l’origine**, ce qui signifie que la somme de leurs pondérations doit être nulle pour tous les contrastes définis (*donc, en colonnes*). Bien que n'étant pas obligatoire, cela confère des propriétés intéressantes au modèle (l'explication et la démonstration sortent du cadre de ce cours). Or, les contrastes de type traitement ne sont *pas* orthogonaux puisque toutes les sommes par colonnes vaut un.
-
 
 ### Autres matrices de contrastes courantes
 
@@ -343,7 +331,6 @@ chart(data = Babies, wt ~ wt1) +
   ylab("Masse du bébé [kg]")
 ```
 
-
 Voyons ce que donne l'analyse *post hoc* des comparaisons multiples (nous utilisons ici simplement le "snippet" disponible à partir de `...` -> `hypothesis tests` -> `hypothesis tests: means` -> `hmanovamult : anova - multiple comparaisons [multcomp]`) que nous avons déjà employé et qui reste valable ici.
 
 ```{r}
@@ -377,7 +364,6 @@ Ici les valeurs estimées pour `smoke1-3` sont à interpréter en fonction des c
 ```{r}
 contr.helmert(4)
 ```
-
 
 - `smoke1` est le décalage de l'ordonnée à l'origine entre la modèle moyen établi avec les données `smoke == 0` et `smoke == 1` et celui pour `smoke == 1` (non significatif au seuil alpha de 5%),
 - `smoke2` est le décalage de l'ordonnée à l'origine pour `smoke == 2` _par rapport au modèle ajusté sur `smoke == 0`, `smoke == 1` **et** `smoke == 2` avec des pondérations respectives de -1, -1, et 2_ (non significatif au seuil alpha de 5%),
@@ -473,26 +459,19 @@ Ici le comportement des résidus est sain. Des petits écarts de la normalité s
 
 Voilà, nous venons d'analyser et d'interpréter notre premier modèle linéaire sous forme d'une ANCOVA.
 
+##### À vous de jouer ! {-}
 
-##### A vous de jouer ! {-}
-
-Après cette longue lecture avec énormément de nouvelles matières, nous vous proposons les exercices suivants\ :
-
-- Répondez aux questions d'un learnr afin de vérifier vos acquis.
-
-`r learnr("B03La_mod_lin", title = "Modèle linéaire", toc = "Tutoriel sur les modèles linéaires.")`
-
-- Poursuivez l'analyse des données sur la biométrie des oursins en y intégrant vos nouvelles notions sur le modèle linéaire
+`r learnr("B03La_mod_lin", title = "Modèle linéaire", toc = "Récapitulatif modèles linéaires")`
 
 ```{r, echo=FALSE, results='asis'}
-assignation("B02Gc_urchin", part = NULL,
-  url = "https://github.com/BioDataScience-Course/B02G_urchin",
-  course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/g/foTtdgC5", 
-    'S-BIOG-937-958-959' = "https://classroom.github.com/g/5nzpamBh"),
-  toc = "Urchin - Exercices pratiques sur la régression linéaire.")
+if (exists("assignation"))
+  assignation("B02Gc_urchin", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B02G_urchin",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/g/foTtdgC5", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/g/5nzpamBh"),
+    toc = "Exercices pratiques sur le modèle linéaire avec urchin")
 ```
-
 
 ## Modèle linéaire généralisé
 
@@ -582,7 +561,6 @@ chart(data = Babies_prem, ~race %fill=% premat) +
 
 Ici, nous voyons déjà un effet semble-t-il plus marqué. Qu'en est-il du BMI\ ?
 
-
 ```{r}
 chart(data = Babies_prem, bmi ~ premat) +
   geom_boxplot() +
@@ -608,35 +586,30 @@ summary(Babies_glm)
 
 Nous voyons que le résumé de l'objet `glm` est très similaire à celui d'un objet `lm`, notamment avec un tableau des `Coefficients` identique et qui s'interprète de la même manière. Ici, nous pouvons confirmer que ni le fait de fumer, ni l'âge, ni le BMI de la mère n'a d'incidence sur les bébés prématurés au seuil alpha de 5%. En revanche, certaines ethnies sont significativement plus susceptibles d'accoucher avant terme. Cela suggère soit un facteur génétique, soit un facteur environnemental/culturel lié à ces ethnies. Naturellement, il faudrait ici simplifier le modèle qui se ramène en fin de compte à l'équivalent d'une ANOVA à un facteur, mais en version `glm()` une fois que les variables non significatives sont éliminées. De même, on pourrait légitimement se demander si la variable `premat` ne pourrait pas aussi être modélisée avec une autre fonction de lien en considérant une distribution de Poisson par exemple. A vous de voir...
 
-
-##### A vous de jouer ! {-}
-
-- Réalisez un rapport scientifique sur la maturation d'ovocytes, en définissant un modèle linéaire généralisé le plus pertinent pour ces données.
+##### À vous de jouer ! {-}
 
 ```{r, echo=FALSE, results='asis'}
-assignation("B03Ga_ovocyte", part = NULL,
-  url = "https://github.com/BioDataScience-Course/B03Ga_ovocyte",
-  course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/a/YSuLd7wZ", 
-    'S-BIOG-937-958-959' = "https://classroom.github.com/a/QwLCXKbY"),
-  toc = "Ovocyte - Exercices pratiques cadrés sur le modèle linéaire.")
+if (exists("assignation"))
+  assignation("B03Ga_ovocyte", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B03Ga_ovocyte",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/YSuLd7wZ", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/QwLCXKbY"),
+    toc = "Exercices pratiques cadrés sur le modèle linéaire avec ovocyte")
 ```
-
-- Réalisez un rapport scientifique sur la biométrie humaine
 
 ```{r, echo=FALSE, results='asis'}
-assignation("B03Gb_human", part = NULL,
-  url = "https://github.com/BioDataScience-Course/B03Gb_human",
-  course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/a/_6XKUpEM", 
-    'S-BIOG-937-958-959' = "https://classroom.github.com/a/lwuZuRGJ"),
-  toc = "Human - Exercices pratiques libres sur le modèle linéaire.")
+if (exists("assignation"))
+  assignation("B03Gb_human", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B03Gb_human",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/_6XKUpEM", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/lwuZuRGJ"),
+    toc = "Exercices pratiques libres sur le modèle linéaire avec human")
 ```
-
 
 ## Récapitulatif des exercices
 
 Ce troisième module vous a permis de comprendre le modèle linéaire, de découvrir l'ANCOVA ainsi qu'apprendre le mécanisme du modèle linéaire généralisé. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser\ :
 
 `r show_ex_toc()`
-

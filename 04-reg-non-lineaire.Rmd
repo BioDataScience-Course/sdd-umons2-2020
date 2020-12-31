@@ -4,7 +4,6 @@
 SciViews::R
 ```
 
-
 ##### Objectifs {-}
 
 - Comprendre comment ajuster une courbe dans un nuage de points à l'aide de la régression non linéaire par les moindres carrés
@@ -13,12 +12,11 @@ SciViews::R
 
 - Comparer les modèles à l'aide du coefficient d'Akaike
 
-- Connaitre quelques unes des courbes mathématiques les plus utilisées en biologie
-
+- Connaître quelques unes des courbes mathématiques les plus utilisées en biologie
 
 ##### Prérequis {-}
 
-- Les modules 1 & 2 du présent cours concernant la régression linéaire sont une entrée en matière indispensable puisque la régression va être abordée ici comme une extension de ce qui a déjà été vu.
+- Les modules 1 & 2 du cours concernant la régression linéaire sont une entrée en matière indispensable puisque la régression va être abordée ici comme une extension de ce qui a déjà été vu.
 
 ## Rendement photosynthétique
 
@@ -65,7 +63,6 @@ rlc_lm %>.%
 ```
 
 La régression polynomiale tente maladroitement de s'ajuster dans les données mais est incapable de retranscrire les trois phases correctement. En particulier, la troisième est incorrecte puisque le modèle semble indiquer une reprise du rendement aux intensités les plus élevées. **Une représentation incorrecte est à craindre lorsque le modèle mathématique utilisé ne représente pas les différentes caractéristiques du phénomène étudié. L'utilisation d'un modèle adéquat est possible ici seulement par régression non linéaire.** En effet, aucune transformation monotone croissante ou décroissante ne peut linéariser ce type de données puisque la courbe monte d'abord pour s'infléchir ensuite.
-
 
 ```{block, type='info'}
 **Quand passer à la régression non linéaire\ ?**
@@ -133,10 +130,9 @@ AIC(rlc_lm, rlc_nls)
 
 **Super\ ! Nous venons de réaliser ensemble notre première régression non linéaire par les moindres carrés.** Étudions un petit peu plus dans le détail cette technique dans la section suivante. En effet, il est utile de connaitre et comprendre les différents pièges qui peuvent se présenter à nous pour les éviter.
 
-##### A vous de jouer ! {-}
+##### À vous de jouer ! {-}
 
-`r h5p(46, height = 270, toc = "Base de la régression non linéaire")`
-
+`r h5p(46, height = 270, toc = "Bases de la régression non linéaire")`
 
 ## Principe
 
@@ -148,13 +144,11 @@ Lorsque le nuage de point ne s'étire pas le long d'une droite, nous pouvons ten
 Il existe, en réalité, une autre raison pour laquelle nous pourrions être amenés à ne pas transformer les données pour les linéariser. Il s'agit du cas où les résidus ont une distribution correcte avec les données non transformées (distribution normale, et variance homogène -homoscédasticité-) lorsqu'on utilise un modèle non linéaire. Dans ce cas précis, une transformation pour linéariser les données devrait permettre d'utiliser une régression linéaire. Mais ce faisant, on rend alors les résidus non normaux et/ou on perd la propriété d'homoscédasticité, ce qui constitue une violation des conditions d'application de la régression par les moindres carrés que nous utilisons ici. Ainsi, dans ce cas-là, il vaut alors mieux ne pas transformer et utiliser plutôt une régression non linéaire à la place d'une régression linéaire pourtant plus simple d'emploi.
 ```
 
-
 ### Fonction objective
 
 Nous appelons "fonction objective" la fonction qui quantifie la qualité de l'ajustement de sorte que plus le nombre renvoyé par cette fonction est petit, meilleur est l'ajustement. Cette fonction objective peut être définie librement, mais dans de nombreux cas, il s'agit du même critère que pour la régression linéaire par les moindres carrés, à savoir (considérant que la fonction $f$ que nous souhaitons ajuster a $k$ paramètres notés $p_1$, $p_2$, ..., $p_k$)\ :
 
 $$f_{obj}(p_{1},p_{2},...,p_{k})=\sum_{i=1}^{n}(y_{i}-f(x_{i,}p_{1},p_{2},...,p_{k}))^{2}=\sum_{i}(y_{i}-\hat{{y_{i}}})^{2}$$
-
 
 ### Calcul itératif
 
@@ -169,7 +163,7 @@ La description détaillée et les développements mathématiques de ces algorith
 
 - **Port** est également disponible. Il a la particularité, contrairement aux deux précédents, de permettre de définir des limites supérieures et inférieures acceptables pour chaque paramètres. Cela limite la recherche dans un domaine de validité, lorsque celui-ci peut être défini.
 
-##### A vous de jouer ! {-}
+##### À vous de jouer ! {-}
 
 `r h5p(45, height = 270, toc = "Minimisation de la fonction objective")`
 
@@ -228,11 +222,9 @@ La convergence est considérée comme obtenue lorsque la différence de valeur d
 
 Comme nous pouvons le constater, le seuil de tolérance par défaut est très bas, de sorte que nous n'ayons besoin de le changer que très rarement.
 
-
 ### Pièges et difficultés
 
 L'ajustement d'un modèle de manière itérative en utilisant un algorithme d'optimisation est une tâche délicate. Dans certains cas, la convergence est lente (il faut beaucoup d'étapes pour arriver au résultat). Dans d'autre cas, le processus s'interrompt à cause d'une singularité de la fonction à ajuster, d'une discontinuité, ou d'une fonction qui n'est pas définie sur une partie du domaine, ... Nous pouvons aussi rencontrer des divisions par zéro ou des paramètres qui tendent vers l'infini lors des calculs. Dans ce cas, **il faut tenter d'autres valeurs de départ**, voire changer le paramétrage de la fonction.
-
 
 #### Valeurs initiales {-}
 
@@ -313,19 +305,20 @@ chart(data = micmen_data, v ~ conc) +
   annotate("text", label = "K", x = 0.5, y = 0.03)
 ```
 
-##### A vous de jouer ! {-}
+##### À vous de jouer ! {-}
 
 `r launch_shiny("https://sdd.umons.ac.be/B04Sa_micmen/", height = 600, delay = 20, toc = "Ajuster la meilleure courbe de Michaelis-Menten")`
 
 Concernant les modèles utiles en chimie et biochimie, le modèle à compartiment de premier ordre permet de décrire la cinétique de transformation d'une substance au cours du temps. Voyez le modèle `?Ssfol`. Il peut servir par exemple pour déterminer la cinétique d'élimination d'une substance du sang après injection.
 
 ```{r, echo=FALSE, results='asis'}
-assignation("B04Ga_speed_reaction", part = NULL,
-  url = "https://github.com/BioDataScience-Course/B04Ga_speed_reaction",
-  course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/a/DuJyBwfY", 
-    'S-BIOG-937-958-959' = "https://classroom.github.com/a/TVj1lxHC"),
-  toc = "Vitesse de réaction chimique - Exercice pratique cadré sur la régression non linéaire.")
+if (exists("assignation"))
+  assignation("B04Ga_speed_reaction", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B04Ga_speed_reaction",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/DuJyBwfY", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/TVj1lxHC"),
+    toc = "Vitesse de réaction chimique - Exercice pratique cadré sur la régression non linéaire")
 ```
 
 ### Modèles de croissance
@@ -377,7 +370,7 @@ chart(data = exponent_data, y ~ t) +
 
 Il existe aussi un modèle bi-exponentiel qui combine deux signaux exponentiels différents. Pour plus de détails, voyez `?SSbiexp`.
 
-##### A vous de jouer ! {-}
+##### À vous de jouer ! {-}
 
 `r launch_shiny("https://sdd.umons.ac.be/B04Sb_exponent/", height = 600, delay = 20, toc = "Ajuster la meilleure courbe exponentielle")`
 
@@ -413,7 +406,7 @@ chart(data = logis_data, y ~ t) +
 
 Cette courbe sigmoïdale est asymptotique en 0 et $y_\infty$, et elle est également symétrique autour de son point d'inflexion situé à ${t_0, y_\infty / 2}$.
 
-##### A vous de jouer ! {-}
+##### À vous de jouer ! {-}
 
 `r launch_shiny("https://sdd.umons.ac.be/B04Sc_logis/", height = 600, delay = 20, toc = "Ajuster la meilleure courbe logistique")`
 
@@ -441,8 +434,7 @@ chart(data = fpl_data, y ~ t) +
   annotate("text", label = "point d'inflexion", x = 6.1, y = 0.53)
 ```
 
-
-##### A vous de jouer ! {-}
+##### À vous de jouer ! {-}
 
 `r launch_shiny("https://sdd.umons.ac.be/B04Sd_gen_logis/", height = 600, delay = 20, toc = "Ajuster le meilleur modèle logistique généralisé")`
 
@@ -474,7 +466,6 @@ chart(data = gomp_data, y ~ t) +
   annotate("text", label = "Asym/e", x = -0.5, y = 0.95/exp(1)) +
   annotate("text", label = "point d'inflexion", x = 3.5, y = 0.32)
 ```
-
 
 ##### A vous de jouer ! {-}
 
@@ -571,7 +562,7 @@ chart(data = rich_data, y ~ t %col=% "m = 1") +
   labs(color = "Richards avec :")
 ```
 
-##### A vous de jouer ! {-}
+##### À vous de jouer ! {-}
 
 `r launch_shiny("https://sdd.umons.ac.be/B04Sf_richards/", height = 600, delay = 20, toc = "Ajuster le meilleur modèle de Richards")`
 
@@ -814,17 +805,18 @@ La courbe est très proche des modèles de Gompertz et Weibull aux jeunes âges,
 
 Le choix final entre Gompertz ou Weibull dépend de l'usage que l'on veut faire du modèle. Si la simplicité du modèle est primordiale, nous garderons Gompertz. Si la croissance des petits oursins est un aspect important de l'analyse, nous garderons Weibull qui semble mieux s'ajuster aux données à ce niveau.
 
-##### A vous de jouer ! {-}
+##### À vous de jouer ! {-}
 
-`r learnr("B04La_nls", title = "Modèles non-linéaires", toc = "Tutoriel sur les modèles non linéaires.")`
+`r learnr("B04La_nls", title = "Modèles non-linéaires", toc = "Récapitulatif modèles non linéaires")`
 
 ```{r, echo=FALSE, results='asis'}
-assignation("B04Gb_bacterial_growth", part = NULL,
-  url = "https://github.com/BioDataScience-Course/B04Gb_bacterial_growth",
-  course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/a/2n7jgK3t", 
-    'S-BIOG-937-958-959' = "https://classroom.github.com/a/bLfInvZs"),
-  toc = "Croissance bactérienne - Exercices pratiques libres sur la régression non linéaire.")
+if (exists("assignation"))
+  assignation("B04Gb_bacterial_growth", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B04Gb_bacterial_growth",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/2n7jgK3t", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/bLfInvZs"),
+    toc = "Croissance bactérienne - Exercices pratiques libres sur la régression non linéaire")
 ```
 
 ## Récapitulatif des exercices

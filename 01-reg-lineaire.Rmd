@@ -8,12 +8,11 @@ SciViews::R
 
 ##### Objectifs {-}
 
-- Retrouver ses marques avec R, RStudio et la SciViews Box et découvrir les fonctions supplémentaires de la nouvelle version.
+- Retrouver ses marques avec R, RStudio et la SciViews Box et découvrir les fonctions supplémentaires de la nouvelle version
 
-- Découvrir la régression linaire de manière intuitive.
+- Découvrir la régression linaire de manière intuitive
 
-- Découvrir les outils de diagnostic de la régression linéaire, en particulier l'analyse des résidus.
-
+- Découvrir les outils de diagnostic de la régression linéaire, en particulier l'analyse des résidus
 
 ##### Prérequis {-}
 
@@ -23,9 +22,11 @@ Consacrez un petit quart d'heure dans la SciViews Box nouvelle mouture pour rep�
 
 Une fois la nouvelle SciViews Box fonctionnelle sur votre ordinateur, vous allez réaliser une séance d'exercices couvrant les points essentiels des notions abordées dans le livre [science des données biologiques partie 1](https://wp.sciviews.org/sdd-umons), histoire de rafraîchir vos connaissances de l'an dernier. 
 
-Les tutoriels `learnr` auxquels vous êtes maintenant habitués seront là pour vous aider à auto-évaluer votre progression. Pour le cours 2, ces tutoriels sont dans le package `BioDataScience2` que vous venez normalement d'installer si vous avez bien suivi toutes les instructions de configuration de votre SciViews Box.
+Les tutoriels `learnr` auxquels vous êtes maintenant habitués seront là pour vous aider à auto-évaluer votre progression. Pour le cours 2, ces tutoriels sont dans le package {BioDataScience2} que vous venez normalement d'installer si vous avez bien suivi toutes les instructions de configuration de votre SciViews Box.
 
-`r learnr("B01La_rappel", title = "Rappel de SDD I", toc = "Tutoriel pour réviser les notions de SDD I")`
+##### À vous de jouer ! {-}
+
+`r learnr("B01La_rappel", title = "Révision des notions de SDD I", toc = "Révision des notions de SDD I")`
 
 ## Modèle 
 
@@ -306,7 +307,7 @@ La méthode utilisant les carrés des résidus s'appelle une **régression par l
 L'approche utilisant la somme de la valeur absolue des résidus est également intéressante (et elle est d'ailleurs préférable en présence de valeurs extrêmes potentiellement suspectes). Elle s'apppelle **régression par la médiane** ou **régression par les moindres valeurs absolues des résdus**, un cas particulier de la **régression quantile**, une technique intéressante dans le cas de non normalité des résidus et/ou de présence de valeurs extrêmes suspectes.
 ```
 
-### Trouver la meilleure droite 
+##### À vous de jouer ! {-} 
 
 `r launch_shiny("https://sdd.umons.ac.be/B01Sa_reglin/", height = 600, delay = 20, toc = "Ajuster la meilleure droite")`
 
@@ -599,9 +600,9 @@ lm. %>.%
 
 A l'issue de l'analyse des résidus, nous observons donc différents problèmes qui suggèrent que le modèle choisi n'est peut être pas le plus adapté. Nous comprendrons pourquoi plus loin, mais à ce stade si vous avez compris et vous sentez capable d'identifier les problèmes à l'aide de ces graphiques de diagnostic, c'est suffisant.
 
-##### A vous de jouer {-}
+##### À vous de jouer ! {-}
 
-`r learnr("B01Lb_reglin1", title = "Régression linéaire simple", toc = "Tutoriel sur la régression linéaire simple.")`
+`r learnr("B01Lb_reglin1", title = "Régression linéaire simple", toc = "Récapitulatif régression linéaire simple")`
 
 ##### Pièges et astuces : extrapolation {-}
 
@@ -691,19 +692,20 @@ Des snippets sont à votre disposition pour ces deux fonctions\ :
 - `... -> models ..m -> .models tools .mt -> .mtmoddf`
 - `... -> models ..m -> .models tools .mt -> .mtpardf`
 
-##### A vous de jouer ! {-}
+##### À vous de jouer ! {-}
 
 ```{r, echo=FALSE, results='asis'}
-assignation("B01Ga_reglin1", part = NULL,
-  url = "https://github.com/BioDataScience-Course/B01Ga_reglin1",
-  course.urls = c(
-    'S-BIOG-015' = "https://classroom.github.com/a/o40tVOh8", 
-    'S-BIOG-937-958-959' = "https://classroom.github.com/a/u1SbQgxf"),
-  toc = "Exercices pratiques sur la régression linéaire simple.")
+if (exists("assignation"))
+  assignation("B01Ga_reglin1", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B01Ga_reglin1",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/o40tVOh8", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/u1SbQgxf"),
+    toc = "Utilisation de la régression linéaire simple")
 ```
 
 ## Récapitulatif des exercices
 
-Ce module 1 vous a permis de prendre connaissance des principes de bases de la modélisation et plus particulièrement de la régression linéaire. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser\ :
+Ce premier module vous a permis de prendre connaissance des principes de bases de la modélisation et plus particulièrement de la régression linéaire. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser\ :
 
 `r show_ex_toc()`
