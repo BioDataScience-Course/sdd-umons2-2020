@@ -314,7 +314,7 @@ Concernant les modèles utiles en chimie et biochimie, le modèle à compartimen
 ```{r, echo=FALSE, results='asis'}
 if (exists("assignation"))
   assignation("B04Ga_speed_reaction", part = NULL,
-    url = "https://github.com/BioDataScience-Course/B04Ga_speed_reaction",
+    url = "https://github.com/BioDataScience-Course/B04Ga_speed-reaction",
     course.urls = c(
       'S-BIOG-015' = "https://classroom.github.com/a/DuJyBwfY", 
       'S-BIOG-937-958-959' = "https://classroom.github.com/a/TVj1lxHC"),

@@ -4,6 +4,8 @@ bookdown::gitbook:
   css: style.css
   split_by: section
   config:
+    toolbar:
+      position: fixed
     toc:
       collapse: subsection
       before: |
@@ -16,6 +18,15 @@ bookdown::gitbook:
     edit: https://github.com/BioDataScience-Course/sdd-umons2-2020/edit/master/%s
     view: https://github.com/BioDataScience-Course/sdd-umons2-2020/blob/master/%s
     #download: ["pdf", "epub"]
+    sharing:
+      facebook: no
+      github: no
+      twitter: yes
+      linkedin: no
+      weibo: no
+      instapaper: no
+      vk: no
+      all: ['github', 'linkedin', 'facebook', 'instapaper']
 bookdown::pdf_book:
   includes:
     in_header: preamble.tex

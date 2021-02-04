@@ -17,13 +17,11 @@ SciViews::R
 
 ##### Prérequis {-}
 
-Vous devez être à l'aise avec l'utilisation de R et Rstudio, en particulier pour l'importation, le remaniement et la visualisation de données multivariées. Ceci correspond au cours SDD I. Il n'est pas nécessaire d'avoir acquis toutes les notions vue dans la partie **Cours II :modélisation** pour pouvoir comprendre cette seconde partie du cours. Si vous ne vous sentez pas assez à l'aise avec R et RStudio, c'est peut-être le bon moment pour refaire le premier "learnr" du package `BioDataScience2`\ :
-
-`r learnr("B01La_rappel", title = "Révision des notions de SDD I", toc = "Révision des notions de SDD I")`
+Vous devez être à l'aise avec l'utilisation de R et RStudio, en particulier pour l'importation, le remaniement et la visualisation de données multivariées. Ceci correspond au cours SDD I. Cette partie est relativement indépendant de **SDD II\ : modélisation** qui forme la première section de cet ouvrage. Par conséquent, ces deux sections peuvent très bien être inversées si vous le souhaitez (si vous êtes en dehors d'un cours qui impose un ordre bien défini, bien entendu).
 
 ## Analyse de données
 
-L'analyse de données (on dit aussi *analyse exploratoire des données*, EAD ou **statistiques exploratoires**) mets en œuvre des méthodes statistiques multivariées visant à découvrir de l'information pertinente dans un gros jeu de données via des approches multidimensionnelles et essentiellement descriptives. Ces méthodes se regroupent en deux grandes familles\ :
+L'analyse de données (on parle aussi d'*analyse exploratoire des données*, EAD ou **statistiques exploratoires**) mets en œuvre des méthodes statistiques multivariées visant à découvrir de l'information pertinente dans un gros jeu de données via des approches multidimensionnelles et essentiellement descriptives. Ces méthodes se regroupent en deux grandes familles\ :
 
 - Celles visant à **réduire la dimensionnalité** (travailler avec des tableaux ayant moins de colonnes). Elles permettent ensuite de présenter les données de manière synthétique pour observer des relations entre les variables ou les individus via des **représentations graphiques**. Nous aborderons ces techniques dans les modules suivants.
 
@@ -41,14 +39,14 @@ vembedr::embed_youtube("q-IVQoh1nxA", width = 770, height = 433, query = "end=13
 
 ## Distance entre individus
 
-Vous êtes en train d'analyser des données concernant les échantillons de plancton que vous avez prélevé sur votre lieu de recherche. Ce plancton a été numérisé (photo de chaque organisme) et les images ont été traitée avec un logiciel qui mesure automatiquement une vingtaine de variables telles que la surface de l'objet sur l'image, son périmètre, sa longueur, ... Vous vous trouvez donc face à un jeu de données qui a une taille non négligeable\ : 20 colonnes par 1262 lignes, soit le nombre d'individus mesurés dans vos échantillons.
+Pour partir d'un exemple concret, imaginez que vous êtes en train d'analyser des données concernant les échantillons de plancton que vous avez prélevé sur votre lieu de recherche. Ce plancton a été numérisé (photo de chaque organisme) et les images ont été traitées avec un logiciel qui mesure automatiquement une vingtaine de variables telles que la surface de l'objet sur l'image, son périmètre, sa longueur, ... Vous vous trouvez donc face à un jeu de données qui a une taille non négligeable\ : 20 colonnes par 1262 lignes, soit le nombre d'individus mesurés dans vos échantillons.
 
 ```{r}
 zoo <- read("zooplankton", package = "data.io")
 zoo
 ```
 
-Vous voulez regrouper votre plancton en fonction de la ressemblance entre les organismes, c'est-à-dire, en fonction des écarts entre les mesures effectuées pour les 19 variables quantitatives, à l'exclusion de la vingtième colonne `class` qui est une variable `factor`). En raison de la taille du tableau, il est évident que cela ne pourra pas se faire de manière manuelle. Nous pouvons raisonnablement considérer que plus les mesures sont similaires entre deux individus, plus ils ont des chances d'être semblables, c'est-à-dire, d'appartenir au même groupe taxonomique. **Mais comment faire pour synthétiser l'information de similarité ou différence contenue dans 19 paires de valeurs** (une paire par variable) \ ? Nous avons besoin d'une **mesure de distance** qui quantifie la similarité (ou à l'inverse la dissimilarité) en un seul nombre. Celle qui vient naturellement à l'esprit est la **distance euclidienne**. Prenons un cas simplifié. Quelle est la distance qui sépare deux individus *A* et *B* par rapport à trois variables *x*, *y*, *z*\ ? Ici, nous pouvons représenter l'information graphiquement dans un espace à trois dimensions. La distance qui nous intéresse est la distance linéaire entre les deux points dans l'espace. Autrement dit, c'est la longueur du segment de droite qui relie les deux points dans l'espace. Cette distance, nous pouvons la calculer à l'aide de la formule suivante (problème de niveau lycée, voir par exemple [ici](http://www.mathematiques-lycee.com/geometrie/2nde-01-longueur-segment.html) pour une résolution dans le plan)\ :
+Vous voulez regrouper votre plancton en fonction de la ressemblance entre les organismes, c'est-à-dire, en fonction des écarts entre les mesures effectuées pour les 19 variables quantitatives, à l'exclusion de la vingtième colonne `class` qui est une variable `factor`). En raison de la taille du tableau, il est évident que cela ne pourra pas se faire de manière manuelle. Nous pouvons raisonnablement considérer que plus les mesures sont similaires entre deux individus, plus ils ont des chances d'être semblables, c'est-à-dire, d'appartenir au même groupe taxonomique. **Mais comment faire pour synthétiser l'information de similarité ou différence contenue dans 19 paires de valeurs** (une paire par variable) \ ? Nous avons besoin d'une **mesure de distance** qui quantifie la similarité (ou à l'inverse la dissimilarité) en un seul nombre. Celle qui vient naturellement à l'esprit est la **distance euclidienne**. Prenons un cas simplifié. Quelle est la distance qui sépare deux individus *A* et *B* par rapport à trois variables *x*, *y*, *z*\ ? Ici, nous pouvons représenter l'information graphiquement dans un espace à trois dimensions. La distance qui nous intéresse est la distance linéaire entre les deux points dans l'espace. Autrement dit, c'est la longueur du segment de droite qui relie les deux points dans l'espace. Cette distance, nous pouvons la calculer à l'aide de la formule suivante (voir par exemple [ici](http://www.mathematiques-lycee.com/geometrie/2nde-01-longueur-segment.html) pour une résolution dans le plan)\ :
 
 $$\mathrm{D_{Euclidean}}_{A, B} = \sqrt{(x_A - x_B)^2 + (y_A - y_B)^2 + (z_A - z_B)^2}$$
 
@@ -56,8 +54,7 @@ Notez que cette formule se généralise à *n* dimensions et s'écrit alors, pou
 
 $$\mathrm{D_{Euclidean}}_{j, k} = \sqrt{\sum_{i=1}^{n}(y_{ij}-y_{ik})^2}$$
 
-C'est la racine carré de la somme dans les *n* dimensions des écarts entre les valeurs au carré pour toutes les variables *y~i~*. Plus sa valeur est grande, plus les individus sont éloignés (différents). Pour cette raison, nous appelerons cette distance, une mesure de **dissimilarité**.
-
+C'est la racine carré de la somme dans les *n* dimensions des écarts entre les valeurs au carré pour toutes les variables *y~i~*. Plus sa valeur est grande, plus les individus sont éloignés (différents). Pour cette raison, nous appellerons cette distance, une mesure de **dissimilarité**.
 
 ### Matrice de distances
 
@@ -69,7 +66,7 @@ De plus, de part et d'autre de cette diagonale, nous trouvons les paires complé
 
 $$\mathrm{D_{Euclidean}}_{j, k} = \mathrm{D_{Euclidean}}_{k, j}$$
 
-Par conséquent, seulement une portion (soit le triangle inférieur, soit le triangle supérieur hors diagonale) est informative. La diagonale ne porte aucune informartion utile, et l'autre triangle est redondant. Nous avons donc pour habitude de ne calculer et représenter que le triangle inférieur de cette matrice. Maintenant que cela est clair, nous pouvons créer un objet `dist` qui contiendra notre matrice de distances enclidiennes. Il suffit d'utiliser la fonction `dist()`, ou mieux `vegan::vegdist()` qui offre plus de possibilités^[La fonction `dist()` ne propose par exemple pas la méthode de Bray-Curtis qui est fréquemment utilisée en biologie et en écologie, contrairement à `vegan::vegdist(method = "bray")`.]. 
+Par conséquent, seulement une portion (soit le triangle inférieur, soit le triangle supérieur hors diagonale) est informative. La diagonale ne porte aucune information utile, et l'autre triangle est redondant. Nous avons donc pour habitude de ne calculer et représenter que le triangle inférieur de cette matrice. Maintenant que cela est clair, nous pouvons créer un objet `dist` qui contiendra notre matrice de distances enclidiennes. Il suffit d'utiliser la fonction `dist()`, ou mieux `vegan::vegdist()` qui offre plus de possibilités^[La fonction `dist()` ne propose par exemple pas la méthode de Bray-Curtis que nous aborderons plus loin et qui est fréquemment utilisée en biologie et en écologie, contrairement à `vegan::vegdist(method = "bray")`.]. 
 
 ##### À vous de jouer ! {-}
 
@@ -79,7 +76,7 @@ Comme cela prendrait trop de place d'imprimer la matrice complète, nous allons 
 
 ```{r}
 zoo %>.%
-  select(., -class) %>.% # Elimination de la colonne class
+  select(., -class) %>.% # Élimination de la colonne class
   head(., n = 6) -> zoo6 # Récupération des 6 premiers individus
 zoo6_dist <- vegan::vegdist(zoo6, method = "euclidean")
 zoo6_dist # En pratique, on n'imprime généralement ce genre d'objet !
@@ -87,11 +84,11 @@ zoo6_dist # En pratique, on n'imprime généralement ce genre d'objet !
 
 Nous voyons bien ici que R n'imprime que le *triangle inférieur* de notre matrice 6 par 6. Notez aussi que les objets `dist` de tailles plus réalistes que vous génèrerez dans vos analyses ne sont **prévue** pour être imprimées et visualisées telles quelles. Il s'agit seulement de la *première étape* vers une représentation utile qui sera réalisée à la page suivante, à l'aide de la classification hiérarchisée.
 
-**Félicitations\ ! Vous venez de calculer votre première matrice de distances.** Nous verrons à la page suivante comment nous pouvons utiliser l'information qu'elle contient pour regrouper les individus de manière pertinente. Mais avant cela, nous avons besoin d'un peu de théorie pour bien comprendre quelle **métrique** choisir pour calculer nos distances et pourquoi. On parle aussi d'**indices** de **similarité** ou **dissimilarité**.
+Nous verrons plus loin comment nous pouvons utiliser l'information que cette matrice de distances contient pour regrouper les individus de manière pertinente. Mais avant cela, nous avons besoin d'un peu de théorie pour bien comprendre quelle **métrique** choisir pour calculer nos distances et pourquoi. On parle aussi d'**indices** de **similarité** ou **dissimilarité**.
 
 ```{block2, type='warning'}
 
-Attention\ : nous n'avons pas considéré ici les unités respectives de nos variables. Une surface (mm^2^) ou une longeur (mm) ne sont pas mesurées dans les mêmes unités. Nous risquons alors de donner plus de poids aux valeurs élevées. Nous aurions le même effet si nous décidions par exemple d'exprimer une mesure longitudinale en µm au leiu de l'exprimer en mm. Dans ce cas, il vaut mieux standardiser d'abord le tableau (moyenne de zéro et écart type de un) selon les colonnes avant d'effectuer le calcul. Ceci sera fait à la page suivante.
+**Attention\ :** nous n'avons pas considéré ici les unités respectives de nos variables. Une surface (mm^2^) ou une longeur (mm) ne sont pas mesurées dans les mêmes unités. Nous risquons alors de donner plus de poids dans nos calculs aux variables qui présentent des valeurs élevées. Nous aurions le même effet si nous décidions par exemple d'exprimer une mesure longitudinale en µm au lieu de l'exprimer en mm. Dans ce cas, il vaut mieux standardiser d'abord le tableau (moyenne de zéro et écart type de un) selon les colonnes avant d'effectuer le calcul. Une illustration de cette approche sera discutée plus loin.
 
 ```
 
@@ -102,11 +99,11 @@ Attention\ : nous n'avons pas considéré ici les unités respectives de nos var
 
 ### Indices de (dis)similarité
 
-Un indice de similarité (*similarity index* en anglais) est une descripteur statistique (nombre unique) de la similitude de deux échantillons ou individus représentés par plusieurs variables dans un échantillon multivarié. Un indice de similarité prend une valeur comprise entre 0 (différence totale) et 1 ou 100% (similitude totale). Un indice de dissimilarité} est le complément d’un indice de similarité (dis = 1 – sim); sa valeur est comprise entre 100% (différence totale) et 0 (similitude totale).
+Un indice de similarité (*similarity index* en anglais) est une descripteur statistique (nombre unique) de la similitude de deux échantillons ou individus représentés par plusieurs variables dans un échantillon multivarié. Un indice de similarité prend une valeur comprise entre 0 (différence totale) et 1 ou 100% (similitude totale). Un indice de dissimilarité} est le complément d’un indice de similarité (dis = 1 – sim)\ ; sa valeur est comprise entre 100% (différence totale) et 0 (similitude totale).
 
 ```{block2, type='warning'}
 
-Attention\ : dans certains cas, un indice de dissimilarité peut varier de 0 à +$\infty$**. Il n'existe alors pas d'in,dice de similarité complémentaire. C'est le cas précisément de la distance euclidienne que nous avons exploré jusqu'ici.
+**Attention\ :** dans certains cas, un indice de dissimilarité peut varier de 0 à +$\infty$**. Il n'existe alors pas d'indice de similarité complémentaire. C'est le cas précisément de la distance euclidienne que nous avons exploré jusqu'ici.
 
 ```
 
@@ -114,11 +111,11 @@ Tous les indices de similarité / dissimilarité peuvent servir à construire de
 
 #### Indice de Bray-Curtis
 
-L'indice de dissimilarité de Bary-Curtis, aussi appelé coefficient de Czecanowski est calculé comme suit\ :
+L'indice de dissimilarité de Bray-Curtis, aussi appelé coefficient de Czecanowski est calculé comme suit\ :
 
 $$\mathrm{D_{Bray-Curtis}}_{j,k}=\frac{\sum_{i=1}^{n}\left|y_{ij}-y_{ik}\right|}{\sum_{i=1}^{n}(y_{ij}+y_{ik})}$$
 
-Dans R nous utiliserons `vegan::vegdist(DF, method = "bray")`.Il s’utilise pour mesurer la similitude entre échantillon sur base du **dénombrement d’espèces**. Si le nombre d’individus est très variable (espèces dominantes _versus_ espèces rares), nous devons transformer les données pour éviter de donner trop de poids aux espèces les plus abondantes (ex: $log(x+1)$, double racine carrée, ...).
+Dans R nous utiliserons `vegan::vegdist(DF, method = "bray")`.Il s’utilise pour mesurer, entre autres, la similitude entre échantillon sur base du **dénombrement d’espèces**. Si le nombre d'e cas'espèces est très variable (espèces dominantes _versus_ espèces rares), nous devons transformer les données pour éviter de donner trop de poids aux espèces les plus abondantes (ex: $log(x+1)$, double racine carrée, ...).
 
 Une caractéristique essentielle de cet indice (contrairement à la distance euclidienne) est que toute double absence n'est pas prise en compte dans le calcul. C'est souvent pertinent dans le cadre de son utilisation comme le dénombrement d'espèces. En effet, quelle information utile retire-t-on de doubles zéros dans un tableau répertoriant la faune belge pour le crocodile du Nil et le tigre de Sibérie par exemple\ ? Aucune\ ! Ils sont tous deux systématiquement absents des dénombrements, mais cette double absence n'apporte aucune information utile pour caractériser la faune belge par ailleurs.
 
@@ -128,19 +125,19 @@ $$sim = 1 – dis$$
 
 #### Indice de Canberra
 
-L'indice de dissimilarité de Canberra est similaire à l'indice de Bray-Curtis mais il pondère les espèces en fonction du nombre d’occurrences afin de donner le *même* poids à chacune dans le calcul. Il se calcule comme suit\ :
+L'indice de dissimilarité de Canberra est apparenté à l'indice de Bray-Curtis mais il pondère les individus en fonction du nombre d’occurrences afin de donner le *même* poids à chacune. Il se calcule comme suit\ :
 
 $$\mathrm{D_{Canberra}}_{j,k}=\frac{1}{nz}\sum_{i'=1}^{nz}\frac{\left|y_{i'j}-y_{i'k}\right|}{\left|y_{i'j}\right|+\left|y_{i'k}\right|}$$
 
-où $nz$ est le nombre de valeurs non nulles simultanément dans le tableau de départ. Toutes les espèces contribuent ici de manière égale. C'est un point positif, mais il faut faire attention à ce que cet indice a souvent tendnace à donner une surimportance aux espècces très rares observées une seule fois ou un petit nombre de fois\ ! Dans R, nous utiliserons `vegan::vegdist(DF, method = "canberra")`.
+où $nz$ est le nombre de valeurs non nulles simultanément dans le tableau de départ. Toutes les cas contribuent ici de manière égale. C'est un point positif, mais il faut faire attention à ce que cet indice a souvent tendance à donner, au contraire, trop d'importance aux dénombrements très rares observés une seule fois ou un petit nombre de fois\ ! Dans R, nous utiliserons `vegan::vegdist(DF, method = "canberra")`.
 
-Toute double absence n’est pas prise en compte ici aussi. Seuls les indices ne dépendant pas des doubles zéros sont utilisables pour des dénombrements d’espèces ou des présence-absence. Ainsi pour ce type de données, notre choix se portera sur\ :
+Toute double absence n’est pas prise en compte ici également. Seuls les indices ne dépendant pas des doubles zéros sont utilisables pour des dénombrements d’espèces ou des présence-absence. Ainsi pour ce type de données, notre choix se portera sur\ :
 
 - Bray-Curtis si l'on souhaite que le résultat soit dominé par les espèces les plus abondantes.
 
-- Canberra si notre souhait est de donner la même importance à toutes les espèces, mais avec un risque de domination des espèces rares. 
+- Canberra si notre souhait est de donner la même importance à toutes les espèces, mais avec un risque d'importance exagérée des espèces rares par rapport au nombre relatif d'observations pour l'ensemble du jeu de données. 
 
-- Bray-Curtis sur données transformées ($log(x+1)$ ou double racine carrée) pour un compromis entre les deux avec prise en compte de toutes les espèces, mais domination partielle des espèces les plus abondantes. C'est souvent un bon compromis.
+- Bray-Curtis sur données transformées ($log(x+1)$ ou double racine carrée) pour un compromis entre les deux avec prise en compte de toutes les espèces, mais dépondération partielle des espèces les plus abondantes. C'est souvent un bon compromis.
 
 ```{block2, type='warning'}
 
@@ -156,21 +153,21 @@ Nous savons déjà que c'est la distance géométrique entre les points dans un 
 
 $$\mathrm{D_{Euclidean}}_{j,k}=\sqrt{\sum_{i=1}^{n}(y_{ij}-y_{ik})^2}$$
 
-Dans R, cette distance peut être calculée avec `dist(DF)` ou `vegan::vegdist(DF, method = "euclidean")`. Cet indice de dissimilarité est utile pour des mesures quantitatives, pour des données environnmentales, etc. Il faut que les mesures soient toutes effectuées dans les mêmes unités. Si ce n'est pas le cas, penser alors à standardiser les mesures avant le calcul comme nous l'avons fait plus dans l'exemple sur le zooplancton. Il n'existe pas d'indice de similarité complémentaire.
+Dans R, cette distance peut être calculée avec `dist(DF)` ou `vegan::vegdist(DF, method = "euclidean")`. Cet indice de dissimilarité est utile pour des mesures quantitatives, pour des données environnementales, etc. Il faut que les mesures soient toutes effectuées dans les mêmes unités. Si ce n'est pas le cas, nous devons les standardiser avant le calcul. Il n'existe pas d'indice de similarité complémentaire.
 
 #### Distance de Manhattan
 
-La distance de Manhattan, encore appelée "city-block distance" est un indice de dissimilarité qui, contrairement à la distance euclidienne ne mesure pas la distance géométrique entre les points en ligne droite, mais via un trajet qui suit les parallèmes aux axes. C'est comme si la distance euclidenne reliait les points à vol d'oiseau, alors qu'avec la distance de Manhattan, on devait contourner les blocs de maisons du quartier pour aller d'un point A à un point B (d'où le nom de cette métrique). Elle se calcule comme suit\ :
+La distance de Manhattan, encore appelée *"city-block distance"* en anglais, est un indice de dissimilarité qui, contrairement à la distance euclidienne ne mesure pas la distance géométrique entre les points en ligne droite, mais via un trajet composé de segments de droites parallèles aux axes. C'est comme si la distance euclidenne reliait les points à vol d'oiseau, alors qu'avec la distance de Manhattan, nous devions contourner les blocs de maisons du quartier pour aller d'un point A à un point B (d'où le nom de cette métrique). Elle se calcule comme suit\ :
 
 $$\mathrm{D_{Manhattan}}_{j,k}=\sum_{i=1}^{n}|y_{ij}-y_{ik}|$$
 
-Dans R, nous utiliserons `vegan::vegdist(DF, method = "manhattan")`. Ici aussi, seul l'indice de dissimilarité est défini. L'indice de similarité complémentaire n'existe pas car la valeur de l'indice de dissimlarité n'est pas borné à droite et peut varier de zéro (dissimilarité nulle, les deux individus soint identiques) à l'infini pour une différence maximale.
+Dans R, nous utiliserons `vegan::vegdist(DF, method = "manhattan")`. Ici aussi, seul l'indice de dissimilarité est défini. L'indice de similarité complémentaire n'existe pas car la valeur de l'indice de dissimlarité n'est pas borné à droite et peut varier de zéro (dissimilarité nulle, cela signifie alors que les deux individus sont identiques) à l'infini pour une différence maximale.
 
 ### Utilisation des indices
 
 - Les distances euclidienne ou de Manhattan sont à préférer pour les **mesures environnementales** ou de manière générale pour les variables quantitatives continues.
 
-- Les distances de Bray-Curtis ou Canberra sont meilleure pour les **dénombrements d’espèces** (nombreux double zéro), ou de manière générale, pour les variables quantitatives discrètes prenant des valeurs nulles ou positives.
+- Les distances de Bray-Curtis ou Canberra sont meilleure pour les **dénombrements d’espèces** (ou à chaque fois que les double zéros ne portent aucune information utile). Il s'agit souvent de variables quantitatives discrètes prenant des valeurs nulles ou positives.
 
 ##### À vous de jouer ! {-}
 
@@ -178,9 +175,9 @@ Dans R, nous utiliserons `vegan::vegdist(DF, method = "manhattan")`. Ici aussi, 
 
 ### Propriétés des indices
 
-Les indices varient en 0 et 1 (0 et 100%), mais les distances sont utilisées aussi comme indices de dissimilarité et varient entre 0 et $+\infty$.
+Les indices varient en 0 et 1 (0 et 100%), mais les distances sont utilisées aussi comme indices de dissimilarité et peuvent varier entre 0 et $+\infty$.
 
-Un indice est dit **métrique** si\ :
+Un indice est dit **métrique** si il az les propriétés suivantes\ :
 
 - **Minimum 0** : $I_{j, k} = 0$ si $j = k$
 
@@ -190,7 +187,7 @@ Un indice est dit **métrique** si\ :
 
 - **Inégalité triangulaire** : $I_{j, k} + I_{k, l} >= I_{j, l}$
 
-La dernière propriété d'inégalité triangulaire est la plus difficile à obtenir, et n'est pas toujours nécessaire. Nous pouvons montrer que certains indices qui ne respectent pas cette dernière propriété sont pourtant utiles dans le contexte. Nous dirons alors d'un indice que c'est une **semi-métrique** s’il répond à toutes les conditions sauf la quatrième. Enfin, un indice est dit **non métrique** dans tous les autres cas. Le tableau suivant reprend les métriques que nous avons vu jusqu'ici, et rajoute d'autres candidats potentiels (la distance Chi carré, l'indice de correlation ou de variance/covariance) en indiquant leur type\ :
+La dernière propriété d'inégalité triangulaire est la plus difficile à obtenir, et n'est pas toujours nécessaire. Nous pouvons montrer que certains indices qui ne respectent pas cette dernière propriété sont pourtant utiles dans le contexte. Nous dirons alors d'un indice que c'est une **semi-métrique** s’il répond à toutes les conditions sauf la quatrième. Enfin, un indice est dit **non métrique** dans tous les autres cas. Le tableau suivant reprend les métriques que nous avons vues jusqu'ici, et rajoute d'autres candidats potentiels (la distance Chi carré, l'indice de corrélation ou de variance/covariance) en indiquant leur type\ :
 
 | **Distance**           | **Type**
 |------------------------|---------------
@@ -199,21 +196,24 @@ La dernière propriété d'inégalité triangulaire est la plus difficile à obt
 | Euclidienne            | métrique
 | Manhattan              | métrique
 | Chi carré              | métrique
-| (correlation)          | (non métrique)
+| (corrélation)          | (non métrique)
 | (variance/covariance)  | (non métrique)
 
 ##### Pour en savoir plus {-}
 
-- Vous pouver aussi transposer le tableau pour calculer la distance entre les variables en utilisant la fonction `t()` dans R (`dist(t(DF))`). Par exemple, dans le cas d'un tableau "espèces - station" (dénombrement d'espèces en différentes stations), nous pouvons souhaiter comparer les stations du point de vue de la composition en espèces, mais nous pouvons aussi comparer les espèces du point de vue de leur répartition entre les stations. Pour passer d'un calcul à l'autre, nous transposerons donc le tableau (les colonnes deviennent les lignes et inversément) avant d'utiliser `dist()` ou `vegan::vegdist()`.
+- Vous pouvez aussi transposer le tableau pour calculer la distance entre ses colonnes en utilisant la fonction `t()` dans R (`dist(t(DF))`). Par exemple, dans le cas d'un tableau "espèces - station" (dénombrement d'espèces en différentes stations), nous pouvons comparer les stations du point de vue de la composition en espèces, mais nous pouvons aussi comparer les espèces du point de vue de leur répartition entre les stations. Pour passer d'un calcul à l'autre, nous transposerons donc le tableau (les colonnes deviennent les lignes et inversement) avant d'utiliser `dist()` ou `vegan::vegdist()`.
 
-- Pour bien comprendre la logique derrière les indices, il est utile de comprendre les équations correspondantes. Si ces équations sont pour vous trop abstraites, une façon efficace de comprendre consiste à faire le calcul à la main. Par exemple dans le cas de l'indice de Canberra, la notion de nombre de données non nulles $nz$ n'est pas évident. Effectuons un calcul à la main détaillé sur le tableau fictif suivant concernant trois espèces A, B, et C dénombrées en trois stations Sta1, Sta2 et Sta3 dans le tableau nommé `ex1`\ :
+- Pour bien comprendre la logique sous-jacente aux indices, il est utile de comprendre leurs équations. Si elles sont pour vous trop abstraites, une façon efficace de comprendre consiste à faire le calcul à la main. Par exemple dans le cas de l'indice de Canberra, la notion de nombre de données non nulles $nz$ n'est pas évident. Effectuons un calcul à la main détaillé sur le tableau fictif suivant concernant trois espèces `A`, `B`, et `C` dénombrées en trois stations `sta1`, `sta2` et `sta3` dans le tableau nommé `ex1`\ :
 
 ```{r, echo=FALSE}
-ex1 <- data.frame(A = c(4, 3, 1),
-                  B = c(0, 0, 8),
-                  C = c(2, 10, 0))
-rownames(ex1) <- paste0("Sta", 1:3)
-knitr::kable(ex1)
+ex1 <- data.frame(
+  A = c(4, 3, 1),
+  B = c(0, 0, 8),
+  C = c(2, 10, 0))
+rownames(ex1) <- paste0("sta", 1:3)
+ex1bold <- ex1
+rownames(ex1bold) <- paste0("**sta", 1:3, "**")
+knitr::kable(ex1bold)
 ```
 
 Pour rappel, la dissimilarité de Canberra se calcule comme suit\ :
@@ -225,25 +225,32 @@ où\ :
 - _nz_ est le nombre d'observations non nulles simultanément dans les deux vecteurs comparés (les doubles zéros ne sont pas pris en compte)
 - _i'_ est l'itérateur sur toutes les valeurs non double zéros
 
-Voici le détail du calcul (notez bien comment le double zéro pour l'espèce B entre les stations 1 et 2 est pris en compte dans le calcul)\ :
+Voici le détail du calcul (notez bien comment le double zéro pour l'espèce `B` entre les stations `sta1` et `sta2` est pris en compte dans le calcul)\ :
 
 ```{r}
-Sta1_2 <- (1/2) * ((abs(4 - 3)) / (4 + 3) + (abs(2 - 10)) / (2 + 10))
-round(Sta1_2, 2)
+sta1_2 <- (1/2) * ((abs(4 - 3)) / (4 + 3) + (abs(2 - 10)) / (2 + 10))
+round(sta1_2, 2)
 
-Sta1_3 <- (1/3) * (abs(4 - 1) / (4 + 1) + abs(0 - 8) / (0 + 8) +
+sta1_3 <- (1/3) * (abs(4 - 1) / (4 + 1) + abs(0 - 8) / (0 + 8) +
   abs(2 - 0) / (2 + 0))
-round(Sta1_3, 2)
+round(sta1_3, 2)
 
-Sta2_3 <- (1/3) * (abs(3 - 1) / (3 + 1) + abs(0 - 8) / (0 + 8) +
+sta2_3 <- (1/3) * (abs(3 - 1) / (3 + 1) + abs(0 - 8) / (0 + 8) +
   abs(10 - 0) / (10 + 0))
-round(Sta2_3, 2)
+round(sta2_3, 2)
 ```
 
 La matrice finale est la suivante\ :
 
 ```{r, echo=FALSE}
-round(vegan::vegdist(ex1, method = "canberra"), 2)
+vegan::vegdist(ex1, method = "canberra") %>.%
+  round(., 2) %>.%
+  as.matrix(.) %>.%
+  as.data.frame(.) -> dst
+dst[!lower.tri(dst)] <- ""
+dst <- dst[-1, -3]
+rownames(dst) <- c("**sta2**", "**sta3**")
+knitr::kable(dst)
 ```
 
 Vérifions en laissant R faire le calcul\ :
@@ -253,17 +260,16 @@ vegan::vegdist(ex1, method = "canberra") %>.%
   round(., 2)
 ```
 
-Attention\ ! `dist(, method = "canberra")` ne multiplie pas la somme par $1/nz$, mais par $n/nz$ (variante). Ainsi, nous obtenons des distances trois fois plus grandes ici avec `dist()` qu'avec `vegan::vegdist()`, mais les deux calculs restent valables car les écarts relatifs au sein de la matrice de distance sont les mêmes.
+Attention\ ! `dist(, method = "canberra")` ne multiplie pas la somme par $1/nz$, mais par $n/nz$ (variante). Ainsi, nous obtenons des distances *n* fois plus grandes avec `dist()` qu'avec `vegan::vegdist()` pour *n* lignes dans le tableau, mais les deux calculs restent valables car les écarts relatifs au sein de la matrice de distance sont les mêmes.
 
 ```{r}
 dist(ex1, method = "canberra") %>.%
   round(., 2)
 ```
 
-
 ## Regroupement avec CAH
 
-A partir du moment où nous avons une matrice de distances entre toutes les paires d'individus dans notre jeu de données, nous pouvons les regrouper en fonction de leur ressemblance. Deux approches radicalement différentes existent. Soit nous pouvons diviser l'échantillon progressivement jusqu'à obtenir des groupes homogènes (**méthodes divisives, telle que les K-moyennes** que nous aborderons dans le module suivant), soit nous pouvons regrouper les items semblables petit à petit jusqu'à avoir traité tout l'échantillon (**méthodes agglomératives, telle que la classification ascendante hiérarchique** étudiée ici).
+À partir du moment où nous avons une matrice de distances entre toutes les paires d'individus de notre jeu de données, nous pouvons les regrouper en fonction de leurs ressemblances. Deux approches radicalement différentes existent. Soit nous pouvons diviser l'échantillon progressivement jusqu'à obtenir des groupes homogènes (**méthodes divisives, telle que les K-moyennes** que nous aborderons dans le module suivant), soit nous pouvons regrouper les items semblables petit à petit jusqu'à avoir traité tout l'échantillon (**méthodes agglomératives, telle que la classification ascendante hiérarchique** étudiée ici).
 
 ##### À vous de jouer ! {-}
 
@@ -277,7 +283,7 @@ Le **dendrogramme** est une manière très utile de représenter graphiquement u
 
 Dans l'arbre, nous représentons des divisions dichotomiques (division d'une branche en deux) matérialisant les divergences au cours de l'évolution. Dans l'arbre présenté ici, l'axe des ordonnées est utilisé pour représenter le temps et les branchements sont placées à une hauteur correspondante en face de l'axe. Le dendrogramme est une représentation similaire de la CAH avec l'axe des ordonnées indiquant *à quelle distance* le rassemblement se fait.
 
-Dans R, la réalisation du dendrogramme se fait en deux étapes\ :
+Dans R, un dendrogramme se construit en deux étapes\ :
 
 1) Son calcul par CAH à l'aide de la fonction `hclust()`
 
@@ -285,17 +291,17 @@ Dans R, la réalisation du dendrogramme se fait en deux étapes\ :
 
 Partons, pour étayer notre raisonnement, d'une matrice de distances euclidiennes sur les données de zooplancton. Au passage, abordons quelques fonctions de R utiles dans le contexte pour préparer correctement nos données.
 
-- A la section précédente, nous avons suggéré qu'il peut être utile de *standardiser* nos données préalablement si une distance de type euclidienne ou manhattan est ensuite calculée et si les données numériques sont mesurées dans des unités différentes, comme c'est le cas ici. La fonction `scale()` se charge de cette standardisation colonne par colonne dans un tableau. Comme elle renvoie une matrice, nous devons ensuite retransformer le résultat en `data.frame` ou `tibble`. Nous choisissons ici d'utiliser la fonction `as_tibble()`.
-- Limitons, pour l'instant notre ambition à la comparaison de six individus. Afin d'observer tous les cas possibles dans le dendrogramme, nous ne prendrons pas les six premières lignes du tableau, mais les lignes 13 à 18. Cela peut se faire à l'aide de la fonction `slice()` que nous n'avons pas encore beaucoup utilisée jusqu'ici. Cette fonction permet de spécifier explicitement les numéros de lignes à conserver, contrairement à `filter()` qui applique un test de condition pour décider qulles ligne(s) converser.
+- A la section précédente, nous avons suggéré qu'il peut être utile de *standardiser* nos données préalablement si les données numériques sont mesurées dans des unités différentes, comme c'est le cas ici. La fonction `scale()` se charge de cette standardisation colonne par colonne dans un tableau. Comme elle renvoie une matrice, nous devons ensuite retransformer le résultat en `data.frame` ou `tibble`. Nous choisissons ici d'utiliser la fonction `as_tibble()`.
+- Limitons, pour l'instant notre ambition à la comparaison de six individus. Afin d'observer tous les cas possibles dans le dendrogramme, nous ne prendrons pas les six premières lignes du tableau, mais les lignes 13 à 18. Cela peut se faire à l'aide de la fonction `slice()` que nous n'avons pas encore beaucoup utilisée jusqu'ici. Cette fonction permet de spécifier explicitement les numéros de lignes à conserver, contrairement à `filter()` qui applique un test de condition pour décider quelles ligne(s) conserver.
 
 Voici donc notre matrice de distances euclidiennes sur les données ainsi traitées. Les individus initiaux 13 à 18 sont renumérotés 1 à 6. Nous n'imprimons plus ici la matrice de distance obtenue car ce n'est que la première étape du travail vers une représentation plus utile (le dendrogramme).
 
 ```{r}
 zoo %>.%
-  select(., -class) %>.% # Elimination de la colonne class
-  scale(.) %>.% # Standardisation des 19 colonnes
-  as_tibble(.) %>.% # Conversion de la matrice en data.frame +tibble
-  slice(., 13:18) -> zoo6      # Récupération des lignes 13 à 18
+  select(., -class) %>.%   # Élimination de la colonne class
+  scale(.) %>.%            # Standardisation des 19 colonnes
+  as_tibble(.) %>.%        # Conversion de la matrice en tibble
+  slice(., 13:18) -> zoo6  # Récupération des lignes 13 à 18
 
 zoo6 %>.%
   vegan::vegdist(., method = "euclidean") -> zoo6std_dist
@@ -309,15 +315,15 @@ zoo6std_dist %>.%
   plot(zoo6std_clust) # ggdendro::ggdendrogram() peut aussi être utilisé ici
 ```
 
-Voici comment interpréter ce graphique. Les deux individus les plus semblables sont le 2 et le 5 (regroupepent effectué le plus bas, donc, avec la valeur de l'indice de dissimilarité le plus faible), également tous deux similaires au 3. Le 4 se rattache à ce groupe, mais bien plus haut sur l'axe, indiquant ainsi qu'il s'en différencie un peu plus, enfin, le 1 et le 6 sont rassemblés à un niveau à peu près équivalent. Finalement, le groupe de droite constitué des individus 2, 3, 4 et 5 et celui de gauche contenant le 1 et le 6 sont reliés encore plus haut suggérant ainsi la dissimilitude la plus forte entre ces deux groupes.
+Voici comment interpréter ce graphique. Les deux individus les plus semblables sont le 2 et le 5 (regroupement effectué le plus bas, donc, avec la valeur de l'indice de dissimilarité le plus faible). Ensuite ce groupe formé du 2 et du 5 est le plus similaire au 3. Le 4 se rattache ensuite à ce groupe formé des 2, 3 et 5 mais bien plus haut sur l'axe, indiquant ainsi qu'il s'en différencie un peu plus Enfin, le 1 et le 6 sont rassemblés à un niveau à peu près équivalent. Finalement, le groupe de droite constitué des individus 2, 3, 4 et 5 et celui de gauche contenant le 1 et le 6 sont reliés encore plus haut suggérant ainsi la dissimilitude la plus forte entre ces deux groupes.
 
 ```{block2, type='warning'}
 
-Attention\ : La position des individus selon l'axe horizontal n'est pas importante. Il faut voir le dendrogramme comme un mobile qui peut tourner librement. C'est-à-dire que le groupe constitué de 2, 3, 4 et 5 aurait très bien pu être placé à la gauche de celui constitué de 1 et 6. De même, le sous-groupe 2, 3 et 5 aurait très bien pu être à la gauche du regroupement avec 4 à la droite, etc.
+**Attention\ :** La position des individus selon l'axe horizontal n'est pas importante. Il faut voir le dendrogramme comme un mobile qui peut tourner librement. C'est-à-dire que le groupe constitué de 2, 3, 4 et 5 aurait très bien pu être placé à la gauche de celui constitué de 1 et 6. De même, le sous-groupe 2, 3 et 5 aurait très bien pu être à la gauche du regroupement avec 4 à la droite, etc. Seul compte la hauteur sur l'axe vertical à laquelle les regroupements se font.
 
 ```
 
-Notez que nous n'avons *pas* utilisé l'information concernant les classes taxonomiques auxquelles les individus appartiennent (nous avons éliminé la variable `class` en tout début d'analyse). Pour cette raison, ce type de regroupement s'appelle une **classification non supervisée** parce que nous n'imposons pas les groupes que nous souhaitons réaliser^[Les techniques complémentaires de classification supervisées, recommandées dans le cas du jeu de données zooplancton seront abordées dans le cours de Science des Données Biologiques III l'an prochain.]. Nous pouvons néanmoins révéler ces classes maintenant pour vérifier si le dendrogramme réalisé est logique (étape bien sûr facultative et souvent pas possible en pratique lorsque cette information *n'est pas* disponible)\ :
+Notez que nous n'avons *pas* utilisé l'information concernant les classes taxonomiques auxquelles les individus appartiennent (nous avons éliminé la variable `class` en tout début d'analyse). Ce type de regroupement s'appelle une **classification non supervisée** parce que nous n'imposons pas les groupes que nous souhaitons réaliser^[Les techniques complémentaires de classification supervisées seront abordées dans le cours de Science des Données Biologiques III l'an prochain.]. Cependant, comme nous possédons cette indication du groupe taxominque de nos six individus par ailleurs dans `class`, nous pouvons en profiter pour l'utiliser à des fins de vérification\ :
 
 ```{r}
 zoo$class[13:18]
@@ -327,23 +333,23 @@ Les individus 2, 3 et 5 ("Poecilostomatoid" ou "Calanoid") sont des [copépodes]
 
 ### Séparer les groupes
 
-Si notre dendrogramme est satisfaisant (nous le déterminons en l'étudiant et en vérifiant que le regroupement obtenu a un sens biologique  par rapport à l'objectif de notre étude), nous concrétisons le regroupement en coupant l'arbre à une certaine hauteur à l'aide de la fonction `cutree()`. Nous pouvons matérialiser ce niveau de coupure en traçant un trait horizontal rouge avec `abline(h = XXX, col = "red")` pour le graphe de base, ou en ajoutant `+ geom_hline(yintercept = XXX, col = "red")` au graphique ggplot2, avec 'XXX' la hauteur de coupure souhaitée. Par exemple, si nous voulons réaliser deux groupes, nous ferons\ :
+Si notre dendrogramme est satisfaisant (nous le déterminons en l'étudiant et en vérifiant que les regroupements obtenus ont un sens biologique  par rapport à l'objectif de notre étude), nous concrétisons les groupes que nous souhaitons retenir au final en coupant l'arbre horizontalement à une hauteur choisie à l'aide de la fonction `cutree()`. Nous pouvons matérialiser ce niveau de coupure en traçant un trait horizontal rouge avec `abline(h = XXX, col = "red")` pour le graphe de base, ou en ajoutant `+ geom_hline(yintercept = XXX, col = "red")` au graphique ggplot2, avec 'XXX' la hauteur de coupure souhaitée. Par exemple, si nous coupons l'arbre à une hauteur de 8, nous obtenons deux groupes\ :
 
 ```{r}
 plot(zoo6std_clust)
 abline(h = 8, col = "red")
 ```
 
-Pour réaliser trois groupes, nous couperons plus bas (ici version {ggplot2})\ :
+Si nous coupons l'arbre plus bas, par exemple à la hauteur de 6,5, nous obtenons trois groupes (ici dans la version {ggplot2})\ :
 
 ```{r}
 ggdendro::ggdendrogram(zoo6std_clust) +
   geom_hline(yintercept = 6.5, col = "red")
 ```
 
-Et ainsi de suite. A mesure que la hauteur de coupure descend, nous réaliserons quatre, puis cinq groupes. Quel est le meilleur niveau de coupure\ ? Il n'y en a pas un seul forcément car les différents niveaux correspondent à un point de vue de plus en plus détaillé du regroupement. Néanmoins, lorsque le saut sur l'axe d'un regroupement à l'autre est fort, nous pouvons considérer une séparation des groupes d'autant meilleure. Cela crédibilise d'autant le regroupement choisi. Ainsi la séparation en deux groupes apparaît forte (entre 10,2 et 7,4, sur un intervalle de 2,8 unités donc). De même, la séparation de l'individu 4 par rapport au groupe constitué de 2, 3 et 5 se fait sur un intervalle de 4,7 unités (entre 7,4 et 2,7). En comparaison, la séparation de l'individu 3 du groupe 2 et 5 est nettement moins nette puisqu'elle apparaît aux hauteurs entre 2,7 à 2.4, soit seulement sur un intervalle de 0,3 unités. Ces mesures d'intervalles n'ont aucune valeur absolue. Il faut les considérer uniquement de manière relatives les unes par rapport aux autres, et seulement au sein d'un même dendrogramme.
+À mesure que la hauteur de coupure descend, nous réaliserons quatre, puis cinq groupes. Quel est le meilleur niveau de coupure\ ? Il n'y en a pas un seul forcément car les différents niveaux correspondent à un point de vue de plus en plus détaillé du regroupement. Néanmoins, lorsque le saut sur l'axe d'un regroupement à l'autre est fort, nous pouvons considérer une séparation des groupes d'autant meilleure. Cela crédibilise d'autant le regroupement choisi. Ainsi la séparation en deux groupes apparaît forte (entre 10,2 et 7,4, sur un intervalle de 2,8 unités donc). De même, la séparation de l'individu 4 par rapport au groupe constitué de 2, 3 et 5 se fait sur un intervalle de 4,7 unités (entre 7,4 et 2,7). En comparaison, la séparation de l'individu 3 du groupe 2 et 5 est nettement moins nette puisqu'elle apparaît aux hauteurs entre 2,7 à 2.4, soit seulement sur un intervalle de 0,3 unités. Ces mesures d'intervalles n'ont aucune valeur absolue. Il faut les considérer uniquement de manière relatives les unes par rapport aux autres, et seulement au sein d'un même dendrogramme.
 
-Ici, deux niveaux de coupure se détachent. Nous utilisons aussi la fonction `rect.hclust()` pour matérialiser ces groupes sur le dendrogramme, et `cutree()` pour obtenir une nouvelle variable que nous pourrons ajouter dans notre tableau de données qui concrétise le regroupement choisi\ :
+Ici, deux niveaux de coupure se détachent. Nous utilisons aussi la fonction `rect.hclust()` pour mettre en évidence les groupes sur le dendrogramme, et `cutree()` pour obtenir une nouvelle variable que nous pourrons ajouter dans notre tableau de données avec le regroupement choisi\ :
 
 - en deux groupes, nous avons les crustacés séparés des autres.
 
@@ -373,9 +379,9 @@ Le groupe des individus 2, 3 et 5 est encadré en rouge. Les trois autres groupe
 (group4 <- cutree(zoo6std_clust, h = 5))
 ```
 
-L'individu 1 est dans le groupe 1, les individus 2, 3 et 5 sont dans le groupe 2, l'individu 4 est dans le groupe 3 et enfin l'individu 6 est dans le groupe 4. Donc, `cutree()` numérote ses groupes en fonction du premier item présent dedans dans l'ordre du tableau de données.
+L'individu 1 est dans le groupe 1, les individus 2, 3 et 5 sont dans le groupe 2, l'individu 4 est dans le groupe 3 et enfin l'individu 6 est dans le groupe 4. Donc, `cutree()` numérote ses groupes en fonction du premier item de cette catégorie rencontré dans le tableau des données dans l'ordre dans lequel il se présente.
 
-Nous pouvons rajouter ces regroupements dans le tableau de données, et utiliser cette information pour en faire d'autres choses utiles. Par exemple, nous représentons un nuage de point des données et colorons nos points en fonction du premier regroupement effectué comme suit\ :
+Nous pouvons cette variable indiquant les groupes dans le tableau de données, et utiliser cette information pour en faire d'autres choses utiles. Par exemple, nous représentons un nuage de point à partir de deux varriables quantitatives et colorons nos points en fonction dde nos groupes comme suit\ :
 
 ```{r}
 zoo6$group2 <- as.factor(group2) # Utiliser une variable facteur ici
@@ -383,7 +389,7 @@ chart(zoo6, area ~ circularity %col=% group2) +
   geom_point()
 ```
 
-Nous voyons que les copépodes (groupe 2 en turquoise) sont plus grands (`area`) et moins circulaires (`circularity`) que les deux autres particules du groupe 1 en rouge. Nous pouvons ainsi réexplorer nos données en fonction du regroupement pour mieux le comprendre.
+Nous voyons que les copépodes (groupe 2 en turquoise) sont plus grands (`area`) et moins circulaires (`circularity`) que les deux autres particules du groupe 1 en rouge. Nous pouvons ainsi réexplorer nos données en fonction de ces groupes pour mieux le comprendre.
 
 #### Méthodes de CAH
 
@@ -399,9 +405,9 @@ zoo6std_dist %>.%
   plot(.)
 ```
 
-Les données tendent à être aggrégées de proche en proche en montrant une gradation d'une extrême à l'autre. Dans le cas d'une variation progressive, par exemple lors d'un passage graduel d'une situation A vers une situation B le long d'un transect, le dendrogramme obtenu à l'aide de cette méthode représentera la situation au mieux.
+Les données tendent à être aggrégées de proche en proche en montrant une gradation d'une extrême à l'autre. Dans le cas d'une variation progressive, par exemple lors d'un passage graduel d'une situation A vers une situation B, le dendrogramme obtenu à l'aide de cette méthode représentera la situation au mieux.
 
-- **Liens complets** (complete linkages) `hclust(DIST, method = "complete")`, méthode utilisée par défault si non précisée\ : la distance entre les plus lointains voisins est considérée. C'est le dendrogramme que nous avons obtenu au début.
+- **Liens complets** (complete linkages) `hclust(DIST, method = "complete")`, méthode utilisée par défaut si non précisée\ : la distance entre les plus lointains voisins est considérée. C'est le premier dendrogramme que nous réalisé.
 
 ![](images/sdd2_05/link_complete.png)
 
@@ -419,7 +425,7 @@ zoo6std_dist %>.%
   plot(.)
 ```
 
-Dans ce cas-ci, le résultat est similaire aux liens simples, mais ce n'est pas forcément le cas à chaque fois.
+Dans ce cas-ci, le résultat est similaire aux liens simples, mais ce n'est pas forcément le cas tout le temps.
 
 - **Méthode de Ward** `hclust(DIST, method = "ward.D2")`. Considérant le partitionnement de la variance totale du nuage de points (on parle aussi de l'*inertie* du nuage de points) entre variance interclasse et variance intraclasse, la méthode vise à maximiser la variance interclasse et minimiser la variance intraclasse, ce qui revient d'ailleurs au même. Cette technique fonctionne souvent très bien pour obtenir des groupes bien individualisés.
 
@@ -429,7 +435,7 @@ zoo6std_dist %>.%
   plot(.)
 ```
 
-Ici nous obtenos un dendrogramme très proche des liens complets. Encore une fois, ce n'est pas forcément le cas dans toutes les situations.
+Ici nous obtenons un dendrogramme très proche des liens complets. Encore une fois, ce n'est pas forcément le cas dans toutes les situations.
 
 - Liens **médians**, **centroïdes**, ..., constituent encore d'autre méthodes possibles, mais moins utilisées. Elles ont l'inconvénient de produire parfois des *inversions* dans le dendrogramme, c'est-à-dire qu'un regroupement plus avant se fait parfois à une hauteur plus basse sur l'axe des ordonnées, ce qui rend le dendrogramme peu lisible et beaucoup moins esthétique. Dans notre exemple, la méthode centroïde crée une telle inversion à la hauteur de 5 environ sur l'axe des ordonnées entre l'individu 6 et l'individu 1. Alors, qui est regroupé en premier\ ? Pas facile à déterminer dans ce cas\ !
 
@@ -450,38 +456,38 @@ Voici ce que cela donne si nous effectuons une CAH sur le jeu `zoo`plancton comp
 
 ```{r}
 zoo %>.%
-  select(., -class) %>.% # Elimination de la colonne class
-  scale(.) %>.% # Standardisation des 19 colonnes
-  as_tibble(.) %>.% # Transformation en data.frame + tibble
+  select(., -class) %>.% # Élimination de la colonne class
+  scale(.) %>.%          # Standardisation des 19 colonnes
+  as_tibble(.) %>.%      # Transformation en tibble
   vegan::vegdist(., method = "euclidean") %>.% # Matrice de distances
-  hclust(., method = "ward.D2") -> zoo_clust # CAH avec Ward
+  hclust(., method = "ward.D2") -> zoo_clust   # CAH avec Ward
   
   plot(zoo_clust, labels = FALSE) # Dendrogramme sans labels des individus
-  abline(h = 70, col = "red") # Séparation en 3 groupes
+  abline(h = 70, col = "red")     # Séparation en groupes à une hauteur de 30
 ```
 
-Naturellement, avec 1262 branches, notre dendrogramme est très encombré\ ! Cependant, il reste analysable tant que nous nous intéressons aux regroupements de plus haut niveau (vers le haut du dendrogramme). Notez comme les valeurs sur l'axe des ordonnées ont changé par rapport à nos cas simple à six items (ne jamais comparer les hauteurs *entre* dendrogrammes différents).
+Naturellement, avec 1262 branches, notre dendrogramme est très encombré. Cependant, il reste analysable tant que nous nous intéressons aux regroupements de plus haut niveau (vers le haut du dendrogramme). Notez comme les valeurs sur l'axe des ordonnées ont changé par rapport à nos cas simple à six items (ne jamais comparer les hauteurs *entre* dendrogrammes différents).
 
-Notre CAH est terminée, mais nous pouvons matérialiser le regroupement sous forme d'une variable supplémentaire dans le tableau et l'utiliser ensuite.
+Notre CAH est terminée, nous pouvons récupérer les groupes dans une variable supplémentaire dans le tableau et l'utiliser ensuite.
 
 ```{r}
   zoo_clust %>.%
-    cutree(., h = 70) %>.% # Matérialisation des groupes
-    as.factor(.) -> # Conversion en variable facteur
-    zoo$Groupes # Ajout au tableau comme variable Groupes
+    cutree(., h = 70) %>.% # Réalisation des groupes
+    as.factor(.) ->        # Conversion en variable facteur
+    zoo$groups             # Ajout au tableau comme variable groups
   
-  chart(zoo, compactness ~ ecd %col=% Groupes) +
-    geom_point() + # Exploration visuelle des groupes (exemple)
+  chart(zoo, compactness ~ ecd %col=% groups) +
+    geom_point() +         # Exploration visuelle des groupes (exemple)
     coord_trans(x = "log10", y = "log10") # Axes en log10
 ```
 
-Et de manière optionnelle, si un classement est disponible par ailleurs (c'est le cas ici avec la variable `class`), nous pouvons réaliser un tableau de contingence à double entrées entre le regroupement obtenu et le classement pour comparaison.
+Et de manière optionnelle, si un classement est disponible par ailleurs (c'est le cas ici avec la variable `class`), nous pouvons réaliser un tableau de contingence à double entrées entre le regroupement obtenu par CAH et le classement obtenu de manière indépendante à cette analyse pour comparaison.
 
 ```{r}
-table(zoo$class, zoo$Groupes)
+table(zoo$class, zoo$groups)
 ```
 
-Ainsi, nous pouvons constater que le groupe 1 contient une fraction importante des annélides, des cladocères,des décapodes, des œufs ronds et des gastéropodes. Le groupe 2 contient un maximum des copépodes représentés par les calanoïdes, les cyclopoïdes, les harpacticoïdes et les poecilostomatoïdes. Il contient aussi tous les appendiculaires, tous les protistes, presque tous les œufs allongés, les poissons, et une majorité des malacostracés. Enfin, le groupe 3 contient une majorité des chaetognathes et des cnidaires. Le regroupement a été réalisé uniquement en fonction de mesures effectuées sur les images. Il n'est pas parfait, mais des tendances se dégagent tout de même.
+Ainsi, nous pouvons constater que le groupe 1 contient une fraction importante des annélides, des cladocères, des décapodes, des œufs ronds et des gastéropodes. Le groupe 2 contient un maximum des copépodes représentés par les calanoïdes, les cyclopoïdes, les harpacticoïdes et les poecilostomatoïdes. Il contient aussi tous les appendiculaires, tous les protistes, presque tous les œufs allongés, les poissons, et une majorité des malacostracés. Enfin, le groupe 3 contient une majorité des chaetognathes et des cnidaires. Le regroupement a été réalisé uniquement en fonction de mesures effectuées sur les images. Il n'est pas parfait, mais des tendances se dégagent tout de même.
 
 ##### Pour en savoir plus {-}
 
@@ -493,19 +499,24 @@ vembedr::embed_youtube("SE_4dLh5vXY", width = 770, height = 433, query = list(st
 
 - Une autre explication encore [ici](http://larmarange.github.io/analyse-R/classification-ascendante-hierarchique.html).
 
-- Pour bien comprendre la façon dont une CAH est réalisée, il est utile de détailler le calcul étape par étape sur un exemple simple. Voici une matrice de distances euclidiennes fictive entre 6 stations\ :
+- Pour bien comprendre la façon dont une CAH est réalisée, il est utile de détailler le calcul étape par étape sur un exemple simple. Voici une matrice de distances euclidiennes fictive entre 6 stations nommées A à F\ :
 
 ```{r, echo=FALSE}
-Question1 <- data.frame(Espece1 = c(0, 9, 2, 1, 1, 7),
-                        Espece2 = c(8, 0, 2, 5, 8, 1),
-                        Espece3 = c(1, 5, 1, 5, 1, 0),
-                        Espece4 = c(2, 10, 3, 1, 7, 5)) 
-Station <- c("A", "B", "C", "D", "E", "F")
-rownames(Question1) <- Station 
-dst0 <- round(dist(Question1, method = "euclidian"), 2)
+dat <- data.frame(
+  espece1 = c(0,  9,  2,  1,  1,  7),
+  espece2 = c(8,  0,  2,  5,  8,  1),
+  espece3 = c(1,  5,  1,  5,  1,  0),
+  espece4 = c(2, 10,  3,  1,  7,  5)) 
+stations <- c("A", "B", "C", "D", "E", "F")
+rownames(dat) <- stations
+dst0 <- round(dist(dat, method = "euclidian"), 2)
 dst <- as.matrix(dst0)
 dst[!lower.tri(dst)] <- ""
-dst <- dst[-1, -6]
+dst <- dst[-1, ]
+dst[, 2:6] <- dst[, 1:5]
+dst[, 1] <- c("**B**", "**C**", "**D**", "**E**", "**F**")
+colnames(dst) <- c("&nbsp;", "A", "B", "C", "D", "E")
+rownames(dst) <- NULL
 knitr::kable(dst)
 ```
 
@@ -513,65 +524,68 @@ Effectuons une CAH manuellement par liens complets et traçons le dendrogramme c
 
 **Etape 1\ :** Nous repérons dans la matrice de distance la paire qui a l'indice de dissimilarité le plus petit et effectuons un premier regroupement. A_E = groupe I à la distance 5,1. La matrice de distances est simplifiées par rapport à ce groupe I en considérant la règle utilisée (ici, liens complets, donc on garde la plus grande distance entre toutes les paires possibles lorsqu'il y a des groupes).
 
-    * Distance entre B et I = B_A = 15
-    * Distance entre C et I = C_E = 7,28
-    * Distance entre D et I = D_E = 7,81
-    * Distance entre F et I = F_A = 10,39
+- Distance entre B et I = B_A = 15
+- Distance entre C et I = C_E = 7,28
+- Distance entre D et I = D_E = 7,81
+- Distance entre F et I = F_A = 10,39
 
 Matrice de distance recalculée\ :
 
 ```{r, echo=FALSE}
-dst1 <- data.frame(I = c(15, 7.28, 7.81, 10.39),
-                   B = c("", 10.86, 13.04, 7.42),
-                   C = c("", "", 5.48, 5.57),
-                   D = c("", "", "", 9.64))
+dst1 <- data.frame(
+  I = c(15,  7.28,  7.81, 10.39),
+  B = c("", 10.86, 13.04,  7.42),
+  C = c("",    "",  5.48,  5.57),
+  D = c("",    "",    "",  9.64))
 dst1 <- as.matrix(dst1)
-rownames(dst1) <- c("B", "C", "D", "F")
+rownames(dst1) <- c("**B**", "**C**", "**D**", "**F**")
 knitr::kable(dst1)
 ```
 
-**Etape 2\ :** on répète le processus. C_D = groupe II à la distance 5,48.
+**Etape 2\ :** on répète le processus. C_D = groupe II à la distance la plus petite de 5,48.
 
-    * Distance entre I et II = I_D = 7,81
-    * Distance entre B et II = B_D = 13,04
-    * Distance entre F et II = F_D = 9,64
+- Distance entre I et II = I_D = 7,81
+- Distance entre B et II = B_D = 13,04
+- Distance entre F et II = F_D = 9,64
 
 Matrice de distance recalculée\ :
 
 ```{r, echo=FALSE}
-dst2 <- data.frame(I = c(15, 7.81, 10.39),
-                   B = c("", 13.04, 7.42),
-                   II = c("", "", 9.64))
+dst2 <- data.frame(
+  I  = c(15,  7.81, 10.39),
+  B  = c("", 13.04,  7.42),
+  II = c("",    "",  9.64))
 dst2 <- as.matrix(dst2)
-rownames(dst2) <- c("B", "II", "F")
+rownames(dst2) <- c("**B**", "**II**", "**F**")
 knitr::kable(dst2)
 ```
 
 **Etape 3\ :** B_F = groupe III à la distance 7,42
 
-    * Distance entre I et III = I_B = 15
-    * Distance entre II et III = II_B = 13,04
+- Distance entre I et III = I_B = 15
+- Distance entre II et III = II_B = 13,04
 
 Matrice de distance recalculée\ :
 
 ```{r, echo=FALSE}
-dst3 <- data.frame(I = c(15, 7.81),
-                   III = c("", 13.04))
+dst3 <- data.frame(
+  I   = c(15,  7.81),
+  III = c("", 13.04))
 dst3 <- as.matrix(dst3)
-rownames(dst3) <- c("III", "II")
+rownames(dst3) <- c("**III**", "**II**")
 knitr::kable(dst3)
 ```
 
 **Etape 4\ :** I_II = groupe IV à la distance 7,81
 
-     * Distance entre III et IV = III_I = 15
+- Distance entre III et IV = III_I = 15
 
 Matrice de distance recalculée\ :
 
 ```{r, echo=FALSE}
 dst4 <- data.frame(III = c(15))
 dst4 <- as.matrix(dst4)
-rownames(dst4) <- c("IV")
+rownames(dst4) <- c("**IV**")
 knitr::kable(dst4)
 ```
 
@@ -588,6 +602,8 @@ plot(complete, hang = -1)
 
 ##### À vous de jouer ! {-}
 
+`r learnr("B05La_cah", title = "Matrices de distance et classification hiérarchique ascendante", toc = "Matrices de distance et CAH")`
+
 ```{r, echo=FALSE, results='asis'}
 if (exists("assignation"))
   assignation("B05Ia_ligurian_sea", part = NULL,
@@ -595,7 +611,7 @@ if (exists("assignation"))
     course.urls = c(
       'S-BIOG-015' = "https://classroom.github.com/g/...", 
       'S-BIOG-937-958-959' = "https://classroom.github.com/g/..."),
-    toc = "Exercices pratiques sur la classification hiérarchique")
+    toc = "Application de la classification ascendante hiérarchique")
 ```
 
 ## Récapitulatif des exercices
