@@ -19,13 +19,7 @@ SciViews::R
 
 Vous devez être à l'aise avec l'utilisation de R et Rstudio, en particulier pour l'importation, le remaniement et la visualisation de données multivariées. Ceci correspond au cours SDD I. Il n'est pas nécessaire d'avoir acquis toutes les notions vue dans la partie **Cours II :modélisation** pour pouvoir comprendre cette seconde partie du cours. Si vous ne vous sentez pas assez à l'aise avec R et RStudio, c'est peut-être le bon moment pour refaire le premier "learnr" du package `BioDataScience2`\ :
 
-```{block2, type='bdd'}
-Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
-
-    BioDataScience2::run("01a_rappel")
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
-```
+`r learnr("B01La_rappel", title = "Révision des notions de SDD I", toc = "Révision des notions de SDD I")`
 
 ## Analyse de données
 
@@ -40,6 +34,10 @@ La vidéo suivante introduit l'EAD (jusqu'à 2:11)\ :
 ```{r, echo=FALSE}
 vembedr::embed_youtube("q-IVQoh1nxA", width = 770, height = 433, query = "end=131")
 ```
+
+##### À vous de jouer ! {-}
+
+`r h5p(75, height = 270, toc = "Objectif des statistiques exploratoires")`
 
 ## Distance entre individus
 
@@ -60,6 +58,7 @@ $$\mathrm{D_{Euclidean}}_{j, k} = \sqrt{\sum_{i=1}^{n}(y_{ij}-y_{ik})^2}$$
 
 C'est la racine carré de la somme dans les *n* dimensions des écarts entre les valeurs au carré pour toutes les variables *y~i~*. Plus sa valeur est grande, plus les individus sont éloignés (différents). Pour cette raison, nous appelerons cette distance, une mesure de **dissimilarité**.
 
+
 ### Matrice de distances
 
 Nous avons maintenant la possibilité de quantifier la similitude entre nos organismes plactoniques... mais nous en avons un grand nombre. Cela va être impossible à gérer autant de mesures qu'il y a de paires possibles parmi 1262 individus^[Le nombre de paires uniques et distinctes (pas *j*, *j* ou *k*, *k*) possibles parmi *n* items est $n(n-1)/2$, soit ici pour 1262 éléments nous avons 795.691 paires.]. La **matrice de distance** est une matrice ici 1262 par 1262 qui rassemble toutes les valeurs possibles. Notez que sur la diagonale, nous comparons chaque individu avec lui-même. La distance euclidienne vaut donc systématiquement zéro sur la diagonale.
@@ -70,7 +69,13 @@ De plus, de part et d'autre de cette diagonale, nous trouvons les paires complé
 
 $$\mathrm{D_{Euclidean}}_{j, k} = \mathrm{D_{Euclidean}}_{k, j}$$
 
-Par conséquent, seulement une portion (soit le triangle inférieur, soit le triangle supérieur hors diagonale) est informative. La diagonale ne porte aucune informartion utile, et l'autre triangle est redondant. Nous avons donc pour habitude de ne calculer et représenter que le triangle inférieur de cette matrice. Maintenant que cela est clair, nous pouvons créer un objet `dist` qui contiendra notre matrice de distances enclidiennes. Il suffit d'utiliser la fonction `dist()`, ou mieux `vegan::vegdist()` qui offre plus de possibilités^[La fonction `dist()` ne propose par exemple pas la méthode de Bray-Curtis qui est fréquemment utilisée en biologie et en écologie, contrairement à `vegan::vegdist(method = "bray")`.]. Comme cela prendrait trop de place d'imprimer la matrice complète, nous allons réaliser le travail sur seulement les six premiers individus de notre tableau (et nous devons aussi éliminer la colonne `class` qui ne contient pas de données numériques et qui ne nous intéresse pas pour le moment)\ :
+Par conséquent, seulement une portion (soit le triangle inférieur, soit le triangle supérieur hors diagonale) est informative. La diagonale ne porte aucune informartion utile, et l'autre triangle est redondant. Nous avons donc pour habitude de ne calculer et représenter que le triangle inférieur de cette matrice. Maintenant que cela est clair, nous pouvons créer un objet `dist` qui contiendra notre matrice de distances enclidiennes. Il suffit d'utiliser la fonction `dist()`, ou mieux `vegan::vegdist()` qui offre plus de possibilités^[La fonction `dist()` ne propose par exemple pas la méthode de Bray-Curtis qui est fréquemment utilisée en biologie et en écologie, contrairement à `vegan::vegdist(method = "bray")`.]. 
+
+##### À vous de jouer ! {-}
+
+`r h5p(76, height = 270, toc = "Objectif de la matrice de distance")`
+
+Comme cela prendrait trop de place d'imprimer la matrice complète, nous allons réaliser le travail sur seulement les six premiers individus de notre tableau (et nous devons aussi éliminer la colonne `class` qui ne contient pas de données numériques et qui ne nous intéresse pas pour le moment)\ :
 
 ```{r}
 zoo %>.%
@@ -89,6 +94,11 @@ Nous voyons bien ici que R n'imprime que le *triangle inférieur* de notre matri
 Attention\ : nous n'avons pas considéré ici les unités respectives de nos variables. Une surface (mm^2^) ou une longeur (mm) ne sont pas mesurées dans les mêmes unités. Nous risquons alors de donner plus de poids aux valeurs élevées. Nous aurions le même effet si nous décidions par exemple d'exprimer une mesure longitudinale en µm au leiu de l'exprimer en mm. Dans ce cas, il vaut mieux standardiser d'abord le tableau (moyenne de zéro et écart type de un) selon les colonnes avant d'effectuer le calcul. Ceci sera fait à la page suivante.
 
 ```
+
+##### À vous de jouer ! {-}
+
+`r h5p(77, height = 270, toc = "Utilisation de la distance euclidienne")`
+
 
 ### Indices de (dis)similarité
 
@@ -161,6 +171,10 @@ Dans R, nous utiliserons `vegan::vegdist(DF, method = "manhattan")`. Ici aussi, 
 - Les distances euclidienne ou de Manhattan sont à préférer pour les **mesures environnementales** ou de manière générale pour les variables quantitatives continues.
 
 - Les distances de Bray-Curtis ou Canberra sont meilleure pour les **dénombrements d’espèces** (nombreux double zéro), ou de manière générale, pour les variables quantitatives discrètes prenant des valeurs nulles ou positives.
+
+##### À vous de jouer ! {-}
+
+`r h5p(78, height = 270, toc = "Choix des indices")`
 
 ### Propriétés des indices
 
@@ -246,37 +260,14 @@ dist(ex1, method = "canberra") %>.%
   round(., 2)
 ```
 
-##### A vous de jouer ! {-}
-
-- Réalisez le tutoriel afin de vérifier votre bonne compréhension des matrices de distance.
-
-```{block2, type='bdd'}
-Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
-
-    BioDataScience2::run("05a_distance_matrix")
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
-```
-
-- Réalisez un carnet de note par binôme sur le transect entre Nice et Calvi. Lisez attentivement le fichier `README.md`.
-
-```{block2, type='bdd'}
-
-Vous avez à votre disposition une assignation GitHub Classroom.
-
-Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
-
-* Cours de Sciences des données II à Mons : <https://classroom.github.com/g/R45egn-p>
-
-* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [spatial_distribution_zooplankton_ligurian_sea](https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
-
-Lisez le README afin de prendre connaissance de l'exercice.
-
-```
 
 ## Regroupement avec CAH
 
 A partir du moment où nous avons une matrice de distances entre toutes les paires d'individus dans notre jeu de données, nous pouvons les regrouper en fonction de leur ressemblance. Deux approches radicalement différentes existent. Soit nous pouvons diviser l'échantillon progressivement jusqu'à obtenir des groupes homogènes (**méthodes divisives, telle que les K-moyennes** que nous aborderons dans le module suivant), soit nous pouvons regrouper les items semblables petit à petit jusqu'à avoir traité tout l'échantillon (**méthodes agglomératives, telle que la classification ascendante hiérarchique** étudiée ici).
+
+##### À vous de jouer ! {-}
+
+`r h5p(79, height = 270, toc = "Méthodes divisives ou agglomératives")`
 
 ### Dendrogramme
 
@@ -448,6 +439,10 @@ zoo6std_dist %>.%
   plot(.)
 ```
 
+##### À vous de jouer ! {-}
+
+`r h5p(80, height = 350, toc = "Ordre des étapes pour obtenir un dendrogramme")`
+
 ### Étude complète
 
 Voici ce que cela donne si nous effectuons une CAH sur le jeu `zoo`plancton complet avec ses 1262 lignes.
@@ -590,3 +585,21 @@ Voici le dendrogramme résultant\ :
 hclust(dst0, method = "complete") -> complete
 plot(complete, hang = -1)
 ```
+
+##### À vous de jouer ! {-}
+
+```{r, echo=FALSE, results='asis'}
+if (exists("assignation"))
+  assignation("B05Ia_ligurian_sea", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B05Ia_ligurian_sea",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/g/...", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/g/..."),
+    toc = "Exercices pratiques sur la classification hiérarchique")
+```
+
+## Récapitulatif des exercices
+
+Ce cinquième module vous a permis de comprendre la classification hiérarchique. Il s'agit de la première méthode des statistiques exploratoires que vous venez de découvrir. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser\ :
+
+`r show_ex_toc()`
