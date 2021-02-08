@@ -75,7 +75,7 @@ Par conséquent, seulement une portion (soit le triangle inférieur, soit le tri
 Avant de poursuivre, nous allons utiliser des fonctions personnalisées qui nous faciliteront le travail. Le code qui suit (dépliez la zone de code si vous êtes curieux) va nous créer ces fonctions. Pour un document R Markdown, nous mettrons ce code dans un script R séparé, placé dans `R/functions.R` dans notre projet, et nous ferons `source("../R/functions.R")` dans un chunk de setup. A terme, ces fonctions seront intégrées directement dans la surcouche `SciViews::R` par dessus R.
 
 ```{r, class.source='hidden-code'}
-# CAH for SciViews, version 1.1.1
+# CAH for SciViews, version 1.2.0
 # Copyright (c) 2021, Philippe Grosjean (phgrosjean@sciviews.org)
 
 SciViews::R
@@ -322,23 +322,24 @@ augment.cluster <- function(x, data, k = NULL, h = NULL, ...) {
 # circular), see http://www.sthda.com/english/wiki
 # /beautiful-dendrogram-visualizations-in-r-5-must-known-methods
 # -unsupervised-machine-learning
-plot.cluster <- function(x, y, hang = -1, check = TRUE, type = "vertical",
-lab = "Height", ...) {
+plot.cluster <- function(x, y, labels = TRUE, hang = -1, check = TRUE,
+type = "vertical", lab = "Height", ...) {
   type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
   # type == "circular" is special because we need to transform as ape::phylo
   if (type == "circular") {
     if (!missing(hang))
       warning("'hang' is not used with a circular dendrogram")
     phylo <- ape::as.phylo(x)
-    plot(phylo, type = "fan", font = 1, ...)
+    plot(phylo, type = "fan", font = 1, show.tip.label = labels, ...)
   } else {# Use plot.dendrogram() instead
     # We first convert into dendrogram objet, then we plot it
     # (better that plot.hclust())
+    if (isTRUE(labels)) leaflab <- "perpendicular" else leaflab <- "none"
     dendro <- as.dendrogram(x, hang = hang, check = check)
     if (type == "horizontal") {
-      plot(dendro, horiz = TRUE, xlab = lab, ...)
+      plot(dendro, horiz = TRUE, leaflab = leaflab, xlab = lab, ...)
     } else {
-      plot(dendro, horiz = FALSE, ylab = lab, ...) # note: label different axe
+      plot(dendro, horiz = FALSE, leaflab = leaflab, ylab = lab, ...)
     }
   }
 }
@@ -350,8 +351,8 @@ circle <- function(x = 0, y = 0, d = 1, col = 0, lwd = 1, lty = 1, ...)
     inches = FALSE, add = TRUE, ...)
 
 # TODO: make sure the dendrogram is correct with different ggplot themes
-autoplot.cluster <- function(object, type = "vertical", circ.text.size = 3,
-theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
+autoplot.cluster <- function(object, labels = TRUE, type = "vertical",
+circ.text.size = 3, theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
   if (is.null(type))
     type <- "vertical"
   type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
@@ -363,24 +364,29 @@ theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
     theme + xlab(xlab) + ylab(ylab)
 
   if (type == "circular") {
-    # Get labels (need one more to avoid last = first!)
-    label_df <- tibble::tibble(labels = c(labels(object)[object$order], ""))
-    xmax <- nobs(object) + 1
-    label_df$id <- 1:xmax
-    angle <-  360 * (label_df$id - 0.5) / xmax
-    # Left or right?
-    label_df$hjust <- ifelse(angle < 270 & angle > 90, 1, 0)
-    # Angle for more readable text
-    label_df$angle <- ifelse(angle < 270 & angle > 90, angle + 180, angle)
+    if (isTRUE(labels)) {
+      # Get labels (need one more to avoid last = first!)
+      label_df <- tibble::tibble(labels = c(labels(object)[object$order], ""))
+      xmax <- nobs(object) + 1
+      label_df$id <- 1:xmax
+      angle <-  360 * (label_df$id - 0.5) / xmax
+      # Left or right?
+      label_df$hjust <- ifelse(angle < 270 & angle > 90, 1, 0)
+      # Angle for more readable text
+      label_df$angle <- ifelse(angle < 270 & angle > 90, angle + 180, angle)
+    }
 
     # Make the dendrogram circular
     dendro <- dendro +
       scale_x_reverse() +
       scale_y_reverse() +
-      coord_polar(start = pi/2) +
-      geom_text(data = label_df,
-        aes(x = id, y = -0.02, label = labels, hjust = hjust),
-        size = circ.text.size, angle = label_df$angle, inherit.aes = FALSE) +
+      coord_polar(start = pi/2)
+    if (isTRUE(labels))
+      dendro <- dendro +
+        geom_text(data = label_df,
+          aes(x = id, y = -0.02, label = labels, hjust = hjust),
+          size = circ.text.size, angle = label_df$angle, inherit.aes = FALSE)
+    dendro <- dendro +
       theme(panel.border = element_blank(),
         axis.text = element_blank(),
         axis.line = element_blank(),
@@ -397,6 +403,9 @@ theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
         axis.line.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(angle = 90, hjust = 0.5))
+    if (!isTRUE(labels))
+      dendro <- dendro +
+        theme(axis.text.x = element_blank())
 
   } else {# Horizontal dendrogram
     dendro <- dendro +
@@ -407,6 +416,9 @@ theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
       theme(panel.border = element_blank(),
         axis.line.y = element_blank(),
         axis.ticks.y = element_blank())
+    if (!isTRUE(labels))
+      dendro <- dendro +
+        theme(axis.text.y = element_blank())
   }
   dendro
 }
@@ -426,12 +438,13 @@ geom_dendroline <- function(h, ...)
 
 Voici les fonctions à disposition (nous verrons leur usage progressivement dans ce module)\ :
 
-- `dissimilarity(data, method = "euclidean", scale = FALSE, transpose = FALSE)` \ : crée une matrice de dissimilarité. L'argument `method =` prends les valeurs `"euclidean"`, `"manhattan"`, `"bray"`, `"canberra"`, ... et bien d'autres. Voyez l'aide de `?vegan:vegdist` et `stats:dist` pour les détails. Un objet "dissimilarity" est créé et les méthodes `print()`, `chart()`, `labels()` et `nobs()` sont disponibles,
-- `cluster(x, method = "complete")`\ : part d'un objet "dissimlarity" dans `x` et calcule  le regroupement  à l'aide de différentes méthodes (`"complete"`, `"single"`, `"average"`, `"ward.D2"`, ...). Voir l'aide en ligne de `?hclust` pour la liste complète et les explications. Un objet "cluster" est créé, sur lequel nous pouvons appliquer les méthodes `print()`, `str()`, `plot()`, `chart()`, `labels()`, `nobs()`, `predict()` et `augment()`.
-- Le dendrogramme (graphique qui visualise la CAH et qui sera expliqué plus loin) est créé à partir d'un objet "cluster". Un dendrogramme vertical est créé paer défaut avec `chart(x)` ou `chart$vertical(x)` pour être plus explicite. Une version horizontale s'obtient avec `chart$horizontal(x)`, et une version circulaire avec `chart$circular()`.
-- Le niveau de coupure dans le dendrograme est indiquant en ajoutant `geom_dendroline()` au graphique (`chart(x) + geom_dendroline(h = 5)`.
-- Les groupes sont extraits avec `predict(x, h = 5)` ou `predict(x, k = 5)`. `h =` est le niveau de coupure et `k =` est le nombre de groupe souhaité.
-- `augment(data = df, x, h = )` extrait aussi les groupes mais les rajoute comme nouvelle colonne `.fitted` dans le tableau `df`. On peut aussi utiliser `k =` à la place de `h =` ici.
+- **`dissimilarity(data, method = "euclidean", scale = FALSE, transpose = FALSE)`**\ : matrice de dissimilarité, voir `?vegan::vegdist`
+    + `print()`, `chart()`, `labels()` et `nobs()` sont disponibles
+- **`cluster(x, method = "complete")`**\ : CAH à partir d'un objet "dissimilarity", voir `?stats:hclust`
+    + `print()`, `str()`, `plot()`, `chart()`, `labels()`, `nobs()`, `predict()` et `augment()`
+- **`chart(cluster)`**\ : visualise un cluster (dendrogramme). Utiliser `+ geom_dendroline(h = XX, color = "red")` pour y visualiser la coupure
+- **`predict(cluster, h = 5)`** ou **`predict(cluster, k = 5)`** extrait les groupes
+- **`augment(data = df, cluster, h =|k = )`** ajoute les groupes dans le tableau `df`
 
 ```
 
@@ -814,17 +827,17 @@ zoo6std_dist %>.%
 Voici ce que cela donne si nous effectuons une CAH sur le jeu `zoo`plancton complet avec ses 1262 lignes.
 
 
-```{r, fig}
+```{r, fig.asp=4/3}
 zoo %>.%
   select(., -class) %>.% # Élimination de la colonne class
   # Matrice de dissimilarités sur données standardisées
   dissimilarity(., method = "euclidean", scale = TRUE) %>.%
   cluster(., method = "ward.D2") -> zoo_clust   # CAH avec Ward D2
-  
-  chart$horizontal(zoo_clust) + # Dendrogramme horizontal (plus lisible)
-    geom_dendroline(h = 70, color = "red") + # Séparation en 3 groupes
-    theme(axis.text.y = element_blank()) +   # N'affiche pas les labels
-    ylab("Hauteur")
+
+# Dendrogramme horizontal et sans labels (plus lisible si beaucoup d'items)
+chart$horizontal(zoo_clust, labels = FALSE) +
+  geom_dendroline(h = 70, color = "red") + # Séparation en 3 groupes
+  ylab("Hauteur")
 ```
 
 Naturellement, avec 1262 branches, notre dendrogramme est très encombré. Cependant, il reste analysable tant que nous nous intéressons aux regroupements de plus haut niveau (vers le haut du dendrogramme). Notez comme les valeurs sur l'axe des ordonnées ont changé par rapport à nos cas simple à six items (ne jamais comparer les hauteurs *entre* dendrogrammes différents).
