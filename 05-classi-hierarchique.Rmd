@@ -11,9 +11,9 @@ SciViews::R
 
 - Comprendre la notion de distance et la matrice de distance.
 
-- Appréhender la classification hiérarchique et le dendrogramme.
+- Maîtriser la classification ascendante hiérarchique et le dendrogramme.
 
-- Être capable d'effectuer un regroupement pertinent des individus d'un jeu de données multivarié à l'aide de ces techniques.
+- Être capable d'effectuer un regroupement pertinent à partir d'un jeu de données multivarié à l'aide de ces techniques.
 
 ##### Prérequis {-}
 
@@ -58,7 +58,7 @@ C'est la racine carré de la somme dans les *n* dimensions des écarts entre les
 
 ### Matrice de distances
 
-Nous avons maintenant la possibilité de quantifier la similitude entre nos organismes plactoniques... mais nous en avons un grand nombre. Cela va être impossible à gérer autant de mesures qu'il y a de paires possibles parmi 1262 individus^[Le nombre de paires uniques et distinctes (pas *j*, *j* ou *k*, *k*) possibles parmi *n* items est $n(n-1)/2$, soit ici pour 1262 éléments nous avons 795.691 paires.]. La **matrice de distance** est une matrice ici 1262 par 1262 qui rassemble toutes les valeurs possibles. Notez que sur la diagonale, nous comparons chaque individu avec lui-même. La distance euclidienne vaut donc systématiquement zéro sur la diagonale.
+Nous avons maintenant la possibilité de quantifier la similitude entre nos organismes planctoniques... mais nous en avons un grand nombre. Cela va être impossible à gérer autant de mesures qu'il y a de paires possibles parmi 1262 individus^[Le nombre de paires uniques et distinctes (pas *j*, *j* ou *k*, *k*) possibles parmi *n* items est $n(n-1)/2$, soit ici pour 1262 éléments nous avons 795.691 paires.]. La **matrice de distance** est une matrice ici 1262 par 1262 qui rassemble toutes les valeurs possibles. Notez que sur la diagonale, nous comparons chaque individu avec lui-même. La distance euclidienne vaut donc systématiquement zéro sur la diagonale.
 
 $$\mathrm{D_{Euclidean}}_{j, j} = 0$$
 
@@ -66,23 +66,386 @@ De plus, de part et d'autre de cette diagonale, nous trouvons les paires complé
 
 $$\mathrm{D_{Euclidean}}_{j, k} = \mathrm{D_{Euclidean}}_{k, j}$$
 
-Par conséquent, seulement une portion (soit le triangle inférieur, soit le triangle supérieur hors diagonale) est informative. La diagonale ne porte aucune information utile, et l'autre triangle est redondant. Nous avons donc pour habitude de ne calculer et représenter que le triangle inférieur de cette matrice. Maintenant que cela est clair, nous pouvons créer un objet `dist` qui contiendra notre matrice de distances enclidiennes. Il suffit d'utiliser la fonction `dist()`, ou mieux `vegan::vegdist()` qui offre plus de possibilités^[La fonction `dist()` ne propose par exemple pas la méthode de Bray-Curtis que nous aborderons plus loin et qui est fréquemment utilisée en biologie et en écologie, contrairement à `vegan::vegdist(method = "bray")`.]. 
+Par conséquent, seulement une portion (soit le triangle inférieur, soit le triangle supérieur hors diagonale) est informative. La diagonale ne porte aucune information utile, et l'autre triangle est redondant. Nous avons donc pour habitude de ne calculer et représenter que le triangle inférieur de cette matrice.
 
 ##### À vous de jouer ! {-}
 
 `r h5p(76, height = 270, toc = "Objectif de la matrice de distance")`
 
-Comme cela prendrait trop de place d'imprimer la matrice complète, nous allons réaliser le travail sur seulement les six premiers individus de notre tableau (et nous devons aussi éliminer la colonne `class` qui ne contient pas de données numériques et qui ne nous intéresse pas pour le moment)\ :
+Avant de poursuivre, nous allons utiliser des fonctions personnalisées qui nous faciliteront le travail. Le code qui suit (dépliez la zone de code si vous êtes curieux) va nous créer ces fonctions. Pour un document R Markdown, nous mettrons ce code dans un script R séparé, placé dans `R/functions.R` dans notre projet, et nous ferons `source("../R/functions.R")` dans un chunk de setup. A terme, ces fonctions seront intégrées directement dans la surcouche `SciViews::R` par dessus R.
+
+```{r, class.source='hidden-code'}
+# CAH for SciViews, version 1.1.1
+# Copyright (c) 2021, Philippe Grosjean (phgrosjean@sciviews.org)
+
+SciViews::R
+
+# dist is really a dissimilarity matrix => we use dissimilarity() as in the
+# {cluster} package, i.e., class is c("dissimilarity", "dist")
+# TODO: also make a similarity object and convert between the two
+# fun can be stats::dist, vegan::vegdist, vegan::designdist, cluster::daisy
+# factoextra::get_dist and probably other dist-compatible functions
+# Depending on method =, use either vegan::vegdist or stats::dist as default fun
+dissimilarity <- function(data, formula = ~ ., subset = NULL,
+  method = "euclidean", scale = FALSE, rownames.col = "rowname",
+  transpose = FALSE, fun = NULL, ...) {
+  # TODO: get more meaningful warnings and errors by replacing fun by actual
+  # name of the function
+  if (is.null(fun)) {# Default function depends on the chosen method
+    if (method %in% c("maximum", "binary", "minkowski")) {
+      fun <- stats::dist
+    } else {
+      fun <- vegan::vegdist # Note: euclidean/manhattan/canberra in both, but
+      # we prioritize vegdist, and canberra is not calculated the same in dist!
+    }
+  }
+  # We accept only formulas with right-hand side => length must be two
+  if (length(formula) == 3)
+    stop("The formula cannot have a left-hand term")
+
+  # With matrices, we don't use rownames.col: rownames are already correctly set
+  if (!is.matrix(data)) {# row names may be in a column (usual for tibbles)
+    data <- as.data.frame(data)
+    if (rownames.col %in% names(data)) {
+      rownames(data) <- data[[rownames.col]]
+      data[[rownames.col]] <- NULL
+    } else {# rownames.col is NOT used
+      rownames.col <- NULL
+    }
+    if (as.character(formula[2] != ".")) {
+      # Subset the columns
+      data <- model.frame(formula, data = data, subset = subset)
+    } else if (!is.null(subset)) {
+      data <- data[subset, ]
+    }
+  } else {# A matrix
+    rownames.col <- NULL
+    if (as.character(formula[2] != ".")) {
+      # Subset the columns (and possibly the rows)
+      if (is.null(subset)) {
+        data <- data[, all.vars(formula)]
+      } else {
+        data <- data[subset, all.vars(formula)]
+      }
+    }
+  }
+
+  if (isTRUE(transpose))
+    data <- t(data)
+
+  # Arguments method =/metric = and stand = not always there
+  if (!is.null(as.list(args(fun))$metric)) {# metric = instead of method =
+    dst <- fun(data, metric = method, stand = scale, ...)
+  } else if (isTRUE(scale)) {
+    if (is.null(as.list(args(fun))$stand)) {# fun has no stand = argument
+      data <- scale(data)
+      dst <- fun(data, method = method, ...)
+    } else {# We don't standardise ourself because there may be also qualitative
+      # or binary data (like for cluster::daisy, for instance)
+      dst <- fun(data, method = method, stand = scale, ...)
+    }
+  } else {# Just method = and scale = FALSE
+    dst <- fun(data, method = method, ...)
+  }
+  attr(dst, "call") <- match.call()
+  # Depending if it is a dist or dissimilarity object, the method is stored in
+  # method or in Metric, but we use metric in our own version to avoid a clash
+  # with the method item in cluster()/hclust() further on (hclust change it
+  # into dist.method, but it is better to have the right name right now)
+  attr(dst, "metric") <- method
+  # dist or dissimilarity object use Labels, but we use labels everywhere else
+  # including in cluster()/hclust()
+  # So, we make sure labels is present (in hclust, it is labels anyway!)
+  attr(dst, "labels") <- rownames(data)
+  # Default values for Diag and Upper set to FALSE
+  if (is.null(attr(dst, "Diag"))) attr(dst, "Diag") <- FALSE
+  if (is.null(attr(dst, "Upper"))) attr(dst, "Upper") <- FALSE
+  # Keep info about how raw data were transformed
+  attr(dst, "rownames.col") <- rownames.col
+  attr(dst, "transpose") <- transpose
+  attr(dst, "scale") <- scale
+  class(dst) <- unique(c("dissimilarity", class(dst)))
+  dst
+}
+
+as.dissimilarity <- function(x, ...)
+  UseMethod("as.dissimilarity")
+as_dissimilarity <- as.dissimilarity # Synonym
+
+as.dissimilarity.matrix <- function(x, ...) {
+  dst <- as.dist(x, ...)
+  attr(dst, "call") <- match.call()
+  attr(dst, "metric") <- attr(dst, "method") # Make sur metric is used
+  class(dst) <- unique(c("dissimilarity", class(dst)))
+  dst
+}
+
+# We want to print only the first few rows and columns
+print.dissimilarity <- function(x, digits.d = 3L, rownames.lab = "labels",
+...) {
+  mat <- as.matrix(x)
+  mat <- format(round(mat, digits.d))
+  diag(mat) <- ""
+  mat[upper.tri(mat)] <- ""
+  class(mat) <- c("dst", "matrix")
+  tbl <- tibble::as_tibble(mat)
+  #tbl <- tibble::add_column(tbl, {{rownames.lab}} = rownames(mat), .before = 1)
+  # I prefer this
+  tbl <- dplyr::bind_cols(
+    as_tibble_col(rownames(mat), column_name = rownames.lab), tbl)
+  tbl <- tbl[, -ncol(tbl)]
+  more_info <- ""
+  if (isTRUE(attr(x, "scale"))) {
+    if (isTRUE(attr(x, "transpose"))) {
+      more_info <- " (transposed then scaled data)"
+    } else {# Only scaled
+      more_info <- " (scaled data)"
+    }
+  } else {
+    if (isTRUE(attr(x, "transpose")))
+      more_info <- " (transposed data)"
+  }
+  cat("Dissimilarity matrix with metric: ", attr(x, "metric"),
+    more_info, "\n", sep = "")
+  print(tbl)
+  invisible(x)
+}
+
+labels.dissimilarity <- function(object, ...) {
+  labs <- object$labels
+  if (is.null(labs)) object$Labels
+}
+
+nobs.dissimilarity <- function(object, ...)
+  attr(object, "Size")
+
+# TODO: `[` by first transforming into a matrix with as.matrix()
+
+autoplot.dissimilarity <- function(object, order = TRUE, show.labels = TRUE,
+lab.size = NULL, gradient = list(low = "red", mid = "white", high = "blue"),
+...) {
+  factoextra::fviz_dist(object, order = order, show_labels = show.labels,
+    lab_size = lab.size, gradient = gradient)
+}
+
+chart.dissimilarity <- function(data, ...,
+type = NULL, env = parent.frame())
+  autoplot(data, type = type, ...)
+
+# cluster object (inheriting from hclust)
+cluster <- function(x, ...)
+  UseMethod("cluster")
+
+cluster.default <- function(x, ...)
+  stop("No method for object of class ", class(x)[1])
+
+# Cluster uses hclust() by default, ... but it looks first for a faster
+# implementation in either {fastcluster} or {flashClust} before falling back
+# to the {stats} version.
+# The functions cluster::agnes() and cluster::diana() should be compatible too,
+# as well as any function that returns an object convertible into hclust
+# by as.hclust() (but not tested yet)
+# Also, a version where the raw data are provided and the disimilarity matrix
+# is internally calculated should be also provided (see cluster::agnes)
+# See also {ape} for phylogenetic trees methods
+cluster.dist <- function(x, method = "complete", fun = NULL, ...) {
+  if (is.null(fun)) {
+    # We try fastcluster, then flashClust, then stats
+    fun <- try(fastcluster::hclust, silent = TRUE)
+    if (inherits(fun, "try-error"))
+      fun <- try(flashClust::hclust, silent = TRUE)
+    if (inherits(fun, "try-error"))
+      fun <- try(stats::hclust, silent = TRUE)
+  }
+  clst <- fun(x, method = method, ...)
+  clst <- as.hclust(clst)
+  clst$call <- match.call()
+  # hclust has to give a different name to the distance metric: dist.method
+  # but we use metric. Again, keep both for maximum compatibility
+  clst$metric <- clst$dist.method
+  # If the original data were scaled or transposed, get the info also
+  clst$rownames.col <- attr(x, "rownames.col")
+  clst$scale <- attr(x, "scale")
+  clst$transpose <- attr(x, "transpose")
+  class(clst) <- unique(c("cluster", class(clst)))
+  clst
+}
+
+# A couple of useful methods for our cluster object
+# str() method is gathered from a dendrogram object
+str.cluster <- function(object, max.level = NA, digits.d = 3L, ...)
+  str(as.dendrogram(object), max.level = max.level, digits.d = digits.d, ...)
+
+labels.cluster <- function(object, ...)
+  object$labels
+
+nobs.cluster <- function(object, ...)
+  length(object$order)
+
+# Other methods by first transforming into dendrogram: rev, reorder, order, [[
+
+# cutree() is an explicit name, but it does not follow the rule of using
+# known methods... and here, it really something that predict() is made for,
+# except it cannot handle newdata =, but that argument is not in its definition
+predict.cluster <- function(object, k = NULL, h = NULL, ...)
+  cutree(object, k = k, h = h)
+
+# There is no broom::glance() or broom::tidy() yet (what to put in it?),
+# but broom:augment() should be nice = add the clusters as .fitted in the tibble
+library(broom)
+augment.cluster <- function(x, data, k = NULL, h = NULL, ...) {
+  # Should we transpose the data (note: this is against augment() rules, but...)
+  if (isTRUE(x$transpose)) {
+    # We first have to make sure rownames are correct before the transposition
+    if (!is.matrix(data) && !is.null(data[[x$rownames.col]])) {
+      rownames(data) <- data[[x$rownames.col]]
+      data[[x$rownames.col]] <- NULL
+    }
+    data <- t(data)
+    msg <- "transposed data"
+  } else {
+    msg <- "data"
+  }
+  data <- as_tibble(data)
+
+  # Get clusters
+  clst <- predict(x, k = k, h = h, ...)
+  if (nrow(data) != length(clst)) {
+    stop("Different number of items in ", msg, " (",nrow(data) ,
+      ") and in the clusters (", length(clst), ")")
+  }
+  tibble::add_column(data, .fitted = clst)
+}
+
+# Instead of the default plot.hclust(), we prefer the plot.dendrogram() version
+# that allows for more and better variations of the dendrogram (horizontal or
+# circular), see http://www.sthda.com/english/wiki
+# /beautiful-dendrogram-visualizations-in-r-5-must-known-methods
+# -unsupervised-machine-learning
+plot.cluster <- function(x, y, hang = -1, check = TRUE, type = "vertical",
+lab = "Height", ...) {
+  type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
+  # type == "circular" is special because we need to transform as ape::phylo
+  if (type == "circular") {
+    if (!missing(hang))
+      warning("'hang' is not used with a circular dendrogram")
+    phylo <- ape::as.phylo(x)
+    plot(phylo, type = "fan", font = 1, ...)
+  } else {# Use plot.dendrogram() instead
+    # We first convert into dendrogram objet, then we plot it
+    # (better that plot.hclust())
+    dendro <- as.dendrogram(x, hang = hang, check = check)
+    if (type == "horizontal") {
+      plot(dendro, horiz = TRUE, xlab = lab, ...)
+    } else {
+      plot(dendro, horiz = FALSE, ylab = lab, ...) # note: label different axe
+    }
+  }
+}
+
+# This is to draw circles in a plot (where to cut in a circular dendrogram)
+# TODO: should be nice to do similar function for other symbols too in SciViews
+circle <- function(x = 0, y = 0, d = 1, col = 0, lwd = 1, lty = 1, ...)
+  symbols(x = x, y = y, circles = d / 2, fg = col, lwd = lwd, lty = lty,
+    inches = FALSE, add = TRUE, ...)
+
+# TODO: make sure the dendrogram is correct with different ggplot themes
+autoplot.cluster <- function(object, type = "vertical", circ.text.size = 3,
+theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
+  if (is.null(type))
+    type <- "vertical"
+  type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
+
+  # Create the dendrogram
+  ddata <- ggdendro::dendro_data(object, type = "rectangle")
+  dendro <- ggplot(ggdendro::segment(ddata)) +
+    geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
+    theme + xlab(xlab) + ylab(ylab)
+
+  if (type == "circular") {
+    # Get labels (need one more to avoid last = first!)
+    label_df <- tibble::tibble(labels = c(labels(object)[object$order], ""))
+    xmax <- nobs(object) + 1
+    label_df$id <- 1:xmax
+    angle <-  360 * (label_df$id - 0.5) / xmax
+    # Left or right?
+    label_df$hjust <- ifelse(angle < 270 & angle > 90, 1, 0)
+    # Angle for more readable text
+    label_df$angle <- ifelse(angle < 270 & angle > 90, angle + 180, angle)
+
+    # Make the dendrogram circular
+    dendro <- dendro +
+      scale_x_reverse() +
+      scale_y_reverse() +
+      coord_polar(start = pi/2) +
+      geom_text(data = label_df,
+        aes(x = id, y = -0.02, label = labels, hjust = hjust),
+        size = circ.text.size, angle = label_df$angle, inherit.aes = FALSE) +
+      theme(panel.border = element_blank(),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks.y = element_blank()) +
+      ylab("")
+
+  } else if (type == "vertical") {# Vertical dendrogram
+    dendro <- dendro +
+      scale_x_continuous(breaks = seq_along(ddata$labels$label),
+        labels = ddata$labels$label) +
+      scale_y_continuous(expand = expansion(mult = c(0, 0.02))) +
+      theme(panel.border = element_blank(),
+        axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        axis.line.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_text(angle = 90, hjust = 0.5))
+
+  } else {# Horizontal dendrogram
+    dendro <- dendro +
+      scale_x_continuous(breaks = seq_along(ddata$labels$label),
+        labels = ddata$labels$label, position = "top") +
+      scale_y_reverse(expand = expansion(mult = c(0.05, 0))) +
+      coord_flip() +
+      theme(panel.border = element_blank(),
+        axis.line.y = element_blank(),
+        axis.ticks.y = element_blank())
+  }
+  dendro
+}
+
+chart.cluster <- function(data, ...,
+  type = NULL, env = parent.frame())
+  autoplot(data, type = type, ...)
+
+# To indicate where to cut in the dendrogram, one could use `geom_hline()`,
+# but when the dendrogram is horizontal or circular, this is suprizing. So,
+# I define geom_dendroline(h = ....)
+geom_dendroline <- function(h, ...)
+  geom_hline(yintercept = h, ...)
+```
+
+```{block2, type='note'}
+
+Voici les fonctions à disposition (nous verrons leur usage progressivement dans ce module)\ :
+
+- `dissimilarity(data, method = "euclidean", scale = FALSE, transpose = FALSE)` \ : crée une matrice de dissimilarité. L'argument `method =` prends les valeurs `"euclidean"`, `"manhattan"`, `"bray"`, `"canberra"`, ... et bien d'autres. Voyez l'aide de `?vegan:vegdist` et `stats:dist` pour les détails. Un objet "dissimilarity" est créé et les méthodes `print()`, `chart()`, `labels()` et `nobs()` sont disponibles,
+- `cluster(x, method = "complete")`\ : part d'un objet "dissimlarity" dans `x` et calcule  le regroupement  à l'aide de différentes méthodes (`"complete"`, `"single"`, `"average"`, `"ward.D2"`, ...). Voir l'aide en ligne de `?hclust` pour la liste complète et les explications. Un objet "cluster" est créé, sur lequel nous pouvons appliquer les méthodes `print()`, `str()`, `plot()`, `chart()`, `labels()`, `nobs()`, `predict()` et `augment()`.
+- Le dendrogramme (graphique qui visualise la CAH et qui sera expliqué plus loin) est créé à partir d'un objet "cluster". Un dendrogramme vertical est créé paer défaut avec `chart(x)` ou `chart$vertical(x)` pour être plus explicite. Une version horizontale s'obtient avec `chart$horizontal(x)`, et une version circulaire avec `chart$circular()`.
+- Le niveau de coupure dans le dendrograme est indiquant en ajoutant `geom_dendroline()` au graphique (`chart(x) + geom_dendroline(h = 5)`.
+- Les groupes sont extraits avec `predict(x, h = 5)` ou `predict(x, k = 5)`. `h =` est le niveau de coupure et `k =` est le nombre de groupe souhaité.
+- `augment(data = df, x, h = )` extrait aussi les groupes mais les rajoute comme nouvelle colonne `.fitted` dans le tableau `df`. On peut aussi utiliser `k =` à la place de `h =` ici.
+
+```
+
+Voici comment nous calculons une matrice de distances `zoo6_dist`, ici sur un petit sous-ensemble de six lignes de notre jeu de données (nous devons aussi éliminer la colonne `class` qui ne contient pas de données numériques et qui ne nous intéresse pas pour le moment)\ :
 
 ```{r}
 zoo %>.%
   select(., -class) %>.% # Élimination de la colonne class
   head(., n = 6) -> zoo6 # Récupération des 6 premiers individus
-zoo6_dist <- vegan::vegdist(zoo6, method = "euclidean")
-zoo6_dist # En pratique, on n'imprime généralement ce genre d'objet !
+zoo6_dist <- dissimilarity(zoo6, method = "euclidean")
+zoo6_dist
 ```
 
-Nous voyons bien ici que R n'imprime que le *triangle inférieur* de notre matrice 6 par 6. Notez aussi que les objets `dist` de tailles plus réalistes que vous génèrerez dans vos analyses ne sont **prévue** pour être imprimées et visualisées telles quelles. Il s'agit seulement de la *première étape* vers une représentation utile qui sera réalisée à la page suivante, à l'aide de la classification hiérarchisée.
+Nous voyons bien ici que R n'imprime que le *triangle inférieur* de notre matrice 6 par 6. Notez aussi que les objets `dist` de tailles plus réalistes que vous utiliserez dans vos analyses ne sont **prévue** pour être imprimées et visualisées telles quelles. Il s'agit seulement de la *première étape* vers une représentation utile qui sera réalisée à la page suivante, à l'aide de la classification hiérarchisée.
 
 Nous verrons plus loin comment nous pouvons utiliser l'information que cette matrice de distances contient pour regrouper les individus de manière pertinente. Mais avant cela, nous avons besoin d'un peu de théorie pour bien comprendre quelle **métrique** choisir pour calculer nos distances et pourquoi. On parle aussi d'**indices** de **similarité** ou **dissimilarité**.
 
@@ -95,7 +458,6 @@ Nous verrons plus loin comment nous pouvons utiliser l'information que cette mat
 ##### À vous de jouer ! {-}
 
 `r h5p(77, height = 270, toc = "Utilisation de la distance euclidienne")`
-
 
 ### Indices de (dis)similarité
 
@@ -115,7 +477,7 @@ L'indice de dissimilarité de Bray-Curtis, aussi appelé coefficient de Czecanow
 
 $$\mathrm{D_{Bray-Curtis}}_{j,k}=\frac{\sum_{i=1}^{n}\left|y_{ij}-y_{ik}\right|}{\sum_{i=1}^{n}(y_{ij}+y_{ik})}$$
 
-Dans R nous utiliserons `vegan::vegdist(DF, method = "bray")`.Il s’utilise pour mesurer, entre autres, la similitude entre échantillon sur base du **dénombrement d’espèces**. Si le nombre d'e cas'espèces est très variable (espèces dominantes _versus_ espèces rares), nous devons transformer les données pour éviter de donner trop de poids aux espèces les plus abondantes (ex: $log(x+1)$, double racine carrée, ...).
+Dans SciViews R nous utiliserons `dissimilarity(DF, method = "bray")`. cet indice s’utilise pour mesurer, entre autres, la similitude entre échantillon sur base du **dénombrement d’espèces**. Si le nombre d'espèces est très variable (espèces dominantes _versus_ espèces rares), nous devons transformer les données pour éviter de donner trop de poids aux espèces les plus abondantes (ex: $log(x+1)$, double racine carrée, ...).
 
 Une caractéristique essentielle de cet indice (contrairement à la distance euclidienne) est que toute double absence n'est pas prise en compte dans le calcul. C'est souvent pertinent dans le cadre de son utilisation comme le dénombrement d'espèces. En effet, quelle information utile retire-t-on de doubles zéros dans un tableau répertoriant la faune belge pour le crocodile du Nil et le tigre de Sibérie par exemple\ ? Aucune\ ! Ils sont tous deux systématiquement absents des dénombrements, mais cette double absence n'apporte aucune information utile pour caractériser la faune belge par ailleurs.
 
@@ -129,7 +491,7 @@ L'indice de dissimilarité de Canberra est apparenté à l'indice de Bray-Curtis
 
 $$\mathrm{D_{Canberra}}_{j,k}=\frac{1}{nz}\sum_{i'=1}^{nz}\frac{\left|y_{i'j}-y_{i'k}\right|}{\left|y_{i'j}\right|+\left|y_{i'k}\right|}$$
 
-où $nz$ est le nombre de valeurs non nulles simultanément dans le tableau de départ. Toutes les cas contribuent ici de manière égale. C'est un point positif, mais il faut faire attention à ce que cet indice a souvent tendance à donner, au contraire, trop d'importance aux dénombrements très rares observés une seule fois ou un petit nombre de fois\ ! Dans R, nous utiliserons `vegan::vegdist(DF, method = "canberra")`.
+où $nz$ est le nombre de valeurs non nulles simultanément dans le tableau de départ. Toutes les cas contribuent ici de manière égale. C'est un point positif, mais il faut faire attention à ce que cet indice a souvent tendance à donner, au contraire, trop d'importance aux dénombrements très rares observés une seule fois ou un petit nombre de fois\ ! Dans SciViews R, nous utiliserons `dissimilarity(DF, method = "canberra")`.
 
 Toute double absence n’est pas prise en compte ici également. Seuls les indices ne dépendant pas des doubles zéros sont utilisables pour des dénombrements d’espèces ou des présence-absence. Ainsi pour ce type de données, notre choix se portera sur\ :
 
@@ -141,7 +503,7 @@ Toute double absence n’est pas prise en compte ici également. Seuls les indic
 
 ```{block2, type='warning'}
 
-Attention\ : Si les volumes échantillonnés entre stations ne sont pas comparables, il faut standardiser (moyenne nulle et écart type un) les données selon les échantillons avant de faire les calculs de distances.
+Attention\ : Si les volumes échantillonnés entre stations ne sont pas comparables, il faut standardiser (moyenne nulle et écart type un) les données selon les échantillons avant de faire les calculs de distances. L'argument `scale = TRUE` pourra être ajouté à l'appel de `dissimilarity()` pour ce faire.
 
 ```
 
@@ -153,7 +515,7 @@ Nous savons déjà que c'est la distance géométrique entre les points dans un 
 
 $$\mathrm{D_{Euclidean}}_{j,k}=\sqrt{\sum_{i=1}^{n}(y_{ij}-y_{ik})^2}$$
 
-Dans R, cette distance peut être calculée avec `dist(DF)` ou `vegan::vegdist(DF, method = "euclidean")`. Cet indice de dissimilarité est utile pour des mesures quantitatives, pour des données environnementales, etc. Il faut que les mesures soient toutes effectuées dans les mêmes unités. Si ce n'est pas le cas, nous devons les standardiser avant le calcul. Il n'existe pas d'indice de similarité complémentaire.
+Dans SciViews R, cette distance peut être calculée avec `dissimilarity(DF, method = "euclidean")`. Attention\ : en anglais, c'est *euclidean* avec un "e", pas *euclidian*\ ! Cet indice de dissimilarité est utile pour des mesures quantitatives, pour des données environnementales, etc. Il faut que les mesures soient toutes effectuées dans les mêmes unités. Si ce n'est pas le cas, nous devons les standardiser avant le calcul, avec `scale = TRUE`. Il n'existe pas d'indice de similarité complémentaire.
 
 #### Distance de Manhattan
 
@@ -161,7 +523,7 @@ La distance de Manhattan, encore appelée *"city-block distance"* en anglais, es
 
 $$\mathrm{D_{Manhattan}}_{j,k}=\sum_{i=1}^{n}|y_{ij}-y_{ik}|$$
 
-Dans R, nous utiliserons `vegan::vegdist(DF, method = "manhattan")`. Ici aussi, seul l'indice de dissimilarité est défini. L'indice de similarité complémentaire n'existe pas car la valeur de l'indice de dissimlarité n'est pas borné à droite et peut varier de zéro (dissimilarité nulle, cela signifie alors que les deux individus sont identiques) à l'infini pour une différence maximale.
+Dans SciViews R, nous utiliserons `dissimilarity(DF, method = "manhattan")`. Ici aussi, seul l'indice de dissimilarité est défini. L'indice de similarité complémentaire n'existe pas car la valeur de l'indice de dissimlarité n'est pas borné à droite et peut varier de zéro (dissimilarité nulle, cela signifie alors que les deux individus sont identiques) à l'infini pour une différence maximale.
 
 ### Utilisation des indices
 
@@ -201,7 +563,7 @@ La dernière propriété d'inégalité triangulaire est la plus difficile à obt
 
 ##### Pour en savoir plus {-}
 
-- Vous pouvez aussi transposer le tableau pour calculer la distance entre ses colonnes en utilisant la fonction `t()` dans R (`dist(t(DF))`). Par exemple, dans le cas d'un tableau "espèces - station" (dénombrement d'espèces en différentes stations), nous pouvons comparer les stations du point de vue de la composition en espèces, mais nous pouvons aussi comparer les espèces du point de vue de leur répartition entre les stations. Pour passer d'un calcul à l'autre, nous transposerons donc le tableau (les colonnes deviennent les lignes et inversement) avant d'utiliser `dist()` ou `vegan::vegdist()`.
+- Vous pouvez aussi transposer le tableau pour calculer la distance entre ses colonnes en utilisant l'argument `transpose = TRUE` dans `dissimilarity()`. Par exemple, dans le cas d'un tableau "espèces - station" (dénombrement d'espèces en différentes stations), nous pouvons comparer les stations du point de vue de la composition en espèces, mais nous pouvons aussi comparer les espèces du point de vue de leur répartition entre les stations. Pour passer d'un calcul à l'autre, nous transposerons donc le tableau (les colonnes deviennent les lignes et inversement).
 
 - Pour bien comprendre la logique sous-jacente aux indices, il est utile de comprendre leurs équations. Si elles sont pour vous trop abstraites, une façon efficace de comprendre consiste à faire le calcul à la main. Par exemple dans le cas de l'indice de Canberra, la notion de nombre de données non nulles $nz$ n'est pas évident. Effectuons un calcul à la main détaillé sur le tableau fictif suivant concernant trois espèces `A`, `B`, et `C` dénombrées en trois stations `sta1`, `sta2` et `sta3` dans le tableau nommé `ex1`\ :
 
@@ -256,20 +618,12 @@ knitr::kable(dst)
 Vérifions en laissant R faire le calcul\ :
 
 ```{r}
-vegan::vegdist(ex1, method = "canberra") %>.%
-  round(., 2)
-```
-
-Attention\ ! `dist(, method = "canberra")` ne multiplie pas la somme par $1/nz$, mais par $n/nz$ (variante). Ainsi, nous obtenons des distances *n* fois plus grandes avec `dist()` qu'avec `vegan::vegdist()` pour *n* lignes dans le tableau, mais les deux calculs restent valables car les écarts relatifs au sein de la matrice de distance sont les mêmes.
-
-```{r}
-dist(ex1, method = "canberra") %>.%
-  round(., 2)
+(dissimilarity(ex1, method = "canberra"))
 ```
 
 ## Regroupement avec CAH
 
-À partir du moment où nous avons une matrice de distances entre toutes les paires d'individus de notre jeu de données, nous pouvons les regrouper en fonction de leurs ressemblances. Deux approches radicalement différentes existent. Soit nous pouvons diviser l'échantillon progressivement jusqu'à obtenir des groupes homogènes (**méthodes divisives, telle que les K-moyennes** que nous aborderons dans le module suivant), soit nous pouvons regrouper les items semblables petit à petit jusqu'à avoir traité tout l'échantillon (**méthodes agglomératives, telle que la classification ascendante hiérarchique** étudiée ici).
+À partir du moment où nous avons une matrice de dissimilarités entre toutes les paires d'individus de notre jeu de données, nous pouvons les regrouper en fonction de leurs ressemblances. Deux approches radicalement différentes existent. Soit nous pouvons diviser l'échantillon progressivement jusqu'à obtenir des groupes homogènes (**méthodes divisives, telle que les K-moyennes** que nous aborderons dans le module suivant), soit nous pouvons regrouper les items semblables petit à petit jusqu'à avoir traité tout l'échantillon (**méthodes agglomératives, telle que la classification ascendante hiérarchique** étudiée ici).
 
 ##### À vous de jouer ! {-}
 
@@ -285,34 +639,33 @@ Dans l'arbre, nous représentons des divisions dichotomiques (division d'une bra
 
 Dans R, un dendrogramme se construit en deux étapes\ :
 
-1) Son calcul par CAH à l'aide de la fonction `hclust()`
+1) Son calcul par CAH à l'aide de la fonction `cluster()`, à partir d'une matrice de dissimilarité dans un objet "dissimilarity"
 
-2) Sa représentation sur un graphique en utilisant `plot()` (pour un graphique de base) ou `ggdendro::ggdendrogram()` (pour un graphique ggplot2).
+2) Sa représentation sur un graphique en utilisant `chart()`.
 
-Partons, pour étayer notre raisonnement, d'une matrice de distances euclidiennes sur les données de zooplancton. Au passage, abordons quelques fonctions de R utiles dans le contexte pour préparer correctement nos données.
+Partons, pour étayer notre raisonnement, d'une matrice de distances euclidiennes sur les données de zooplancton. Au passage, voyons quelques options utiles pour préparer correctement nos données.
 
-- A la section précédente, nous avons suggéré qu'il peut être utile de *standardiser* nos données préalablement si les données numériques sont mesurées dans des unités différentes, comme c'est le cas ici. La fonction `scale()` se charge de cette standardisation colonne par colonne dans un tableau. Comme elle renvoie une matrice, nous devons ensuite retransformer le résultat en `data.frame` ou `tibble`. Nous choisissons ici d'utiliser la fonction `as_tibble()`.
-- Limitons, pour l'instant notre ambition à la comparaison de six individus. Afin d'observer tous les cas possibles dans le dendrogramme, nous ne prendrons pas les six premières lignes du tableau, mais les lignes 13 à 18. Cela peut se faire à l'aide de la fonction `slice()` que nous n'avons pas encore beaucoup utilisée jusqu'ici. Cette fonction permet de spécifier explicitement les numéros de lignes à conserver, contrairement à `filter()` qui applique un test de condition pour décider quelles ligne(s) conserver.
+- A la section précédente, nous avons suggéré qu'il peut être utile de *standardiser* nos données préalablement si les données numériques sont mesurées dans des unités différentes, comme c'est le cas ici. La fonction `scale()` ou l'argument `scale = TRUE` de `dissimilarity()` effectuent ce travail.
+- Limitons, pour l'instant notre ambition à la comparaison de six individus. Afin d'observer tous les cas possibles dans le dendrogramme, nous ne prendrons pas les six premières lignes du tableau, mais les lignes 13 à 18. Cela peut se faire à l'aide de la fonction `slice()` que nous n'avons pas encore beaucoup utilisée jusqu'ici. Cette fonction permet de spécifier explicitement les numéros de lignes à conserver, contrairement à `filter()` qui applique un test de condition pour décider quelles ligne(s) conserver. Nous pouvons aussi utilise l'argument `subset =` de `dissimilarity()`.
 
 Voici donc notre matrice de distances euclidiennes sur les données ainsi traitées. Les individus initiaux 13 à 18 sont renumérotés 1 à 6. Nous n'imprimons plus ici la matrice de distance obtenue car ce n'est que la première étape du travail vers une représentation plus utile (le dendrogramme).
 
 ```{r}
 zoo %>.%
   select(., -class) %>.%   # Élimination de la colonne class
-  scale(.) %>.%            # Standardisation des 19 colonnes
-  as_tibble(.) %>.%        # Conversion de la matrice en tibble
   slice(., 13:18) -> zoo6  # Récupération des lignes 13 à 18
 
-zoo6 %>.%
-  vegan::vegdist(., method = "euclidean") -> zoo6std_dist
+zoo6 %>.% # Matrice de dissimilarité sur données standardisées
+  dissimilarity(., method = "euclidean", scale = TRUE) -> zoo6std_dist
 ```
 
-Notre objet `zoo6std_dist` est ensuite utilisé pour calculer notre CAH à l'aide de `hclust()`. Enfin, `plot()` (ou `ggdendro::ggdendrogram()`) se charge de tracer le dendrogramme.
+Notre objet `zoo6std_dist` est ensuite utilisé pour calculer notre CAH à l'aide de `cluster()`. Enfin, `chart()`se charge de tracer le dendrogramme.
 
 ```{r}
 zoo6std_dist %>.%
-  hclust(.) -> zoo6std_clust # Calcul du dendrogramme
-  plot(zoo6std_clust) # ggdendro::ggdendrogram() peut aussi être utilisé ici
+  cluster(.) -> zoo6std_clust # Calcul du dendrogramme
+  chart(zoo6std_clust) +
+    ylab("Hauteur")
 ```
 
 Voici comment interpréter ce graphique. Les deux individus les plus semblables sont le 2 et le 5 (regroupement effectué le plus bas, donc, avec la valeur de l'indice de dissimilarité le plus faible). Ensuite ce groupe formé du 2 et du 5 est le plus similaire au 3. Le 4 se rattache ensuite à ce groupe formé des 2, 3 et 5 mais bien plus haut sur l'axe, indiquant ainsi qu'il s'en différencie un peu plus Enfin, le 1 et le 6 sont rassemblés à un niveau à peu près équivalent. Finalement, le groupe de droite constitué des individus 2, 3, 4 et 5 et celui de gauche contenant le 1 et le 6 sont reliés encore plus haut suggérant ainsi la dissimilitude la plus forte entre ces deux groupes.
@@ -323,7 +676,7 @@ Voici comment interpréter ce graphique. Les deux individus les plus semblables 
 
 ```
 
-Notez que nous n'avons *pas* utilisé l'information concernant les classes taxonomiques auxquelles les individus appartiennent (nous avons éliminé la variable `class` en tout début d'analyse). Ce type de regroupement s'appelle une **classification non supervisée** parce que nous n'imposons pas les groupes que nous souhaitons réaliser^[Les techniques complémentaires de classification supervisées seront abordées dans le cours de Science des Données Biologiques III l'an prochain.]. Cependant, comme nous possédons cette indication du groupe taxominque de nos six individus par ailleurs dans `class`, nous pouvons en profiter pour l'utiliser à des fins de vérification\ :
+Notez que nous n'avons *pas* utilisé l'information concernant les classes taxonomiques auxquelles les individus appartiennent (nous avons éliminé la variable `class` en tout début d'analyse). Ce type de regroupement s'appelle une **classification non supervisée** parce que nous n'imposons pas les groupes que nous souhaitons réaliser^[Les techniques complémentaires de classification supervisées seront abordées dans le cours de Science des Données Biologiques III l'an prochain.]. Cependant, comme nous possédons cette indication du groupe taxonominque de nos six individus par ailleurs dans `class`, nous pouvons en profiter pour l'utiliser à des fins de vérification\ :
 
 ```{r}
 zoo$class[13:18]
@@ -333,34 +686,39 @@ Les individus 2, 3 et 5 ("Poecilostomatoid" ou "Calanoid") sont des [copépodes]
 
 ### Séparer les groupes
 
-Si notre dendrogramme est satisfaisant (nous le déterminons en l'étudiant et en vérifiant que les regroupements obtenus ont un sens biologique  par rapport à l'objectif de notre étude), nous concrétisons les groupes que nous souhaitons retenir au final en coupant l'arbre horizontalement à une hauteur choisie à l'aide de la fonction `cutree()`. Nous pouvons matérialiser ce niveau de coupure en traçant un trait horizontal rouge avec `abline(h = XXX, col = "red")` pour le graphe de base, ou en ajoutant `+ geom_hline(yintercept = XXX, col = "red")` au graphique ggplot2, avec 'XXX' la hauteur de coupure souhaitée. Par exemple, si nous coupons l'arbre à une hauteur de 8, nous obtenons deux groupes\ :
+Si notre dendrogramme est satisfaisant (nous le déterminons en l'étudiant et en vérifiant que les regroupements obtenus ont un sens biologique  par rapport à l'objectif de notre étude), nous concrétisons les groupes que nous souhaitons retenir au final en coupant l'arbre horizontalement à une hauteur choisie et en récupérant les groupes avec `predict()`. Nous pouvons matérialiser ce niveau de coupure en traçant un trait horizontal rouge dans le dendrogramme en ajoutant `geom_dendroline(h = XXX, color = "red")`, avec 'XXX' la hauteur de coupure souhaitée. Par exemple, si nous coupons l'arbre à une hauteur de 8, nous obtenons deux groupes\ :
 
 ```{r}
-plot(zoo6std_clust)
-abline(h = 8, col = "red")
+chart(zoo6std_clust) +
+  geom_dendroline(h = 8, color = "red")
 ```
 
-Si nous coupons l'arbre plus bas, par exemple à la hauteur de 6,5, nous obtenons trois groupes (ici dans la version {ggplot2})\ :
+Si nous coupons l'arbre plus bas, par exemple à la hauteur de 5,8, nous obtenons trois groupes\ :
 
 ```{r}
-ggdendro::ggdendrogram(zoo6std_clust) +
-  geom_hline(yintercept = 6.5, col = "red")
+chart(zoo6std_clust) +
+  geom_dendroline(h = 5.8, color = "red")
 ```
 
-À mesure que la hauteur de coupure descend, nous réaliserons quatre, puis cinq groupes. Quel est le meilleur niveau de coupure\ ? Il n'y en a pas un seul forcément car les différents niveaux correspondent à un point de vue de plus en plus détaillé du regroupement. Néanmoins, lorsque le saut sur l'axe d'un regroupement à l'autre est fort, nous pouvons considérer une séparation des groupes d'autant meilleure. Cela crédibilise d'autant le regroupement choisi. Ainsi la séparation en deux groupes apparaît forte (entre 10,2 et 7,4, sur un intervalle de 2,8 unités donc). De même, la séparation de l'individu 4 par rapport au groupe constitué de 2, 3 et 5 se fait sur un intervalle de 4,7 unités (entre 7,4 et 2,7). En comparaison, la séparation de l'individu 3 du groupe 2 et 5 est nettement moins nette puisqu'elle apparaît aux hauteurs entre 2,7 à 2.4, soit seulement sur un intervalle de 0,3 unités. Ces mesures d'intervalles n'ont aucune valeur absolue. Il faut les considérer uniquement de manière relatives les unes par rapport aux autres, et seulement au sein d'un même dendrogramme.
+Les niveaux de coupure ne sont pas toujours très lisibles sur le dendrogramme, mais ils peuvent être obtenus à l'aide de `str()`.
 
-Ici, deux niveaux de coupure se détachent. Nous utilisons aussi la fonction `rect.hclust()` pour mettre en évidence les groupes sur le dendrogramme, et `cutree()` pour obtenir une nouvelle variable que nous pourrons ajouter dans notre tableau de données avec le regroupement choisi\ :
+```{r}
+str(zoo6std_clust)
+```
+
+À mesure que la hauteur de coupure descend, nous réaliserons quatre, puis cinq groupes. Quel est le meilleur niveau de coupure\ ? Il n'y en a pas un seul forcément car les différents niveaux correspondent à un point de vue de plus en plus détaillé du regroupement. Néanmoins, lorsque le saut sur l'axe d'un regroupement à l'autre est fort, nous pouvons considérer une séparation des groupes d'autant meilleure. Cela crédibilise d'autant le regroupement choisi. Ainsi la séparation en deux groupes apparaît forte (entre 9.45 et 6.16, sur un intervalle de 3,3 unités donc). De même, la séparation de l'individu 4 par rapport au groupe constitué de 2, 3 et 5 se fait sur un intervalle de 2 unités (entre 6.16 et 4.17). La séparation de l'individu 3 du groupe 2 et 5 est un petit peu moins nette puisqu'elle apparaît aux hauteurs entre 4,17 à 2.38, soit sur un intervalle de 1,8 unités. Ces mesures d'intervalles n'ont aucune valeur absolue. Il faut les considérer uniquement de manière relatives les unes par rapport aux autres, et seulement au sein d'un même dendrogramme.
+
+Ici, deux niveaux de coupure se détachent\ :
 
 - en deux groupes, nous avons les crustacés séparés des autres.
 
 ```{r}
-plot(zoo6std_clust)
-abline(h = 8, col = "red")
-rect.hclust(zoo6std_clust, h = 8, border = c("blue", "red"))
+chart(zoo6std_clust) +
+  geom_dendroline(h = 7.5, color = "red")
 ```
 
 ```{r}
-(group2 <- cutree(zoo6std_clust, h = 8))
+(group2 <- predict(zoo6std_clust, h = 7.5))
 ```
 
 Les individus 1 et 6 sont dans le groupe 1, et les autres dans le groupe 2.
@@ -368,52 +726,54 @@ Les individus 1 et 6 sont dans le groupe 1, et les autres dans le groupe 2.
 - en quatre groupes, nous avons les copépodes séparés des trois autres items chacun dans un groupe séparé.
 
 ```{r}
-plot(zoo6std_clust, hang = -1) # Prolonger les tiges jusqu'en bas
-abline(h = 5, col = "red")
-rect.hclust(zoo6std_clust, h = 5, border = c("blue", "blue", "blue", "red"))
+chart(zoo6std_clust) +
+  geom_dendroline(h = 5, color = "red")
 ```
 
-Le groupe des individus 2, 3 et 5 est encadré en rouge. Les trois autres groupes des individus uniques 1, 6 et 4 respectivement sont ici encadrés en bleu.
+Le groupe des individus 2, 3 et 5 est formé. Les trois autres groupes contiennent des individus uniques 1, 6 et 4 respectivement.
 
 ```{r}
-(group4 <- cutree(zoo6std_clust, h = 5))
+(group4 <- predict(zoo6std_clust, h = 5))
 ```
 
-L'individu 1 est dans le groupe 1, les individus 2, 3 et 5 sont dans le groupe 2, l'individu 4 est dans le groupe 3 et enfin l'individu 6 est dans le groupe 4. Donc, `cutree()` numérote ses groupes en fonction du premier item de cette catégorie rencontré dans le tableau des données dans l'ordre dans lequel il se présente.
+L'individu 1 est dans le groupe 1, les individus 2, 3 et 5 sont dans le groupe 2, l'individu 4 est dans le groupe 3 et enfin l'individu 6 est dans le groupe 4. Donc, `predict()` numérote ses groupes en fonction du premier item de cette catégorie rencontré dans le tableau des données dans l'ordre dans lequel il se présente.
 
-Nous pouvons cette variable indiquant les groupes dans le tableau de données, et utiliser cette information pour en faire d'autres choses utiles. Par exemple, nous représentons un nuage de point à partir de deux varriables quantitatives et colorons nos points en fonction dde nos groupes comme suit\ :
+Nous pouvons ajouter cette variable indiquant les groupes dans le tableau de données à l'aide de la méthode `augment()` (son nom est `.fitted`), et utiliser cette information pour en faire d'autres choses utiles. Par exemple, nous représentons un nuage de point à partir de deux variables quantitatives et colorons nos points en fonction de nos groupes comme suit\ :
 
 ```{r}
-zoo6$group2 <- as.factor(group2) # Utiliser une variable facteur ici
-chart(zoo6, area ~ circularity %col=% group2) +
+zoo6g <- augment(data = zoo6, zoo6std_clust, h = 7.5)
+names(zoo6g) # Nom des variables dans ce tableau
+# Nous transformons ces groupes en variable facteur
+zoo6g$group <- factor(zoo6g$.fitted)
+chart(data = zoo6g, area ~ circularity %col=% group) +
   geom_point()
 ```
 
-Nous voyons que les copépodes (groupe 2 en turquoise) sont plus grands (`area`) et moins circulaires (`circularity`) que les deux autres particules du groupe 1 en rouge. Nous pouvons ainsi réexplorer nos données en fonction de ces groupes pour mieux le comprendre.
+Nous voyons que les copépodes (groupe 2 en turquoise) sont plus grands (`area`) et moins circulaires (`circularity`) que les deux autres particules du groupe 1 en rouge. Nous pouvons ainsi réexplorer nos données en fonction de ces groupes pour mieux les comprendre.
 
 #### Méthodes de CAH
 
-Tant que l'on compare des individus isolés entre eux, il n'y a pas d'ambiguïté. Par contre, dès que nous comparons un groupe avec un individu isolé, ou deux groupes entre eux, nous avons plusieurs stratégies possible pour calculer leurs distances (argument `method =` de `hclust()`)\ :
+Tant que l'on compare des individus isolés entre eux, il n'y a pas d'ambiguïté. Par contre, dès que nous comparons un groupe avec un individu isolé, ou deux groupes entre eux, nous avons plusieurs stratégies possible pour calculer leurs distances (argument `method =` de `cluster()`)\ :
 
-- **Liens simples** (single linkages en anglais) `hclust(DIST, method = "single")`\ : la distance entre les plus proches voisins au sein des groupes est utilisée.
+- **Liens simples** (single linkages en anglais) `cluster(DIS, method = "single")`\ : la distance entre les plus proches voisins au sein des groupes est utilisée.
 
 ![](images/sdd2_05/link_single.png)
 
 ```{r}
 zoo6std_dist %>.%
-  hclust(., method = "single") %>.%
-  plot(.)
+  cluster(., method = "single") %>.%
+  chart(.)
 ```
 
-Les données tendent à être aggrégées de proche en proche en montrant une gradation d'une extrême à l'autre. Dans le cas d'une variation progressive, par exemple lors d'un passage graduel d'une situation A vers une situation B, le dendrogramme obtenu à l'aide de cette méthode représentera la situation au mieux.
+Les données tendent à être agrégées de proche en proche en montrant une gradation d'une extrême à l'autre. Dans le cas d'une variation progressive, par exemple lors d'un passage graduel d'une situation A vers une situation B, le dendrogramme obtenu à l'aide de cette méthode représentera la situation au mieux.
 
-- **Liens complets** (complete linkages) `hclust(DIST, method = "complete")`, méthode utilisée par défaut si non précisée\ : la distance entre les plus lointains voisins est considérée. C'est le premier dendrogramme que nous réalisé.
+- **Liens complets** (complete linkages) `cluster(DIS, method = "complete")`, méthode utilisée par défaut si non précisée\ : la distance entre les plus lointains voisins est considérée. C'est le premier dendrogramme que nous réalisé.
 
 ![](images/sdd2_05/link_complete.png)
 
 Le dendrogramme a tendance à effectuer des groupes séparés plus nettement les uns des autres qu'avec les liens simples.
 
-- **Liens moyens** (group-average) `hclust(DIST, method = "average")` encore appelée méthode UPGMA\ : moyenne des liens entre toutes les paires possibles intergroupes.
+- **Liens moyens** (group-average) `cluster(DIS, method = "average")` encore appelée méthode UPGMA\ : moyenne des liens entre toutes les paires possibles intergroupes.
 
 ![](images/sdd2_05/link_average.png)
 
@@ -421,18 +781,18 @@ Nous obtenons une situation intermédiaire entre liens simples et liens moyens.
 
 ```{r}
 zoo6std_dist %>.%
-  hclust(., method = "average") %>.%
-  plot(.)
+  cluster(., method = "average") %>.%
+  chart(.)
 ```
 
 Dans ce cas-ci, le résultat est similaire aux liens simples, mais ce n'est pas forcément le cas tout le temps.
 
-- **Méthode de Ward** `hclust(DIST, method = "ward.D2")`. Considérant le partitionnement de la variance totale du nuage de points (on parle aussi de l'*inertie* du nuage de points) entre variance interclasse et variance intraclasse, la méthode vise à maximiser la variance interclasse et minimiser la variance intraclasse, ce qui revient d'ailleurs au même. Cette technique fonctionne souvent très bien pour obtenir des groupes bien individualisés.
+- **Méthode de Ward D2** `cluster(DIS, method = "ward.D2")`. Considérant le partitionnement de la variance totale du nuage de points (on parle aussi de l'*inertie* du nuage de points) entre variance interclasse et variance intraclasse, la méthode vise à maximiser la variance interclasse et minimiser la variance intraclasse, ce qui revient d'ailleurs au même. Cette technique fonctionne souvent très bien pour obtenir des groupes bien individualisés.
 
 ```{r}
 zoo6std_dist %>.%
-  hclust(., method = "ward.D2") %>.%
-  plot(.)
+  cluster(., method = "ward.D2") %>.%
+  chart(.)
 ```
 
 Ici nous obtenons un dendrogramme très proche des liens complets. Encore une fois, ce n'est pas forcément le cas dans toutes les situations.
@@ -441,8 +801,8 @@ Ici nous obtenons un dendrogramme très proche des liens complets. Encore une fo
 
 ```{r}
 zoo6std_dist %>.%
-  hclust(., method = "centroid") %>.%
-  plot(.)
+  cluster(., method = "centroid") %>.%
+  chart(.)
 ```
 
 ##### À vous de jouer ! {-}
@@ -454,16 +814,17 @@ zoo6std_dist %>.%
 Voici ce que cela donne si nous effectuons une CAH sur le jeu `zoo`plancton complet avec ses 1262 lignes.
 
 
-```{r}
+```{r, fig}
 zoo %>.%
   select(., -class) %>.% # Élimination de la colonne class
-  scale(.) %>.%          # Standardisation des 19 colonnes
-  as_tibble(.) %>.%      # Transformation en tibble
-  vegan::vegdist(., method = "euclidean") %>.% # Matrice de distances
-  hclust(., method = "ward.D2") -> zoo_clust   # CAH avec Ward
+  # Matrice de dissimilarités sur données standardisées
+  dissimilarity(., method = "euclidean", scale = TRUE) %>.%
+  cluster(., method = "ward.D2") -> zoo_clust   # CAH avec Ward D2
   
-  plot(zoo_clust, labels = FALSE) # Dendrogramme sans labels des individus
-  abline(h = 70, col = "red")     # Séparation en groupes à une hauteur de 30
+  chart$horizontal(zoo_clust) + # Dendrogramme horizontal (plus lisible)
+    geom_dendroline(h = 70, color = "red") + # Séparation en 3 groupes
+    theme(axis.text.y = element_blank()) +   # N'affiche pas les labels
+    ylab("Hauteur")
 ```
 
 Naturellement, avec 1262 branches, notre dendrogramme est très encombré. Cependant, il reste analysable tant que nous nous intéressons aux regroupements de plus haut niveau (vers le haut du dendrogramme). Notez comme les valeurs sur l'axe des ordonnées ont changé par rapport à nos cas simple à six items (ne jamais comparer les hauteurs *entre* dendrogrammes différents).
@@ -471,20 +832,19 @@ Naturellement, avec 1262 branches, notre dendrogramme est très encombré. Cepen
 Notre CAH est terminée, nous pouvons récupérer les groupes dans une variable supplémentaire dans le tableau et l'utiliser ensuite.
 
 ```{r}
-  zoo_clust %>.%
-    cutree(., h = 70) %>.% # Réalisation des groupes
-    as.factor(.) ->        # Conversion en variable facteur
-    zoo$groups             # Ajout au tableau comme variable groups
-  
-  chart(zoo, compactness ~ ecd %col=% groups) +
-    geom_point() +         # Exploration visuelle des groupes (exemple)
-    coord_trans(x = "log10", y = "log10") # Axes en log10
+augment(data = zoo, zoo_clust, h = 70) %>.%
+  mutate(., group = as.factor(.fitted)) -> zoog
+
+chart(data = zoog, compactness ~ ecd %col=% group) +
+  geom_point() + # Exploration visuelle des groupes (exemple)
+  coord_trans(x = "log10", y = "log10") # Axes en log10
+
 ```
 
 Et de manière optionnelle, si un classement est disponible par ailleurs (c'est le cas ici avec la variable `class`), nous pouvons réaliser un tableau de contingence à double entrées entre le regroupement obtenu par CAH et le classement obtenu de manière indépendante à cette analyse pour comparaison.
 
 ```{r}
-table(zoo$class, zoo$groups)
+table(classe = zoog$class, cah = zoog$group)
 ```
 
 Ainsi, nous pouvons constater que le groupe 1 contient une fraction importante des annélides, des cladocères, des décapodes, des œufs ronds et des gastéropodes. Le groupe 2 contient un maximum des copépodes représentés par les calanoïdes, les cyclopoïdes, les harpacticoïdes et les poecilostomatoïdes. Il contient aussi tous les appendiculaires, tous les protistes, presque tous les œufs allongés, les poissons, et une majorité des malacostracés. Enfin, le groupe 3 contient une majorité des chaetognathes et des cnidaires. Le regroupement a été réalisé uniquement en fonction de mesures effectuées sur les images. Il n'est pas parfait, mais des tendances se dégagent tout de même.
@@ -596,8 +956,8 @@ knitr::kable(dst4)
 Voici le dendrogramme résultant\ :
 
 ```{r, echo=FALSE}
-hclust(dst0, method = "complete") -> complete
-plot(complete, hang = -1)
+cluster(dst0, method = "complete") -> complete
+chart(complete)
 ```
 
 ##### À vous de jouer ! {-}
