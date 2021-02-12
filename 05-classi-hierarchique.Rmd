@@ -824,8 +824,7 @@ zoo6std_dist %>.%
 
 ### Étude complète
 
-Voici ce que cela donne si nous effectuons une CAH sur le jeu `zoo`plancton complet avec ses 1262 lignes.
-
+Voici ce que cela donne si nous effectuons une CAH sur le jeu `zoo`plancton complet avec ses 1262 lignes. notez que pour visionner les labels lorsque le nombre d'items augmente, vous pouvez combiner comme ici un dendrogramme horizontal et un étirement en hauteur du graphique en indiquant `fig.asp=...` comme paramètre du chunk avec une valeur de `fig.asp` > 1.
 
 ```{r, fig.asp=4/3}
 zoo %>.%
