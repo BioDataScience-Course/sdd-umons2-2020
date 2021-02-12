@@ -981,7 +981,7 @@ if (exists("assignation"))
   assignation("B05Ia_ligurian_sea", part = NULL,
     url = "https://github.com/BioDataScience-Course/B05Ia_ligurian_sea",
     course.urls = c(
-      'S-BIOG-015' = "https://classroom.github.com/g/...", 
+      'S-BIOG-015' = "https://classroom.github.com/a/Xok-itYL", 
       'S-BIOG-937-958-959' = "https://classroom.github.com/a/uHiKzIWK"),
     toc = "Application de la classification ascendante hiérarchique")
 ```
