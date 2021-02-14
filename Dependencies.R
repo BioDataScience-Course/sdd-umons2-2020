@@ -35,7 +35,7 @@ install.packages(c("knitr", "bookdown", # The bases!
   "naniar",
   "plotly",
   "purrr",
-  "RColorBrewer,"
+  "RColorBrewer",
   "rgl",
   "rlang",
   "RSQLite",
