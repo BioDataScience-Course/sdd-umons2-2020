@@ -20,6 +20,10 @@ Ces techniques étant basées sur des matrices de distances et complémentaires 
 
 Les k-moyennes (ou "k-means" en anglais) représentent une autre façon de regrouper les individus d'un tableau multivarié. Par rapport à la CAH, cette technique est généralement moins efficace, mais elle a l'avantage de permettre le regroupement d'un très grand nombre d'individus (gros jeu de données), là où la CAH nécessiterait trop de temps de calcul et de mémoire vive. Il est donc utile de connaître cette seconde technique à utiliser comme solution de secours lorsque le dendrogramme de la CAH devient illisible sur de très gros jeux de données.
 
+##### À vous de jouer ! {-}
+
+`r h5p(93, height = 270, toc = "Avantages des k-moyennes")`
+
 Le principe des k-moyennes est très simple^[En pratique, différents algorithmes avec diverses optimisations existent. Le plus récent et le plus sophistiqué est celui de Hartigan-Wong. Il est utilisé par défaut par la fonction `kmeans()`. En pratique, il y a peu de raison d'en changer.]\ :
 
 - L'utilisateur choisi le nombre de groupes *k* qu'il veut obtenir à l'avance.
@@ -162,6 +166,10 @@ kmeans(zoo6, centers = 2, nstart = 50) # 50 positions de départ différentes
 
 Dans ce cas simple, cela ne change pas grand chose. Mais avec un plus gros jeu de données plus complexe, cela peut être important.
 
+##### À vous de jouer ! {-}
+
+`r h5p(94, height = 270, toc = "Les arguments de la fonction kmeans()")`
+
 ### Classification du zooplancton
 
 Maintenant que nous savons utiliser `kmeans()` et les fonctions annexes, nous pouvons classer le jeu de données `zoo` tout entier.
@@ -204,6 +212,7 @@ table(zoob$class, zoob$cluster)
 
 Le cluster numéro 2 n'est pas vraiment défini en terme des classes de plancton car aucune classe ne s'y trouve de manière majoritaire. Le groupe numéro 1 contient la majorité des items de diverses classes, alors que le groupe 3 a une majorité de calanoïdes et d'harpacticoïdes (différents copépodes). Globalement, le classement a un sens, mais est moins bien corrélé avec les classes de plancton que ce que la CAH nous a fourni. Notez que, si nous avions standardisé les données avant d'effectuer les k-moyennes comme nous l'avons fait pour la CAH, nous aurions obtenu d'autres résultats. **La transformation des variables préalablement à l'analyse reste une approche intéressante pour moduler l'importance des différentes variables entre elles dans leur impact sur le calcul des distances, et donc, des regroupements réalisés**. Nous vous laissons réaliser les k-moyennes sur les données `zoo standardisées à l'aide de la fonction `scale()` comme pour la CAH comme exercice.
 
+<!--- G.E. En attente de la mise à jour du tutos par RC
 ##### A vous de jouer ! {-}
 
 - Réalisez le tutoriel afin de vérifier votre bonne compréhension de la méthode des k-moyennes.
@@ -216,22 +225,31 @@ Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, e
 N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
 ```
 
-- Complétez votre carnet de note par binôme sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).
+---->
 
-```{block2, type='bdd'}
 
-Completez votre projet. Lisez attentivement le README.
+##### À vous de jouer ! {-}
 
-La dernière version du README est disponible via le lien suivant\ :
-  
-- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea>
-```
+`r h5p(95, height = 270, toc = "Transformation des données avant d'utiliser la fonction kmeans()")`
 
 ##### Pour en savoir plus {-}
 
 Il existe une approche mixte qui mèle la CAH et les k-moyennes. Cette approche est intéressante pour les gros jeux de données. Le problématique est expliquée [ici](https://lovelyanalytics.com/2017/11/18/cah-methode-mixte/), et l'implémentation dans la fonction `factoextra::hkmeans()` est détaillée [ici (en anglais)](https://www.datanovia.com/en/lessons/hierarchical-k-means-clustering-optimize-clusters/).
 
 Cet [article](https://www.r-bloggers.com/the-complete-guide-to-clustering-analysis-k-means-and-hierarchical-clustering-by-hand-and-in-r/) explique dans le détail `kmeans()` et `hclust()` dans R, et montre aussi comment on peut calculer les k-moyennes à la main pour bien en comprendre la logique (en anglais).
+
+
+##### À vous de jouer ! {-}
+
+```{r, echo=FALSE, results='asis'}
+if (exists("assignation"))
+  assignation("B06Ia_fish_market", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B06Ia_fish_market",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/...", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+    toc = "Analyse multivarée sur 7 poissons couramment pêchés.")
+```
 
 ## Positionnement multidimensionnel (MDS)
 
@@ -521,6 +539,7 @@ Restez toujours attentif à la taille du jeu de données que vous utilisez pour 
 
 - Des techniques existent pour déterminer la dimension *k* idéale de la carte. Le **graphique des éboulis** (*screeplot* en anglais) sera abordé au module suivante dans le cadre de l'ACP. Il en existe une version pour le MDS, voyez [ici](https://rpubs.com/YaPi/393252) (en anglais).
 
+<!--- G.E. En attente de la mise à jour de R.C.
 ##### A vous de jouer ! {-}
 
 - Réalisez le tutoriel afin de vérifier votre bonne compréhension de la MDS.
@@ -533,16 +552,7 @@ Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, e
 N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
 ```
 
-- Complétez votre carnet de note par binôme sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).
-
-```{block2, type='bdd'}
-
-Completez votre projet. Lisez attentivement le README.
-
-La dernière version du README est disponible via le lien suivant\ :
-  
-- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea>
-```
+--->
 
 ## Cartes auto-adaptatives (SOM)
 
@@ -753,25 +763,8 @@ Nous n'avons fait qu'effleurer les nombreuses possibilités des cartes auto-adap
 
 - Si vous êtes aventureux, vous pouvez vous lancer dans la réimplémentation des graphiques du package {kohonen} en {chart} ou {ggplot2}. Voici [un bon point de départ](http://blog.schochastics.net/post/soms-and-ggplot/) (en anglais).
 
-##### A vous de jouer ! {-}
+## Récapitulatif des exercices
 
-- Réalisez le tutoriel afin de vérifier votre bonne compréhension de la som.
+Ce sixième module vous a permis de comprendre trois nouvelles techniques des statistiques exploratoires. Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser\ :
 
-```{block2, type='bdd'}
-Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
-
-    BioDataScience2::run("06c_som")
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
-```
-
-- Complétez votre carnet de note par binôme sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le fichier `README.md` (Ce dernier a été mis à jour).
-
-```{block2, type='bdd'}
-
-Completez votre projet. Lisez attentivement le README.
-
-La dernière version du README est disponible via le lien suivant\ :
-  
-- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea>
-```
+`r show_ex_toc()`
