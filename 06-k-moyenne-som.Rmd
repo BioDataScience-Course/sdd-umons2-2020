@@ -33,19 +33,122 @@ Le principe des k-moyennes est très simple^[En pratique, différents algorithme
 - Les individus sont réaffectés en fonction de leurs distances à ces nouveaux centres.
 - Si au moins un individu a changé de groupe, le calcul est réitéré. Sinon, nous considérons avoir atteint la configuration finale.
 
-La technique est superbement expliquée et illustrée dans la vidéo suivante\ :
+La technique est illustrée dans la vidéo suivante\ :
 
 ```{r, echo=FALSE}
-vembedr::embed_youtube("Aic2gHm9lt0", width = 770, height = 433)
+#vembedr::embed_youtube("Aic2gHm9lt0", width = 770, height = 433)
+vembedr::embed_youtube("5I3Ei69I40s", width = 770, height = 433)
 ```
 
-Essayez par vous même via l'application ci-dessous qui utilise le célèbre jeu de données `iris`. Notez que vous devez utiliser des variables **numériques**. Par exemple, `Species` étant une variable qualitative, vous verrez que cela ne fonctionne pas dans ce cas.
+Essayez par vous même via l'application ci-dessous qui utilise le [célèbre jeu de données `iris`](https://archive.ics.uci.edu/ml/datasets/iris). Notez que vous devez utiliser des variables **numériques**. Par exemple, `Species` étant une variable qualitative, vous verrez que cela ne fonctionne pas dans ce cas.
 
 ```{r, echo=FALSE, include=TRUE, out.extra='style="border: none;"', out.width='100%'}
 knitr::include_app("https://jjallaire.shinyapps.io/shiny-kmeans/", height = "600px")
 ```
 
 ### Exemple simple
+
+R propose la fonction `kmeans()` et différents packages la supplémente pour enrichir votre boite à outils. Nous rassemblons tout cela sous une interface cohérente dans SciViews autour d'une fonction légèrement différente\ : `k_means()`. Cependant, ce code n'est pas encore inclus dans un package. Vous aurez donc à intégrer le contenu du chunk suivant dans vos scripts et documents R Markdown avant de pouvoir utiliser nos fonctions (cliquez sur "voir le code" pour le dérouler).
+
+```{r, class.source='hidden-code'}
+# k_means for SciViews, version 1.0.0
+# Copyright (c) 2021, Philippe Grosjean (phgrosjean@sciviews.org)
+
+SciViews::R
+library(broom)
+
+# scale() is a generic function, but it does not provide a method for data
+# frames. As such, data frames and tibbles are converted into matrices by the
+# default method, which is not what we want
+scale.data.frame <- function(x, center = TRUE, scale = TRUE)
+  as.data.frame(scale(as.matrix(x)))
+# This is for tibbles
+scale.tbl_df <- function(x, center = TRUE, scale = TRUE)
+  tibble::as_tibble(scale(as.matrix(x)))
+# This is for data.tables
+scale.data.table <- function(x, center = TRUE, scale = TRUE)
+  data.table::as.data.table(scale(as.matrix(x)))
+
+# This is a reworked version of factoextra::fviz_nbclust() to help chosing the
+# number of clusters for kmeans()
+profile_k <- function(x, FUNcluster = kmeans, method = "wss", k.max = NULL, ...) {
+  if (NROW(x) < 2)
+    stop("You must provide an data frame or matrix with at least two rows")
+  if (is.null(k.max))
+    k.max <- min(nrow(x) - 1, 10) # Avoid error with very small datasets in fviz_nbclust()
+  factoextra::fviz_nbclust(x, FUNcluster = FUNcluster, method = method,
+    k.max = k.max, ...)
+}
+
+# Traditional kmeans does not store the data... and this is a problem for plot
+# later on. So, we define k_means() which store the original data by default
+k_means <- function(x, k, centers = k, iter.max = 10L, nstart = 1L,
+algorithm = c("Hartigan-Wong", "Lloyd", "Forgy", "MacQueen"), trace = FALSE,
+keep.data = TRUE) {
+  # k and centers are synonyms
+  res <- kmeans(x, centers = centers, iter.max = iter.max, nstart = nstart,
+    algorithm = algorithm, trace = trace)
+  if (isTRUE(keep.data))
+    res$data <- as.data.frame(x)
+  class(res) <- unique(c("k_means", class(res)))
+  res
+}
+
+# broom::augment.kmeans() seems buggy when data is called 'x'
+augment.kmeans <- function(object, data) {
+  res <- broom::fix_data_frame(data, newcol = ".rownames")
+  res$.cluster <- factor(object$cluster)
+  res
+}
+
+# No predict() method for kmeans, but we add one for k_means
+predict.k_means <- function(object, ...)
+  factor(object$cluster)
+
+# There is no plot, autoplot and chart methods for kmeans objects => make them
+# for k_means objects, because we have both the k-means results and the data
+# Since data is no contained in the kmeans object, one has to provide it also
+plot.k_means <- function(x, y, data = x$data, choices = 1L:2L,
+  col = NULL, c.shape = 8, c.size = 3, ...) {
+  nclust <- nrow(x$centers)
+  if (is.null(col))
+    col <- 1:nclust
+  plot(as.data.frame(data)[, choices], col = col[x$cluster], ...)
+  points(as.data.frame(x$centers)[, choices], col = col[1:nclust],
+    pch = c.shape, cex = c.size)
+}
+
+autoplot.k_means <- function(object, data = object$data, choices = 1L:2L,
+alpha = 1, c.shape = 8, c.size = 3, theme = NULL, use.chart = FALSE, ...) {
+  data <- as.data.frame(data)
+  vars <- choices
+  if (is.numeric(choices))
+    vars <- colnames(data)[choices]
+  var_x <- as.name(vars[1])
+  var_y <- as.name(vars[2])
+  centers <- broom::tidy(object, col.names = colnames(data))
+  cluster <- factor(object$cluster)
+  if (isTRUE(use.chart)) {
+    fun <- chart::chart
+  } else {
+    fun <- ggplot2::ggplot
+  }
+  res <- fun(data = data, mapping = aes(x = {{var_x}}, y = {{var_y}},
+    col  = cluster)) +
+    geom_point(alpha = alpha) +
+    geom_point(data = centers, size = c.size, shape = c.shape)
+  if (!is.null(theme))
+    res <- res + theme
+  res
+}
+
+chart.k_means <- function(data, ..., type = NULL, env = parent.frame())
+  autoplot(data, type = type, theme = theme_sciviews(), use.chart = TRUE, ...)
+
+```
+
+Vous avez les méthodes `print()`, `plot()`, `autoplot()`, `chart()`, `augment()`, `tidy()`, `glance()`, `predict()` et `fitted()`. Nous verrons leur utilisation au fur et à mesure des explications dans cette partie. Enfin, la fonction `profile_k()` permet de recherche *k*, le nombre optimal de clusters à réaliser.
+
 
 Afin de comparer la classification par k-moyennes à celle par CAH, nous reprendrons ici le même jeu de données `zooplankton`.
 
@@ -62,73 +165,73 @@ set.seed(38)
 
 ```{r}
 zoo %>.%
-  select(., -class) %>.% # Elimination de la colonne class
+  select(., -class) %>.% # Élimination de la colonne class
   slice(., 13:18) -> zoo6      # Récupération des lignes 13 à 18
 
-zoo6_kmeans <- kmeans(zoo6, centers = 2)
-zoo6_kmeans
+zoo6_kmn <- k_means(zoo6, k = 2)
+zoo6_kmn
 ```
 
-Nous voyons que la fonction `kmeans()` effectue notre classification. Nous lui fournissons le tableau de départ et spécifions le nombre *k* de groupes souhaités via l'argument `centers =`. Ne pas oublier d'assigner le résultat du calcul à une nouvelle variable, ici `zoo6_kmeans`, pour pouvoir l'inspecter et l'utiliser par la suite. L'impression du contenu de l'objet nous donne plein d'information dont\ :
+Nous voyons que la fonction `k_means()` effectue notre classification^[Utilisez l'aide en ligne de `?kmeans` pour connaître les arguments. Seul `centers =` est changé en `k =` dans `k_means()`, mais avec `centers =` aussi accepté.]. Nous lui fournissons le tableau de départ et spécifions le nombre *k* de groupes souhaités via l'argument `k = `. Ne pas oublier d'assigner le résultat du calcul à une nouvelle variable, ici `zoo6_kmn`, pour pouvoir l'inspecter et l'utiliser par la suite. L'impression du contenu de l'objet nous donne plein d'information dont\ :
 
 - le nombre d'individus dans chaque groupe (ici 3 et 3),
 - la position des centres pour les *k* groupes dans `Cluster means`,
-- l'appartenance aux groupes dans `Cluster vectors` (dans le même ordre que les lignes du tableau de départ),
+- l'appartenance aux groupes dans `Clustering vector` (dans le même ordre que les lignes du tableau de départ),
 - la sommes des carrés des distances entre les individus et la moyenne au sein de chaque groupe dans `Within cluster sum of squares`\ ; le calcul `between_SS / total_SS` est à mettre en parallèle avec le $R^2$ de la régression linéaire\ : c'est une mesure de la qualité de regroupement des données (plus la valeur est proche de 100% mieux c'est, mais attention que cette valeur augmente d'office en même temps que *k*),
-- et enfin, la liste des composants accessibles via l'opérateur `$`\ ; par exemple, pour obtenir les groupes (opération similaire à `cutree()` pour la CAH), nous ferons\ :
+- et enfin, la liste des composants accessibles via l'opérateur `$`\ ; par exemple, pour obtenir la taille de chaque groupe (en nombre d'individus), nous ferons\ :
 
 ```{r}
-zoo6_kmeans$cluster
+zoo6_kmn$size
 ```
 
 Le package {broom} contient trois fonctions complémentaires qui nous seront utiles\ : `tidy()`, `augment()` et `glance()`. `broom::glance()` retourne un **data.frame** avec les statistiques permettant d'évaluer la qualité de la classification obtenue\ :
 
 ```{r}
-broom::glance(zoo6_kmeans)
+glance(zoo6_kmn)
 ```
 
-De plus, le package {factoextra} propose une fonction `fviz_nbclust()` qui réalise un graphique pour aider au choix optimal de *k*\ :
+Si nous voulons déterminer la valeur optimale de *k*, pous pouvons utiliser `profile_k()` appliqué au jeu de données initial, ou à la composante `data` de notre objet `k_means` (spécifier éventuellemznt une valeur différente de celle par défaut pour l'argument `k.max = ` de la fonction, voir l'aide en ligne de `?factoextra::fviz_nbclust`)\ :
 
 ```{r}
-factoextra::fviz_nbclust(zoo6, kmeans, method = "wss", k.max = 5)
+profile_k(zoo6) # ou zoo6_kmn$data
 ```
 
 Le graphique obtenu montre la décroissance de la somme des carrés des distances intra-groupes en fonction de *k*. Avec *k* = 1, nous considérons toutes les données dans leur ensemble et nous avons simplement la somme des carrés des distances euclidiennes entre tous les individus et le centre de gravité du nuage de points dont les coordonnées sont les moyennes de chaque variable. C'est le point de départ qui nous indique de combien les données sont dispersées (la valeur absolue de ce nombre n'est pas importante).
 
 Ensuite, avec *k* croissant, notre objectif est de faire des regroupement qui diminuent la variance intra-groupe autant que possible, ce que nous notons par la diminution de la somme des carrés intra-groupes (la variance du groupe est, en effet, la somme des carrés des distances euclidiennes entre les points et le centre du groupe, divisée par les degrés de liberté).
 
-Nous recherchons ici des sauts importants dans la décroissance de la somme des carrés, tout comme dans le dendrogramme obtenu par la CAH nous recherchions des sauts importants dans les regroupements (hauteur des barres verticales du dendrogramme). Nous observons ici un saut important pour *k* = 2, puis une diminution moins forte de *k* = 3 à *k* = 5. Ceci *suggère* que nous pourrions considérer deux groupes.
+Nous recherchons ici des sauts importants dans la décroissance de la somme des carrés, tout comme dans le dendrogramme obtenu par la CAH nous recherchions des sauts importants dans les regroupements (hauteur des barres verticales du dendrogramme). Nous observons ici un saut important pour *k* = 2, puis une diminution un peu moins forte pour *k* = 3 et ensuite une stagnation. Ceci *suggère* que nous pourrions considérer deux voire trois groupes.
 
 ```{block2, type='note'}
-Le nombre de groupes proposé par `factoextra::fviz_nbclust()` n'est qu'indicatif\ ! Si vous avez par ailleurs d'autres informations qui vous suggèrent un regroupement différent, ou si vous voulez essayer un regroupement plus ou moins détaillé par rapport à ce qui est proposé, c'est tout aussi correct.
+Le nombre de groupes proposé par `profile_k()` n'est qu'indicatif\ ! Si vous avez par ailleurs d'autres informations qui vous suggèrent un regroupement différent, ou si vous voulez essayer un regroupement plus ou moins détaillé par rapport à ce qui est proposé, c'est tout aussi correct.
 
-La fonction `factoextra::fviz_nbclust()` propose d'ailleurs deux autres méthodes pour déterminer le nombre optimal de groupes *k*, avec `method = "silhouette"` ou `method = "gap_stat"`. Voyez l'aide en ligne de cette fonction `?factoextra::fviz_nbclust`. Ces différentes méthodes peuvent d'ailleurs suggérer des regroupements différents pour les mêmes données... preuve qu'il n'y a pas *une et une seule* solution optimale\ !
+La fonction `profile_k()` propose d'ailleurs deux autres méthodes pour déterminer le nombre optimal de groupes *k*, avec `method = "silhouette"` ou `method = "gap_stat"`. Voyez l'aide en ligne de cette fonction `?factoextra::fviz_nbclust`. Ces différentes méthodes peuvent d'ailleurs suggérer des regroupements différents pour les mêmes données... preuve qu'il n'y a pas *une et une seule* solution optimale\ !
 ```
 
-A ce stade, nous pouvons collecter les groupes et les ajouter à notre tableau de données. Pour la CAH, vous avez déjà remarqué que rajouter ces groupes dans le *tableau de départ* peut mener à des effets surprenants si nous relançons ensuite l'analyse sur le tableau ainsi complété^[Nous vous avons proposé exprès de rajouter les groupes dans le tableau de départ pour que vous soyez confronté à ce problème. Ici, nous proposons donc une autre façon de travailler qui l'évite en assignant le résultat dans une *autre* variable.]. Donc, nous prendrons soin de placer les données ainsi complétées de la colonne `cluster` dans un tableau différent nommé `zoo6b`. Pour se faire, nous pouvons utiliser `broom::augment()`.
+A ce stade, nous pouvons collecter les groupes et les ajouter à notre tableau de données avec `augment()`. Notez que si vous voulez *juste* récupérer les groupes, vous pouvez utiliser alors `predict(zoo6_kmn)`. `augment()` crée une nouvelle colonne nommée `.cluster` que nous renommons ici immédiatement en `cluster`, et ensuite, nous enregistrons le tout dans un nouveau jeu de données nommé `zoo6b`^[De manière générale, éviter de rajouter des données calculées dans le jeu de données initial. Cela peut amener à des erreurs particulièrement délicates si vous relancer ensuite l'analyse sur ce tableau.].
 
 ```{r}
-broom::augment(zoo6_kmeans, zoo6) %>.%
+augment(zoo6_kmn, zoo6) %>.%
   rename(., cluster = .cluster) -> zoo6b
 names(zoo6b)
 ```
 
-Comme vous pouvez le constater, une nouvelle colonne nommée `.cluster` a été ajoutée au tableau en dernière position, que nous avons renommée immédiatement en `cluster` ensuite (c'est important pour le graphique plus loin). Elle contient ceci\ :
+La nouvelle variable `cluster` contient ceci\ :
 
 ```{r}
 zoo6b$cluster
 ```
 
-C'est le contenu de `zoo6_kmeans$cluster`, mais transformé en variable `factor`.
+C'est le contenu de `zoo6_kmn$cluster`, mais transformé en variable `factor`.
 
 ```{r}
 class(zoo6b$cluster)
 ```
 
-Nous pouvons enfin utiliser `broom::tidy()` pour obtenir un tableau avec les coordonnées des *k* centres. Nous l'enregistrerons dans la variable `zoo6_centers`, en ayant bien pris soin de nommer les variables du même nom que dans le tableau original `zoo6` (argument `col.names = names(zoo6)`, cela sera important pour le graphique ci-dessous)\ :
+Nous pouvons enfin utiliser `tidy()` pour obtenir un tableau avec les coordonnées des *k* centres. Nous l'enregistrerons dans la variable `zoo6_centers`, en ayant bien pris soin de nommer les variables du même nom que dans le tableau original `zoo6` (argument `col.names = names(zoo6)`, afin de conserver le noms de nos variables initiales dans ce nouveau tableau\ :
 
 ```{r}
-zoo6_centers <- broom::tidy(zoo6_kmeans, col.names = names(zoo6))
+zoo6_centers <- tidy(zoo6_kmn, col.names = names(zoo6))
 zoo6_centers
 ```
 
@@ -153,7 +256,16 @@ chart(data = zoo6b, area ~ circularity %col=% cluster %label=% class) +
 
 Nous constatons que le point classé différemment est un "Poecilostomatoïd". Or, l'autre groupe des k-moyennes contient aussi un individu de la même classe. Donc, CAH a mieux classé notre plancton que les k-moyennes dans le cas présent. Ce n'est pas forcément toujours le cas, mais souvent.
 
-Un dernier point est important à mentionner. Comme les k-moyennes partent d'une position aléatoire des *k* centres, le résultat final peut varier et n'est pas forcément optimal. Pour éviter cela, nous pouvons indiquer à `kmeans()` d'essayer différentes situations de départ via l'argument `nstart =`. Par défaut, nous prenons une seule situation aléatoire de départ `nstart = 1`, mais en indiquant une valeur plus élevée pour cet argument, il est possible d'essayer plusieurs situations de départ et ne garder que le meilleur résultat final. Cela donne une analyse plus robuste et plus reproductible... mais le calcul est naturellement plus long.
+Maintenant que nous comprenons bien la logique de création de ce graphique en l'ayant réalisé par l'extraction des groupes avec `augment()` et des centres de ces groupes à l'aide de `tidy()`, nous pouvons nous simplifier la vie en utilisant `chart()` simplement sur notre objet `k_means` pour obtenir directement ce graphique. Dans ce cas, nous n'utilisons pas une formule pour indiquer les variables à utiliser, mais un vecteur de deux nombre qui indique l'index de ces variables, ou leur noms directement dans `choices =`\ :
+
+```{r}
+chart(zoo6_kmn, choices = c("circularity", "area"),
+  alpha = 0.6, c.size = 5, c.shape = 17)
+```
+
+La taille et la forme des centres sont indiqués respectivement par `c.size =` et `c.shape =` , tandis que `alpha =` modifie la transparence des points. Ce dernier argument est surtout utile pour des gros jeux de données avec beaucoup de points à afficher sur le graphique.
+
+Comme les k-moyennes partent d'une position aléatoire des *k* centres, le résultat final peut varier et n'est pas forcément optimal. Pour éviter cela, nous pouvons indiquer à `k_means()` d'essayer différentes situations de départ via l'argument `nstart =`. Par défaut, nous prenons une seule situation aléatoire de départ `nstart = 1`, mais en indiquant une valeur plus élevée pour cet argument, il est possible d'essayer plusieurs situations de départ et ne garder que le meilleur résultat final. Cela donne une analyse plus robuste et plus reproductible... mais le calcul est naturellement plus long.
 
 ```{r, echo=FALSE}
 set.seed(9768)
@@ -161,56 +273,54 @@ set.seed(9768)
 
 
 ```{r}
-kmeans(zoo6, centers = 2, nstart = 50) # 50 positions de départ différentes
+k_means(zoo6, k = 2, nstart = 50) # 50 positions de départ différentes
 ```
 
 Dans ce cas simple, cela ne change pas grand chose. Mais avec un plus gros jeu de données plus complexe, cela peut être important.
 
 ##### À vous de jouer ! {-}
 
-`r h5p(94, height = 270, toc = "Les arguments de la fonction kmeans()")`
+`r h5p(94, height = 270, toc = "Les arguments de la fonction k_means()")`
 
 ### Classification du zooplancton
 
-Maintenant que nous savons utiliser `kmeans()` et les fonctions annexes, nous pouvons classer le jeu de données `zoo` tout entier.
+Maintenant que nous savons utiliser `k_means()` et les fonctions annexes, nous pouvons classer le jeu de données `zoo` tout entier.
 
 ```{r}
 zoo %>.%
   select(., -class) %>.%
-  factoextra::fviz_nbclust(., kmeans, method = "wss", k.max = 10)
+  profile_k(., k.max = 15)
 ```
 
-Nous observons un saut maximal pour *k* = 2, mais le saut pour *k* = 3 est encore conséquent. Afin de comparer avec ce que nous avons fait par CAH, nous utiliserons donc *k* = 3. Enfin, comme un facteur aléatoire intervient, qui définira au final le numéro des groupes, nous utilisons `set.seed()` pour rendre l'analyse reproductible. Pensez à donner une valeur différente à cette fonction pour chaque utilisation\ ! Et pensez aussi à éliminer les colonnes non numériques à l'aide de `select()`.
+Nous observons un saut maximal pour *k* = 2, mais le saut pour *k* = 3 est encore conséquent. Afin de comparer avec ce que nous avons fait par CAH, nous utiliserons donc *k* = 3. Enfin, comme un facteur aléatoire intervient, qui définira au final le numéro des groupes, nous utilisons `set.seed()` pour rendre l'analyse reproductible. **Pensez à donner une valeur différente à cette fonction pour chaque utilisation\ !** Et pensez aussi à éliminer les colonnes non numériques à l'aide de `select()`.
 
 ```{r}
 set.seed(562)
-zoo_kmeans <- kmeans(select(zoo, -class), centers = 3, nstart = 50)
-zoo_kmeans
+zoo_kmn <- k_means(select(zoo, -class), k = 3, nstart = 50)
+zoo_kmn
 ```
 
-Récupérons les clusters dans `zoob`
+Récupérons les groupes dans `zoob`
 
 ```{r}
-broom::augment(zoo_kmeans, zoo) %>.%
+augment(zoo_kmn, zoo) %>.%
   rename(., cluster = .cluster) -> zoob
 ```
 
 Et enfin, effectuons un graphique similaire à celui réalisé pour la CAH au module précédent. À noter que nous pouvons ici choisir n'importe quelle paire de variables quantitatives pour représenter le nuage de points. Nous ajoutons des ellipses pour matérialiser les groupes à l'aide de `stat_ellipse()`. Elles contiennent 95% des points du groupe à l'exclusion des extrêmes. Enfin, comme il y a beaucoup de points, nous choisissons de les rendre semi-transparents avec l'argument `alpha = 0.2` pour plus de lisibilité du graphique.
 
 ```{r}
-chart(data = zoob, compactness ~ ecd %col=% cluster) +
-  geom_point(alpha = 0.2) +
-  stat_ellipse() +
-  geom_point(data = broom::tidy(zoo_kmeans, col.names = names(zoo6)), size = 5, shape = 17)
+chart(zoo_kmn, choices = c("ecd", "compactness"), alpha = 0.2) +
+  stat_ellipse()
 ```
 
-Nous observons ici un regroupement beaucoup plus simple qu'avec la CAH, essentiellement stratifié de bas en haut en fonction de la compacité des points (`Compactness`). La tabulation des clusters en fonction des classes connues par ailleurs montre aussi que les k-moyennes les séparent moins bien que ce qu'a pu faire la CAH\ :
+Nous observons ici un regroupement beaucoup plus simple qu'avec la CAH, essentiellement stratifié de bas en haut en fonction de la compacité des points (`Compactness`). La tabulation des groupes en fonction des classes connues par ailleurs montre aussi que les k-moyennes les séparent moins bien que ce qu'à pu faire la CAH\ :
 
 ```{r}
 table(zoob$class, zoob$cluster)
 ```
 
-Le cluster numéro 2 n'est pas vraiment défini en terme des classes de plancton car aucune classe ne s'y trouve de manière majoritaire. Le groupe numéro 1 contient la majorité des items de diverses classes, alors que le groupe 3 a une majorité de calanoïdes et d'harpacticoïdes (différents copépodes). Globalement, le classement a un sens, mais est moins bien corrélé avec les classes de plancton que ce que la CAH nous a fourni. Notez que, si nous avions standardisé les données avant d'effectuer les k-moyennes comme nous l'avons fait pour la CAH, nous aurions obtenu d'autres résultats. **La transformation des variables préalablement à l'analyse reste une approche intéressante pour moduler l'importance des différentes variables entre elles dans leur impact sur le calcul des distances, et donc, des regroupements réalisés**. Nous vous laissons réaliser les k-moyennes sur les données `zoo standardisées à l'aide de la fonction `scale()` comme pour la CAH comme exercice.
+Le groupe numéro 3 n'est pas vraiment défini en terme des classes de plancton car aucune classe ne s'y trouve de manière majoritaire. Le groupe numéro 1 contient la majorité des items de diverses classes, alors que le groupe 2 a une majorité de calanoïdes, de cyclopoïdes et d'harpacticoïdes (différents copépodes). Globalement, le classement a un sens, mais est moins bien corrélé avec les classes de plancton que ce que la CAH nous a fourni. Notez que, si nous avions standardisé les données avant d'effectuer les k-moyennes comme nous l'avons fait pour la CAH, nous aurions obtenu d'autres résultats. **La transformation des variables préalablement à l'analyse reste une approche intéressante pour moduler l'importance des différentes variables entre elles dans leur impact sur le calcul des distances, et donc, des regroupements réalisés**. Nous vous laissons réaliser les k-moyennes sur les données zoo standardisées à l'aide de la fonction `scale()` comme pour la CAH comme exercice.
 
 <!--- G.E. En attente de la mise à jour du tutos par RC
 ##### A vous de jouer ! {-}
@@ -230,14 +340,13 @@ N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à
 
 ##### À vous de jouer ! {-}
 
-`r h5p(95, height = 270, toc = "Transformation des données avant d'utiliser la fonction kmeans()")`
+`r h5p(95, height = 270, toc = "Transformation des données avant k_means()")`
 
 ##### Pour en savoir plus {-}
 
-Il existe une approche mixte qui mèle la CAH et les k-moyennes. Cette approche est intéressante pour les gros jeux de données. Le problématique est expliquée [ici](https://lovelyanalytics.com/2017/11/18/cah-methode-mixte/), et l'implémentation dans la fonction `factoextra::hkmeans()` est détaillée [ici (en anglais)](https://www.datanovia.com/en/lessons/hierarchical-k-means-clustering-optimize-clusters/).
+Il existe une approche mixte qui combine la CAH et les k-moyennes. Cette approche est intéressante pour les gros jeux de données. Elle est expliquée [ici](https://lovelyanalytics.com/2017/11/18/cah-methode-mixte/), et l'implémentation dans la fonction `factoextra::hkmeans()` est détaillée [ici (en anglais)](https://www.datanovia.com/en/lessons/hierarchical-k-means-clustering-optimize-clusters/).
 
 Cet [article](https://www.r-bloggers.com/the-complete-guide-to-clustering-analysis-k-means-and-hierarchical-clustering-by-hand-and-in-r/) explique dans le détail `kmeans()` et `hclust()` dans R, et montre aussi comment on peut calculer les k-moyennes à la main pour bien en comprendre la logique (en anglais).
-
 
 ##### À vous de jouer ! {-}
 
@@ -255,24 +364,27 @@ if (exists("assignation"))
 
 Le positionnement multidimensionnel, ou *multidimensional scaling* en anglais, d'où son acronyme fréquemment utilisé en français également\ : le MDS, est une autre façon de représenter clairement l'information contenue dans une matrice de distances. Ici, l'objectif n'est pas de **regrouper** ou de **classifier** les individus du tableau, mais de les **ordonner** sur un graphique en nuage de points en deux ou trois dimensions. Ce graphique s'appelle une "carte", et la technique qui la réalise est une **méthode d'ordination**.
 
-Au départ, nous avons *p* colonnes et *n* lignes dans le tableau cas par variables, c'est-à-dire, *p* variables quantitatives mesurées sur *n* individus distincts. Nous voulons déterminer les similitudes ou différences de ces *n* individus en les visualisant sur une carte où la distance d'un individu à l'autre représente cette similitude. Plus deux individus sont proches, plus ils sont semblables. Plus les individus sont éloignés, plus ils diffèrent. Ces distances entre paires d'individus, nous les avons déjà calculées dans la matrice de distances. Mais comment les représenter\ ? En effet, une représentation exacte ne peut se faire que dans un espace à *p* dimensions (même nombre de dimensions que de variables initiales). Donc, afin de réduire les dimensions à seulement 2 ou 3, nous allons devoir "tordre" les données et accepter de perdre un peu d'information. Ce que nous allons faire avec la MDS correspond exactement à cela\ : nous allons littéralement "écraser" les données dans un plan (deux dimensions) ou dans un espace à trois dimensions. C'est donc ce qu'on appelle une technique de **réduction de dimensions**.
+Au départ, nous avons *p* colonnes et *n* lignes dans le tableau cas par variables, c'est-à-dire, *p* variables quantitatives mesurées sur *n* individus distincts. Nous voulons déterminer les similitudes ou différences de ces *n* individus en les visualisant sur une carte où la distance d'un individu à l'autre représente cette similitude. Plus deux individus sont proches, plus ils sont semblables. Ces distances entre paires d'individus, nous les avons déjà calculées dans la matrice de distances. Mais comment les représenter\ ? En effet, une représentation exacte ne peut se faire que dans un espace à *p* dimensions (même nombre de dimensions que de variables initiales). Donc, afin de réduire les dimensions à seulement 2 ou 3, nous allons devoir "tordre" les données et accepter de perdre un peu d'information.
 
 ![](images/sdd2_06/tenor.gif)
 
-Il existe, en réalité, plusieurs techniques de MDS. Elle répondent toutes au schéma suivant\ :
+Ce que nous allons faire avec la MDS correspond exactement à cela\ : nous allons littéralement "écraser" les données dans un plan (deux dimensions) ou dans un espace à trois dimensions. C'est donc ce qu'on appelle une technique de **réduction de dimensions**. Il existe, en réalité, plusieurs techniques de MDS. Elle répondent toutes au schéma suivant\ :
 
 - A partir d'un tableau multivarié de *n* lignes et *p* colonnes, nous calculons une matrice de distances (le choix de la transformation initiale éventuelle et de la métrique de distance utilisée sont totalement libres ici^[Chaque métrique de distance offre un éclairage différent sur les données. Elles agissent comme autant de filtres différents à votre disposition pour explorer vos données multivariées.]).
 - Nous souhaitons représenter une carte (nuage de points) à *k* dimensions (*k* = 2, éventuellement *k* = 3) où les *n* individus seront placés de telle façon que les proximités exprimées par des valeurs faibles dans la matrice de dissimilarité soient respectées *autant que possible* entre tous les points.
-- Pour y arriver les points sont placés successivement sur la carte et réajustés afin de minimiser une **fonction de coût**, encore appelée **fonction de stress** qui quantifie de combien nous avons dû "tordre" le réseau à *p* dimensions initial représentant les distances entre toutes les paires. C'est en adoptant différentes fonctions de stress que nous aboutissons aux différentes variantes de MDS. La fonction de stress est représentée graphiquement (voir ci-dessous) pour diagnostiquer le traitement réaliser et décider si la représentation est utilisable (pas trop tordue) ou non.
-- Le positionnement des points faisant intervenir un facteur aléatoire (choix des points à placer en premier, réorganisation ensuite pour minimiser la fonction de stress), le résutat final peut varier d'une fois à l'autre sur les mêmes données, voir ne pas converger vers une solution stable. Il faut en être conscient.
+- Pour y arriver les points sont placés successivement sur la carte et réajustés afin de minimiser une **fonction de coût**, encore appelée **fonction de stress** qui quantifie de combien nous avons dû tordre le réseau à *p* dimensions initial représentant les distances entre toutes les paires. C'est en adoptant différentes fonctions de stress que nous aboutissons aux différentes variantes de MDS. La fonction de stress est représentée graphiquement (voir ci-dessous) pour diagnostiquer le traitement réaliser et décider si la représentation est utilisable (pas trop tordue) ou non.
+- Le positionnement des points faisant intervenir un facteur aléatoire (choix des points à placer en premier, réorganisation ensuite pour minimiser la fonction de stress), le résultat final peut varier d'une fois à l'autre sur les mêmes données, voir ne pas converger vers une solution stable. Il faut en être conscient.
 
-Nous vous épargnons ici les développements mathématiques qui mènent à la définition de la fonction de stress. Nous nous concentrerons sur les principales techniques et sur leurs propriétés utiles en pratique.
+Nous vous épargnons ici les développements mathématiques qui mènent à la définition de la fonction de stress. Nous nous concentrerons sur les principales techniques et sur leurs propriétés utiles en pratique en biologie.
 
 ### MDS simplifiée sous SciViews::R
 
-Dans R, il existe plus d'une dizaine de fonctions différentes pour réaliser le MDS. Afin de vous simplifier le travail et de pouvoir traiter votre MDS comme d'autres analyses similaires nous vous propoons les fonctions supplémentaites suivante. **Ces fonctions sont à copier-coller en haut de vos scripts R, ou dans un chunk de "setup" à l'intérieur de vos documents R Markdown/Notebook.**
+Dans R, il existe plus d'une dizaine de fonctions différentes pour réaliser le MDS. Afin de vous simplifier le travail et de pouvoir traiter votre MDS comme d'autres analyses similaires nous vous proposons les fonctions supplémentaires suivante. **Ces fonctions sont à copier-coller en haut de vos scripts R, ou dans un chunk de "setup" à l'intérieur de vos documents R Markdown/Notebook.** Dérouler la section "voir le code" pour découvrir la définition de ces fonctions.
 
-```{r}
+```{r, class.source='hidden-code'}
+# mds for SciViews, version 1.0.0
+# Copyright (c) 2020-2021, Philippe Grosjean (phgrosjean@sciviews.org)
+
 SciViews::R()
 library(broom)
 
@@ -332,6 +444,9 @@ autoplot.mds <- function(object, labels, ...) {
   }
 }
 
+chart.mds <- function(data, labels, ..., type = NULL, env = parent.frame())
+  autoplot(data, labels = labels, type = type, ...)
+
 shepard <- function(dist, mds, p = 2)
   structure(MASS::Shepard(d = dist, x = mds$points, p = p),
     class = c("shepard", "list"))
@@ -344,7 +459,7 @@ xlab = "Observed Dissimilarity", ylab = "Ordination Distance", ...) {
   lines(data = she, yf ~ x, type = "S", col = l.col, lwd = l.lwd)
 }
 
-autoplot.shepard <- function(object,  alpha = 0.5, l.col = "red", l.lwd = 1,
+autoplot.shepard <- function(object, alpha = 0.5, l.col = "red", l.lwd = 1,
 xlab = "Observed Dissimilarity", ylab = "Ordination Distance", ...) {
   she <- tibble::as_tibble(object)
   
@@ -353,6 +468,12 @@ xlab = "Observed Dissimilarity", ylab = "Ordination Distance", ...) {
     geom_step(chart::f_aes(yf ~ x), direction = "vh", col = l.col, lwd = l.lwd) +
     labs(x = xlab, y = ylab)
 }
+
+chart.shepard <- function(data, alpha = 0.5, l.col = "red", l.lwd = 1,
+xlab = "Observed Dissimilarity", ylab = "Ordination Distance", ..., type = NULL,
+env = parent.frame())
+  autoplot(data, alpha = alpha, l.col = l.col, l.lwd = l.lwd,
+    xlab = xlab, ylab = ylab, type = type, ...)
 
 # augment.mds -------------------------------------------
 augment.mds <- function(x, data, ...){
@@ -373,15 +494,130 @@ glance.mds <- function(x, ...){
     )
   }
 }
+
+# dissimlarity() from previous module ------------------
+dissimilarity <- function(data, formula = ~ ., subset = NULL,
+  method = "euclidean", scale = FALSE, rownames.col = "rowname",
+  transpose = FALSE, fun = NULL, ...) {
+  # TODO: get more meaningful warnings and errors by replacing fun by actual
+  # name of the function
+  if (is.null(fun)) {# Default function depends on the chosen method
+    if (method %in% c("maximum", "binary", "minkowski")) {
+      fun <- stats::dist
+    } else {
+      fun <- vegan::vegdist # Note: euclidean/manhattan/canberra in both, but
+      # we prioritize vegdist, and canberra is not calculated the same in dist!
+    }
+  }
+  # We accept only formulas with right-hand side => length must be two
+  if (length(formula) == 3)
+    stop("The formula cannot have a left-hand term")
+
+  # With matrices, we don't use rownames.col: rownames are already correctly set
+  if (!is.matrix(data)) {# row names may be in a column (usual for tibbles)
+    data <- as.data.frame(data)
+    if (rownames.col %in% names(data)) {
+      rownames(data) <- data[[rownames.col]]
+      data[[rownames.col]] <- NULL
+    } else {# rownames.col is NOT used
+      rownames.col <- NULL
+    }
+    if (as.character(formula[2] != ".")) {
+      # Subset the columns
+      data <- model.frame(formula, data = data, subset = subset)
+    } else if (!is.null(subset)) {
+      data <- data[subset, ]
+    }
+  } else {# A matrix
+    rownames.col <- NULL
+    if (as.character(formula[2] != ".")) {
+      # Subset the columns (and possibly the rows)
+      if (is.null(subset)) {
+        data <- data[, all.vars(formula)]
+      } else {
+        data <- data[subset, all.vars(formula)]
+      }
+    }
+  }
+
+  if (isTRUE(transpose))
+    data <- t(data)
+
+  # Arguments method =/metric = and stand = not always there
+  if (!is.null(as.list(args(fun))$metric)) {# metric = instead of method =
+    dst <- fun(data, metric = method, stand = scale, ...)
+  } else if (isTRUE(scale)) {
+    if (is.null(as.list(args(fun))$stand)) {# fun has no stand = argument
+      data <- scale(data)
+      dst <- fun(data, method = method, ...)
+    } else {# We don't standardise ourself because there may be also qualitative
+      # or binary data (like for cluster::daisy, for instance)
+      dst <- fun(data, method = method, stand = scale, ...)
+    }
+  } else {# Just method = and scale = FALSE
+    dst <- fun(data, method = method, ...)
+  }
+  attr(dst, "call") <- match.call()
+  # Depending if it is a dist or dissimilarity object, the method is stored in
+  # method or in Metric, but we use metric in our own version to avoid a clash
+  # with the method item in cluster()/hclust() further on (hclust change it
+  # into dist.method, but it is better to have the right name right now)
+  attr(dst, "metric") <- method
+  # dist or dissimilarity object use Labels, but we use labels everywhere else
+  # including in cluster()/hclust()
+  # So, we make sure labels is present (in hclust, it is labels anyway!)
+  attr(dst, "labels") <- rownames(data)
+  # Default values for Diag and Upper set to FALSE
+  if (is.null(attr(dst, "Diag"))) attr(dst, "Diag") <- FALSE
+  if (is.null(attr(dst, "Upper"))) attr(dst, "Upper") <- FALSE
+  # Keep info about how raw data were transformed
+  attr(dst, "rownames.col") <- rownames.col
+  attr(dst, "transpose") <- transpose
+  attr(dst, "scale") <- scale
+  class(dst) <- unique(c("dissimilarity", class(dst)))
+  dst
+}
+
+# We want to print only the first few rows and columns
+print.dissimilarity <- function(x, digits.d = 3L, rownames.lab = "labels",
+...) {
+  mat <- as.matrix(x)
+  mat <- format(round(mat, digits.d))
+  diag(mat) <- ""
+  mat[upper.tri(mat)] <- ""
+  class(mat) <- c("dst", "matrix")
+  tbl <- tibble::as_tibble(mat)
+  #tbl <- tibble::add_column(tbl, {{rownames.lab}} = rownames(mat), .before = 1)
+  # I prefer this
+  tbl <- dplyr::bind_cols(
+    as_tibble_col(rownames(mat), column_name = rownames.lab), tbl)
+  tbl <- tbl[, -ncol(tbl)]
+  more_info <- ""
+  if (isTRUE(attr(x, "scale"))) {
+    if (isTRUE(attr(x, "transpose"))) {
+      more_info <- " (transposed then scaled data)"
+    } else {# Only scaled
+      more_info <- " (scaled data)"
+    }
+  } else {
+    if (isTRUE(attr(x, "transpose")))
+      more_info <- " (transposed data)"
+  }
+  cat("Dissimilarity matrix with metric: ", attr(x, "metric"),
+    more_info, "\n", sep = "")
+  print(tbl)
+  invisible(x)
+}
+
 ```
 
 ### MDS métrique ou PCoA
 
-La forme classique, aussi appelée **MDS métrique** ou **analyse en coordonnées principales** (Principal Coordinates Analysis en anglais ou PCoA), va *projetter* le nuage de points à *p* dimensions dans un espace réduit à *k* = 2 dimensions (voire éventuellement à 3 dimensions). Cette projection se fait de manière similaire à une ombre chinoise projettée d'un objet tridimensionnel sur une surface plane en deux dimensions.
+La forme classique, aussi appelée **MDS métrique** ou **analyse en coordonnées principales** (Principal Coordinates Analysis en anglais ou PCoA), va *projeter* le nuage de points à *p* dimensions dans un espace réduit à *k* = 2 dimensions (voire éventuellement à 3 dimensions). Cette projection se fait de manière similaire à une ombre chinoise projetée d'un objet tridimensionnel sur une surface plane en deux dimensions.
 
 ![Ombre chinoise\ : un placement astucieux des mains dans le faisceau lumineux permet de projetter l'ombre d'un animal ou d'un objet sur une surface plane. La PCoA fait de même avec vos données.](images/sdd2_06/shadow.jpg)
 
-Considérons un relevé de couverture végétale en 24 stations concernant 44 plantes répertoriées sur le site de l'étude, par exemple, `Callvulg` est *[Calluna vulgaris](https://www.tela-botanica.org/bdtfx-nn-12262-synthese)*, `Empenigr` est *[Empetrum nigrum](https://www.tela-botanica.org/bdtfx-nn-23935-synthese)*, etc. Les valeurs sont les couvertures végétales observées pour chaque plante sur le site, exprimées en pourcents. La première colonne nommée `rownames` à l'importation contient les identifiants des stations (chaînes de caractères). Nous la renommons donc pour un intitulé plus explicite\ : `station`.
+Considérons un relevé de couverture végétale en 24 stations concernant 44 plantes répertoriées sur le site de l'étude, par exemple, `Callvulg` est *[Calluna vulgaris](https://www.tela-botanica.org/bdtfx-nn-12262-synthese)*, `Empenigr` est *[Empetrum nigrum](https://www.tela-botanica.org/bdtfx-nn-23935-synthese)*, etc. Les valeurs sont les couvertures végétales observées pour chaque plante sur le site, exprimées en pour cents. La première colonne nommée `rownames` à l'importation contient les identifiants des stations (chaînes de caractères). Nous la renommons donc pour un intitulé plus explicite\ : `station`.
 
 ```{r}
 read("varespec", package = "vegan") %>.%
@@ -422,10 +658,10 @@ C'est nettement mieux car les données concernant les espèces rares ne sont plu
 veg %>.%
   select(., -station) %>.%
   log1p(.) %>.%
-  vegan::vegdist(., method = "bray") -> veg_dist
+  dissimilarity(., method = "bray") -> veg_dist
 ```
 
-N'imprimez pas le contenu de `veg_dist`\ ! C'est de toutes façons illisible. La PCoA va visualiser son contenu de manière bien plus utile. La **seconde étape** consiste à calculer notre MDS métrique en utilisant `mds$metric()`
+La PCoA va visualiser le contenu -autrement indigeste- de `veg_dist` de manière bien plus utile. La **seconde étape** consiste à calculer notre MDS métrique en utilisant `mds$metric()`
 
 ```{r, echo=FALSE}
 set.seed(9)
@@ -435,17 +671,17 @@ set.seed(9)
 veg_mds <- mds$metric(veg_dist)
 ```
 
-Ensuite, **troisième étape**, le but étant de visualiser les distances nous effectons immédiatement un graphique comme suit\ :
+Ensuite, **troisième étape**, le but étant de visualiser les distances nous effectuons immédiatement un graphique comme suit\ :
 
 ```{r}
-autoplot(veg_mds, labels = veg$station)
+chart(veg_mds, labels = veg$station)
 ```
 
 Ce graphique s'interprète comme suit\ :
 
 - Des stations proches l'une de l'autre sur la carte ont des indices de dissimilarité faibles. Ces stations sont semblables du point de vue de la couverture végétale.
 - Plus les stations sont éloignées les unes des autres, plus elles sont dissemblables.
-- Si des regroupements apparaissent sur la carte, il se peut que ce soit des biotopes semblables, et qui diffèrent des autres regroupements. Par exemple ici, les stations 14--15, 20 et 22--25 forment un groupe relativement homogène en haut à gauche du graphique qui s'individualise du reste. Au contraire, les stations 5, 21, ou encore 27 ou 28 sont relativement isolées et constituent donc des assemblages végétaux uniques.
+- Si des regroupements apparaissent sur la carte, il se peut que ce soit des biotopes semblables, et qui diffèrent des autres regroupements. Par exemple ici, les stations 14--16, 20 et 22--25 forment un groupe relativement homogène en haut à gauche du graphique qui s'individualise du reste. Au contraire, les stations 5, 21, ou encore 27 ou 28 sont relativement isolées et constituent donc des assemblages végétaux uniques.
 - Les stations aux extrémités sont des configurations extrêmes\ ; celles au centre sont des configurations plus courantes.
 - Par contre, ni l'orientation des axes, ni les valeurs absolues sur ces axes n'ont de significations particulières ici. N'en tenez pas compte.
 
@@ -496,7 +732,7 @@ veg_nmds <- mds$nonmetric(veg_dist) # Calcul
 A présent, nous pouvons représenter la carte.
 
 ```{r}
-autoplot(veg_nmds, labels = veg$station)
+chart(veg_nmds, labels = veg$station)
 ```
 
 Nous avons une représentation assez différente de celle de la MDS métrique. Les stations 5, 21, 27 et 28 sont toujours isolées, mais le reste est regroupé de manière plus homogène. Comment savoir si cette représentation est meilleure que la version métrique qui avait une "goodness-of-fit" décevante\ ? En visualisant les indicateurs de qualité d'ajustement, ainsi que la fonction de stress sur un graphique dit **graphique de Shepard**. Comme d'habitude, `glance()` nous donne les statistiques voulues.
@@ -505,13 +741,13 @@ Nous avons une représentation assez différente de celle de la MDS métrique. L
 glance(veg_nmds)
 ```
 
-Le premier indicateur (R^2^ linéaire) est le coefficient de corrélation linéaire de Pearson entre les distances ajustées et les distances sur la carte au carré. Plus cette valeur est proche de un, moins les distances sont tordues. Le second indicateur, le R^2^ non métrique est calculé comme  1 - S^2^ où S est le stress (tel que quantifié plus haut lors de l'appel à la fonction `mds$nonmetric()`). Cette dernière statistique indique si l'*ordre* des points respecte l'*ordre* des distances partout sur le graphique. Avec 0,98, la valeur est excellente ici. Ensuite le R^2^ linéaire nous indique de combien les différentes distances sont éventuellement distordues. Avec une valeur de 0,92, la distortion n'est pas trop forte ici.
+Le premier indicateur (R^2^ linéaire) est le coefficient de corrélation linéaire de Pearson entre les distances ajustées et les distances sur la carte au carré. Plus cette valeur est proche de un, moins les distances sont tordues. Le second indicateur, le R^2^ non métrique est calculé comme 1 - S^2^ où S est le stress (tel que quantifié plus haut lors de l'appel à la fonction `mds$nonmetric()`). Cette dernière statistique indique si l'*ordre* des points respecte l'*ordre* des distances partout sur le graphique. Avec 0,98, la valeur est excellente ici. Ensuite le R^2^ linéaire nous indique de combien les différentes distances sont éventuellement distordues. Avec une valeur de 0,92, la distorsion n'est pas trop forte ici.
 
-Le diagramme de Shepard permet de visualiser dans le détail la distortion introduite pour parvenir à réaliser la carte en deux dimensions.
+Le diagramme de Shepard permet de visualiser dans le détail la distorsion introduite pour parvenir à réaliser la carte en deux dimensions.
 
 ```{r}
 veg_sh <- shepard(veg_dist, veg_nmds)
-autoplot(veg_sh)
+chart(veg_sh)
 ```
 
 Sur l'axe des abscisses, nous avons les valeurs de dissimilarité présentes dans la matrice de distances. Sur l'axe des ordonnées, le graphique représente les distances de l'ordination, c'est-à-dire, les distances entre les paires de points sur la carte. Chaque point correspond à la dissimilarité d'une paire d'individus sur X, et à la distance entre cette paire sur la carte en Y. Enfin, le trait en escalier rouge matérialise la fonction monotone croissante choisie pour distordre les distances. C'est la **fonction de stress**.
@@ -525,7 +761,7 @@ Vous pouvez très bien décider que seul l'*ordre* des individus sur la carte co
 
 Si par contre, vous voulez être plus contraignant, alors, les distances seront considérées également comme importantes. Vous rechercherez alors une fonction de stress pas trop éloignée d'une droite, ainsi qu'un R^2^ linéaire élevé. Dans ce cas, nous nous rapprochons des exigences de la MDS métrique.
 
-Ici, nous pouvons constater que les deux critères sont bons. Nous pouvons donc nous fier à la carte obtenue à l'aide de la MDs non métrique de Kruskal.
+Ici, nous pouvons constater que les deux critères sont bons. Nous pouvons donc nous fier à la carte obtenue à l'aide de la MDS non métrique de Kruskal.
 
 ```{block2, type='warning'}
 
@@ -612,7 +848,7 @@ rect_grid_7_7 %>.%
     main = "Distance depuis la cellule centrale") # Titre du graphique
 ```
 
-Les cellules de la grille ne sont pas disposées au hasard dans la carte SOM. Des relations de voisinage sont utilisées pour placer les individus à représenter dans des cellules adjacentes s'ils se ressemblent. Avec une grille rectangulaire, nous avons donc deux modalités de variation\ : en horizontal et en vertival, ce qui donne deux gradients possibles qui, combinés donnent des extrêmes dans les coins opposés. Une cellule possède huits voisins directs.
+Les cellules de la grille ne sont pas disposées au hasard dans la carte SOM. Des relations de voisinage sont utilisées pour placer les individus à représenter dans des cellules adjacentes s'ils se ressemblent. Avec une grille rectangulaire, nous avons donc deux modalités de variation\ : en horizontal et en vertical, ce qui donne deux gradients possibles qui, combinés donnent des extrêmes dans les coins opposés. Une cellule possède huit voisins directs.
 
 L'autre topologie possible est la grille hexagonale. Voyons ce que cela donne\ :
 
@@ -676,7 +912,7 @@ Nous pouvons obtenir la cellule dans laquelle chaque individu est mappé comme s
 zoo_som$unit.classif
 ```
 
-Par conséquent, nous pouvons créer un tableau de contingence qui répertorie le nombre d'iundividus mappés dans chaque cellule à l'aide de `table()`. Nous l'enregistrons dans `zoo_som_nb` car nous la réutiliserons plus tard.
+Par conséquent, nous pouvons créer un tableau de contingence qui répertorie le nombre d'individus mappés dans chaque cellule à l'aide de `table()`. Nous l'enregistrons dans `zoo_som_nb` car nous la réutiliserons plus tard.
 
 ```{r}
 zoo_som_nb <- table(zoo_som$unit.classif)
@@ -716,6 +952,8 @@ Nous pouvons plus facilement inspecter les zones d'influence de différentes var
 
 Lorsque nous avons réalisé une CAH sur le jeu de données `zooplankton`, nous étions obligés de choisir deux variables parmi les 19 pour visualiser le regroupement sur un graphique nuage de points. C'est peu, et cela ne permet pas d'avoir une vision synthétique sur l'ensemble de l'information. Les méthodes d'ordination permettent de visualiser plus d'information sur un petit nombre de dimensions grâce aux techniques de réduction des dimensions qu'elles implémentent. Les cartes SOM offrent encore un niveau supplémentaire de raffinement. Nous pouvons considérer que chaque cellule est un premier résumé des données et nous pouvons effectuer ensuite une CAH sur ces cellules afin de dégager un regroupement et le visualiser sur la carte SOM. L'intérêt est que l'on réduit un jeu de données potentiellement très volumineux à un nombre plus restreint de cellules (ici 7x7 = 49), ce qui est plus "digeste" pour la CAH. Voici comment ça fonctionne\ :
 
+<!-- TODO: rewrite this with the new functions, including the two next chunks ! -->
+
 ```{r}
 zoo_som_dist <- dist(zoo_som$codes[[1]]) # Distance euclidienne entre cellules
 zoo_som_cah <- hclust(zoo_som_dist, method = "ward.D2", members = zoo_som_nb)
@@ -730,7 +968,7 @@ plot(zoo_som_cah, hang = -1)
 abline(h = 11.5, col = "red") # Niveau de coupure proposé
 ```
 
-Les V1 à V49 sont les numéros de cellules. Nous pouvons couper à différents endroits dans ce dendrogramme, mais si nous décidons de distringuer les cinq groupes correspondants au niveau de coupure à une hauteur de 11,5 (comme sur le graphique), voici ce que cela donne\ :
+Les V1 à V49 sont les numéros de cellules. Nous pouvons couper à différents endroits dans ce dendrogramme, mais si nous décidons de distinguer les cinq groupes correspondants au niveau de coupure à une hauteur de 11,5 (comme sur le graphique), voici ce que cela donne\ :
 
 ```{r}
 groupes <- cutree(zoo_som_cah, h = 11.5)
