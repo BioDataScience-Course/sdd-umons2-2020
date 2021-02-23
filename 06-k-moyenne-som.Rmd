@@ -322,21 +322,6 @@ table(zoob$class, zoob$cluster)
 
 Le groupe numéro 3 n'est pas vraiment défini en terme des classes de plancton car aucune classe ne s'y trouve de manière majoritaire. Le groupe numéro 1 contient la majorité des items de diverses classes, alors que le groupe 2 a une majorité de calanoïdes, de cyclopoïdes et d'harpacticoïdes (différents copépodes). Globalement, le classement a un sens, mais est moins bien corrélé avec les classes de plancton que ce que la CAH nous a fourni. Notez que, si nous avions standardisé les données avant d'effectuer les k-moyennes comme nous l'avons fait pour la CAH, nous aurions obtenu d'autres résultats. **La transformation des variables préalablement à l'analyse reste une approche intéressante pour moduler l'importance des différentes variables entre elles dans leur impact sur le calcul des distances, et donc, des regroupements réalisés**. Nous vous laissons réaliser les k-moyennes sur les données zoo standardisées à l'aide de la fonction `scale()` comme pour la CAH comme exercice.
 
-<!--- G.E. En attente de la mise à jour du tutos par RC
-##### A vous de jouer ! {-}
-
-- Réalisez le tutoriel afin de vérifier votre bonne compréhension de la méthode des k-moyennes.
-
-```{block2, type='bdd'}
-Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
-
-    BioDataScience2::run("06a_kmeans")
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
-```
-
----->
-
 
 ##### À vous de jouer ! {-}
 
@@ -355,7 +340,7 @@ if (exists("assignation"))
   assignation("B06Ia_fish_market", part = NULL,
     url = "https://github.com/BioDataScience-Course/B06Ia_fish_market",
     course.urls = c(
-      'S-BIOG-015' = "https://classroom.github.com/a/...", 
+      'S-BIOG-015' = "https://classroom.github.com/a/CPLjQ1Mb", 
       'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
     toc = "Analyse multivarée sur 7 poissons couramment pêchés.")
 ```
