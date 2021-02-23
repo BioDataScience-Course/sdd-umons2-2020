@@ -633,11 +633,10 @@ Afin de décider quelle métrique utiliser, visualisons à présent l'abondance 
 ```{r, fig.height=8}
 veg %>.%
   select(., -station) %>.% # Colonne 'station' pas utile ici
-  gather(., key = "espèce", value = "couverture") %>.% # Tableau en format long
-  chart(., couverture ~ espèce) +
+  pivot_longer(., everything(), names_to = "espèce", values_to = "couverture") %>.%
+  chart(., espèce ~ couverture) +
     geom_boxplot() + # Boites de dispersion
-    labs(x = "Espèce", y = "Couverture [%]") +
-    coord_flip() # Labels plus lisibles si sur l'axe Y
+    labs(x = "Espèce", y = "Couverture [%]")
 ```
 
 Comme nous pouvions nous y attendre, sept ou huit espèces dominent la couverture végétales et les autres données sont complètement écrasées à zéro sur l'axe pour la majorité des stations. Si nous utilisons la distance de Bray-Curtis, l'analyse sera pratiquement réalisée sur seulement ces quelques espèces dominantes. Avec Canberra, nous risquons par contre de donner beaucoup trop d'importance aux espèces extrêmement rares (toutes les espèces ont une importance égale avec cette métrique). Une solution intermédiaire est de transformer les données pour réduire l'écart d'importance entre les espèces abondantes et les rares, soit avec $log(x + 1)$, soit avec $\sqrt{\sqrt{x}}$. Voyons ce que donne la transformation logarithmique ici en utilisant la fonction `log1p()` dans R.
@@ -645,11 +644,10 @@ Comme nous pouvions nous y attendre, sept ou huit espèces dominent la couvertur
 ```{r, fig.height=8}
 veg %>.%
   select(., -station) %>.%
-  gather(., key = "espèce", value = "couverture") %>.%
-  chart(., log1p(couverture) ~ espèce) + # Transformation log(couverture + 1)
+  pivot_longer(., everything(), names_to = "espèce", values_to = "couverture") %>.%
+  chart(., espèce ~ log1p(couverture)) + # Transformation log(couverture + 1)
     geom_boxplot() +
-    labs(x = "Espèce", y = "Couverture [%]") +
-    coord_flip()
+    labs(x = "Espèce", y = "Couverture [%]")
 ```
 
 C'est nettement mieux car les données concernant les espèces rares ne sont plus totalement écrasées vers zéro sur l'axe horizontal\ ! La matrice de distances de Bray-Curtis sur nos données transformées log est la **première étape** de l'analyse\ :
@@ -747,7 +745,8 @@ Le diagramme de Shepard permet de visualiser dans le détail la distorsion intro
 
 ```{r}
 veg_sh <- shepard(veg_dist, veg_nmds)
-chart(veg_sh)
+chart(veg_sh) +
+  labs(x = "Dissimilarité observée", y = "Distance sur l'ordination")
 ```
 
 Sur l'axe des abscisses, nous avons les valeurs de dissimilarité présentes dans la matrice de distances. Sur l'axe des ordonnées, le graphique représente les distances de l'ordination, c'est-à-dire, les distances entre les paires de points sur la carte. Chaque point correspond à la dissimilarité d'une paire d'individus sur X, et à la distance entre cette paire sur la carte en Y. Enfin, le trait en escalier rouge matérialise la fonction monotone croissante choisie pour distordre les distances. C'est la **fonction de stress**.
