@@ -335,6 +335,8 @@ Cet [article](https://www.r-bloggers.com/the-complete-guide-to-clustering-analys
 
 ##### À vous de jouer ! {-}
 
+`r learnr("B06La_kmeans", title = "Partitionnement par k-moyennes", toc = "Partitionnement par k-moyennes")`
+
 ```{r, echo=FALSE, results='asis'}
 if (exists("assignation"))
   assignation("B06Ia_fish_market", part = NULL,
@@ -763,6 +765,8 @@ Restez toujours attentif à la taille du jeu de données que vous utilisez pour 
 ##### A vous de jouer ! {-}
 
 - Réalisez le tutoriel afin de vérifier votre bonne compréhension de la MDS.
+
+`r learnr("B06Lb_mds", title = "Positionnement multidimensionnel (MDS)", toc = "Positionnement multidimensionnel (MDS)")`
 
 ```{block2, type='bdd'}
 Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
