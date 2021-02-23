@@ -339,7 +339,7 @@ Cet [article](https://www.r-bloggers.com/the-complete-guide-to-clustering-analys
 
 ```{r, echo=FALSE, results='asis'}
 if (exists("assignation"))
-  assignation("B06Ia_fish_market", part = NULL,
+  assignation("B06Ia_fish_market", part = "I",
     url = "https://github.com/BioDataScience-Course/B06Ia_fish_market",
     course.urls = c(
       'S-BIOG-015' = "https://classroom.github.com/a/CPLjQ1Mb", 
@@ -363,6 +363,10 @@ Ce que nous allons faire avec la MDS correspond exactement à cela\ : nous allon
 - Le positionnement des points faisant intervenir un facteur aléatoire (choix des points à placer en premier, réorganisation ensuite pour minimiser la fonction de stress), le résultat final peut varier d'une fois à l'autre sur les mêmes données, voir ne pas converger vers une solution stable. Il faut en être conscient.
 
 Nous vous épargnons ici les développements mathématiques qui mènent à la définition de la fonction de stress. Nous nous concentrerons sur les principales techniques et sur leurs propriétés utiles en pratique en biologie.
+
+##### À vous de jouer ! {-}
+
+`r h5p(96, height = 270, toc = "Objectif du MDS")`
 
 ### MDS simplifiée sous SciViews::R
 
@@ -686,6 +690,10 @@ Ici `GOF1` est la somme des valeurs propres obtenues lors du calcul (ces valeurs
 
 **Ici, avec des valeurs de goodness-of-fit à peine supérieures à 50% nous pouvons considérer que la carte n'est pas suffisamment représentative.** Soit nous tentons de la représenter en trois dimensions (mais c'est rarement plus lisible car il faut quand même se résigner à présenter ce graphique 3D dans un plan à deux dimensions -l'écran de l'ordinateur, ou une feuille de papier- au final). Une autre solution lorsque la MDS métrique ne donne pas satisfaction est de se tourner vers la MDS non métrique. Ce que nous allons faire ci-dessous.
 
+##### À vous de jouer ! {-}
+
+`r h5p(97, height = 270, toc = "Qualité d'ajustement d'un MDS")`
+
 ```{block2, type='note'}
 
 A noter que la PCoA sur matrice euclidienne après standardisation ou non des données est équivalente à une **Analyse en Composantes Principales** (ACP) que nous étudierons dans le module suivant, ... mais avec un calcul nettement moins efficace. Dans ce contexte, la PCoA n'a donc pas grand intérêt. Elle est surtout utile lorsque vous voulez représenter des métriques de distances *différentes* de la distance euclidienne comme c'est le cas ici avec un choix de distances de Bray-Curtis.
@@ -761,28 +769,29 @@ Restez toujours attentif à la taille du jeu de données que vous utilisez pour 
 
 - Des techniques existent pour déterminer la dimension *k* idéale de la carte. Le **graphique des éboulis** (*screeplot* en anglais) sera abordé au module suivante dans le cadre de l'ACP. Il en existe une version pour le MDS, voyez [ici](https://rpubs.com/YaPi/393252) (en anglais).
 
-<!--- G.E. En attente de la mise à jour de R.C.
-##### A vous de jouer ! {-}
-
-- Réalisez le tutoriel afin de vérifier votre bonne compréhension de la MDS.
+##### À vous de jouer ! {-}
 
 `r learnr("B06Lb_mds", title = "Positionnement multidimensionnel (MDS)", toc = "Positionnement multidimensionnel (MDS)")`
 
-```{block2, type='bdd'}
-Démarrez la SciViews Box et RStudio. Dans la fenêtre **Console** de RStudio, entrez l'instruction suivante suivie de la touche `Entrée` pour ouvrir le tutoriel concernant les bases de R\ :
-
-    BioDataScience2::run("06b_mds")
-
-N’oubliez pas d’appuyer sur la touche `ESC` pour reprendre la main dans R à la fin d’un tutoriel dans la console R.
+```{r, echo=FALSE, results='asis'}
+if (exists("assignation"))
+  assignation("B06Ia_fish_market", part = "II",
+    url = "https://github.com/BioDataScience-Course/B06Ia_fish_market",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/CPLjQ1Mb", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+    toc = "Analyse multivarée sur 7 poissons couramment pêchés.")
 ```
-
---->
 
 ## Cartes auto-adaptatives (SOM)
 
 Le positionnement multidimensionnel faisant appel à une matrice de distances entre tous les individus, les calculs deviennent vite pénalisants au fur et à mesure que le jeu de données augmente en taille. En général, les calculs sont assez lents. Nous verrons au module suivant que l'**analyse en composantes principales** apporte une réponse intéressante à ce problème, mais nous contraint à étudier des corrélations linéaires et des distances de type euclidiennes.
 
 Une approche radicalement différente, qui reste plus générale car non linéaire, est la méthode des **cartes auto-adaptatives**, ou encore, **cartes de Kohonen** du nom de son auteur se désigne par "self-organizing map" en anglais. L'acronyme **SOM** est fréquemment utilisé, même en français. Cette technique va encore une fois exploiter une matrice de distances dans le but de représenter les individus sur une carte. Cette fois-ci, la carte contient un certain nombre de cellules qui forment une grille, ou mieux, une disposition en nid d'abeille (nous verrons plus loin pourquoi cette disposition particulière est intéressante). De manière similaire au MDS, nous allons faire en sorte que des individus similaires soient proches sur la carte, et des individus différents soient éloignés. La division de la carte en différentes cellules permet de regrouper les individus. Ceci permet une classification comme pour la CAH ou les k-moyennes. Les SOM apparaissent donc comme une technique hybride entre **ordination** (représentation sur des cartes) et **classification** (regroupement des individus).
+
+##### À vous de jouer ! {-}
+
+`r h5p(98, height = 270, toc = "Choix des méthodes")`
 
 La théorie et les calculs derrière les SOM sont très complexes. Elles font appel aux **réseaux de neurones adaptatifs** et leur fonctionnement est inspiré de celui du cerveau humain. Tout comme notre cerveau, les SOM vont utiliser l'information en entrée pour aller assigner une zone de traitement de l'information (pour notre cerveau) ou une cellule dans la carte (pour les SOM). Étant donné la complexité du calcul, les développement mathématiques n'ont pas leur place dans ce cours. Ce qui importe, c'est de comprendre le concept, et d'être ensuite capable d'utiliser les SOM à bon escient. Uniquement pour ceux d'entre vous qui désirent comprendre les détails du calcul, vous pouvez lire [ici](https://towardsdatascience.com/kohonen-self-organizing-maps-a29040d688da) ou visionner la vidéo suivante **(facultative et en anglais)**\ :
 
@@ -988,6 +997,27 @@ Nous n'avons fait qu'effleurer les nombreuses possibilités des cartes auto-adap
 - Une [autre explication détaillée en français](http://eric.univ-lyon2.fr/~ricco/tanagra/fichiers/fr_Tanagra_Kohonen_SOM_R.pdf) avec exemple dans R.
 
 - Si vous êtes aventureux, vous pouvez vous lancer dans la réimplémentation des graphiques du package {kohonen} en {chart} ou {ggplot2}. Voici [un bon point de départ](http://blog.schochastics.net/post/soms-and-ggplot/) (en anglais).
+
+##### À vous de jouer ! {-}
+
+<!--- G.E. En attente de révision
+`r learnr("B06Lc_som", title = "Ordination et regroupement grâce aux cartes auto-adaptatives", toc = "Ordination et regroupement grâce aux cartes auto-adaptatives")`
+--->
+
+Complétez votre assignation grâce à vos nouvelles connaissances.
+
+```{r, echo=FALSE, results='asis'}
+if (exists("assignation"))
+  assignation("B06Ia_fish_market", part = "III",
+    url = "https://github.com/BioDataScience-Course/B06Ia_fish_market",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/CPLjQ1Mb", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+    toc = "Analyse multivarée sur 7 poissons couramment pêchés.")
+```
+
+
+
 
 ## Récapitulatif des exercices
 
