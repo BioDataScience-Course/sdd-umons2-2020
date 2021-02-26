@@ -1004,9 +1004,8 @@ Nous n'avons fait qu'effleurer les nombreuses possibilités des cartes auto-adap
 
 ##### À vous de jouer ! {-}
 
-<!--- G.E. En attente de révision
+
 `r learnr("B06Lc_som", title = "Ordination et regroupement grâce aux cartes auto-adaptatives", toc = "Ordination et regroupement grâce aux cartes auto-adaptatives")`
---->
 
 Complétez votre assignation grâce à vos nouvelles connaissances.
 
