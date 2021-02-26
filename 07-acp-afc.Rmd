@@ -252,7 +252,12 @@ pima <- drop_na(pima)
 pima
 ```
 
-Notre tableau est presque amputé de la moitié, mais il nous reste tout de même encore 392 cas, soit assez pour notre analyse. Avant de nous lancer dans une ACP, nous devons décrire les données, repérer les variables quantitatives d'intérêt, et synthétiser les corrélations linéaires (coefficients de corrélation de Pearson) entre ces variables.
+
+```{block2, type='warning'}
+Notre tableau est presque amputé de la moitié, mais il nous reste tout de même encore 392 cas sur 768, soit assez pour notre analyse. 
+```
+
+Avant de nous lancer dans une ACP, nous devons décrire les données, repérer les variables quantitatives d'intérêt, et synthétiser les corrélations linéaires (coefficients de corrélation de Pearson) entre ces variables.
 
 ```{r}
 skimr::skim(pima)
