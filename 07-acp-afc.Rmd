@@ -17,27 +17,6 @@ SciViews::R
 
 - Le module 6, et en particulier la partie sur le MDS doivent être assimilés avant d'attaquer le présent module.
 
-##### A vous de jouer ! {-}
-
-En lien avec ce module vous avez une série d’exercices à réaliser. Vous avez à\ :
-
-- Réaliser un projet spécifique et dédié uniquement au module 07. Ce module couvre l'ensemble de la matière du module 7. 
-
-```{block2, type='bdd'}
-
-Vous avez à votre disposition une assignation GitHub Classroom.
-
-Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
-
-* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/sWXOnhcQ>
-
-* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [sdd2_module07](https://github.com/BioDataScience-Course/sdd2_module07). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
-
-Lisez le README afin de prendre connaissance de l'exercice.
-  
-  
-*Ce projet doit être terminé à la fin de ce module*
-```
 
 ## Analyse en composantes principales
 
@@ -933,27 +912,6 @@ Tout ces calculs se généralisent facilement à trois, puis à N dimensions.
 
 - Une page qui reprend [une série de vidéos](http://www.sthda.com/english/articles/21-courses/65-principal-component-analysis-course-using-factominer/) qui présentent les différentes facettes de l'ACP (en anglais).
 
-##### A vous de jouer ! {-}
-
-- Réalisez le début du projet spécifique lié au module 7. Ce module couvre la matière entière du module 7. 
-
-```{block2, type='bdd'}
-**Le lien pour réaliser ce projet se trouve en début du module 7**
-
-*Ce projet doit être terminé à la fin de ce module*
-```
-
-- Complétez votre projet sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).
-
-```{block2, type='bdd'}
-Complétez votre projet. Lisez attentivement le README.
-
-La dernière version du README est disponible via le lien suivant\ :
-  
-- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea/blob/master/README.md>
-  
-*Le README est un rappel des consignes, il ne s'agit aucunement du lien pour débuter le travail*
-```
 
 ## Analyse factorielle des correspondances
 
@@ -1293,28 +1251,6 @@ Au final, l'AFC apparait donc comme une variante de l'ACP qui utilise la distanc
 
 - Une [autre explication](http://www.sthda.com/french/articles/38-methodes-des-composantes-principales-dans-r-guide-pratique/74-afc-analyse-factorielle-des-correspondances-avec-r-l-essentiel/) qui utilise les packages {FactoMineR} et {factoextra} et qui va plus loin dans les concepts (notamment la qualité de la représentation des points via leur "cos^2^", les différents types de biplots, et l'ajout de données supplémentaires).
 
-##### A vous de jouer ! {-}
-
-- Réalisez le début du projet spécifique lié au module 7. Ce module couvre la matière entière du module 7. 
-
-```{block2, type='bdd'}
-**Le lien pour réaliser ce projet se trouve en début du module 7**
-
-*Ce projet doit être terminé à la fin de ce module*
-```
-
-- Complétez votre projet sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).
-
-```{block2, type='bdd'}
-Complétez votre projet. Lisez attentivement le README.
-
-La dernière version du README est disponible via le lien suivant\ :
-  
-- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea/blob/master/README.md>
-  
-*Le README est un rappel des consignes, il ne s'agit aucunement du lien pour débuter le travail*
-```
-
 ## Accès aux bases de données
 
 Puisque nous traitons de jeux de données multivariés potentiellement très gros, il devient important de pouvoir accéder aux données stockées de manière plus structurée que dans un fichier au format CSV ou Excel, par exemple. Les bases de données, et notamment les **bases de données relationnelles**, sont prévue pour stocker de grandes quantités de données de manière structurée et pour pouvoir en extraire la partie qui nous intéresse à l'aide de **requêtes**. Nous allons ici étudier les rudiments indispensables pour nous permettre de réaliser de telles requêtes depuis R.
@@ -1529,13 +1465,12 @@ Voilà pour ce très rapide tour d'horizon des différentes façons de manipuler
 
 - Les [dix commandements d'une base de données réussie](https://thinkr.fr/base-de-donnees-reussie/). Il s'agit ici plutôt de la création d'une base de données que de la requête sur une base de données existante... mais tôt ou tard, vous créerez vos propres bases de données et ces conseils vous seront alors utiles.
 
-##### A vous de jouer ! {-}
 
-- Réalisez le début du projet spécifique lié au module 7. Ce module couvre la matière entière du module 7. 
+## Récapitulatif des exercices
 
-```{block2, type='bdd'}
-**Le lien pour réaliser ce projet se trouve en début du module 7**
+Ce module 7 vous a permis de découvrir 2 méthodes très utilisées dans les statistiques exploratoires (ACP et AFC). Ce module vous a également permit de découvrir l'utilisation des bases de données. 
 
-*Ce projet doit être terminé à la fin de ce module*
-```
+Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser\ :
+
+`r show_ex_toc()`
 
