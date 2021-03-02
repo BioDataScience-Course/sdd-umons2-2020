@@ -283,7 +283,7 @@ L'ACP est en fait équivalente à une Analyse en Coordonnées Principales sur un
 
 ##### À vous de jouer ! {-}
 
-`r h5p(103, height = 270, toc = "Principe de l'ACP et PCoA")`
+`r h5p(103, height = 270, toc = "Comparaison entre l'ACP et PCoA")`
 
 Nous utiliserons la fonction `pca()` qui prend un argument `data =` et une formule du type `~ var1 + var2 + .... + varn`, ou plus simplement, directement un tableau contenant uniquement les variables à analyser comme argument unique. Comme les différentes variables sont mesurées dans des unités différentes, nous devons les standardiser (écart type ramené à un pour toutes). Ceci est réalisé par la fonction `pca()` en lui indiquant `scale = TRUE`. Donc\ :
 
