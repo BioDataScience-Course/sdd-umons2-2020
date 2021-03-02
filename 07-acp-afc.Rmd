@@ -30,11 +30,15 @@ Notre première approche d'ordination avec le MDS dans le précédent module nou
 
 - La réduction des dimensions se fait avec une perte minimale d'information au sens de la variance des données.
 
+##### À vous de jouer ! {-}
+
+`r h5p(104, height = 270, toc = "Principe de l'ACP")`
+
 ### ACP dans SciViews::R
 
-L'ACP est facilitée dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documents R Markdown/Notebook.
+L'ACP est facilitée dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documents R Markdown/Notebook (cliquez sur "voir le code" pour le dérouler).
 
-```{r}
+```{r, class.source='hidden-code'}
 SciViews::R()
 library(broom)
 
@@ -277,6 +281,10 @@ Quelques corrélations positives d'intensités moyennes se dégagent ici, notamm
 
 L'ACP est en fait équivalente à une Analyse en Coordonnées Principales sur une matrice de distances euclidiennes (MDS métrique), mais en plus efficace en terme de calculs. Nous pouvons donc nous lancer dans l'analyse et en comprendre les résultats en gardant ceci à l'esprit.
 
+##### À vous de jouer ! {-}
+
+`r h5p(103, height = 270, toc = "Principe de l'ACP et PCoA")`
+
 Nous utiliserons la fonction `pca()` qui prend un argument `data =` et une formule du type `~ var1 + var2 + .... + varn`, ou plus simplement, directement un tableau contenant uniquement les variables à analyser comme argument unique. Comme les différentes variables sont mesurées dans des unités différentes, nous devons les standardiser (écart type ramené à un pour toutes). Ceci est réalisé par la fonction `pca()` en lui indiquant `scale = TRUE`. Donc\ :
 
 ```{r}
@@ -302,6 +310,11 @@ Le premier tableau `Importance of components (eigenvalues):` montre la part de v
 
 Le second tableau `Loadings (eigenvectors, rotation matrix):` est la matrice de transformation des coordonnées initiales sur les lignes en coordonnées PC1 à PC7 en colonnes. Nous pouvons y lire l'**importante** des variables initiales sur les axes de l'ACP. Par exemple, l'axe PC3 contraste essentiellement `pressure` et `pedigree`.
 
+
+##### À vous de jouer ! {-}
+
+`r h5p(105, height = 270, toc = "Importance des variables initiales")`
+
 Le **graphique des éboulis** sert à visualiser la "chute" de la variance d'un axe principal à l'autre, et aide à choisir le nombre d'axes à conserver (espace à dimensions réduites avec perte minimale d'information). Deux variantes en diagramme en barres versticales `chart$screeplot()` ou `chart$scree()` ou sous forme d'une ligne brisée `chart$altscree()` sont disponibles\ :
 
 ```{r}
@@ -313,6 +326,10 @@ chart$altscree(pima_pca)
 ```
 
 La diminution est importante entre le premier et le second axe, mais plus progressive ensuite. Ceci traduit une structure plus complexe dans les données qui ne se réduit pas facilement à un très petit nombre d'axes. Nous pouvons visualiser le **premier plan principal** constitué par PC1 et PC2, tout en gardant à l'esprit que seulement 53% de la variance totale y est capturée. Donc, nous pouvons nous attendre à des déformations non négligeables des données dans ce plan, et d'autres aspects qui n'y sont pas (correctement) représentés. Nous verrons qu'il est porteur, toutefois, d'information utile.
+
+##### À vous de jouer ! {-}
+
+`r h5p(106, height = 270, toc = "Analyse du graphique des éboulis")`
 
 Deux types de représentations peuvent être réalisées à partir d'ici\ : la représentation dans **l'espace des variables**, et la représentation complémentaire dans **l'espace des individus**. Ces deux représentations sont complémentaires et s'analysent conjointement. L'espace des variables représente les axes initiaux projettés comme des ombres dans le plan choisi de l'ACP (rappelez-vous l'analogie avec les ombres chinoises). Il se réalise à l'aide de `chart$loadings()`. Par exemple pour PC1 et PC2 nous indiquons `choices = c(1, 2)` (ou rien du tout, puisque ce sont les valeurs par défaut))\ :
 
@@ -340,11 +357,15 @@ chart$loadings(pima_pca, choices = c(1, 3))
 
 Nous voyons que `pedigree` et `pressure` (inversément proportionnels) sont bien mieux représentés le long de PC3. Ici l'axe PC3 est plus facile à orienter\ : en haut les pédigrées élevés et les pressions qartérielles basses, et en bas le contraire. Nous avons déjà lu cette informatioin dans le tableau des vecteurs propres de `summary()`.
 
-Le graphice entre PC2 et PC3 complète l'analyse, mais n'apportant rien de plus, il peut être typiquement éliminé de votre rapport.
+Le graphique entre PC2 et PC3 complète l'analyse, mais n'apportant rien de plus, il peut être typiquement éliminé de votre rapport.
 
 ```{r}
 chart$loadings(pima_pca, choices = c(2, 3))
 ```
+
+##### À vous de jouer ! {-}
+
+`r h5p(107, height = 270, toc = "Répresntation dans l'espace des variables")`
 
 La seconde représentation se fait dans **l'espace des individus**. Ici, nous allons projeter les points relatifs à chaque individu dans le plan de l'ACP choisi. Cela se réalise à l'aide de `chart$scores()` (l'aspect ratio est le rapport hauteur/largeur peut s'adapter)\ :
 
@@ -922,11 +943,15 @@ Tout ces calculs se généralisent facilement à trois, puis à N dimensions.
 
 Comme l'ACP s'intéresse à des corrélations linéaires entre variables quantitatives, elle n'est absolument pas utilisable pour traiter des variables qualitatives. L'**Analyse Factorielle des Correspondances** sera utile dans ce dernier cas (AFC, ou en anglais *Correspondence Analysis* ou CA).
 
+##### À vous de jouer ! {-}
+
+`r h5p(108, height = 270, toc = "Rôle de l'AFC")`
+
 ### AFC dans SciViews::R
 
-L'AFC utilises la fonction `ca()` du package {ca} dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documents R Markdown/Notebook.
+L'AFC utilises la fonction `ca()` du package {ca} dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documents R Markdown/Notebook (cliquez sur "voir le code" pour le dérouler).
 
-```{r}
+```{r, class.source='hidden-code'}
 SciViews::R()
 library(broom)
 
