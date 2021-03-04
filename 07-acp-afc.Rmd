@@ -928,6 +928,10 @@ $$
 
 Tout ces calculs se généralisent facilement à trois, puis à N dimensions.
 
+##### À vous de jouer ! {-}
+
+`r learnr("B07La_pca", title = "Analyse en composantes principales", toc = "Analyse en composantes principales")`
+
 ##### Pour aller plus loin {-}
 
 - N'hésitez pas à **combiner** plusieurs techniques. Par exemple, vous pouvez représenter les groupes créés par classification ascendante hiérarchiques sur un graphique de l'ACP dans l'espace des individus en faisant varier les couleurs ou les labels des individus en fonction des groupes de la CAH.
