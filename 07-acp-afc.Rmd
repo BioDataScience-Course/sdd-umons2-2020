@@ -365,7 +365,7 @@ chart$loadings(pima_pca, choices = c(2, 3))
 
 ##### À vous de jouer ! {-}
 
-`r h5p(107, height = 270, toc = "Répresntation dans l'espace des variables")`
+`r h5p(107, height = 270, toc = "Représentation dans l'espace des variables")`
 
 La seconde représentation se fait dans **l'espace des individus**. Ici, nous allons projeter les points relatifs à chaque individu dans le plan de l'ACP choisi. Cela se réalise à l'aide de `chart$scores()` (l'aspect ratio est le rapport hauteur/largeur peut s'adapter)\ :
 
@@ -932,6 +932,17 @@ Tout ces calculs se généralisent facilement à trois, puis à N dimensions.
 
 `r learnr("B07La_pca", title = "Analyse en composantes principales", toc = "Analyse en composantes principales")`
 
+
+```{r, echo=FALSE, results='asis'}
+if (exists("assignation"))
+  assignation("B07Ia_acp_afc", part = "I",
+    url = "https://github.com/BioDataScience-Course/B07Ia_acp_afc",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/m_pli-r3", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+    toc = "Analyse en composantes principales et l'analyse factorielle des correspondances.")
+```
+
 ##### Pour aller plus loin {-}
 
 - N'hésitez pas à **combiner** plusieurs techniques. Par exemple, vous pouvez représenter les groupes créés par classification ascendante hiérarchiques sur un graphique de l'ACP dans l'espace des individus en faisant varier les couleurs ou les labels des individus en fonction des groupes de la CAH.
@@ -1125,6 +1136,10 @@ chisq.test(wg$B, wg$edu)
 
 L'avertissement nous prévient qu'une approximation a du être réalisée, mais le test reste utilisable si la valeur est loin du seuil $/alpha$. La valeur *p* de 0,2% est très inférieure à $\alpha$. Nous rejettons H~0~. Il y a dépendance entre le niveau d'éducation et la réponse à la question B. OK, mais comment se fait cette dépendance\ ? C'est ici que l'AFC nous vient en aide.
 
+##### À vous de jouer ! {-}
+
+`r h5p(109, height = 270, toc = "Chi2 et l'AFC")`
+
 
 -**Étape 3\ :** Si l'hypothèse nulle est rejetée, il faut analyser plus en profondeur. L'AFC va présenter la dépendance de manière claire. La fonction `ca()` accepte un jeu de données dans l'argument `data =` et une formule qui spécifie dans le terme de droite les deux variables à croiser séparées par un signe + (`~ fact1 + fact2`). Donc\ :
 
@@ -1183,9 +1198,10 @@ De plus, l'AFC est très sensible à la présence de valeurs extrêmes. Il faut 
 
 ```{r}
 mite %>.%
-  gather(., key = "species", value = "n") %>.%
+  pivot_longer(., everything(), names_to = "species", values_to = "n") %>.%
   chart(., n ~ species) +
     geom_boxplot() +
+  labs(x = "Espèces", y = "Observations") +
   coord_flip()
 ```
 
@@ -1212,9 +1228,11 @@ Le graphique boite de dispersion parallèle montre plus d'homogénéité mainten
 
 ```{r}
 mite2 %>.%
-  gather(., key = "species", value = "log_n_1") %>.%
+  pivot_longer(., everything(), names_to = "species", values_to = "log_n_1") %>.%
   chart(., log_n_1 ~ species) +
-  geom_boxplot() + coord_flip()
+  geom_boxplot() +
+  labs(x = "Espèces", y = "Logarithme des observations") +
+  coord_flip()
 ```
 
 A noter que ce type de graphique ne convient pas pour les données semi-quantitatives ou qualitatives. Nous pouvons réaliser le graphique suivant à la place dans ce cas pour visualiser la distribution des espèces dans les différentes stations (qui fonctionne aussi en quantitatif)\ :
@@ -1278,6 +1296,18 @@ Enfin, comme il n'y a aucune raison *a priori* d'utiliser une variable en ligne 
 Si nous prenons le même nombre de composantes principales des deux côtés, nous aurons la même part de variance reprise dans les deux projections. De plus, nous pouvons *superposer* les deux représentations en faisant coïncider les deux centres d'inertie en {0, 0}. La difficulté, comme pour tout biplot, est d'arriver à mettre à l'échelle les points d'une représentation par rapport à ceux de l'autre. Cette mise à l'échelle permet d'interpréter les points de couleurs différentes conjointement\ : des points proches sur le biplot dénotent des *correspondances* entre les niveaux respectifs des deux variables étudiées, d'où le nom de la méthode, analyse factorielle des *correspondances*.
 
 Au final, l'AFC apparait donc comme une variante de l'ACP qui utilise la distance du Chi^2^ à la place de la distance euclidienne dans l'ACP classique, et qui reflète la symétrie du tableau de contingence (lignes/colonnes *versus* colonnes/lignes). Il en résulte la possiblité d'analyser ainsi des données qualitatives pour lesquelles la distance et la statistique du Chi^2^ ont précisément été inventées.
+
+##### À vous de jouer ! {-}
+
+```{r, echo=FALSE, results='asis'}
+if (exists("assignation"))
+  assignation("B07Ia_acp_afc", part = "II",
+    url = "https://github.com/BioDataScience-Course/B07Ia_acp_afc",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/m_pli-r3", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+    toc = "Analyse en composantes principales et l'analyse factorielle des correspondances.")
+```
 
 ##### Pour en savoir plus {-}
 
