@@ -1194,7 +1194,7 @@ rowSums(mite)
 colSums(mite)
 ```
 
-De plus, l'AFC est très sensible à la présence de valeurs extrêmes. Il faut être particulièrement attentif à ne pas avoir trop de disparité, surtout en présence d'espèces très abondantes *versus* d'autres très rares. Si quelques échantillons contiennent une quantité particulièrement large d'items, cela peut aussi être problématique. Pour des dénombrements ou du semi-quantitatif à plus d'une dizaine de niveaux, la boite de dispersion parallèle est un bon graphique, mais nous devons tronsformer le tableau de données en format long avec `gather()` pour pouvoir le faire, et ensuite, nous présentons les espèces sur l'axe des ordonnées avec `coord_flip()`\ :
+De plus, l'AFC est très sensible à la présence de valeurs extrêmes. Il faut être particulièrement attentif à ne pas avoir trop de disparité, surtout en présence d'espèces très abondantes *versus* d'autres très rares. Si quelques échantillons contiennent une quantité particulièrement large d'items, cela peut aussi être problématique. Pour des dénombrements ou du semi-quantitatif à plus d'une dizaine de niveaux, la boite de dispersion parallèle est un bon graphique, mais nous devons tronsformer le tableau de données en format long avec `pivot_longer()` pour pouvoir le faire, et ensuite, nous présentons les espèces sur l'axe des ordonnées avec `coord_flip()`\ :
 
 ```{r}
 mite %>.%
@@ -1239,8 +1239,8 @@ A noter que ce type de graphique ne convient pas pour les données semi-quantita
 
 ```{r}
 mite2 %>.%
-  gather(., key = "species", value = "n") %>.%
-  mutate(., station = rep(1:nrow(mite), ncol(mite))) %>.%
+  mutate(., station = 1:nrow(mite2)) %>.%
+  pivot_longer(., Brachy:Trimalc2, names_to = "species", values_to = "n") %>.%
   chart(., species ~ station %fill=% n) +
   geom_raster()
 ```
