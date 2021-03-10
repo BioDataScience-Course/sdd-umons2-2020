@@ -1373,6 +1373,10 @@ dbClearResult(res)
 dbDisconnect(con)
 ```
 
+##### À vous de jouer ! {-}
+
+`r h5p(111, height = 270, toc = "Stratégie d'utilisation d'une base de données")`
+
 ### Base de données dans un fichier
 
 La SciViews Box contient une base de données test dans `~/shared/database.sqlite`. Vous pouvez facilement vous connecter dessus via l'onglet `Connections` de RStudio. Vous pouvez également vous y connecter via du code R directement. Notez que la même syntaxe est utilisée pour **créer une nouvelle base de données** si le fichier n'existe pas encore au moment de la connexion.
@@ -1382,6 +1386,10 @@ library('RSQLite')
 con <- dbConnect(SQLite(),
   dbname = "~/shared/database.sqlite")
 ```
+
+##### À vous de jouer ! {-}
+
+`r h5p(110, height = 270, toc = "Connection à une base de données")`
 
 Voici quelques instructions typiques pour interroger cette base de données depuis R\ :
 
@@ -1529,6 +1537,19 @@ Voilà pour ce très rapide tour d'horizon des différentes façons de manipuler
 
 - Les [dix commandements d'une base de données réussie](https://thinkr.fr/base-de-donnees-reussie/). Il s'agit ici plutôt de la création d'une base de données que de la requête sur une base de données existante... mais tôt ou tard, vous créerez vos propres bases de données et ces conseils vous seront alors utiles.
 
+##### À vous de jouer ! {-}
+
+**Note: Ce projet est un travail par groupe de 4 personnes. Ce projet est transmodule, ce qui signifie que vous reviendrez dessus à plusieurs reprises au fur et à mesure de votre progression dans la matière afin de compléter votre analyse de ces données.**
+
+```{r, echo=FALSE, results='asis'}
+if (exists("assignation2"))
+  assignation2("B07Ga_doubs", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B07Ga_doubs",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/g/4NGpmS18", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+    toc = "Etude écologique sur le Doubs")
+```
 
 ## Récapitulatif des exercices
 
