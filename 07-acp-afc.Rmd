@@ -939,7 +939,7 @@ if (exists("assignation"))
     url = "https://github.com/BioDataScience-Course/B07Ia_acp_afc",
     course.urls = c(
       'S-BIOG-015' = "https://classroom.github.com/a/m_pli-r3", 
-      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/S1-5OdW8"),
     toc = "Analyse en composantes principales et l'analyse factorielle des correspondances.")
 ```
 
@@ -1305,7 +1305,7 @@ if (exists("assignation"))
     url = "https://github.com/BioDataScience-Course/B07Ia_acp_afc",
     course.urls = c(
       'S-BIOG-015' = "https://classroom.github.com/a/m_pli-r3", 
-      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/S1-5OdW8"),
     toc = "Analyse en composantes principales et l'analyse factorielle des correspondances.")
 ```
 
@@ -1547,7 +1547,7 @@ if (exists("assignation2"))
     url = "https://github.com/BioDataScience-Course/B07Ga_doubs",
     course.urls = c(
       'S-BIOG-015' = "https://classroom.github.com/g/4NGpmS18", 
-      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+      'S-BIOG-937-958-959' = "https://classroom.github.com/g/d9LfHBOF"),
     toc = "Etude écologique sur le Doubs")
 ```
 
