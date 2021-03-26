@@ -16,25 +16,6 @@ SciViews::R
 
 - Les modules 5, 6 et 7 doivent être assimilés avant d'attaquer le présent module.
 
-##### A vous de jouer ! {-}
-
-En lien avec ce module vous avez une série d’exercices à réaliser. Il vous faut réaliser un projet spécifique et dédié uniquement au module 08.
-
-```{block2, type='bdd'}
-
-Vous avez à votre disposition une assignation GitHub Classroom.
-
-Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
-
-* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/ytq74RNB>
-
-* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [sdd2_module08](https://github.com/BioDataScience-Course/sdd2_module08). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
-
-Lisez le README afin de prendre connaissance de l'exercice.
-
-*Ce projet doit être terminé à la fin de ce module*
-```
-
 ## Analyse factorielle multiple (AFM)
 
 Jusqu'ici nous avons étudié différentes techniques pour explorer des données multivariées *soit* quantitatives (ACP), *soit* qualitatives (AFC). Nous n'avons pas abordé encore la question de données *mixtes* avec des tableaux qui contiennent *à la fois* des variables quantitatives et des données qualitatives.
@@ -58,9 +39,9 @@ L'analyse factorielle multiple (AFM, *multiple factorial analysis* ou MFA en ang
 
 ### AFM dans SciViews::R
 
-L'AFM n'est pas encore intégrée dans `SciViews::R`. Le code suivant permet de réaliser notre analyse via l'interface habituelle, soit `mfa(data = ...., formula)` pour construire l'analyse (calculs en internes basés sur `FactoMineR::MFA()`), et ensuite nous utiliserons `summary()` et `chart$type()` pour les graphiques, où `type` pourra être `screeplot`, `altscreeplot`, `loadings`, `scores`, `groups`, `axes`, `frequences` ou `ellipses` (nous verrons plus loin ce que représentent tous ces graphiques). Vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de vos documents R Markdown/Notebook pour l'utiliser.
+L'AFM n'est pas encore intégrée dans `SciViews::R`. Le code suivant permet de réaliser notre analyse via l'interface habituelle, soit `mfa(data = ...., formula)` pour construire l'analyse (calculs en internes basés sur `FactoMineR::MFA()`), et ensuite nous utiliserons `summary()` et `chart$type()` pour les graphiques, où `type` pourra être `screeplot`, `altscreeplot`, `loadings`, `scores`, `groups`, `axes`, `frequences` ou `ellipses` (nous verrons plus loin ce que représentent tous ces graphiques). Vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de vos documents R Markdown/Notebook pour l'utiliser (cliquez sur "voir le code" pour le dérouler).
 
-```{r}
+```{r, class.source='hidden-code'}
 # Code mfa() version 2
 SciViews::R()
 
@@ -289,7 +270,14 @@ Avant de pouvoir réaliser notre AFM, nous devons comprendre comment écrire la 
 2. Le `type` de variable considérée. Quatre types sont possibles. Les variables continues à standardiser avant d'être utilisées dans une ACP sont de type **s**. Les variables quantitative également à utiliser selon l'ACP mais *sans* standardisation sont de type **c**. Les données qualitatives assimilables à un tableau de contingence à double entrée (données de fréquences d'observations, dénombrements, etc.) sont de type **f** et seront traitées comme une AFC, et enfin, les variables qualitatives classiques sont de type **n** et seront traitées selon une analyse factorielle multiple AFM.
 3. Le `nom` que l'on veut donner à chaque groupe de variables pour l'identifier dans l'analyse.
 
-Un groupe est décrit dans la formule comme `n * type %as% nom` (donc avec les opérateurs `*` et `%as%`). Chaque groupe inclu dans l'analyse est précédé d'un signe plus `+` (le premier plus peut être omis de la formule). Les groupes supplémentaires (à soustraire à l'analyse) sont précédés d'un signe moins `-`. Et enfin, tous les groupes sont décrits à la droite de la formule, donc, après le `~`. Dans notre cas concret ici, cela donne\ :
+Un groupe est décrit dans la formule comme `n * type %as% nom` (donc avec les opérateurs `*` et `%as%`). Chaque groupe inclu dans l'analyse est précédé d'un signe plus `+` (le premier plus peut être omis de la formule). Les groupes supplémentaires (à soustraire à l'analyse) sont précédés d'un signe moins `-`. Et enfin, tous les groupes sont décrits à la droite de la formule, donc, après le `~`. 
+
+##### À vous de jouer ! {-}
+
+`r h5p(120, height = 270, toc = "Formule de l'AFM")`
+
+
+Dans notre cas concret ici, cela donne\ :
 
     ~ 4*s %as% environnement + 24*c %as% plancton - 1*n %as% zone
 
@@ -445,14 +433,13 @@ Nous voyons ici que le traitement sous forme ACP ou sous forme AFC (pour le comp
 
 - [Numerical Ecology with R](https://www.springer.com/gp/book/9781441979766) traite en détail de nombreuses méthodes multivariées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).
 
-##### A vous de jouer ! {-}
+<!--- G.E.
 
-- Réalisez le début du projet spécifique lié au module 08.
+##### À vous de jouer ! {-}
 
-```{block2, type='bdd'}
-**Le lien pour réaliser ce projet se trouve au début du module**
-*Ce projet doit être terminé à la fin de ce module*
-```
+`r learnr("B08La_mfa", title = "Analyse factorielle multiple", toc = "Analyse factorielle multiple")`
+
+--->
 
 ## Indices de biodiversité 
 
@@ -596,27 +583,6 @@ Regardons comment colculer l'indice de Jaccard pour nos cinq parcelles avec R\ :
 
 - [Numerical Ecology with R](https://www.springer.com/gp/book/9781441979766) traite en détail de nombreuses méthodes multivariées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).
 
-##### A vous de jouer ! {-}
-
-- Réalisez la suite du projet spécifique lié au module 08.
-
-```{block2, type='bdd'}
-**Le lien pour réaliser ce projet se trouve au début du module**
-*Ce projet doit être terminé à la fin de ce module*
-```
-
-- Complétez votre projet sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour). Il serait intéressant de connaître la station avec la haute diversité. Comment évolue la diversité le long du transect\ ? 
-
-```{block2, type='bdd'}
-Complétez votre projet. Lisez attentivement le ficiher `README.md`.
-
-La dernière version du README est disponible via le lien suivant\ :
-  
-- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea/blob/master/README.md>
-  
-*Le README est un rappel des consignes, il ne s'agit aucunement du lien pour débuter le travail*
-```
-
 ## Données ouvertes
 
 L'*"Open Data"* ou données ouvertes est un phénomène en pleine expansion. Vous y serez certainement confrontés dans votre carrière. Autant bien comprendre de quoi il s'agit et rendre vos données accessibles et publiques de la meilleure façon qui soit. Cette dernière partie est une brève introduction en la matière, qui devrait vous permettre de bien démarrer.
@@ -719,14 +685,7 @@ Afin de respecter ces principes **FAIR**, des outils ont été développés. Il 
 
 Lorsque vous allez concevoir un plan d'expérience, n'oubliez pas de concevoir votre plan de gestion des données en même temps. Voici une checklist pour un plan de gestion des données efficaces <http://www.dcc.ac.uk/sites/default/files/documents/resource/DMP_Checklist_2013.pdf>
 
-##### A vous de jouer ! {-}
 
-- Réalisez la fin  du projet spécifique lié au module 08.
-
-```{block2, type='bdd'}
-**Le lien pour réaliser ce projet se trouve au début du module**
-*Ce projet doit être terminé à la fin de ce module*
-```
 
 ### Utilisation de données ouvertes
 
@@ -783,3 +742,12 @@ Comme vous venez de le voir, Zenodo de part sa structuration permet de remplir t
 - Article scientifique sur le FAIR plan\ : [The FAIR Guiding Principles for scientific data management and stewardship](https://www.nature.com/articles/sdata201618)
 
 - L'outil institutionnel de l'Université de Mons afin de réaliser un plan de gestion de données est disponible [DMPonline.be](https://dmponline.be)
+
+
+## Récapitulatif des exercices
+
+Ce module 8 vous a permis de découvrir l'AFM, les indices courants en écologie et l'Open Data. 
+
+Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser\ :
+
+`r show_ex_toc()`
