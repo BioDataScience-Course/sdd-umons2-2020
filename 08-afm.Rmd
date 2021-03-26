@@ -433,13 +433,11 @@ Nous voyons ici que le traitement sous forme ACP ou sous forme AFC (pour le comp
 
 - [Numerical Ecology with R](https://www.springer.com/gp/book/9781441979766) traite en détail de nombreuses méthodes multivariées avec illustrations dans R (ouvrage recommandé pour tous ceux qui explorent des données multivariées en écologie, en anglais).
 
-<!--- G.E.
 
 ##### À vous de jouer ! {-}
 
 `r learnr("B08La_mfa", title = "Analyse factorielle multiple", toc = "Analyse factorielle multiple")`
 
---->
 
 ## Indices de biodiversité 
 
