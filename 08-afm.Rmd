@@ -438,6 +438,16 @@ Nous voyons ici que le traitement sous forme ACP ou sous forme AFC (pour le comp
 
 `r learnr("B08La_mfa", title = "Analyse factorielle multiple", toc = "Analyse factorielle multiple")`
 
+```{r, echo=FALSE, results='asis'}
+if (exists("assignation"))
+  assignation("B08Ia_mfa", part = "I",
+    url = "https://github.com/BioDataScience-Course/B08Ia_mfa",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/3nky8FhN", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+    toc = "Analyse factorielle multiple sur la présence d'oiseaux dans les Alpes françaises.")
+```
+
 
 ## Indices de biodiversité 
 
@@ -548,6 +558,10 @@ bci_sub_e <- vegan::diversity(bci_sub, index = "simpson")
 bci_sub_e
 ```
 
+##### À vous de jouer ! {-}
+
+`r h5p(121, height = 270, toc = "Indices de diversité alpha")`
+
 ### Diversité beta
 
 La diversité $\beta$ traduit la diversité inter-formation. Pour identifier le degré de similarité, d’association entre des groupes ou la diversité de différenciation des espèces entre différents habitats, on utilise les coefficient ou indice de similarité ou de similitude. Le choix adéquat d’un indice de similarité, n’est pas évident et la question à se poser est de savoir si le fait qu’une espèce soit absente ou non contribue à augmenter la dissimilarité. Il existe plusieurs indices de similarité qui s’appliquent sur des données de présence-absence comme l’**indice de Jaccard** que nous allons vous présenter ici.
@@ -572,6 +586,10 @@ Regardons comment colculer l'indice de Jaccard pour nos cinq parcelles avec R\ :
 ```{r}
 1 - vegan::vegdist(bci_sub, method = "jaccard", binary = TRUE)
 ```
+
+##### À vous de jouer ! {-}
+
+`r h5p(122, height = 270, toc = "Indices de Jaccard")`
 
 ##### Pour en savoir plus {-}
 
@@ -651,9 +669,17 @@ Il est donc autorisé d'adapter l'œuvre et de l'utiliser à des fins commercial
 
 Il existe également des licences plus spécifiques aux bases de données, de la moins contraignante à la plus contraignante [PDDL](https://opendatacommons.org/licenses/pddl/) , [ODC-by](https://opendatacommons.org/licenses/by/) et [ODbL](https://opendatacommons.org/licenses/odbl/)
 
+##### À vous de jouer ! {-}
+
+`r h5p(123, height = 270, toc = "Choix des licenses")`
+
 ##### Intéropérable (*Interoperable*)
 
-Les données sont associées à des métadonnées riches. Sur base des métadonnées, les données doivent être utilisable, compréhensible et *combinable avec d'autres données*. Ce principe est difficile à mettre en place et requiert donc une réflexion approfondie.
+Les données sont associées à des métadonnées riches. Sur base des métadonnées, les données doivent être utilisable, compréhensible et *combinable avec d'autres données*. Le choix du format des données est également important Ce principe est difficile à mettre en place et requiert donc une réflexion approfondie.
+
+##### À vous de jouer ! {-}
+
+`r h5p(124, height = 270, toc = "Choix du format des données")`
 
 ##### Réutilisable (*Reusable*) 
 
@@ -676,6 +702,10 @@ Le contexte c'est\ :
 - la licence associée aux données
 
 Dans le cadre de vos futures recherches, un outil comme Zenodo est très intéressant pour publier vos donnes sur l'Internet tout en suivant au mieux le principe **FAIR**.
+
+##### À vous de jouer ! {-}
+
+`r h5p(125, height = 270, toc = "Principe FAIR")`
 
 #### DMP
 
@@ -720,6 +750,19 @@ Les données sont proposées sous le format `csv`. Ce format est un standard tr�
 Ce dernier critère est le plus difficile à déterminer. Une première chose à vérifier concerne les métadonnées associées à chaque variable. Nous pouvons voir que l'auteur peut encore améliorer les métadonnées associées à ses données. Le nom des variables reste cependant tout à fait compréhensible. 
 
 Comme vous venez de le voir, Zenodo de part sa structuration permet de remplir très simplement cette check-list.
+
+##### À vous de jouer ! {-}
+
+
+```{r, echo=FALSE, results='asis'}
+if (exists("assignation"))
+  assignation("B08Ia_mfa", part = "II",
+    url = "https://github.com/BioDataScience-Course/B08Ia_mfa",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/3nky8FhN", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+    toc = "Réflexion sur l'Open Data")
+```
 
 ##### Pour en savoir plus {-}
 
