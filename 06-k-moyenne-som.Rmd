@@ -343,7 +343,7 @@ if (exists("assignation"))
     url = "https://github.com/BioDataScience-Course/B06Ia_fish_market",
     course.urls = c(
       'S-BIOG-015' = "https://classroom.github.com/a/CPLjQ1Mb", 
-      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/_YKeOJ4S"),
     toc = "Analyse multivarée sur 7 poissons couramment pêchés.")
 ```
 
@@ -779,7 +779,7 @@ if (exists("assignation"))
     url = "https://github.com/BioDataScience-Course/B06Ia_fish_market",
     course.urls = c(
       'S-BIOG-015' = "https://classroom.github.com/a/CPLjQ1Mb", 
-      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/_YKeOJ4S"),
     toc = "Analyse multivarée sur 7 poissons couramment pêchés.")
 ```
 
@@ -1368,7 +1368,7 @@ if (exists("assignation"))
     url = "https://github.com/BioDataScience-Course/B06Ia_fish_market",
     course.urls = c(
       'S-BIOG-015' = "https://classroom.github.com/a/CPLjQ1Mb", 
-      'S-BIOG-937-958-959' = "https://classroom.github.com/a/..."),
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/_YKeOJ4S"),
     toc = "Analyse multivarée sur 7 poissons couramment pêchés.")
 ```
 

@@ -17,27 +17,6 @@ SciViews::R
 
 - Le module 6, et en particulier la partie sur le MDS doivent être assimilés avant d'attaquer le présent module.
 
-##### A vous de jouer ! {-}
-
-En lien avec ce module vous avez une série d’exercices à réaliser. Vous avez à\ :
-
-- Réaliser un projet spécifique et dédié uniquement au module 07. Ce module couvre l'ensemble de la matière du module 7. 
-
-```{block2, type='bdd'}
-
-Vous avez à votre disposition une assignation GitHub Classroom.
-
-Pour l'année académique 2019-2020, les URLs à utiliser pour accéder à votre tâche sont les suivants : 
-
-* Cours de Sciences des données II à Mons : <https://classroom.github.com/a/sWXOnhcQ>
-
-* Pour les autres utilisateurs de ce livre, veuillez faire un "fork" du dépôt [sdd2_module07](https://github.com/BioDataScience-Course/sdd2_module07). Si vous souhaitez accéder à une version précédente particulière de l'exercice, sélectionnez la release correspondante à l'année que vous recherchez.  
-
-Lisez le README afin de prendre connaissance de l'exercice.
-  
-  
-*Ce projet doit être terminé à la fin de ce module*
-```
 
 ## Analyse en composantes principales
 
@@ -51,11 +30,15 @@ Notre première approche d'ordination avec le MDS dans le précédent module nou
 
 - La réduction des dimensions se fait avec une perte minimale d'information au sens de la variance des données.
 
+##### À vous de jouer ! {-}
+
+`r h5p(104, height = 270, toc = "Principe de l'ACP")`
+
 ### ACP dans SciViews::R
 
-L'ACP est facilitée dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documents R Markdown/Notebook.
+L'ACP est facilitée dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documents R Markdown/Notebook (cliquez sur "voir le code" pour le dérouler).
 
-```{r}
+```{r, class.source='hidden-code'}
 SciViews::R()
 library(broom)
 
@@ -273,7 +256,12 @@ pima <- drop_na(pima)
 pima
 ```
 
-Notre tableau est presque amputé de la moitié, mais il nous reste tout de même encore 392 cas, soit assez pour notre analyse. Avant de nous lancer dans une ACP, nous devons décrire les données, repérer les variables quantitatives d'intérêt, et synthétiser les corrélations linéaires (coefficients de corrélation de Pearson) entre ces variables.
+
+```{block2, type='warning'}
+Notre tableau est presque amputé de la moitié, mais il nous reste tout de même encore 392 cas sur 768, soit assez pour notre analyse. 
+```
+
+Avant de nous lancer dans une ACP, nous devons décrire les données, repérer les variables quantitatives d'intérêt, et synthétiser les corrélations linéaires (coefficients de corrélation de Pearson) entre ces variables.
 
 ```{r}
 skimr::skim(pima)
@@ -292,6 +280,10 @@ plot(pima_cor)
 Quelques corrélations positives d'intensités moyennes se dégagent ici, notamment entre `mass` et `triceps` (épaisseur du pli cutané au niveau du triceps), ainsi qu'entre `glucose` (taux de glucose dans le sang), `insulin` (taux d'insuline dans le sang) et `age`. Par contre, la pression artérielle (`pressure`) et le `pedigree` (variable qui quantifie la susceptibilité au diabète en fonction de la parenté) semblent peu corrélés avec les autres variables.
 
 L'ACP est en fait équivalente à une Analyse en Coordonnées Principales sur une matrice de distances euclidiennes (MDS métrique), mais en plus efficace en terme de calculs. Nous pouvons donc nous lancer dans l'analyse et en comprendre les résultats en gardant ceci à l'esprit.
+
+##### À vous de jouer ! {-}
+
+`r h5p(103, height = 270, toc = "Comparaison entre l'ACP et PCoA")`
 
 Nous utiliserons la fonction `pca()` qui prend un argument `data =` et une formule du type `~ var1 + var2 + .... + varn`, ou plus simplement, directement un tableau contenant uniquement les variables à analyser comme argument unique. Comme les différentes variables sont mesurées dans des unités différentes, nous devons les standardiser (écart type ramené à un pour toutes). Ceci est réalisé par la fonction `pca()` en lui indiquant `scale = TRUE`. Donc\ :
 
@@ -318,6 +310,11 @@ Le premier tableau `Importance of components (eigenvalues):` montre la part de v
 
 Le second tableau `Loadings (eigenvectors, rotation matrix):` est la matrice de transformation des coordonnées initiales sur les lignes en coordonnées PC1 à PC7 en colonnes. Nous pouvons y lire l'**importante** des variables initiales sur les axes de l'ACP. Par exemple, l'axe PC3 contraste essentiellement `pressure` et `pedigree`.
 
+
+##### À vous de jouer ! {-}
+
+`r h5p(105, height = 270, toc = "Importance des variables initiales")`
+
 Le **graphique des éboulis** sert à visualiser la "chute" de la variance d'un axe principal à l'autre, et aide à choisir le nombre d'axes à conserver (espace à dimensions réduites avec perte minimale d'information). Deux variantes en diagramme en barres versticales `chart$screeplot()` ou `chart$scree()` ou sous forme d'une ligne brisée `chart$altscree()` sont disponibles\ :
 
 ```{r}
@@ -329,6 +326,10 @@ chart$altscree(pima_pca)
 ```
 
 La diminution est importante entre le premier et le second axe, mais plus progressive ensuite. Ceci traduit une structure plus complexe dans les données qui ne se réduit pas facilement à un très petit nombre d'axes. Nous pouvons visualiser le **premier plan principal** constitué par PC1 et PC2, tout en gardant à l'esprit que seulement 53% de la variance totale y est capturée. Donc, nous pouvons nous attendre à des déformations non négligeables des données dans ce plan, et d'autres aspects qui n'y sont pas (correctement) représentés. Nous verrons qu'il est porteur, toutefois, d'information utile.
+
+##### À vous de jouer ! {-}
+
+`r h5p(106, height = 270, toc = "Analyse du graphique des éboulis")`
 
 Deux types de représentations peuvent être réalisées à partir d'ici\ : la représentation dans **l'espace des variables**, et la représentation complémentaire dans **l'espace des individus**. Ces deux représentations sont complémentaires et s'analysent conjointement. L'espace des variables représente les axes initiaux projettés comme des ombres dans le plan choisi de l'ACP (rappelez-vous l'analogie avec les ombres chinoises). Il se réalise à l'aide de `chart$loadings()`. Par exemple pour PC1 et PC2 nous indiquons `choices = c(1, 2)` (ou rien du tout, puisque ce sont les valeurs par défaut))\ :
 
@@ -356,11 +357,15 @@ chart$loadings(pima_pca, choices = c(1, 3))
 
 Nous voyons que `pedigree` et `pressure` (inversément proportionnels) sont bien mieux représentés le long de PC3. Ici l'axe PC3 est plus facile à orienter\ : en haut les pédigrées élevés et les pressions qartérielles basses, et en bas le contraire. Nous avons déjà lu cette informatioin dans le tableau des vecteurs propres de `summary()`.
 
-Le graphice entre PC2 et PC3 complète l'analyse, mais n'apportant rien de plus, il peut être typiquement éliminé de votre rapport.
+Le graphique entre PC2 et PC3 complète l'analyse, mais n'apportant rien de plus, il peut être typiquement éliminé de votre rapport.
 
 ```{r}
 chart$loadings(pima_pca, choices = c(2, 3))
 ```
+
+##### À vous de jouer ! {-}
+
+`r h5p(107, height = 270, toc = "Représentation dans l'espace des variables")`
 
 La seconde représentation se fait dans **l'espace des individus**. Ici, nous allons projeter les points relatifs à chaque individu dans le plan de l'ACP choisi. Cela se réalise à l'aide de `chart$scores()` (l'aspect ratio est le rapport hauteur/largeur peut s'adapter)\ :
 
@@ -923,6 +928,21 @@ $$
 
 Tout ces calculs se généralisent facilement à trois, puis à N dimensions.
 
+##### À vous de jouer ! {-}
+
+`r learnr("B07La_pca", title = "Analyse en composantes principales", toc = "Analyse en composantes principales")`
+
+
+```{r, echo=FALSE, results='asis'}
+if (exists("assignation"))
+  assignation("B07Ia_acp_afc", part = "I",
+    url = "https://github.com/BioDataScience-Course/B07Ia_acp_afc",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/m_pli-r3", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/S1-5OdW8"),
+    toc = "Analyse en composantes principales et l'analyse factorielle des correspondances.")
+```
+
 ##### Pour aller plus loin {-}
 
 - N'hésitez pas à **combiner** plusieurs techniques. Par exemple, vous pouvez représenter les groupes créés par classification ascendante hiérarchiques sur un graphique de l'ACP dans l'espace des individus en faisant varier les couleurs ou les labels des individus en fonction des groupes de la CAH.
@@ -933,37 +953,20 @@ Tout ces calculs se généralisent facilement à trois, puis à N dimensions.
 
 - Une page qui reprend [une série de vidéos](http://www.sthda.com/english/articles/21-courses/65-principal-component-analysis-course-using-factominer/) qui présentent les différentes facettes de l'ACP (en anglais).
 
-##### A vous de jouer ! {-}
-
-- Réalisez le début du projet spécifique lié au module 7. Ce module couvre la matière entière du module 7. 
-
-```{block2, type='bdd'}
-**Le lien pour réaliser ce projet se trouve en début du module 7**
-
-*Ce projet doit être terminé à la fin de ce module*
-```
-
-- Complétez votre projet sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).
-
-```{block2, type='bdd'}
-Complétez votre projet. Lisez attentivement le README.
-
-La dernière version du README est disponible via le lien suivant\ :
-  
-- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea/blob/master/README.md>
-  
-*Le README est un rappel des consignes, il ne s'agit aucunement du lien pour débuter le travail*
-```
 
 ## Analyse factorielle des correspondances
 
 Comme l'ACP s'intéresse à des corrélations linéaires entre variables quantitatives, elle n'est absolument pas utilisable pour traiter des variables qualitatives. L'**Analyse Factorielle des Correspondances** sera utile dans ce dernier cas (AFC, ou en anglais *Correspondence Analysis* ou CA).
 
+##### À vous de jouer ! {-}
+
+`r h5p(108, height = 270, toc = "Rôle de l'AFC")`
+
 ### AFC dans SciViews::R
 
-L'AFC utilises la fonction `ca()` du package {ca} dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documents R Markdown/Notebook.
+L'AFC utilises la fonction `ca()` du package {ca} dans `SciViews::R`, mais au stade actuel, tout le code nécessaire (en particulier pour réaliser les graphiques avec `chart()`) n'est pas encore complètement intégré dans les packages. Ainsi, vous pouvez copier-coller le code du chunk suivant au début de vos scripts ou dans un chunk de `setup` dans vos documents R Markdown/Notebook (cliquez sur "voir le code" pour le dérouler).
 
-```{r}
+```{r, class.source='hidden-code'}
 SciViews::R()
 library(broom)
 
@@ -1133,6 +1136,10 @@ chisq.test(wg$B, wg$edu)
 
 L'avertissement nous prévient qu'une approximation a du être réalisée, mais le test reste utilisable si la valeur est loin du seuil $/alpha$. La valeur *p* de 0,2% est très inférieure à $\alpha$. Nous rejettons H~0~. Il y a dépendance entre le niveau d'éducation et la réponse à la question B. OK, mais comment se fait cette dépendance\ ? C'est ici que l'AFC nous vient en aide.
 
+##### À vous de jouer ! {-}
+
+`r h5p(109, height = 270, toc = "Chi2 et l'AFC")`
+
 
 -**Étape 3\ :** Si l'hypothèse nulle est rejetée, il faut analyser plus en profondeur. L'AFC va présenter la dépendance de manière claire. La fonction `ca()` accepte un jeu de données dans l'argument `data =` et une formule qui spécifie dans le terme de droite les deux variables à croiser séparées par un signe + (`~ fact1 + fact2`). Donc\ :
 
@@ -1187,13 +1194,14 @@ rowSums(mite)
 colSums(mite)
 ```
 
-De plus, l'AFC est très sensible à la présence de valeurs extrêmes. Il faut être particulièrement attentif à ne pas avoir trop de disparité, surtout en présence d'espèces très abondantes *versus* d'autres très rares. Si quelques échantillons contiennent une quantité particulièrement large d'items, cela peut aussi être problématique. Pour des dénombrements ou du semi-quantitatif à plus d'une dizaine de niveaux, la boite de dispersion parallèle est un bon graphique, mais nous devons tronsformer le tableau de données en format long avec `gather()` pour pouvoir le faire, et ensuite, nous présentons les espèces sur l'axe des ordonnées avec `coord_flip()`\ :
+De plus, l'AFC est très sensible à la présence de valeurs extrêmes. Il faut être particulièrement attentif à ne pas avoir trop de disparité, surtout en présence d'espèces très abondantes *versus* d'autres très rares. Si quelques échantillons contiennent une quantité particulièrement large d'items, cela peut aussi être problématique. Pour des dénombrements ou du semi-quantitatif à plus d'une dizaine de niveaux, la boite de dispersion parallèle est un bon graphique, mais nous devons tronsformer le tableau de données en format long avec `pivot_longer()` pour pouvoir le faire, et ensuite, nous présentons les espèces sur l'axe des ordonnées avec `coord_flip()`\ :
 
 ```{r}
 mite %>.%
-  gather(., key = "species", value = "n") %>.%
+  pivot_longer(., everything(), names_to = "species", values_to = "n") %>.%
   chart(., n ~ species) +
     geom_boxplot() +
+  labs(x = "Espèces", y = "Observations") +
   coord_flip()
 ```
 
@@ -1220,17 +1228,19 @@ Le graphique boite de dispersion parallèle montre plus d'homogénéité mainten
 
 ```{r}
 mite2 %>.%
-  gather(., key = "species", value = "log_n_1") %>.%
+  pivot_longer(., everything(), names_to = "species", values_to = "log_n_1") %>.%
   chart(., log_n_1 ~ species) +
-  geom_boxplot() + coord_flip()
+  geom_boxplot() +
+  labs(x = "Espèces", y = "Logarithme des observations") +
+  coord_flip()
 ```
 
 A noter que ce type de graphique ne convient pas pour les données semi-quantitatives ou qualitatives. Nous pouvons réaliser le graphique suivant à la place dans ce cas pour visualiser la distribution des espèces dans les différentes stations (qui fonctionne aussi en quantitatif)\ :
 
 ```{r}
 mite2 %>.%
-  gather(., key = "species", value = "n") %>.%
-  mutate(., station = rep(1:nrow(mite), ncol(mite))) %>.%
+  mutate(., station = 1:nrow(mite2)) %>.%
+  pivot_longer(., Brachy:Trimalc2, names_to = "species", values_to = "n") %>.%
   chart(., species ~ station %fill=% n) +
   geom_raster()
 ```
@@ -1287,33 +1297,23 @@ Si nous prenons le même nombre de composantes principales des deux côtés, nou
 
 Au final, l'AFC apparait donc comme une variante de l'ACP qui utilise la distance du Chi^2^ à la place de la distance euclidienne dans l'ACP classique, et qui reflète la symétrie du tableau de contingence (lignes/colonnes *versus* colonnes/lignes). Il en résulte la possiblité d'analyser ainsi des données qualitatives pour lesquelles la distance et la statistique du Chi^2^ ont précisément été inventées.
 
+##### À vous de jouer ! {-}
+
+```{r, echo=FALSE, results='asis'}
+if (exists("assignation"))
+  assignation("B07Ia_acp_afc", part = "II",
+    url = "https://github.com/BioDataScience-Course/B07Ia_acp_afc",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/a/m_pli-r3", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/a/S1-5OdW8"),
+    toc = "Analyse en composantes principales et l'analyse factorielle des correspondances.")
+```
+
 ##### Pour en savoir plus {-}
 
 - Une courte introduction de l'AFC en [vidéo](https://www.youtube.com/watch?v=tEc5cmlQVdI) avec résolution d'un exemple volontairement simpliste pour faire comprendre la signification du graphique obtenu et la façon de l'interpréter.
 
 - Une [autre explication](http://www.sthda.com/french/articles/38-methodes-des-composantes-principales-dans-r-guide-pratique/74-afc-analyse-factorielle-des-correspondances-avec-r-l-essentiel/) qui utilise les packages {FactoMineR} et {factoextra} et qui va plus loin dans les concepts (notamment la qualité de la représentation des points via leur "cos^2^", les différents types de biplots, et l'ajout de données supplémentaires).
-
-##### A vous de jouer ! {-}
-
-- Réalisez le début du projet spécifique lié au module 7. Ce module couvre la matière entière du module 7. 
-
-```{block2, type='bdd'}
-**Le lien pour réaliser ce projet se trouve en début du module 7**
-
-*Ce projet doit être terminé à la fin de ce module*
-```
-
-- Complétez votre projet sur le transect entre Nice et Calvi débuté lors du module 5. Lisez attentivement le README (Ce dernier a été mis à jour).
-
-```{block2, type='bdd'}
-Complétez votre projet. Lisez attentivement le README.
-
-La dernière version du README est disponible via le lien suivant\ :
-  
-- <https://github.com/BioDataScience-Course/spatial_distribution_zooplankton_ligurian_sea/blob/master/README.md>
-  
-*Le README est un rappel des consignes, il ne s'agit aucunement du lien pour débuter le travail*
-```
 
 ## Accès aux bases de données
 
@@ -1373,6 +1373,10 @@ dbClearResult(res)
 dbDisconnect(con)
 ```
 
+##### À vous de jouer ! {-}
+
+`r h5p(111, height = 270, toc = "Stratégie d'utilisation d'une base de données")`
+
 ### Base de données dans un fichier
 
 La SciViews Box contient une base de données test dans `~/shared/database.sqlite`. Vous pouvez facilement vous connecter dessus via l'onglet `Connections` de RStudio. Vous pouvez également vous y connecter via du code R directement. Notez que la même syntaxe est utilisée pour **créer une nouvelle base de données** si le fichier n'existe pas encore au moment de la connexion.
@@ -1382,6 +1386,10 @@ library('RSQLite')
 con <- dbConnect(SQLite(),
   dbname = "~/shared/database.sqlite")
 ```
+
+##### À vous de jouer ! {-}
+
+`r h5p(110, height = 270, toc = "Connection à une base de données")`
 
 Voici quelques instructions typiques pour interroger cette base de données depuis R\ :
 
@@ -1529,13 +1537,25 @@ Voilà pour ce très rapide tour d'horizon des différentes façons de manipuler
 
 - Les [dix commandements d'une base de données réussie](https://thinkr.fr/base-de-donnees-reussie/). Il s'agit ici plutôt de la création d'une base de données que de la requête sur une base de données existante... mais tôt ou tard, vous créerez vos propres bases de données et ces conseils vous seront alors utiles.
 
-##### A vous de jouer ! {-}
+##### À vous de jouer ! {-}
 
-- Réalisez le début du projet spécifique lié au module 7. Ce module couvre la matière entière du module 7. 
+**Note: Ce projet est un travail par groupe de 4 personnes. Ce projet est transmodule, ce qui signifie que vous reviendrez dessus à plusieurs reprises au fur et à mesure de votre progression dans la matière afin de compléter votre analyse de ces données.**
 
-```{block2, type='bdd'}
-**Le lien pour réaliser ce projet se trouve en début du module 7**
-
-*Ce projet doit être terminé à la fin de ce module*
+```{r, echo=FALSE, results='asis'}
+if (exists("assignation2"))
+  assignation2("B07Ga_doubs", part = NULL,
+    url = "https://github.com/BioDataScience-Course/B07Ga_doubs",
+    course.urls = c(
+      'S-BIOG-015' = "https://classroom.github.com/g/4NGpmS18", 
+      'S-BIOG-937-958-959' = "https://classroom.github.com/g/d9LfHBOF"),
+    toc = "Etude écologique sur le Doubs")
 ```
+
+## Récapitulatif des exercices
+
+Ce module 7 vous a permis de découvrir 2 méthodes très utilisées dans les statistiques exploratoires (ACP et AFC). Ce module vous a également permit de découvrir l'utilisation des bases de données. 
+
+Pour évaluer votre compréhension de cette matière vous aviez les exercices suivants à réaliser\ :
+
+`r show_ex_toc()`
 
