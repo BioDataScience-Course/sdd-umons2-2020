@@ -1,3 +1,0 @@
-# Bioinformatique II {#bioinfo2}
-
-...

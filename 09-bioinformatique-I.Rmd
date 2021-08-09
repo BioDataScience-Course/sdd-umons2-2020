@@ -1,5 +1,0 @@
-# (PART) SDD II: bioinformatique {-}
-
-# Bioinformatique I {#bioinfo1}
-
-...

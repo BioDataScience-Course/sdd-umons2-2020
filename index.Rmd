@@ -53,15 +53,14 @@ Cet ouvrage interactif est le second volume d'une série de trois ouvrages trait
 
 - [Bio-informatique et science des données II](http://applications.umons.ac.be/web/fr/pde/2020-2021/ue/US-B3-SCBIOC-940-C.htm) au troisième bachelier en Biologie en Faculté des Sciences à Charleroi en co-diplomation entre l'Université de Mons (UMONS) et l'Université Libre de Bruxelles (ULB), et dont le responsable est Raphaël Conotte
 
-La matière est divisée en 12 modules de 6h chacun en présentiel. Il nécessitera environ un tiers de ce temps (voir plus, en fonction de votre rythme et de votre technique d'apprentissage) en travail à domicile. **Cette matière fait suite au premier cours dont le contenu est considéré comme assimilé (voir [cours SDD I](https://wp.sciviews.org/sdd-umons){target='top'}).**
+La matière est divisée en 8 modules de 6h chacun en présentiel. Il nécessitera environ un tiers de ce temps (voir plus, en fonction de votre rythme et de votre technique d'apprentissage) en travail à domicile. **Cette matière fait suite au premier cours dont le contenu est considéré comme assimilé (voir [cours SDD I](https://wp.sciviews.org/sdd-umons){target='top'}).**
 
 <!-- A faire: un diagramme qui montre la relation entre ces différents modules, et avec les modules du cours 1 -->
 
 Les quatre premiers modules du cours sont consacrés à la **modélisation**, un domaine particulièrement important de la science des données qui étend les concepts déjà vu au cours SDD I d'analyse de variance et de corrélation entre deux variables. Ces quatre modules formeront aussi un socle sur lequel nous pourrons élaborer les techniques d'apprentissage machine (classification supervisée), et puis ensuite l'apprentissage profond à la base de l'intelligence artificielle qui seront abordées plus tard dans le cours SDD III. Cette partie est dense, mais *ultra* importante\ !
 
-Les quatre modules suivants s'intéresseront à l'**exploration des données**, encore appelée **analyse des données** qui vise à découvrir des caractéristiques intéressantes dans des très gros jeux de données. Ces techniques sont d'autant plus utiles que les données volumineuses deviennent de plus en plus courantes en biologie.
+Enfin, les quatre modules suivants s'intéresseront à l'**exploration des données**, encore appelée **analyse des données** qui vise à découvrir des caractéristiques intéressantes dans des très gros jeux de données. Ces techniques sont d'autant plus utiles que les données volumineuses deviennent de plus en plus courantes en biologie.
 
-Enfin, dans le cadre du cours de  **Bio-informatique et science des données II**, les étudiants de Charleroi ont encore quatre modules supplémentaires dédiés plus spécifiquement à la **bio-informatique**.
 
 ## Matériel pédagogique {-}
 
